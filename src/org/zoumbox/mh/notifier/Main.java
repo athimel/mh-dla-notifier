@@ -53,6 +53,7 @@ public class Main extends Activity {
     protected EditText password;
 
     protected TextView dla;
+    protected TextView remainingPAs;
     protected TextView nextDla;
 
     /**
@@ -67,6 +68,7 @@ public class Main extends Activity {
         password = (EditText) findViewById(R.id.password);
 
         dla = (TextView) findViewById(R.id.dla_field);
+        remainingPAs = (TextView) findViewById(R.id.pas);
         nextDla = (TextView) findViewById(R.id.dla_next_field);
 
 

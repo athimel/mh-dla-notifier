@@ -1,0 +1,29 @@
+Source : http://sp.mountyhall.com/#Officiels
+
+
+
+
+GET http://sp.mountyhall.com/SP_Profil2.php?Numero=104259&Motdepasse=MD5(motdepasse)
+
+104259;57;-75;-41;85;80;6;2012-02-25 01:22:55;8;4;13;4;4;6;359;356;0;3;0;0;0;0;0;585;0;1;0
+
+Ordre des champs --> ID, Position X ; Position Y ; Position N ; PV Actuels; PV Max ; PA Restant; DLA ; Nb Dés d'Attaque ; Nb Dés d'Esquive ; Nb Dés de Dégat ; Nb Dés de Régénération ; Vue ; Armure ; MM ; RM ; attaques subies ; fatigue ; camouflage ? ; invisible ? ; intangible ? ; Nb parades programmées ; Nb contre-attaques programmées ; durée du tour ; bonus de durée (hors équipement) ; Armure naturelle ; Nombre de dés d'armure en moins
+
+
+
+GET http://sp.mountyhall.com/SP_Profil3.php?Numero=104259&Motdepasse=MD5(motdepasse)
+
+104259;DevelZimZoum;57;-75;-41;6;2012-02-25 01:22:55;3;0;0;0;2;22;88;6042
+
+Ordre des champs --> ID, Nom; Position X ; Position Y ; Position N ; PA Restant; DLA ; Fatigue ; Camouflage; Invisible ; Intangible ; PX; PX perso; PI; Gigots de Gob'
+
+
+
+GET http://sp.mountyhall.com/SP_ProfilPublic2.php?Numero=104259&Motdepasse=MD5(motdepasse)
+
+104259;DevelZimZoum;Kastar;18;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;117;9;1900;20;0
+
+Ordre des champs --> numéro; Nom; Race; Niveau; Date d'inscription ; E-mail ; Blason ; Intangible ; Nb mouches ; Nb kills ; Nb morts; Numéro de Guilde; Nniveau de Rang; PNJ ?
+
+
+
