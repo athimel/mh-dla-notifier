@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  #%L
+  MountyHall-DLA-Notifier
+  
+  $Id$
+  $HeadURL$
+  %%
+  Copyright (C) 2012 Zoumbox.org
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as
+  published by the Free Software Foundation, either version 3 of the 
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public 
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/gpl-3.0.html>.
+  #L%
+  -->
+
+
+<resources>
+    <style name="ZoumTarot">
+    </style>
+
+    <style name="List" parent="ZoumTarot">
+        <item name="android:background">@android:color/white</item>
+        <item name="android:cacheColorHint">@android:color/white</item>
+    </style>
+
+    <style name="PartiesList" parent="List">
+    </style>
+    <style name="PartyBoard" parent="List">
+    </style>
+    <style name="Statistics" parent="List">
+    </style>
+
+    <style name="TextCommons">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="PlayerNames" parent="TextCommons">
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">18dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="Scores" parent="TextCommons">
+        <item name="android:textSize">16dp</item>
+        <item name="android:textColor">@color/score</item>
+    </style>
+
+    <style name="Totals" parent="TextCommons">
+        <item name="android:textSize">18dp</item>
+        <item name="android:textStyle">bold|italic</item>
+    </style>
+
+    <style name="Buttons" parent="TextCommons">
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <color name="best_score">#009400</color>
+    <color name="worst_score">#FF0000</color>
+    <color name="score">#000000</color>
+</resources>

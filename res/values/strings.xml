@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  #%L
+  MountyHall-DLA-Notifier
+  
+  $Id$
+  $HeadURL$
+  %%
+  Copyright (C) 2012 Zoumbox.org
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as
+  published by the Free Software Foundation, either version 3 of the 
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public 
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/gpl-3.0.html>.
+  #L%
+  -->
+
+
+<resources>
+
+    <string name="error">Erreur: %s</string>
+
+    <string name="app_name">Avertisseur de DLA MountyHall</string>
+    <string name="version">1.0</string>
+    <string name="version_full">Version 1.0</string>
+
+    <string name="qr_code_market">QR code (Market)</string>
+    <string name="credits">Crédits</string>
+
+    <string name="credits_leader">Project Leader</string>
+    <string name="credits_contributor">Contributeur</string>
+
+    <string name="close">Fermer</string>
+    <string name="save">Enregistrer</string>
+
+    <string name="troll">Trôll</string>
+    <string name="password">Mot de passe</string>
+    <string name="dla">DLA</string>
+    <string name="dla_next">DLA suivante (estimation)</string>
+
+</resources>
