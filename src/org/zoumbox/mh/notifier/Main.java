@@ -24,7 +24,6 @@
  */
 package org.zoumbox.mh.notifier;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,9 +32,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -43,14 +40,12 @@ import java.util.Date;
 /**
  * Activité principale
  */
-public class Main extends Activity {
+public class Main extends AbstractActivity {
 
+    public static final int REGISTER = 0;
     protected static final int CREDIT_DIALOG = 0;
 
     public static final String DATE_FORMAT = "dd/MM/yyyy HH:mm:ss";
-
-    protected EditText troll;
-    protected EditText password;
 
     protected TextView dla;
     protected TextView remainingPAs;
@@ -64,13 +59,9 @@ public class Main extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        troll = (EditText) findViewById(R.id.troll);
-        password = (EditText) findViewById(R.id.password);
-
         dla = (TextView) findViewById(R.id.dla_field);
         remainingPAs = (TextView) findViewById(R.id.pas);
         nextDla = (TextView) findViewById(R.id.dla_next_field);
-
 
         // TODO AThimel 24/02/2012 Load the troll/password
 
@@ -120,28 +111,12 @@ public class Main extends Activity {
         return super.onCreateDialog(id);
     }
 
-    public void onSaveButtonClicked(View target) {
-
-        String trollNumber = troll.getText().toString();
-        String trollPassword = password.getText().toString();
-
-        showToast(trollNumber + "/" + trollPassword);
-
-        // TODO AThimel 24/02/2012 Update save troll/password
-
-        loadDLAs();
-    }
-
     protected void loadDLAs() {
         // TODO AThimel 24/02/2012 Get the DLA from MH
 
         updateDLAs(new Date(), new Date());
     }
 
-
-    protected void showToast(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-    }
 
     protected void updateDLAs(Date dla, Date nextDla) {
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);

@@ -63,21 +63,21 @@ public class Profil2 {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        attaque= Integer.parseInt(data.get(8));
-        esquive= Integer.parseInt(data.get(9));
-        degats= Integer.parseInt(data.get(10));
-        regeneration= Integer.parseInt(data.get(11));
+        attaque = Integer.parseInt(data.get(8));
+        esquive = Integer.parseInt(data.get(9));
+        degats = Integer.parseInt(data.get(10));
+        regeneration = Integer.parseInt(data.get(11));
         vue = Integer.parseInt(data.get(12));
         armure = Integer.parseInt(data.get(13));
         mm = Integer.parseInt(data.get(14));
         rm = Integer.parseInt(data.get(15));
-        attaquesSubies= Integer.parseInt(data.get(16));
+        attaquesSubies = Integer.parseInt(data.get(16));
         fatigue = Integer.parseInt(data.get(17));
         camou = "1".equals(data.get(18));
         invisible = "1".equals(data.get(19));
         intangible = "1".equals(data.get(20));
         nbParadeProgrammes = Integer.parseInt(data.get(21));
-        nbContreAttaquesProgrammes= Integer.parseInt(data.get(22));
+        nbContreAttaquesProgrammes = Integer.parseInt(data.get(22));
         dureeDuTour = Integer.parseInt(data.get(23));
         bonusDuree = Integer.parseInt(data.get(24));
         armureNaturelle = Integer.parseInt(data.get(25));
