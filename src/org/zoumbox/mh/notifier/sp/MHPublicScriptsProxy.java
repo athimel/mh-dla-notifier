@@ -28,7 +28,7 @@ public class MHPublicScriptsProxy {
 
     protected static int checkQuota(ScriptCategory category) {
         // TODO AThimel 27/02/2012 Use database
-        return 12;
+        return 3;
     }
 
     protected static void saveFetch(PublicScript script) {

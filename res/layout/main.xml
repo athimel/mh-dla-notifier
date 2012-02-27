@@ -32,6 +32,13 @@
                  android:layout_weight="1">
 
         <TableRow>
+            <TextView android:text="@string/troll"/>
+            <TextView android:id="@+id/name"
+                      android:layout_height="wrap_content"
+                      android:layout_width="fill_parent"/>
+        </TableRow>
+
+        <TableRow>
             <TextView android:text="@string/dla"/>
             <TextView android:id="@+id/dla_field"
                       android:layout_height="wrap_content"
@@ -41,13 +48,6 @@
         <TableRow>
             <TextView android:text="@string/remaining_pas"/>
             <TextView android:id="@+id/pas"
-                      android:layout_height="wrap_content"
-                      android:layout_width="fill_parent"/>
-        </TableRow>
-
-        <TableRow>
-            <TextView android:text="@string/dla_next"/>
-            <TextView android:id="@+id/dla_next_field"
                       android:layout_height="wrap_content"
                       android:layout_width="fill_parent"/>
         </TableRow>

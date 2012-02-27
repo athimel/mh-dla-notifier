@@ -26,6 +26,7 @@ package org.zoumbox.mh.notifier;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,9 +34,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import org.zoumbox.mh.notifier.profile.MissingLoginPasswordException;
+import org.zoumbox.mh.notifier.profile.ProfileProxy;
+import org.zoumbox.mh.notifier.sp.QuotaExceededException;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Activité principale
@@ -47,9 +52,9 @@ public class Main extends AbstractActivity {
 
     public static final String DATE_FORMAT = "dd/MM/yyyy HH:mm:ss";
 
+    protected TextView name;
     protected TextView dla;
     protected TextView remainingPAs;
-    protected TextView nextDla;
 
     /**
      * Called when the activity is first created.
@@ -59,11 +64,9 @@ public class Main extends AbstractActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        name = (TextView) findViewById(R.id.name);
         dla = (TextView) findViewById(R.id.dla_field);
         remainingPAs = (TextView) findViewById(R.id.pas);
-        nextDla = (TextView) findViewById(R.id.dla_next_field);
-
-        // TODO AThimel 24/02/2012 Load the troll/password
 
         loadDLAs();
     }
@@ -114,14 +117,21 @@ public class Main extends AbstractActivity {
     protected void loadDLAs() {
         // TODO AThimel 24/02/2012 Get the DLA from MH
 
-        updateDLAs(new Date(), new Date());
+        SharedPreferences sharedPreferences = getSharedPreferences("org.zoumbox.mh.dla.notifier.preferences", 0);
+        ProfileProxy pp = new ProfileProxy();
+        try {
+            Map<String,String> properties = pp.fetchProperties(sharedPreferences, "nom", "dla", "paRestant");
+            name.setText(properties.get("nom"));
+            dla.setText(properties.get("dla"));
+            remainingPAs.setText(properties.get("paRestant"));
+        } catch (MissingLoginPasswordException mlpe) {
+            // TODO AThimel 27/02/2012 Go to Register
+            mlpe.printStackTrace();
+        } catch (QuotaExceededException e) {
+            e.printStackTrace();
+        }
+
     }
 
-
-    protected void updateDLAs(Date dla, Date nextDla) {
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-        this.dla.setText(sdf.format(new Date()));
-        this.nextDla.setText(sdf.format(new Date()));
-    }
 
 }

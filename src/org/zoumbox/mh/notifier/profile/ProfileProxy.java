@@ -1,6 +1,7 @@
 package org.zoumbox.mh.notifier.profile;
 
 import android.content.SharedPreferences;
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.zoumbox.mh.notifier.sp.MHPublicScriptsProxy;
@@ -14,8 +15,6 @@ import java.util.Set;
  * @author Arnaud Thimel <thimel@codelutin.com>
  */
 public class ProfileProxy {
-
-    SharedPreferences preferences;
 
     protected static Map<String, PublicScript> properties = Maps.newHashMap();
     static {
@@ -47,16 +46,41 @@ public class ProfileProxy {
         properties.put("gg", PublicScript.Profil3);
     }
 
-    public void fetchProperties(String ... names) throws QuotaExceededException {
-        Set<PublicScript> result = Sets.newLinkedHashSet();
+    public Map<String, String> fetchProperties(SharedPreferences preferences, String... names) throws QuotaExceededException, MissingLoginPasswordException {
+        Set<PublicScript> scripts = Sets.newLinkedHashSet();
         for (String propertyName : names) {
             if (!preferences.contains(propertyName)) {
-                result.add(properties.get(propertyName));
+                PublicScript script = properties.get(propertyName);
+                if (script == null) {
+                    System.out.println("Unknown property: " + propertyName);
+                } else {
+                    scripts.add(script);
+                }
             }
         }
 
-        for (PublicScript type : result) {
-            MHPublicScriptsProxy.fetch(type, "", "", false);
+        if (!scripts.isEmpty()) {
+            String trollNumber = preferences.getString("trollId", null);
+            String trollPassword = preferences.getString("trollPassword", null);
+            if (Strings.isNullOrEmpty(trollNumber) || Strings.isNullOrEmpty(trollPassword)) {
+                throw new MissingLoginPasswordException();
+            }
+
+            for (PublicScript type : scripts) {
+                Map<String, String> propertiesFetched = MHPublicScriptsProxy.fetch(type, trollNumber, trollPassword, false);
+                SharedPreferences.Editor editor = preferences.edit();
+                for (Map.Entry<String, String> prop : propertiesFetched.entrySet()) {
+                    editor.putString(prop.getKey(), prop.getValue());
+                }
+                editor.commit();
+            }
         }
+
+        Map<String, String> result = Maps.newLinkedHashMap();
+        for (String propertyName : names) {
+            String value = preferences.getString(propertyName, null);
+            result.put(propertyName, value);
+        }
+        return result;
     }
 }
