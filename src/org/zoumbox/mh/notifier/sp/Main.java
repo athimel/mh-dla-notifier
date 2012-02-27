@@ -1,5 +1,7 @@
 package org.zoumbox.mh.notifier.sp;
 
+import java.util.Map;
+
 /**
  * @author Arnaud Thimel <thimel@codelutin.com>
  */
@@ -7,14 +9,14 @@ public class Main {
 
     public static void main(String[] args) throws QuotaExceededException {
 
-        Profil2 profil2 = MHPublicScriptsProxy.fetch(Profil2.class, "aaa", "bbb", false);
-        System.out.println(profil2);
+        Map<String, String > result = MHPublicScriptsProxy.fetch(PublicScript.Profil2, "aaa", "bbb", false);
+        System.out.println(result);
 
-        Profil3 profil3 = MHPublicScriptsProxy.fetch(Profil3.class, "aaa", "bbb", false);
-        System.out.println(profil3);
+        result = MHPublicScriptsProxy.fetch(PublicScript.Profil3, "aaa", "bbb", false);
+        System.out.println(result);
 
-        ProfilPublic2 profilPublic2 = MHPublicScriptsProxy.fetch(ProfilPublic2.class, "aaa", "bbb", true);
-        System.out.println(profilPublic2);
+        result = MHPublicScriptsProxy.fetch(PublicScript.ProfilPublic2, "aaa", "bbb", true);
+        System.out.println(result);
     }
 
 }

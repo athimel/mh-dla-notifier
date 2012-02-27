@@ -1,6 +1,7 @@
 package org.zoumbox.mh.notifier.sp;
 
 import com.google.common.base.Function;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -13,32 +14,6 @@ import java.util.Map;
  * @author Arnaud Thimel <thimel@codelutin.com>
  */
 public class MHPublicScriptsProxy {
-
-    protected static class ScriptRegistration {
-        Class<?> script;
-        ScriptCategory category;
-        String url;
-
-        private ScriptRegistration(Class<?> script, ScriptCategory category, String url) {
-            this.script = script;
-            this.category = category;
-            this.url = url;
-        }
-    }
-    protected static Map<Class<?>, ScriptRegistration> registrationMap;
-    static {
-        List<ScriptRegistration> registrationList = Lists.newArrayListWithCapacity(3);
-        registrationList.add(new ScriptRegistration(Profil2.class, ScriptCategory.DYNAMIC, "http://sp.mountyhall.com/SP_Profil2.php?Numero=%s&Motdepasse=%s"));
-        registrationList.add(new ScriptRegistration(Profil3.class, ScriptCategory.DYNAMIC, "http://sp.mountyhall.com/SP_Profil3.php?Numero=%s&Motdepasse=%s"));
-        registrationList.add(new ScriptRegistration(ProfilPublic2.class, ScriptCategory.STATIC, "http://sp.mountyhall.com/SP_ProfilPublic2.php?Numero=%s&Motdepasse=%s"));
-
-        registrationMap = Maps.uniqueIndex(registrationList, new Function<ScriptRegistration, Class<?>>() {
-            @Override
-            public Class<?> apply(ScriptRegistration input) {
-                return input.script;
-            }
-        });
-    }
 
     protected static String query(String url) {
 
@@ -56,17 +31,15 @@ public class MHPublicScriptsProxy {
         return 12;
     }
 
-    protected static void saveFetch(Class<?> type, ScriptCategory category) {
+    protected static void saveFetch(PublicScript script) {
 
         // TODO AThimel 27/02/2012 Save to database
 
     }
 
-    public static <T> T fetch(Class<T> type, String trollNumber, String trollPassword, boolean force) throws QuotaExceededException {
+    public static Map<String, String> fetch(PublicScript script, String trollNumber, String trollPassword, boolean force) throws QuotaExceededException {
 
-        ScriptRegistration registration = registrationMap.get(type);
-
-        ScriptCategory category = registration.category;
+        ScriptCategory category = script.category;
         int count = checkQuota(category);
         if (count >= category.quota) {
             System.out.println("Quota is exceeded for category '" + category + "': " + count + "/" + category.quota + ". Force usage ? " + force);
@@ -75,23 +48,19 @@ public class MHPublicScriptsProxy {
             }
         }
 
-        String url = String.format(registration.url, trollNumber, trollPassword);
+        String url = String.format(script.url, trollNumber, trollPassword);
         String rawResult = query(url);
-        saveFetch(type, category);
+        saveFetch(script);
 
-        T result = null;
-        try {
-            Constructor<T> constructor = type.getConstructor(String.class);
-            result = constructor.newInstance(rawResult);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        Map<String, String> result = Maps.newLinkedHashMap();
+
+        Iterable<String> iterable = Splitter.on(";").split(rawResult);
+        List<String> data = Lists.newArrayList(iterable);
+
+        for (int i=0; i<data.size(); i++) {
+            result.put(script.properties.get(i), data.get(i));
         }
+
         return result;
     }
 
