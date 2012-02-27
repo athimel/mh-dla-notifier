@@ -1,4 +1,4 @@
-package org.zoumbox.mh.notifier;
+package org.zoumbox.mh.notifier.sp;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
@@ -139,11 +139,6 @@ public class Profil3 {
                 .add("pi", pi)
                 .add("gg", gg)
                 .toString();
-    }
-
-    public static void main(String[] args) {
-        Profil3 profil3 = new Profil3("104259;DevelZimZoum;57;-75;-41;6;2012-02-25 01:22:55;3;0;0;0;2;22;88;6042");
-        System.out.println(profil3);
     }
 
 }

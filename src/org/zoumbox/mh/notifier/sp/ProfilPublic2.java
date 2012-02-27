@@ -1,8 +1,9 @@
-package org.zoumbox.mh.notifier;
+package org.zoumbox.mh.notifier.sp;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+import org.zoumbox.mh.notifier.Race;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -131,11 +132,6 @@ public class ProfilPublic2 {
                 .add("niveauDeRang", niveauDeRang)
                 .add("pnj", pnj)
                 .toString();
-    }
-
-    public static void main(String[] args) {
-        ProfilPublic2 profilPublic2 = new ProfilPublic2("104259;DevelZimZoum;Kastar;18;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;117;9;1900;20;0");
-        System.out.println(profilPublic2);
     }
 
 }

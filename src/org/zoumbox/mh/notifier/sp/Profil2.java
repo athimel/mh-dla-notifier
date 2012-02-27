@@ -1,4 +1,4 @@
-package org.zoumbox.mh.notifier;
+package org.zoumbox.mh.notifier.sp;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
@@ -97,16 +97,12 @@ public class Profil2 {
                 .add("camou", camou)
                 .add("invisible", invisible)
                 .add("intangible", intangible)
-//                .add("px", px)
-//                .add("pxPerso", pxPerso)
-//                .add("pi", pi)
-//                .add("gg", gg)
+                .add("attaque", attaque)
+                .add("esquive", esquive)
+                .add("degats", degats)
+                .add("regeneration", regeneration)
+                .add("vue", vue)
                 .toString();
-    }
-
-    public static void main(String[] args) {
-        Profil2 profil2 = new Profil2("104259;57;-75;-41;85;80;6;2012-02-25 01:22:55;8;4;13;4;4;6;359;356;0;3;0;0;0;0;0;585;0;1;0");
-        System.out.println(profil2);
     }
 
 }
