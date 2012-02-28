@@ -4,9 +4,18 @@ import com.google.common.base.Function;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -15,8 +24,38 @@ import java.util.Map;
  */
 public class MHPublicScriptsProxy {
 
-    protected static String query(String url) {
+//    protected static String query(String url) {
+//
+//        String responseContent = "";
+//        BufferedReader in = null;
+//        try {
+//            HttpClient client = new DefaultHttpClient();
+//            HttpGet request = new HttpGet(url);
+//            HttpResponse response = client.execute(request);
+//            InputStream content = response.getEntity().getContent();
+//            in = new BufferedReader(new InputStreamReader(content));
+//            String line;
+//            while ((line = in.readLine()) != null) {
+//                responseContent += line;
+//            }
+//            in.close();
+//        } catch (Exception eee) {
+//            eee.printStackTrace();
+//        } finally {
+//            if (in != null) {
+//                try {
+//                    in.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//
+//        System.out.println("'" + responseContent + "'");
+//        return responseContent;
+//
 
+    protected static String query(String url) {
         // TODO AThimel 27/02/2012 Implement HTTP GET
         if (url.contains("SP_Profil2.php")) {
             return "104259;57;-75;-41;85;80;6;2012-02-25 01:22:55;8;4;13;4;4;6;359;356;0;3;0;0;0;0;0;585;0;1;0";

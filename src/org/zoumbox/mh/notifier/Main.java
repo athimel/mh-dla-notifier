@@ -38,8 +38,11 @@ import org.zoumbox.mh.notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh.notifier.profile.ProfileProxy;
 import org.zoumbox.mh.notifier.sp.QuotaExceededException;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -50,7 +53,8 @@ public class Main extends AbstractActivity {
     public static final int REGISTER = 0;
     protected static final int CREDIT_DIALOG = 0;
 
-    public static final String DATE_FORMAT = "dd/MM/yyyy HH:mm:ss";
+    public static final String INTPUT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DISPLAY_DATE_FORMAT = "dd MMM yyyy - HH:mm:ss";
 
     protected TextView name;
     protected TextView dla;
@@ -133,7 +137,7 @@ public class Main extends AbstractActivity {
         try {
             Map<String,String> properties = ProfileProxy.fetchProperties(this, "nom", "dla", "paRestant");
             name.setText(properties.get("nom"));
-            dla.setText(properties.get("dla"));
+            dla.setText(formatDate(properties.get("dla")));
             remainingPAs.setText(properties.get("paRestant"));
         } catch (MissingLoginPasswordException mlpe) {
             showToast("Vous devez saisir vos identifiants");
@@ -146,5 +150,18 @@ public class Main extends AbstractActivity {
 
     }
 
+    protected String formatDate(String input) {
+        DateFormat inputDF = new SimpleDateFormat(INTPUT_DATE_FORMAT);
+        DateFormat outputDF = new SimpleDateFormat(DISPLAY_DATE_FORMAT, Locale.FRENCH);
+
+        try {
+            Date date = inputDF.parse(input);
+            String result = outputDF.format(date);
+            return result;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "n/c";
+        }
+    }
 
 }
