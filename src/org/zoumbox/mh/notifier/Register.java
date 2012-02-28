@@ -60,7 +60,8 @@ public class Register extends AbstractActivity {
         String trollNumber = troll.getText().toString();
         String trollPassword = password.getText().toString();
 
-        boolean result = ProfileProxy.saveLoginPassword(this, trollNumber, trollPassword);
+        String md5Password = md5(trollPassword);
+        boolean result = ProfileProxy.saveLoginPassword(this, trollNumber, md5Password);
 
         if (result) {
             showToast("Identifiants enregistrés");

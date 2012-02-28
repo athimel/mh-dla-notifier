@@ -80,7 +80,7 @@ public class ProfileProxy {
             }
 
             for (PublicScript type : scripts) {
-                Map<String, String> propertiesFetched = MHPublicScriptsProxy.fetch(type, trollNumber, trollPassword, false);
+                Map<String, String> propertiesFetched = MHPublicScriptsProxy.fetch(activity, type, trollNumber, trollPassword, false);
                 SharedPreferences.Editor editor = preferences.edit();
                 for (Map.Entry<String, String> prop : propertiesFetched.entrySet()) {
                     editor.putString(prop.getKey(), prop.getValue());

@@ -1,5 +1,9 @@
 package org.zoumbox.mh.notifier.sp;
 
+import android.app.Activity;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import com.google.common.base.Function;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
@@ -16,6 +20,8 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -65,22 +71,59 @@ public class MHPublicScriptsProxy {
         return "104259;DevelZimZoum;Kastar;18;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;117;9;1900;20;0";
     }
 
-    protected static int checkQuota(ScriptCategory category) {
-        // TODO AThimel 27/02/2012 Use database
-        return 3;
+    protected static final String SQL_STATEMENT = String.format("SELECT COUNT(*) FROM %s WHERE %s=? AND %s=? AND %s>=?",
+            MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_CATEGORY_COLUMN, MhDlaSQLHelper.SCRIPTS_DATE_COLUMN);
+
+    protected static int checkQuota(Activity activity, ScriptCategory category, String trollNumber) {
+
+        System.out.println("Check quota for category " + category.name() + " for troll " + trollNumber);
+
+        MhDlaSQLHelper helper = new MhDlaSQLHelper(activity);
+        SQLiteDatabase database = helper.getReadableDatabase();
+
+        Calendar instance = Calendar.getInstance();
+        instance.add(Calendar.HOUR_OF_DAY, -24);
+        Date sinceDate = instance.getTime();
+
+        System.out.println("Since: " + sinceDate);
+
+        Cursor cursor = database.rawQuery(SQL_STATEMENT, new String[] { trollNumber, category.name(), ""+sinceDate.getTime() });
+        int result = 0;
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            result = cursor.getInt(0);
+        }
+
+        cursor.close();
+        database.close();
+
+        System.out.println("Quota is : " + result);
+
+        return result;
     }
 
-    protected static void saveFetch(PublicScript script) {
+    protected static void saveFetch(Activity activity, ScriptCategory category, String trollNumber) {
 
-        // TODO AThimel 27/02/2012 Save to database
+        System.out.println("Save fetch for category " + category.name() + " for troll " + trollNumber);
 
+        MhDlaSQLHelper helper = new MhDlaSQLHelper(activity);
+        SQLiteDatabase database = helper.getWritableDatabase();
+
+        ContentValues values = new ContentValues(3);
+        values.put(MhDlaSQLHelper.SCRIPTS_DATE_COLUMN, System.currentTimeMillis());
+        values.put(MhDlaSQLHelper.SCRIPTS_CATEGORY_COLUMN, category.name());
+        values.put(MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, trollNumber);
+
+        database.insert(MhDlaSQLHelper.SCRIPTS_TABLE, null, values);
+
+        database.close();
     }
 
-    public static Map<String, String> fetch(PublicScript script, String trollNumber, String trollPassword, boolean force) throws QuotaExceededException {
+    public static Map<String, String> fetch(Activity activity, PublicScript script, String trollNumber, String trollPassword, boolean force) throws QuotaExceededException {
 
         System.out.println("Fetch " + script.name() + " for troll " + trollNumber);
         ScriptCategory category = script.category;
-        int count = checkQuota(category);
+        int count = checkQuota(activity, category, trollNumber);
         if (count >= category.quota) {
             System.out.println("Quota is exceeded for category '" + category + "': " + count + "/" + category.quota + ". Force usage ? " + force);
             if (!force) {
@@ -90,7 +133,7 @@ public class MHPublicScriptsProxy {
 
         String url = String.format(script.url, trollNumber, trollPassword);
         String rawResult = query(url);
-        saveFetch(script);
+        saveFetch(activity, category, trollNumber);
 
         Map<String, String> result = Maps.newLinkedHashMap();
 
