@@ -39,7 +39,7 @@
               android:layout_height="wrap_content"
               android:layout_width="fill_parent"
               android:gravity="center_horizontal"
-              style="@style/Info"/>
+              style="@style/Header"/>
 
     <TextView android:text="@string/pvs"
               android:layout_width="wrap_content"
@@ -55,6 +55,15 @@
               android:layout_height="wrap_content"
               style="@style/DT"/>
     <TextView android:id="@+id/position"
+              android:layout_height="wrap_content"
+              android:layout_width="fill_parent"
+              style="@style/DD"/>
+
+    <TextView android:text="@string/kd"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              style="@style/DT"/>
+    <TextView android:id="@+id/kd"
               android:layout_height="wrap_content"
               android:layout_width="fill_parent"
               style="@style/DD"/>

@@ -32,7 +32,7 @@ public class ProfileProxy {
         properties.put("email", PublicScript.ProfilPublic2);
         properties.put("blason", PublicScript.ProfilPublic2);
         properties.put("nbMouches", PublicScript.ProfilPublic2);
-        properties.put("nbKill", PublicScript.ProfilPublic2);
+        properties.put("nbKills", PublicScript.ProfilPublic2);
         properties.put("nbMorts", PublicScript.ProfilPublic2);
         properties.put("numeroDeGuilde", PublicScript.ProfilPublic2);
 

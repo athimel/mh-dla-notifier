@@ -44,6 +44,7 @@ import org.zoumbox.mh.notifier.sp.QuotaExceededException;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -68,6 +69,7 @@ public class Main extends AbstractActivity {
     protected ImageView blason;
     protected TextView name;
     protected TextView pvs;
+    protected TextView kd;
     protected TextView position;
     protected TextView dla;
     protected TextView remainingPAs;
@@ -83,6 +85,7 @@ public class Main extends AbstractActivity {
         blason = (ImageView) findViewById(R.id.blason);
         name = (TextView) findViewById(R.id.name);
         pvs = (TextView) findViewById(R.id.pvs);
+        kd = (TextView) findViewById(R.id.kd);
         position = (TextView) findViewById(R.id.position);
         dla = (TextView) findViewById(R.id.dla_field);
         remainingPAs = (TextView) findViewById(R.id.pas);
@@ -151,7 +154,7 @@ public class Main extends AbstractActivity {
 
         try {
             Map<String, String> properties = ProfileProxy.fetchProperties(this,
-                    "nom", "race", "niveau", "pv", "pvMax", "posX", "posY", "posN", "dla", "paRestant", "blason");
+                    "nom", "race", "niveau", "pv", "pvMax", "posX", "posY", "posN", "dla", "paRestant", "blason", "nbKills", "nbMorts");
             String blasonUri = properties.get("blason");
             Bitmap blason = loadBlason(blasonUri);
             if (blason != null) {
@@ -159,6 +162,7 @@ public class Main extends AbstractActivity {
             }
             String nom = String.format("%s - %s (%s)", properties.get("nom"), properties.get("race"), properties.get("niveau"));
             name.setText(nom);
+            kd.setText(String.format("%s / %s", properties.get("nbKills"), properties.get("nbMorts")));
             pvs.setText(String.format("%s / %s", properties.get("pv"), properties.get("pvMax")));
             position.setText(String.format("X=%s | Y=%s | N=%s", properties.get("posX"), properties.get("posY"), properties.get("posN")));
             dla.setText(formatDate(properties.get("dla")));
