@@ -44,7 +44,6 @@ import org.zoumbox.mh.notifier.sp.QuotaExceededException;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -68,6 +67,8 @@ public class Main extends AbstractActivity {
 
     protected ImageView blason;
     protected TextView name;
+    protected TextView pvs;
+    protected TextView position;
     protected TextView dla;
     protected TextView remainingPAs;
 
@@ -81,6 +82,8 @@ public class Main extends AbstractActivity {
 
         blason = (ImageView) findViewById(R.id.blason);
         name = (TextView) findViewById(R.id.name);
+        pvs = (TextView) findViewById(R.id.pvs);
+        position = (TextView) findViewById(R.id.position);
         dla = (TextView) findViewById(R.id.dla_field);
         remainingPAs = (TextView) findViewById(R.id.pas);
 
@@ -147,13 +150,17 @@ public class Main extends AbstractActivity {
         // TODO AThimel 24/02/2012 Get the DLA from MH
 
         try {
-            Map<String, String> properties = ProfileProxy.fetchProperties(this, "nom", "dla", "paRestant", "blason");
+            Map<String, String> properties = ProfileProxy.fetchProperties(this,
+                    "nom", "race", "niveau", "pv", "pvMax", "posX", "posY", "posN", "dla", "paRestant", "blason");
             String blasonUri = properties.get("blason");
             Bitmap blason = loadBlason(blasonUri);
             if (blason != null) {
                 this.blason.setImageBitmap(blason);
             }
-            name.setText(properties.get("nom"));
+            String nom = String.format("%s - %s (%s)", properties.get("nom"), properties.get("race"), properties.get("niveau"));
+            name.setText(nom);
+            pvs.setText(String.format("%s / %s", properties.get("pv"), properties.get("pvMax")));
+            position.setText(String.format("X=%s | Y=%s | N=%s", properties.get("posX"), properties.get("posY"), properties.get("posN")));
             dla.setText(formatDate(properties.get("dla")));
             remainingPAs.setText(properties.get("paRestant"));
         } catch (MissingLoginPasswordException mlpe) {
@@ -201,27 +208,27 @@ public class Main extends AbstractActivity {
                     }
                 }
 
-                if (result != null) {
-                    System.out.println("Save fetched result to " + localFile);
-                    FileOutputStream fos = null;
-                    try {
-                        fos = new FileOutputStream(localFile);
-
-                        result.compress(Bitmap.CompressFormat.PNG, 90, fos);
-
-                    } catch (Exception eee) {
-                        eee.printStackTrace();
-                        return null;
-                    } finally {
-                        if (fos != null) {
-                            try {
-                                fos.close();
-                            } catch (IOException ioe) {
-                                ioe.printStackTrace();
-                            }
-                        }
-                    }
-                }
+//                if (result != null) {
+//                    System.out.println("Save fetched result to " + localFile);
+//                    FileOutputStream fos = null;
+//                    try {
+//                        fos = new FileOutputStream(localFile);
+//
+//                        result.compress(Bitmap.CompressFormat.PNG, 90, fos);
+//
+//                    } catch (Exception eee) {
+//                        eee.printStackTrace();
+//                        return null;
+//                    } finally {
+//                        if (fos != null) {
+//                            try {
+//                                fos.close();
+//                            } catch (IOException ioe) {
+//                                ioe.printStackTrace();
+//                            }
+//                        }
+//                    }
+//                }
             } else {
 
                 System.out.println("Existing, loading from cache");

@@ -25,6 +25,7 @@
 package org.zoumbox.mh.notifier;
 
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
 import com.google.common.base.Strings;
@@ -47,6 +48,7 @@ public class Register extends AbstractActivity {
         setContentView(R.layout.register);
 
         troll = (EditText) findViewById(R.id.troll);
+        troll.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         password = (EditText) findViewById(R.id.password);
 
         String trollNumber = ProfileProxy.loadLogin(this);

@@ -1,9 +1,5 @@
 package org.zoumbox.mh.notifier.sp;
 
-import com.google.common.collect.ImmutableMap;
-
-import java.util.Map;
-
 /**
  * @author Arnaud Thimel <thimel@codelutin.com>
  */

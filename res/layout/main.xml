@@ -26,39 +26,55 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              style="@style/Main">
 
     <ImageView android:id="@+id/blason"
                android:orientation="vertical"
-               android:layout_width="wrap_content"
+               android:layout_width="fill_parent"
                android:layout_height="wrap_content"
-               android:layout_weight="1"/>
+               android:gravity="center_horizontal"/>
 
-    <TableLayout android:layout_width="fill_parent"
-                 android:layout_height="fill_parent"
-                 android:layout_weight="1">
+    <TextView android:id="@+id/name"
+              android:layout_height="wrap_content"
+              android:layout_width="fill_parent"
+              android:gravity="center_horizontal"
+              style="@style/Info"/>
 
-        <TableRow>
-            <TextView android:text="@string/troll"/>
-            <TextView android:id="@+id/name"
-                      android:layout_height="wrap_content"
-                      android:layout_width="fill_parent"/>
-        </TableRow>
+    <TextView android:text="@string/pvs"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              style="@style/DT"/>
+    <TextView android:id="@+id/pvs"
+              android:layout_height="wrap_content"
+              android:layout_width="fill_parent"
+              style="@style/DD"/>
 
-        <TableRow>
-            <TextView android:text="@string/dla"/>
-            <TextView android:id="@+id/dla_field"
-                      android:layout_height="wrap_content"
-                      android:layout_width="fill_parent"/>
-        </TableRow>
+    <TextView android:text="@string/position"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              style="@style/DT"/>
+    <TextView android:id="@+id/position"
+              android:layout_height="wrap_content"
+              android:layout_width="fill_parent"
+              style="@style/DD"/>
 
-        <TableRow>
-            <TextView android:text="@string/remaining_pas"/>
-            <TextView android:id="@+id/pas"
-                      android:layout_height="wrap_content"
-                      android:layout_width="fill_parent"/>
-        </TableRow>
+    <TextView android:text="@string/dla"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              style="@style/DT"/>
+    <TextView android:id="@+id/dla_field"
+              android:layout_height="wrap_content"
+              android:layout_width="fill_parent"
+              style="@style/DD"/>
 
-    </TableLayout>
+    <TextView android:text="@string/remaining_pas"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              style="@style/DT"/>
+    <TextView android:id="@+id/pas"
+              android:layout_height="wrap_content"
+              android:layout_width="fill_parent"
+              style="@style/DD"/>
 
 </LinearLayout>

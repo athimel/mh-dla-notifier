@@ -4,22 +4,10 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import com.google.common.base.Function;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +16,7 @@ import java.util.Map;
 /**
  * @author Arnaud Thimel <thimel@codelutin.com>
  */
-public class MHPublicScriptsProxy {
+public class MhPublicScriptsProxy {
 
 //    protected static String query(String url) {
 //
@@ -87,7 +75,7 @@ public class MHPublicScriptsProxy {
 
         System.out.println("Since: " + sinceDate);
 
-        Cursor cursor = database.rawQuery(SQL_STATEMENT, new String[] { trollNumber, category.name(), ""+sinceDate.getTime() });
+        Cursor cursor = database.rawQuery(SQL_STATEMENT, new String[]{trollNumber, category.name(), "" + sinceDate.getTime()});
         int result = 0;
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
@@ -140,7 +128,7 @@ public class MHPublicScriptsProxy {
         Iterable<String> iterable = Splitter.on(";").split(rawResult);
         List<String> data = Lists.newArrayList(iterable);
 
-        for (int i=0; i<data.size(); i++) {
+        for (int i = 0; i < data.size(); i++) {
             result.put(script.properties.get(i), data.get(i));
         }
 

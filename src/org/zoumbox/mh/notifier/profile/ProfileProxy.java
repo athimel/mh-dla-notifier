@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.zoumbox.mh.notifier.sp.MHPublicScriptsProxy;
+import org.zoumbox.mh.notifier.sp.MhPublicScriptsProxy;
 import org.zoumbox.mh.notifier.sp.PublicScript;
 import org.zoumbox.mh.notifier.sp.QuotaExceededException;
 
@@ -80,7 +80,7 @@ public class ProfileProxy {
             }
 
             for (PublicScript type : scripts) {
-                Map<String, String> propertiesFetched = MHPublicScriptsProxy.fetch(activity, type, trollNumber, trollPassword, false);
+                Map<String, String> propertiesFetched = MhPublicScriptsProxy.fetch(activity, type, trollNumber, trollPassword, false);
                 SharedPreferences.Editor editor = preferences.edit();
                 for (Map.Entry<String, String> prop : propertiesFetched.entrySet()) {
                     editor.putString(prop.getKey(), prop.getValue());
