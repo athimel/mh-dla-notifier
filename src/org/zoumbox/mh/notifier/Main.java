@@ -26,10 +26,8 @@ package org.zoumbox.mh.notifier;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,14 +36,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.google.common.base.Strings;
 import org.zoumbox.mh.notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh.notifier.profile.ProfileProxy;
 import org.zoumbox.mh.notifier.sp.QuotaExceededException;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.DateFormat;
@@ -147,7 +147,7 @@ public class Main extends AbstractActivity {
         // TODO AThimel 24/02/2012 Get the DLA from MH
 
         try {
-            Map<String,String> properties = ProfileProxy.fetchProperties(this, "nom", "dla", "paRestant", "blason");
+            Map<String, String> properties = ProfileProxy.fetchProperties(this, "nom", "dla", "paRestant", "blason");
             String blasonUri = properties.get("blason");
             Bitmap blason = loadBlason(blasonUri);
             if (blason != null) {
@@ -168,29 +168,85 @@ public class Main extends AbstractActivity {
     }
 
     protected Bitmap loadBlason(String blasonUrl) {
-        BufferedInputStream bis = null;
-        try {
-            URL url = new URL(blasonUrl);
-            URLConnection conn = url.openConnection();
-            conn.connect();
-            bis = new BufferedInputStream(conn.getInputStream());
-        
-            Bitmap bm = BitmapFactory.decodeStream(bis);
-        
-            bis.close();
-            return bm;
-        } catch (Exception eee) {
-            eee.printStackTrace();
-            return null;
-        } finally {
-            if (bis != null) {
+
+        Bitmap result = null;
+        if (!Strings.isNullOrEmpty(blasonUrl)) {
+            String localFilePath = md5(blasonUrl);
+            System.out.println("localFilePath: " + localFilePath);
+//            File filesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            File filesDir = getExternalCacheDir();
+            System.out.println(filesDir);
+            File localFile = new File(filesDir, localFilePath);
+            System.out.println("localFile: " + localFile);
+            if (!localFile.exists()) {
+
+                System.out.println("Not existing, fetching from " + blasonUrl);
+                BufferedInputStream bis = null;
                 try {
+                    URL url = new URL(blasonUrl);
+                    URLConnection conn = url.openConnection();
+                    conn.connect();
+                    bis = new BufferedInputStream(conn.getInputStream());
+                    result = BitmapFactory.decodeStream(bis);
+
+                } catch (Exception eee) {
+                    eee.printStackTrace();
+                } finally {
+                    if (bis != null) {
+                        try {
+                            bis.close();
+                        } catch (IOException ioe) {
+                            ioe.printStackTrace();
+                        }
+                    }
+                }
+
+                if (result != null) {
+                    System.out.println("Save fetched result to " + localFile);
+                    FileOutputStream fos = null;
+                    try {
+                        fos = new FileOutputStream(localFile);
+
+                        result.compress(Bitmap.CompressFormat.PNG, 90, fos);
+
+                    } catch (Exception eee) {
+                        eee.printStackTrace();
+                        return null;
+                    } finally {
+                        if (fos != null) {
+                            try {
+                                fos.close();
+                            } catch (IOException ioe) {
+                                ioe.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            } else {
+
+                System.out.println("Existing, loading from cache");
+                BufferedInputStream bis = null;
+                try {
+                    bis = new BufferedInputStream(new FileInputStream(localFile));
+
+                    result = BitmapFactory.decodeStream(bis);
+
                     bis.close();
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
+                } catch (Exception eee) {
+                    eee.printStackTrace();
+                } finally {
+                    if (bis != null) {
+                        try {
+                            bis.close();
+                        } catch (IOException ioe) {
+                            ioe.printStackTrace();
+                        }
+                    }
                 }
             }
         }
+
+        return result;
     }
 
     protected String formatDate(String input) {
