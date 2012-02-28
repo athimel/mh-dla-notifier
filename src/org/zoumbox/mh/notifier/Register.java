@@ -27,6 +27,8 @@ package org.zoumbox.mh.notifier;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import com.google.common.base.Strings;
+import org.zoumbox.mh.notifier.profile.ProfileProxy;
 
 /**
  * Activité principale
@@ -46,6 +48,11 @@ public class Register extends AbstractActivity {
 
         troll = (EditText) findViewById(R.id.troll);
         password = (EditText) findViewById(R.id.password);
+
+        String trollNumber = ProfileProxy.loadLogin(this);
+        if (!Strings.isNullOrEmpty(trollNumber)) {
+            troll.setText(trollNumber);
+        }
     }
 
     public void onSaveButtonClicked(View target) {
@@ -53,17 +60,16 @@ public class Register extends AbstractActivity {
         String trollNumber = troll.getText().toString();
         String trollPassword = password.getText().toString();
 
-        showToast(trollNumber + "/" + trollPassword);
+        boolean result = ProfileProxy.saveLoginPassword(this, trollNumber, trollPassword);
 
-        // TODO AThimel 24/02/2012 Update save troll/password
+        if (result) {
+            showToast("Identifiants enregistrés");
+            setResult(RESULT_OK);
+            finish();
+        } else {
+            System.out.println("Impossible d'enregistrer les identifiants");
+        }
 
-        loadDLAs();
     }
-
-    private void loadDLAs() {
-
-
-    }
-
 
 }

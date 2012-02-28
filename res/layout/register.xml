@@ -30,7 +30,8 @@
     <TableLayout android:layout_width="fill_parent"
                  android:layout_height="fill_parent"
                  android:layout_weight="1">
-        <!-- Preneur -->
+
+        <!-- Numéro de troll -->
         <TableRow>
             <TextView android:text="@string/troll"/>
             <EditText android:id="@+id/troll"
@@ -38,7 +39,7 @@
                       android:layout_width="fill_parent"/>
         </TableRow>
 
-        <!-- Preneur -->
+        <!-- Mot de passe -->
         <TableRow>
             <TextView android:text="@string/password"/>
             <EditText android:id="@+id/password"

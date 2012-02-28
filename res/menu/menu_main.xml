@@ -27,6 +27,10 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <item android:id="@+id/register"
+          android:icon="@android:drawable/ic_menu_info_details"
+          android:title="@string/register"/>
+
     <item android:id="@+id/qr_code_market"
           android:icon="@android:drawable/ic_menu_share"
           android:title="@string/qr_code_market"/>

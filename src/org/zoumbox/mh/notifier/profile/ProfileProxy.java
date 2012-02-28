@@ -1,5 +1,6 @@
 package org.zoumbox.mh.notifier.profile;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
@@ -16,7 +17,13 @@ import java.util.Set;
  */
 public class ProfileProxy {
 
+    public static final String PREFS_NAME = "org.zoumbox.mh.dla.notifier.preferences";
+
+    public static final String PROPERTY_TROLL_ID = "trollId";
+    public static final String PROPERTY_TROLL_PASSWORD = "trollPassword";
+
     protected static Map<String, PublicScript> properties = Maps.newHashMap();
+
     static {
         properties.put("nom", PublicScript.ProfilPublic2);
         properties.put("race", PublicScript.ProfilPublic2);
@@ -46,7 +53,10 @@ public class ProfileProxy {
         properties.put("gg", PublicScript.Profil3);
     }
 
-    public Map<String, String> fetchProperties(SharedPreferences preferences, String... names) throws QuotaExceededException, MissingLoginPasswordException {
+    public static Map<String, String> fetchProperties(Activity activity, String... names) throws QuotaExceededException, MissingLoginPasswordException {
+
+        SharedPreferences preferences = activity.getSharedPreferences(PREFS_NAME, 0);
+
         Set<PublicScript> scripts = Sets.newLinkedHashSet();
         for (String propertyName : names) {
             if (!preferences.contains(propertyName)) {
@@ -54,14 +64,17 @@ public class ProfileProxy {
                 if (script == null) {
                     System.out.println("Unknown property: " + propertyName);
                 } else {
+                    System.out.println("Missing property: " + propertyName);
                     scripts.add(script);
                 }
+            } else {
+                System.out.println("Property found: " + propertyName);
             }
         }
 
         if (!scripts.isEmpty()) {
-            String trollNumber = preferences.getString("trollId", null);
-            String trollPassword = preferences.getString("trollPassword", null);
+            String trollNumber = preferences.getString(PROPERTY_TROLL_ID, null);
+            String trollPassword = preferences.getString(PROPERTY_TROLL_PASSWORD, null);
             if (Strings.isNullOrEmpty(trollNumber) || Strings.isNullOrEmpty(trollPassword)) {
                 throw new MissingLoginPasswordException();
             }
@@ -83,4 +96,29 @@ public class ProfileProxy {
         }
         return result;
     }
+
+    public static String loadLogin(Activity activity) {
+
+        SharedPreferences preferences = activity.getSharedPreferences(PREFS_NAME, 0);
+
+        String result = preferences.getString(PROPERTY_TROLL_ID, null);
+
+        return result;
+    }
+
+    public static boolean saveLoginPassword(Activity activity, String trollNumber, String trollPassword) {
+        if (Strings.isNullOrEmpty(trollNumber) || Strings.isNullOrEmpty(trollPassword)) {
+            return false;
+        }
+
+        SharedPreferences preferences = activity.getSharedPreferences(PREFS_NAME, 0);
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(PROPERTY_TROLL_ID, trollNumber);
+        editor.putString(PROPERTY_TROLL_PASSWORD, trollPassword); // TODO 28/02/2012 AThimel MD5 password
+        editor.commit();
+
+        return true;
+    }
+
 }

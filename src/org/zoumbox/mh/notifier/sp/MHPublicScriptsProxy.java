@@ -39,6 +39,7 @@ public class MHPublicScriptsProxy {
 
     public static Map<String, String> fetch(PublicScript script, String trollNumber, String trollPassword, boolean force) throws QuotaExceededException {
 
+        System.out.println("Fetch " + script.name() + " for troll " + trollNumber);
         ScriptCategory category = script.category;
         int count = checkQuota(category);
         if (count >= category.quota) {

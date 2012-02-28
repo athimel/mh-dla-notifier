@@ -90,6 +90,10 @@ public class Main extends AbstractActivity {
             case R.id.credits:
                 showDialog(CREDIT_DIALOG);
                 return true;
+            case R.id.register:
+                Intent intent = new Intent(this, Register.class);
+                startActivityForResult(intent, REGISTER);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -114,19 +118,28 @@ public class Main extends AbstractActivity {
         return super.onCreateDialog(id);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REGISTER) {
+                loadDLAs();
+            }
+        }
+    }
+
     protected void loadDLAs() {
         // TODO AThimel 24/02/2012 Get the DLA from MH
 
-        SharedPreferences sharedPreferences = getSharedPreferences("org.zoumbox.mh.dla.notifier.preferences", 0);
-        ProfileProxy pp = new ProfileProxy();
         try {
-            Map<String,String> properties = pp.fetchProperties(sharedPreferences, "nom", "dla", "paRestant");
+            Map<String,String> properties = ProfileProxy.fetchProperties(this, "nom", "dla", "paRestant");
             name.setText(properties.get("nom"));
             dla.setText(properties.get("dla"));
             remainingPAs.setText(properties.get("paRestant"));
         } catch (MissingLoginPasswordException mlpe) {
-            // TODO AThimel 27/02/2012 Go to Register
-            mlpe.printStackTrace();
+            showToast("Vous devez saisir vos identifiants");
+            System.out.println("Login or password are missing, calling Register");
+            Intent intent = new Intent(this, Register.class);
+            startActivityForResult(intent, REGISTER);
         } catch (QuotaExceededException e) {
             e.printStackTrace();
         }
