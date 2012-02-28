@@ -27,17 +27,27 @@ package org.zoumbox.mh.notifier;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import org.zoumbox.mh.notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh.notifier.profile.ProfileProxy;
 import org.zoumbox.mh.notifier.sp.QuotaExceededException;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -56,6 +66,7 @@ public class Main extends AbstractActivity {
     public static final String INTPUT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String DISPLAY_DATE_FORMAT = "dd MMM yyyy - HH:mm:ss";
 
+    protected ImageView blason;
     protected TextView name;
     protected TextView dla;
     protected TextView remainingPAs;
@@ -68,6 +79,7 @@ public class Main extends AbstractActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        blason = (ImageView) findViewById(R.id.blason);
         name = (TextView) findViewById(R.id.name);
         dla = (TextView) findViewById(R.id.dla_field);
         remainingPAs = (TextView) findViewById(R.id.pas);
@@ -135,7 +147,12 @@ public class Main extends AbstractActivity {
         // TODO AThimel 24/02/2012 Get the DLA from MH
 
         try {
-            Map<String,String> properties = ProfileProxy.fetchProperties(this, "nom", "dla", "paRestant");
+            Map<String,String> properties = ProfileProxy.fetchProperties(this, "nom", "dla", "paRestant", "blason");
+            String blasonUri = properties.get("blason");
+            Bitmap blason = loadBlason(blasonUri);
+            if (blason != null) {
+                this.blason.setImageBitmap(blason);
+            }
             name.setText(properties.get("nom"));
             dla.setText(formatDate(properties.get("dla")));
             remainingPAs.setText(properties.get("paRestant"));
@@ -148,6 +165,32 @@ public class Main extends AbstractActivity {
             e.printStackTrace();
         }
 
+    }
+
+    protected Bitmap loadBlason(String blasonUrl) {
+        BufferedInputStream bis = null;
+        try {
+            URL url = new URL(blasonUrl);
+            URLConnection conn = url.openConnection();
+            conn.connect();
+            bis = new BufferedInputStream(conn.getInputStream());
+        
+            Bitmap bm = BitmapFactory.decodeStream(bis);
+        
+            bis.close();
+            return bm;
+        } catch (Exception eee) {
+            eee.printStackTrace();
+            return null;
+        } finally {
+            if (bis != null) {
+                try {
+                    bis.close();
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
+            }
+        }
     }
 
     protected String formatDate(String input) {
