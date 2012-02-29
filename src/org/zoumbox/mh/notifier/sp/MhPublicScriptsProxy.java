@@ -67,12 +67,15 @@ public class MhPublicScriptsProxy {
         return "104259;DevelZimZoum;Kastar;19;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;122;9;1900;20;0";
     }
 
-    protected static final String SQL_STATEMENT = String.format("SELECT COUNT(*) FROM %s WHERE %s=? AND %s=? AND %s>=?",
+    protected static final String SQL_COUNT = String.format("SELECT COUNT(*) FROM %s WHERE %s=? AND %s=? AND %s>=?",
             MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_CATEGORY_COLUMN, MhDlaSQLHelper.SCRIPTS_DATE_COLUMN);
 
-    protected static int checkQuota(Activity activity, ScriptCategory category, String trollNumber) {
+    protected static final String SQL_LAST_UPDATE = String.format("SELECT MAX(%s) FROM %s WHERE %s=? AND %s=?",
+            MhDlaSQLHelper.SCRIPTS_DATE_COLUMN, MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_SCRIPT_COLUMN);
 
-        System.out.println("Check quota for category " + category.name() + " for troll " + trollNumber);
+    protected static int checkQuota(Activity activity, PublicScript script, String trollNumber) {
+
+        System.out.println("Check quota for category " + script + "(" + script.category + ") and troll " + trollNumber);
 
         MhDlaSQLHelper helper = new MhDlaSQLHelper(activity);
         SQLiteDatabase database = helper.getReadableDatabase();
@@ -83,7 +86,7 @@ public class MhPublicScriptsProxy {
 
         System.out.println("Since: " + sinceDate);
 
-        Cursor cursor = database.rawQuery(SQL_STATEMENT, new String[]{trollNumber, category.name(), "" + sinceDate.getTime()});
+        Cursor cursor = database.rawQuery(SQL_COUNT, new String[]{trollNumber, script.category.name(), "" + sinceDate.getTime()});
         int result = 0;
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
@@ -98,16 +101,17 @@ public class MhPublicScriptsProxy {
         return result;
     }
 
-    protected static void saveFetch(Activity activity, ScriptCategory category, String trollNumber) {
+    protected static void saveFetch(Activity activity, PublicScript script, String trollNumber) {
 
-        System.out.println("Save fetch for category " + category.name() + " for troll " + trollNumber);
+        System.out.println("Save fetch for category " + script + "(" + script.category + ") and troll " + trollNumber);
 
         MhDlaSQLHelper helper = new MhDlaSQLHelper(activity);
         SQLiteDatabase database = helper.getWritableDatabase();
 
-        ContentValues values = new ContentValues(3);
+        ContentValues values = new ContentValues(4);
         values.put(MhDlaSQLHelper.SCRIPTS_DATE_COLUMN, System.currentTimeMillis());
-        values.put(MhDlaSQLHelper.SCRIPTS_CATEGORY_COLUMN, category.name());
+        values.put(MhDlaSQLHelper.SCRIPTS_SCRIPT_COLUMN, script.name());
+        values.put(MhDlaSQLHelper.SCRIPTS_CATEGORY_COLUMN, script.category.name());
         values.put(MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, trollNumber);
 
         database.insert(MhDlaSQLHelper.SCRIPTS_TABLE, null, values);
@@ -115,11 +119,34 @@ public class MhPublicScriptsProxy {
         database.close();
     }
 
+    public static Date geLastUpdate(Activity activity, PublicScript script, String trollNumber) {
+
+        System.out.println("Get last update for category " + script + "(" + script.category + ") and troll " + trollNumber);
+
+        MhDlaSQLHelper helper = new MhDlaSQLHelper(activity);
+        SQLiteDatabase database = helper.getReadableDatabase();
+
+        Cursor cursor = database.rawQuery(SQL_LAST_UPDATE, new String[]{trollNumber, script.name()});
+        Date result = null;
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            long resultTimestamp = cursor.getLong(0);
+            result = new Date(resultTimestamp);
+        }
+
+        cursor.close();
+        database.close();
+
+        System.out.println("Last update is : " + result);
+
+        return result;
+    }
+
     public static Map<String, String> fetch(Activity activity, PublicScript script, String trollNumber, String trollPassword, boolean force) throws QuotaExceededException {
 
         System.out.println("Fetch " + script.name() + " for troll " + trollNumber);
         ScriptCategory category = script.category;
-        int count = checkQuota(activity, category, trollNumber);
+        int count = checkQuota(activity, script, trollNumber);
         if (count >= category.quota) {
             System.out.println("Quota is exceeded for category '" + category + "': " + count + "/" + category.quota + ". Force usage ? " + force);
             if (!force) {
@@ -129,7 +156,7 @@ public class MhPublicScriptsProxy {
 
         String url = String.format(script.url, trollNumber, trollPassword);
         String rawResult = query(url);
-        saveFetch(activity, category, trollNumber);
+        saveFetch(activity, script, trollNumber);
 
         Map<String, String> result = Maps.newLinkedHashMap();
 

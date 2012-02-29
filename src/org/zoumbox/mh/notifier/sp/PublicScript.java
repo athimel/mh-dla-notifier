@@ -24,7 +24,7 @@ public enum PublicScript {
             "http://sp.mountyhall.com/SP_ProfilPublic2.php?Numero=%s&Motdepasse=%s",
             Lists.newArrayList("numero", "nom", "race", "niveau", "dateInscription", "email", "blason", "nbMouches", "nbKills", "nbMorts", "numeroDeGuilde", "niveauDeRang", "pnj"));
 
-    protected ScriptCategory category;
+    public ScriptCategory category;
     protected String url;
     protected List<String> properties;
 

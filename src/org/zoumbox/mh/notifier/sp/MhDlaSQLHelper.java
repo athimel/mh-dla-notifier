@@ -15,12 +15,14 @@ public class MhDlaSQLHelper extends SQLiteOpenHelper {
 
     public static final String SCRIPTS_TABLE = "scripts_logs";
     public static final String SCRIPTS_DATE_COLUMN = "script_date";
+    public static final String SCRIPTS_SCRIPT_COLUMN = "script";
     public static final String SCRIPTS_CATEGORY_COLUMN = "category";
     public static final String SCRIPTS_TROLL_COLUMN = "troll_number";
 
     private static final String SCRIPTS_TABLE_CREATE =
             "CREATE TABLE " + SCRIPTS_TABLE + " (" +
                     SCRIPTS_DATE_COLUMN + " LONG, " +
+                    SCRIPTS_SCRIPT_COLUMN + " TEXT, " +
                     SCRIPTS_CATEGORY_COLUMN + " TEXT, " +
                     SCRIPTS_TROLL_COLUMN + " TEXT);";
 

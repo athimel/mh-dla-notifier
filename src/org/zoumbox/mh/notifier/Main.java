@@ -212,27 +212,27 @@ public class Main extends AbstractActivity {
                     }
                 }
 
-//                if (result != null) {
-//                    System.out.println("Save fetched result to " + localFile);
-//                    FileOutputStream fos = null;
-//                    try {
-//                        fos = new FileOutputStream(localFile);
-//
-//                        result.compress(Bitmap.CompressFormat.PNG, 90, fos);
-//
-//                    } catch (Exception eee) {
-//                        eee.printStackTrace();
-//                        return null;
-//                    } finally {
-//                        if (fos != null) {
-//                            try {
-//                                fos.close();
-//                            } catch (IOException ioe) {
-//                                ioe.printStackTrace();
-//                            }
-//                        }
-//                    }
-//                }
+                if (result != null) {
+                    System.out.println("Save fetched result to " + localFile);
+                    FileOutputStream fos = null;
+                    try {
+                        fos = new FileOutputStream(localFile);
+
+                        result.compress(Bitmap.CompressFormat.PNG, 90, fos);
+
+                    } catch (Exception eee) {
+                        eee.printStackTrace();
+                        return null;
+                    } finally {
+                        if (fos != null) {
+                            try {
+                                fos.close();
+                            } catch (IOException ioe) {
+                                ioe.printStackTrace();
+                            }
+                        }
+                    }
+                }
             } else {
 
                 System.out.println("Existing, loading from cache");

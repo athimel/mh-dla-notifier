@@ -2,13 +2,17 @@ package org.zoumbox.mh.notifier.profile;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.zoumbox.mh.notifier.sp.MhPublicScriptsProxy;
 import org.zoumbox.mh.notifier.sp.PublicScript;
 import org.zoumbox.mh.notifier.sp.QuotaExceededException;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -53,32 +57,50 @@ public class ProfileProxy {
         properties.put("gg", PublicScript.Profil3);
     }
 
-    public static Map<String, String> fetchProperties(Activity activity, String... names) throws QuotaExceededException, MissingLoginPasswordException {
+    public static boolean needsUpdate(Activity activity, PublicScript script, String trollNumber) {
+        Date lastUpdate = MhPublicScriptsProxy.geLastUpdate(activity, script, trollNumber);
+        if (lastUpdate == null) {
+            return true;
+        } else {
+            int dailyQuota = script.category.getQuota();
+            int minutesDelay = 72 * 60 / dailyQuota; //FIXME AThimel 29/03/2012 72h instead of 24 for the moment to avoid mistakes
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.MINUTE, -minutesDelay);
+            Date delay = calendar.getTime();
+            boolean result = lastUpdate.before(delay);
+            return result;
+        }
+    }
+
+    public static Map<String, String> fetchProperties(final Activity activity, String... names) throws QuotaExceededException, MissingLoginPasswordException {
 
         SharedPreferences preferences = activity.getSharedPreferences(PREFS_NAME, 0);
 
+        final String trollNumber = preferences.getString(PROPERTY_TROLL_ID, null);
+        String trollPassword = preferences.getString(PROPERTY_TROLL_PASSWORD, null);
+        if (Strings.isNullOrEmpty(trollNumber) || Strings.isNullOrEmpty(trollPassword)) {
+            throw new MissingLoginPasswordException();
+        }
+
         Set<PublicScript> scripts = Sets.newLinkedHashSet();
         for (String propertyName : names) {
-            if (!preferences.contains(propertyName)) {
-                PublicScript script = properties.get(propertyName);
-                if (script == null) {
-                    System.out.println("Unknown property: " + propertyName);
-                } else {
-                    System.out.println("Missing property: " + propertyName);
-                    scripts.add(script);
-                }
+            PublicScript script = properties.get(propertyName);
+            if (script == null) {
+                System.out.println("Unknown property: " + propertyName);
             } else {
-                System.out.println("Property found: " + propertyName);
+                System.out.println("Missing property: " + propertyName);
+                scripts.add(script);
             }
         }
 
-        if (!scripts.isEmpty()) {
-            String trollNumber = preferences.getString(PROPERTY_TROLL_ID, null);
-            String trollPassword = preferences.getString(PROPERTY_TROLL_PASSWORD, null);
-            if (Strings.isNullOrEmpty(trollNumber) || Strings.isNullOrEmpty(trollPassword)) {
-                throw new MissingLoginPasswordException();
+        Iterables.removeIf(scripts, new Predicate<PublicScript>() {
+            @Override
+            public boolean apply(PublicScript script) {
+                return !needsUpdate(activity, script, trollNumber);
             }
+        });
 
+        if (!scripts.isEmpty()) {
             for (PublicScript type : scripts) {
                 Map<String, String> propertiesFetched = MhPublicScriptsProxy.fetch(activity, type, trollNumber, trollPassword, false);
                 SharedPreferences.Editor editor = preferences.edit();

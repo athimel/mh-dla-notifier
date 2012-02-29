@@ -60,10 +60,11 @@
     <!-- *** Project Information ************************************* -->
     <!-- ************************************************************* -->
 
-    <name>MountyHall-DLA-Notifier</name>
+    <name>MountyHall DLA Notifier</name>
     <description>MountyHall - Avertisseur de DLA</description>
     <inceptionYear>2012</inceptionYear>
-    <!--url>http://dev.zoumbox.org/maven-sites/zoumtarot</url-->
+    <!--<url>http://dev.zoumbox.org/maven-sites/mh-dla-notifier</url>-->
+    <url>http://dev.zoumbox.org/projects/mh-dla-notifier</url>
 
     <licenses>
         <license>
@@ -94,10 +95,10 @@
         <url>dev.zoumbox.org</url>
     </organization>
 
-    <!--issueManagement>
+    <issueManagement>
         <system>Redmine</system>
-        <url>http://dev.zoumbox.org/projects/zoumtarot/issues/</url>
-    </issueManagement-->
+        <url>http://dev.zoumbox.org/projects/mh-dla-notifier/issues/</url>
+    </issueManagement>
 
     <!-- ************************************************************* -->
     <!-- *** Build Settings ****************************************** -->
