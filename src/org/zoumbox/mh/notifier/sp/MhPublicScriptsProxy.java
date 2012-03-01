@@ -26,46 +26,45 @@ import java.util.Map;
  */
 public class MhPublicScriptsProxy {
 
-//    protected static String query(String url) {
-//
-//        String responseContent = "";
-//        BufferedReader in = null;
-//        try {
-//            HttpClient client = new DefaultHttpClient();
-//            HttpGet request = new HttpGet(url);
-//            HttpResponse response = client.execute(request);
-//            InputStream content = response.getEntity().getContent();
-//            in = new BufferedReader(new InputStreamReader(content));
-//            String line;
-//            while ((line = in.readLine()) != null) {
-//                responseContent += line;
-//            }
-//            in.close();
-//        } catch (Exception eee) {
-//            eee.printStackTrace();
-//        } finally {
-//            if (in != null) {
-//                try {
-//                    in.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//
-//        System.out.println("'" + responseContent + "'");
-//        return responseContent;
-//    }
-
     protected static String query(String url) {
-        // TODO AThimel 27/02/2012 Implement HTTP GET
-        if (url.contains("SP_Profil2.php")) {
-            return "104259;57;-75;-41;85;80;0;2012-02-28 16:58:55;8;4;13;4;4;6;360;361;0;5;0;0;0;0;0;585;0;1;0";
-        } else if (url.contains("SP_Profil3.php")) {
-            return "104259;DevelZimZoum;57;-75;-41;6;2012-02-25 01:22:55;3;0;0;0;2;22;88;6042";
+
+        String responseContent = "";
+        BufferedReader in = null;
+        try {
+            HttpClient client = new DefaultHttpClient();
+            HttpGet request = new HttpGet(url);
+            HttpResponse response = client.execute(request);
+            InputStream content = response.getEntity().getContent();
+            in = new BufferedReader(new InputStreamReader(content));
+            String line;
+            while ((line = in.readLine()) != null) {
+                responseContent += line;
+            }
+            in.close();
+        } catch (Exception eee) {
+            eee.printStackTrace();
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        return "104259;DevelZimZoum;Kastar;19;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;122;9;1900;20;0";
+
+        System.out.println("'" + responseContent + "'");
+        return responseContent;
     }
+
+//    protected static String query(String url) {
+//        if (url.contains("SP_Profil2.php")) {
+//            return "104259;57;-75;-41;85;80;0;2012-02-28 16:58:55;8;4;13;4;4;6;360;361;0;5;0;0;0;0;0;585;0;1;0";
+//        } else if (url.contains("SP_Profil3.php")) {
+//            return "104259;DevelZimZoum;57;-75;-41;6;2012-02-25 01:22:55;3;0;0;0;2;22;88;6042";
+//        }
+//        return "104259;DevelZimZoum;Kastar;19;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;122;9;1900;20;0";
+//    }
 
     protected static final String SQL_COUNT = String.format("SELECT COUNT(*) FROM %s WHERE %s=? AND %s=? AND %s>=?",
             MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_CATEGORY_COLUMN, MhDlaSQLHelper.SCRIPTS_DATE_COLUMN);
