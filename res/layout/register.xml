@@ -38,6 +38,10 @@
     <TextView android:text="@string/password"
               android:layout_height="wrap_content"
               android:layout_width="fill_parent"/>
+    <TextView android:text="@string/password_info"
+              android:layout_height="wrap_content"
+              android:layout_width="fill_parent"
+              android:textStyle="italic"/>
     <EditText android:id="@+id/password"
               android:layout_height="wrap_content"
               android:layout_width="fill_parent"
