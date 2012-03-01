@@ -1,7 +1,7 @@
-package org.zoumbox.mh.notifier.profile;
+package org.zoumbox.mh_dla_notifier.profile;
 
 /**
- * @author Arnaud Thimel <thimel@codelutin.com>
+ * @author Arno <arno@zoumbox.org>
  */
 public class MissingLoginPasswordException extends Exception {
 

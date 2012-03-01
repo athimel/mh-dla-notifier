@@ -1,7 +1,7 @@
-package org.zoumbox.mh.notifier.sp;
+package org.zoumbox.mh_dla_notifier.sp;
 
 /**
- * @author Arnaud Thimel <thimel@codelutin.com>
+ * @author Arno <arno@zoumbox.org>
  */
 public class QuotaExceededException extends Exception {
 

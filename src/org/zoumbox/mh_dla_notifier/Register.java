@@ -22,19 +22,22 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.zoumbox.mh.notifier;
+package org.zoumbox.mh_dla_notifier;
 
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import com.google.common.base.Strings;
-import org.zoumbox.mh.notifier.profile.ProfileProxy;
+import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 
 /**
  * Activité principale
  */
 public class Register extends AbstractActivity {
+
+    private static final String TAG = "MhDlaNotifier-" + Register.class.getSimpleName();
 
     protected EditText troll;
     protected EditText password;
@@ -62,15 +65,14 @@ public class Register extends AbstractActivity {
         String trollNumber = troll.getText().toString();
         String trollPassword = password.getText().toString();
 
-        String md5Password = md5(trollPassword);
-        boolean result = ProfileProxy.saveLoginPassword(this, trollNumber, md5Password);
+        boolean result = ProfileProxy.saveLoginPassword(this, trollNumber, trollPassword);
 
         if (result) {
             showToast("Identifiants enregistrés");
             setResult(RESULT_OK);
             finish();
         } else {
-            System.out.println("Impossible d'enregistrer les identifiants");
+            Log.i(TAG, "Impossible d'enregistrer les identifiants");
         }
 
     }

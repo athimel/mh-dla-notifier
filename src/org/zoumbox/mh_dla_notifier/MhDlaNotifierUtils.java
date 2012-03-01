@@ -1,24 +1,24 @@
-package org.zoumbox.mh.notifier;
+package org.zoumbox.mh_dla_notifier;
 
-import android.app.Activity;
-import android.widget.Toast;
+import android.util.Log;
 import com.google.common.base.Strings;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public abstract class AbstractActivity extends Activity {
+/**
+ * @author Arno <arno@zoumbox.org>
+ */
+public class MhDlaNotifierUtils {
 
-    protected void showToast(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-    }
+    private static final String TAG = "MhDlaNotifier-" + MhDlaNotifierUtils.class.getSimpleName();
 
-    public String md5(String input) {
-        if (!Strings.isNullOrEmpty(input)) {
+    public static String md5(String text) {
+        if (!Strings.isNullOrEmpty(text)) {
             try {
                 // Create MD5 Hash
                 MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
-                digest.update(input.getBytes());
+                digest.update(text.getBytes());
                 byte messageDigest[] = digest.digest();
 
                 // Create Hex String
@@ -27,10 +27,11 @@ public abstract class AbstractActivity extends Activity {
                     hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
                 return hexString.toString();
 
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
+            } catch (NoSuchAlgorithmException nsae) {
+                Log.e(TAG, "Algo MD5 non trouvé", nsae);
             }
         }
         return "";
     }
+
 }

@@ -1,11 +1,11 @@
-package org.zoumbox.mh.notifier.sp;
+package org.zoumbox.mh_dla_notifier.sp;
 
 import com.google.common.collect.Lists;
 
 import java.util.List;
 
 /**
- * @author Arnaud Thimel <thimel@codelutin.com>
+ * @author Arno <arno@zoumbox.org>
  */
 public enum PublicScript {
 

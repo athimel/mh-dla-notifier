@@ -22,13 +22,14 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.zoumbox.mh.notifier;
+package org.zoumbox.mh_dla_notifier;
 
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -37,9 +38,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.google.common.base.Strings;
-import org.zoumbox.mh.notifier.profile.MissingLoginPasswordException;
-import org.zoumbox.mh.notifier.profile.ProfileProxy;
-import org.zoumbox.mh.notifier.sp.QuotaExceededException;
+import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
+import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
+import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -59,6 +60,8 @@ import java.util.Map;
  * Activité principale
  */
 public class Main extends AbstractActivity {
+
+    private static final String TAG = "MhDlaNotifier-Main";
 
     public static final int REGISTER = 0;
     protected static final int CREDIT_DIALOG = 0;
@@ -169,11 +172,12 @@ public class Main extends AbstractActivity {
             remainingPAs.setText(properties.get("paRestant"));
         } catch (MissingLoginPasswordException mlpe) {
             showToast("Vous devez saisir vos identifiants");
-            System.out.println("Login or password are missing, calling Register");
+            Log.i(TAG, "Login or password are missing, calling Register");
             Intent intent = new Intent(this, Register.class);
             startActivityForResult(intent, REGISTER);
         } catch (QuotaExceededException e) {
-            e.printStackTrace();
+            showToast("Rafraichissement impossible pour e moment, quota dépassé");
+            Log.e(TAG, "Unable to refresh, quota exceeded", e);
         }
 
     }
@@ -182,16 +186,15 @@ public class Main extends AbstractActivity {
 
         Bitmap result = null;
         if (!Strings.isNullOrEmpty(blasonUrl)) {
-            String localFilePath = md5(blasonUrl);
-            System.out.println("localFilePath: " + localFilePath);
+            String localFilePath = MhDlaNotifierUtils.md5(blasonUrl);
+            Log.i(TAG, "localFilePath: " + localFilePath);
 //            File filesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             File filesDir = getExternalCacheDir();
-            System.out.println(filesDir);
             File localFile = new File(filesDir, localFilePath);
-            System.out.println("localFile: " + localFile);
+            Log.i(TAG, "localFile: " + localFile);
             if (!localFile.exists()) {
 
-                System.out.println("Not existing, fetching from " + blasonUrl);
+                Log.i(TAG, "Not existing, fetching from " + blasonUrl);
                 BufferedInputStream bis = null;
                 try {
                     URL url = new URL(blasonUrl);
@@ -201,19 +204,19 @@ public class Main extends AbstractActivity {
                     result = BitmapFactory.decodeStream(bis);
 
                 } catch (Exception eee) {
-                    eee.printStackTrace();
+                    Log.e(TAG, "Exception", eee);
                 } finally {
                     if (bis != null) {
                         try {
                             bis.close();
                         } catch (IOException ioe) {
-                            ioe.printStackTrace();
+                            Log.e(TAG, "IOException", ioe);
                         }
                     }
                 }
 
                 if (result != null) {
-                    System.out.println("Save fetched result to " + localFile);
+                    Log.i(TAG, "Save fetched result to " + localFile);
                     FileOutputStream fos = null;
                     try {
                         fos = new FileOutputStream(localFile);
@@ -221,21 +224,21 @@ public class Main extends AbstractActivity {
                         result.compress(Bitmap.CompressFormat.PNG, 90, fos);
 
                     } catch (Exception eee) {
-                        eee.printStackTrace();
+                        Log.e(TAG, "Exception", eee);
                         return null;
                     } finally {
                         if (fos != null) {
                             try {
                                 fos.close();
                             } catch (IOException ioe) {
-                                ioe.printStackTrace();
+                                Log.e(TAG, "IOException", ioe);
                             }
                         }
                     }
                 }
             } else {
 
-                System.out.println("Existing, loading from cache");
+                Log.i(TAG, "Existing, loading from cache");
                 BufferedInputStream bis = null;
                 try {
                     bis = new BufferedInputStream(new FileInputStream(localFile));
@@ -244,13 +247,13 @@ public class Main extends AbstractActivity {
 
                     bis.close();
                 } catch (Exception eee) {
-                    eee.printStackTrace();
+                    Log.e(TAG, "Exception", eee);
                 } finally {
                     if (bis != null) {
                         try {
                             bis.close();
                         } catch (IOException ioe) {
-                            ioe.printStackTrace();
+                            Log.e(TAG, "IOException", ioe);
                         }
                     }
                 }
@@ -261,17 +264,19 @@ public class Main extends AbstractActivity {
     }
 
     protected String formatDate(String input) {
-        DateFormat inputDF = new SimpleDateFormat(INTPUT_DATE_FORMAT);
-        DateFormat outputDF = new SimpleDateFormat(DISPLAY_DATE_FORMAT, Locale.FRENCH);
 
-        try {
-            Date date = inputDF.parse(input);
-            String result = outputDF.format(date);
-            return result;
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return "n/c";
+        String result = "n/c";
+        if (input != null) {
+            DateFormat inputDF = new SimpleDateFormat(INTPUT_DATE_FORMAT);
+            DateFormat outputDF = new SimpleDateFormat(DISPLAY_DATE_FORMAT, Locale.FRENCH);
+            try {
+                Date date = inputDF.parse(input);
+                result = outputDF.format(date);
+            } catch (ParseException pe) {
+                Log.e(TAG, "Date mal formatée", pe);
+            }
         }
+        return result;
     }
 
 }

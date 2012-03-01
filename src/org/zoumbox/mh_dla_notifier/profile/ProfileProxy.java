@@ -1,15 +1,18 @@
-package org.zoumbox.mh.notifier.profile;
+package org.zoumbox.mh_dla_notifier.profile;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.util.Log;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.zoumbox.mh.notifier.sp.MhPublicScriptsProxy;
-import org.zoumbox.mh.notifier.sp.PublicScript;
-import org.zoumbox.mh.notifier.sp.QuotaExceededException;
+import org.zoumbox.mh_dla_notifier.AbstractActivity;
+import org.zoumbox.mh_dla_notifier.MhDlaNotifierUtils;
+import org.zoumbox.mh_dla_notifier.sp.MhPublicScriptsProxy;
+import org.zoumbox.mh_dla_notifier.sp.PublicScript;
+import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -17,9 +20,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @author Arnaud Thimel <thimel@codelutin.com>
+ * @author Arno <arno@zoumbox.org>
  */
 public class ProfileProxy {
+
+    private static final String TAG = "MhDlaNotifier-" + ProfileProxy.class.getSimpleName();
 
     public static final String PREFS_NAME = "org.zoumbox.mh.dla.notifier.preferences";
 
@@ -83,12 +88,12 @@ public class ProfileProxy {
         }
 
         Set<PublicScript> scripts = Sets.newLinkedHashSet();
+        Log.i(TAG, "Requesting properties: " + names);
         for (String propertyName : names) {
             PublicScript script = properties.get(propertyName);
             if (script == null) {
-                System.out.println("Unknown property: " + propertyName);
+                Log.i(TAG, "Unknown property: " + propertyName);
             } else {
-                System.out.println("Missing property: " + propertyName);
                 scripts.add(script);
             }
         }
@@ -128,16 +133,20 @@ public class ProfileProxy {
         return result;
     }
 
-    public static boolean saveLoginPassword(Activity activity, String trollNumber, String trollPassword) {
-        if (Strings.isNullOrEmpty(trollNumber) || Strings.isNullOrEmpty(trollPassword)) {
+    public static boolean saveLoginPassword(AbstractActivity activity, String trollNumber, String trollPassword) {
+        String checkedTrollNumber = Strings.nullToEmpty(trollNumber).trim();
+        String checkedTrollPassword = Strings.nullToEmpty(trollPassword).trim();
+
+        if (Strings.isNullOrEmpty(checkedTrollNumber) || Strings.isNullOrEmpty(checkedTrollPassword)) {
             return false;
         }
 
+        String hashedTrollPassword = MhDlaNotifierUtils.md5(checkedTrollPassword);
         SharedPreferences preferences = activity.getSharedPreferences(PREFS_NAME, 0);
 
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(PROPERTY_TROLL_ID, trollNumber);
-        editor.putString(PROPERTY_TROLL_PASSWORD, trollPassword); // TODO 28/02/2012 AThimel MD5 password
+        editor.putString(PROPERTY_TROLL_ID, checkedTrollNumber);
+        editor.putString(PROPERTY_TROLL_PASSWORD, hashedTrollPassword);
         editor.commit();
 
         return true;

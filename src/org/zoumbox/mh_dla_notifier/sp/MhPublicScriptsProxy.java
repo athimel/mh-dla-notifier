@@ -1,9 +1,10 @@
-package org.zoumbox.mh.notifier.sp;
+package org.zoumbox.mh_dla_notifier.sp;
 
 import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -22,9 +23,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Arnaud Thimel <thimel@codelutin.com>
+ * @author Arno <arno@zoumbox.org>
  */
 public class MhPublicScriptsProxy {
+
+    private static final String TAG = "MhDlaNotifier-" + MhPublicScriptsProxy.class.getSimpleName();
 
     protected static String query(String url) {
 
@@ -42,18 +45,21 @@ public class MhPublicScriptsProxy {
             }
             in.close();
         } catch (Exception eee) {
-            eee.printStackTrace();
+            Log.e(TAG, "Exception", eee);
         } finally {
             if (in != null) {
                 try {
                     in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (IOException ioe) {
+                    Log.e(TAG, "IOException", ioe);
                 }
             }
         }
 
-        System.out.println("'" + responseContent + "'");
+        Log.i(TAG, "Response: '" + responseContent + "'");
+
+        // TODO 01/03/2012 AThimel Handle errors
+
         return responseContent;
     }
 
@@ -74,7 +80,7 @@ public class MhPublicScriptsProxy {
 
     protected static int checkQuota(Activity activity, PublicScript script, String trollNumber) {
 
-        System.out.println("Check quota for category " + script + "(" + script.category + ") and troll " + trollNumber);
+        Log.i(TAG, "Check quota for category " + script + "(" + script.category + ") and troll " + trollNumber);
 
         MhDlaSQLHelper helper = new MhDlaSQLHelper(activity);
         SQLiteDatabase database = helper.getReadableDatabase();
@@ -83,7 +89,7 @@ public class MhPublicScriptsProxy {
         instance.add(Calendar.HOUR_OF_DAY, -24);
         Date sinceDate = instance.getTime();
 
-        System.out.println("Since: " + sinceDate);
+        Log.i(TAG, "Since: " + sinceDate);
 
         Cursor cursor = database.rawQuery(SQL_COUNT, new String[]{trollNumber, script.category.name(), "" + sinceDate.getTime()});
         int result = 0;
@@ -95,14 +101,14 @@ public class MhPublicScriptsProxy {
         cursor.close();
         database.close();
 
-        System.out.println("Quota is : " + result);
+        Log.i(TAG, "Quota is : " + result);
 
         return result;
     }
 
     protected static void saveFetch(Activity activity, PublicScript script, String trollNumber) {
 
-        System.out.println("Save fetch for category " + script + "(" + script.category + ") and troll " + trollNumber);
+        Log.i(TAG, "Save fetch for category " + script + "(" + script.category + ") and troll " + trollNumber);
 
         MhDlaSQLHelper helper = new MhDlaSQLHelper(activity);
         SQLiteDatabase database = helper.getWritableDatabase();
@@ -120,7 +126,7 @@ public class MhPublicScriptsProxy {
 
     public static Date geLastUpdate(Activity activity, PublicScript script, String trollNumber) {
 
-        System.out.println("Get last update for category " + script + "(" + script.category + ") and troll " + trollNumber);
+        Log.i(TAG, "Get last update for category " + script + "(" + script.category + ") and troll " + trollNumber);
 
         MhDlaSQLHelper helper = new MhDlaSQLHelper(activity);
         SQLiteDatabase database = helper.getReadableDatabase();
@@ -136,18 +142,18 @@ public class MhPublicScriptsProxy {
         cursor.close();
         database.close();
 
-        System.out.println("Last update is : " + result);
+        Log.i(TAG, "Last update is : " + result);
 
         return result;
     }
 
     public static Map<String, String> fetch(Activity activity, PublicScript script, String trollNumber, String trollPassword, boolean force) throws QuotaExceededException {
 
-        System.out.println("Fetch " + script.name() + " for troll " + trollNumber);
+        Log.i(TAG, "Fetch " + script.name() + " for troll " + trollNumber);
         ScriptCategory category = script.category;
         int count = checkQuota(activity, script, trollNumber);
         if (count >= category.quota) {
-            System.out.println("Quota is exceeded for category '" + category + "': " + count + "/" + category.quota + ". Force usage ? " + force);
+            Log.i(TAG, "Quota is exceeded for category '" + category + "': " + count + "/" + category.quota + ". Force usage ? " + force);
             if (!force) {
                 throw new QuotaExceededException(category, count);
             }

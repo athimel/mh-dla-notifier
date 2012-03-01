@@ -22,7 +22,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.zoumbox.mh.notifier;
+package org.zoumbox.mh_dla_notifier;
 
 import android.app.Activity;
 import android.os.Bundle;

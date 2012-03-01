@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.zoumbox</groupId>
         <artifactId>mavenpom</artifactId>
-        <version>0.6-SNAPSHOT</version>
+        <version>0.6</version>
     </parent>
 
     <groupId>org.zoumbox</groupId>
@@ -20,13 +20,6 @@
     <version>0.1-SNAPSHOT</version>
 
     <dependencies>
-
-        <!--dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.9</version>
-            <scope>test</scope>
-        </dependency-->
 
         <dependency>
             <groupId>com.google.android</groupId>
@@ -48,12 +41,6 @@
             <version>11.0.2</version>
         </dependency>
 
-        <!--dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>1.7.1</version>
-        </dependency-->
-
     </dependencies>
 
     <!-- ************************************************************* -->
@@ -63,8 +50,7 @@
     <name>MountyHall DLA Notifier</name>
     <description>MountyHall - Avertisseur de DLA</description>
     <inceptionYear>2012</inceptionYear>
-    <!--<url>http://dev.zoumbox.org/maven-sites/mh-dla-notifier</url>-->
-    <url>http://dev.zoumbox.org/projects/mh-dla-notifier</url>
+    <url>http://dev.zoumbox.org/maven-sites/mh-dla-notifier</url>
 
     <licenses>
         <license>
@@ -107,6 +93,7 @@
     <packaging>apk</packaging>
 
     <properties>
+        <maven.test.skip>true</maven.test.skip>
     </properties>
 
     <prerequisites>
@@ -207,14 +194,14 @@
         <url>http://dev.zoumbox.org/svn/mh-dla-notifier/trunk</url>
     </scm>
 
-    <!--distributionManagement>
+    <distributionManagement>
 
         <site>
             <id>zoumbox-sites</id>
-            <url>scp://zoumbox.org:2203/var/www/dev/maven-sites/zoumtarot</url>
+            <url>scp://zoumbox.org:2203/var/www/dev/maven-sites/mh-dla-notifier</url>
         </site>
 
-    </distributionManagement-->
+    </distributionManagement>
 
     <profiles>
 
