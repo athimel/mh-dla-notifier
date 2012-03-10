@@ -54,6 +54,7 @@
     <string name="pvs">Points de vie</string>
     <string name="position">Position</string>
 
-    <string name="dla_next">DLA suivante (estimation)</string>
+    <string name="dla_notif">Attention à votre DLA !</string>
+    <string name="dla_notif_expires">Elle expire à</string>
 
 </resources>

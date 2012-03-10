@@ -2,6 +2,7 @@ package org.zoumbox.mh_dla_notifier.sp;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -78,11 +79,11 @@ public class MhPublicScriptsProxy {
     protected static final String SQL_LAST_UPDATE = String.format("SELECT MAX(%s) FROM %s WHERE %s=? AND %s=?",
             MhDlaSQLHelper.SCRIPTS_DATE_COLUMN, MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_SCRIPT_COLUMN);
 
-    protected static int checkQuota(Activity activity, PublicScript script, String trollNumber) {
+    protected static int checkQuota(Context context, PublicScript script, String trollNumber) {
 
         Log.i(TAG, "Check quota for category " + script + "(" + script.category + ") and troll " + trollNumber);
 
-        MhDlaSQLHelper helper = new MhDlaSQLHelper(activity);
+        MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
         SQLiteDatabase database = helper.getReadableDatabase();
 
         Calendar instance = Calendar.getInstance();
@@ -106,11 +107,11 @@ public class MhPublicScriptsProxy {
         return result;
     }
 
-    protected static void saveFetch(Activity activity, PublicScript script, String trollNumber) {
+    protected static void saveFetch(Context context, PublicScript script, String trollNumber) {
 
         Log.i(TAG, "Save fetch for category " + script + "(" + script.category + ") and troll " + trollNumber);
 
-        MhDlaSQLHelper helper = new MhDlaSQLHelper(activity);
+        MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
         SQLiteDatabase database = helper.getWritableDatabase();
 
         ContentValues values = new ContentValues(4);
@@ -124,11 +125,11 @@ public class MhPublicScriptsProxy {
         database.close();
     }
 
-    public static Date geLastUpdate(Activity activity, PublicScript script, String trollNumber) {
+    public static Date geLastUpdate(Context context, PublicScript script, String trollNumber) {
 
         Log.i(TAG, "Get last update for category " + script + "(" + script.category + ") and troll " + trollNumber);
 
-        MhDlaSQLHelper helper = new MhDlaSQLHelper(activity);
+        MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
         SQLiteDatabase database = helper.getReadableDatabase();
 
         Cursor cursor = database.rawQuery(SQL_LAST_UPDATE, new String[]{trollNumber, script.name()});
@@ -147,11 +148,11 @@ public class MhPublicScriptsProxy {
         return result;
     }
 
-    public static Map<String, String> fetch(Activity activity, PublicScript script, String trollNumber, String trollPassword, boolean force) throws QuotaExceededException {
+    public static Map<String, String> fetch(Context context, PublicScript script, String trollNumber, String trollPassword, boolean force) throws QuotaExceededException {
 
         Log.i(TAG, "Fetch " + script.name() + " for troll " + trollNumber);
         ScriptCategory category = script.category;
-        int count = checkQuota(activity, script, trollNumber);
+        int count = checkQuota(context, script, trollNumber);
         if (count >= category.quota) {
             Log.i(TAG, "Quota is exceeded for category '" + category + "': " + count + "/" + category.quota + ". Force usage ? " + force);
             if (!force) {
@@ -161,7 +162,7 @@ public class MhPublicScriptsProxy {
 
         String url = String.format(script.url, trollNumber, trollPassword);
         String rawResult = query(url);
-        saveFetch(activity, script, trollNumber);
+        saveFetch(context, script, trollNumber);
 
         Map<String, String> result = Maps.newLinkedHashMap();
 

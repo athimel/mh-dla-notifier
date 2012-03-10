@@ -1,6 +1,7 @@
 package org.zoumbox.mh_dla_notifier.profile;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 import com.google.common.base.Predicate;
@@ -29,6 +30,7 @@ public class ProfileProxy {
     public static final String PREFS_NAME = "org.zoumbox.mh.dla.notifier.preferences";
 
     public static final String PROPERTY_TROLL_ID = "trollId";
+    public static final String PROPERTY_DLA = "dla";
     public static final String PROPERTY_TROLL_PASSWORD = "trollPassword";
 
     protected static Map<String, PublicScript> properties = Maps.newHashMap();
@@ -51,7 +53,7 @@ public class ProfileProxy {
         properties.put("pv", PublicScript.Profil2);
         properties.put("pvMax", PublicScript.Profil2);
         properties.put("paRestant", PublicScript.Profil2);
-        properties.put("dla", PublicScript.Profil2);
+        properties.put(PROPERTY_DLA, PublicScript.Profil2);
         properties.put("fatigue", PublicScript.Profil2);
         properties.put("dureeDuTour", PublicScript.Profil2);
         properties.put("bonusDuree", PublicScript.Profil2);
@@ -62,8 +64,8 @@ public class ProfileProxy {
         properties.put("gg", PublicScript.Profil3);
     }
 
-    public static boolean needsUpdate(Activity activity, PublicScript script, String trollNumber) {
-        Date lastUpdate = MhPublicScriptsProxy.geLastUpdate(activity, script, trollNumber);
+    public static boolean needsUpdate(Context context, PublicScript script, String trollNumber) {
+        Date lastUpdate = MhPublicScriptsProxy.geLastUpdate(context, script, trollNumber);
         if (lastUpdate == null) {
             return true;
         } else {
@@ -77,9 +79,16 @@ public class ProfileProxy {
         }
     }
 
-    public static Map<String, String> fetchProperties(final Activity activity, String... names) throws QuotaExceededException, MissingLoginPasswordException {
+    public static String getTrollNumber(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
-        SharedPreferences preferences = activity.getSharedPreferences(PREFS_NAME, 0);
+        String trollNumber = preferences.getString(PROPERTY_TROLL_ID, null);
+        return trollNumber;
+    }
+
+    public static Map<String, String> fetchProperties(final Context context, String... names) throws QuotaExceededException, MissingLoginPasswordException {
+
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
         final String trollNumber = preferences.getString(PROPERTY_TROLL_ID, null);
         String trollPassword = preferences.getString(PROPERTY_TROLL_PASSWORD, null);
@@ -101,13 +110,13 @@ public class ProfileProxy {
         Iterables.removeIf(scripts, new Predicate<PublicScript>() {
             @Override
             public boolean apply(PublicScript script) {
-                return !needsUpdate(activity, script, trollNumber);
+                return !needsUpdate(context, script, trollNumber);
             }
         });
 
         if (!scripts.isEmpty()) {
             for (PublicScript type : scripts) {
-                Map<String, String> propertiesFetched = MhPublicScriptsProxy.fetch(activity, type, trollNumber, trollPassword, false);
+                Map<String, String> propertiesFetched = MhPublicScriptsProxy.fetch(context, type, trollNumber, trollPassword, false);
                 SharedPreferences.Editor editor = preferences.edit();
                 for (Map.Entry<String, String> prop : propertiesFetched.entrySet()) {
                     editor.putString(prop.getKey(), prop.getValue());
@@ -124,16 +133,16 @@ public class ProfileProxy {
         return result;
     }
 
-    public static String loadLogin(Activity activity) {
+    public static String loadLogin(Context context) {
 
-        SharedPreferences preferences = activity.getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
         String result = preferences.getString(PROPERTY_TROLL_ID, null);
 
         return result;
     }
 
-    public static boolean saveLoginPassword(AbstractActivity activity, String trollNumber, String trollPassword) {
+    public static boolean saveLoginPassword(Context context, String trollNumber, String trollPassword) {
         String checkedTrollNumber = Strings.nullToEmpty(trollNumber).trim();
         String checkedTrollPassword = Strings.nullToEmpty(trollPassword).trim();
 
@@ -142,7 +151,7 @@ public class ProfileProxy {
         }
 
         String hashedTrollPassword = MhDlaNotifierUtils.md5(checkedTrollPassword);
-        SharedPreferences preferences = activity.getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(PROPERTY_TROLL_ID, checkedTrollNumber);
@@ -152,4 +161,10 @@ public class ProfileProxy {
         return true;
     }
 
+    public static Date getDLA(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
+        String string = preferences.getString(PROPERTY_DLA, null);
+        Date result = MhDlaNotifierUtils.parseDate(string);
+        return result;
+    }
 }

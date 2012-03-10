@@ -6,6 +6,11 @@ import org.apache.commons.codec.binary.Hex;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -13,6 +18,10 @@ import java.security.NoSuchAlgorithmException;
 public class MhDlaNotifierUtils {
 
     private static final String TAG = "MhDlaNotifier-" + MhDlaNotifierUtils.class.getSimpleName();
+
+    public static final String INTPUT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String HOUR_DATE_FORMAT = "HH:mm:ss";
+    public static final String DISPLAY_DATE_FORMAT = "dd MMM yyyy - " + HOUR_DATE_FORMAT;
 
     /**
      * Encodes a raw byte[] to an hexadecimal String
@@ -44,6 +53,43 @@ public class MhDlaNotifierUtils {
             }
         }
         return "";
+    }
+
+    public static Date parseDate(String input) {
+        Date result = null;
+        if (input != null) {
+            DateFormat inputDF = new SimpleDateFormat(INTPUT_DATE_FORMAT);
+            try {
+                result = inputDF.parse(input);
+            } catch (ParseException pe) {
+                Log.e(TAG, "Date mal formatée", pe);
+            }
+        }
+        return result;
+    }
+
+    public static String formatDate(String input) {
+        Date date = parseDate(input);
+        String result = formatDate(date);
+        return result;
+    }
+
+    public static String formatDate(Date input) {
+        String result = "n/c";
+        if (input != null) {
+            DateFormat outputDF = new SimpleDateFormat(DISPLAY_DATE_FORMAT, Locale.FRENCH);
+            result = outputDF.format(input);
+        }
+        return result;
+    }
+
+    public static String formatHour(Date input) {
+        String result = "n/c";
+        if (input != null) {
+            DateFormat outputDF = new SimpleDateFormat(HOUR_DATE_FORMAT, Locale.FRENCH);
+            result = outputDF.format(input);
+        }
+        return result;
     }
 
 }

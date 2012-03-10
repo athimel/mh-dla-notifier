@@ -24,7 +24,9 @@
  */
 package org.zoumbox.mh_dla_notifier;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -49,11 +51,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -65,9 +63,6 @@ public class Main extends AbstractActivity {
 
     public static final int REGISTER = 0;
     protected static final int CREDIT_DIALOG = 0;
-
-    public static final String INTPUT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    public static final String DISPLAY_DATE_FORMAT = "dd MMM yyyy - HH:mm:ss";
 
     protected ImageView blason;
     protected TextView name;
@@ -94,6 +89,21 @@ public class Main extends AbstractActivity {
         remainingPAs = (TextView) findViewById(R.id.pas);
 
         loadDLAs();
+
+        registerDlaAlarm();
+    }
+
+    private void registerDlaAlarm() {
+
+            Date dla = ProfileProxy.getDLA(this);
+
+            Intent intent = new Intent(this, Receiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    this.getApplicationContext(), 86956675, intent, 0);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, dla.getTime(), pendingIntent);
+//            alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pendingIntent);
+
     }
 
 
@@ -163,12 +173,12 @@ public class Main extends AbstractActivity {
             if (blason != null) {
                 this.blason.setImageBitmap(blason);
             }
-            String nom = String.format("%s - %s (%s)", properties.get("nom"), properties.get("race"), properties.get("niveau"));
+            String nom = String.format("%s (n°%s) - %s (%s)", properties.get("nom"), ProfileProxy.getTrollNumber(this), properties.get("race"), properties.get("niveau"));
             name.setText(nom);
             kd.setText(String.format("%s / %s", properties.get("nbKills"), properties.get("nbMorts")));
             pvs.setText(String.format("%s / %s", properties.get("pv"), properties.get("pvMax")));
             position.setText(String.format("X=%s | Y=%s | N=%s", properties.get("posX"), properties.get("posY"), properties.get("posN")));
-            dla.setText(formatDate(properties.get("dla")));
+            dla.setText(MhDlaNotifierUtils.formatDate(properties.get("dla")));
             remainingPAs.setText(properties.get("paRestant"));
         } catch (MissingLoginPasswordException mlpe) {
             showToast("Vous devez saisir vos identifiants");
@@ -260,22 +270,6 @@ public class Main extends AbstractActivity {
             }
         }
 
-        return result;
-    }
-
-    protected String formatDate(String input) {
-
-        String result = "n/c";
-        if (input != null) {
-            DateFormat inputDF = new SimpleDateFormat(INTPUT_DATE_FORMAT);
-            DateFormat outputDF = new SimpleDateFormat(DISPLAY_DATE_FORMAT, Locale.FRENCH);
-            try {
-                Date date = inputDF.parse(input);
-                result = outputDF.format(date);
-            } catch (ParseException pe) {
-                Log.e(TAG, "Date mal formatée", pe);
-            }
-        }
         return result;
     }
 
