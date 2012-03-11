@@ -17,11 +17,13 @@ import java.util.Date;
  */
 public class Receiver extends BroadcastReceiver {
 
-
     private static final String TAG = "MhDlaNotifier-" + Receiver.class.getSimpleName();
 
     @Override
     public void onReceive(Context context, Intent intent) {
+
+        Log.i(TAG, "Alarm received : " + Math.random());
+        Toast.makeText(context, "Alarm received : " + Math.random(), Toast.LENGTH_LONG).show();
 
         Date date = ProfileProxy.getDLA(context);
         CharSequence notifTitle = context.getText(R.string.dla_notif);
@@ -38,9 +40,5 @@ public class Receiver extends BroadcastReceiver {
         notification.setLatestEventInfo(context, notifTitle, notifText, contentIntent);
 
         notificationManager.notify(0, notification);
-
-        String trollNumber = ProfileProxy.getTrollNumber(context);
-        Log.i(TAG, "Alarm ! " + new Date());
-        Toast.makeText(context, "Troll: " + trollNumber, Toast.LENGTH_LONG).show();
     }
 }

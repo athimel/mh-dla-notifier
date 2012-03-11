@@ -51,6 +51,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
@@ -95,7 +96,13 @@ public class Main extends AbstractActivity {
 
     private void registerDlaAlarm() {
 
-            Date dla = ProfileProxy.getDLA(this);
+        Date dla = ProfileProxy.getDLA(this);
+
+        if (dla != null) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(dla);
+            calendar.add(Calendar.MINUTE, -5);
+            dla = calendar.getTime();
 
             Intent intent = new Intent(this, Receiver.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(
@@ -104,6 +111,13 @@ public class Main extends AbstractActivity {
             alarmManager.set(AlarmManager.RTC_WAKEUP, dla.getTime(), pendingIntent);
 //            alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pendingIntent);
 
+            Log.i(TAG, "Alarm set at " + dla);
+            showToast("Alarm set at " + dla);
+            
+        } else {
+            Log.w(TAG, "DLA null");
+            showToast("DLA null");
+        }
     }
 
 
