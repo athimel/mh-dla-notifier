@@ -1,6 +1,5 @@
 package org.zoumbox.mh_dla_notifier.profile;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -9,9 +8,9 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.zoumbox.mh_dla_notifier.AbstractActivity;
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierUtils;
-import org.zoumbox.mh_dla_notifier.sp.MhPublicScriptsProxy;
+import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
+import org.zoumbox.mh_dla_notifier.sp.PublicScriptsProxy;
 import org.zoumbox.mh_dla_notifier.sp.PublicScript;
 import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
 
@@ -30,10 +29,13 @@ public class ProfileProxy {
     public static final String PREFS_NAME = "org.zoumbox.mh.dla.notifier.preferences";
 
     public static final String PROPERTY_TROLL_ID = "trollId";
-    public static final String PROPERTY_DLA = "dla";
     public static final String PROPERTY_TROLL_PASSWORD = "trollPassword";
 
+    public static final String PROPERTY_DLA = "dla";
+    public static final String PROPERTY_PA_RESTANT = "paRestant";
+
     protected static Map<String, PublicScript> properties = Maps.newHashMap();
+
 
     static {
         properties.put("nom", PublicScript.ProfilPublic2);
@@ -52,7 +54,7 @@ public class ProfileProxy {
         properties.put("posN", PublicScript.Profil2);
         properties.put("pv", PublicScript.Profil2);
         properties.put("pvMax", PublicScript.Profil2);
-        properties.put("paRestant", PublicScript.Profil2);
+        properties.put(PROPERTY_PA_RESTANT, PublicScript.Profil2);
         properties.put(PROPERTY_DLA, PublicScript.Profil2);
         properties.put("fatigue", PublicScript.Profil2);
         properties.put("dureeDuTour", PublicScript.Profil2);
@@ -65,7 +67,7 @@ public class ProfileProxy {
     }
 
     public static boolean needsUpdate(Context context, PublicScript script, String trollNumber) {
-        Date lastUpdate = MhPublicScriptsProxy.geLastUpdate(context, script, trollNumber);
+        Date lastUpdate = PublicScriptsProxy.geLastUpdate(context, script, trollNumber);
         if (lastUpdate == null) {
             return true;
         } else {
@@ -86,7 +88,7 @@ public class ProfileProxy {
         return trollNumber;
     }
 
-    public static Map<String, String> fetchProperties(final Context context, String... names) throws QuotaExceededException, MissingLoginPasswordException {
+    public static Map<String, String> fetchProperties(final Context context, String... names) throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
@@ -116,7 +118,7 @@ public class ProfileProxy {
 
         if (!scripts.isEmpty()) {
             for (PublicScript type : scripts) {
-                Map<String, String> propertiesFetched = MhPublicScriptsProxy.fetch(context, type, trollNumber, trollPassword, false);
+                Map<String, String> propertiesFetched = PublicScriptsProxy.fetch(context, type, trollNumber, trollPassword, false);
                 SharedPreferences.Editor editor = preferences.edit();
                 for (Map.Entry<String, String> prop : propertiesFetched.entrySet()) {
                     editor.putString(prop.getKey(), prop.getValue());
@@ -138,7 +140,6 @@ public class ProfileProxy {
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
         String result = preferences.getString(PROPERTY_TROLL_ID, null);
-
         return result;
     }
 
@@ -165,6 +166,18 @@ public class ProfileProxy {
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
         String string = preferences.getString(PROPERTY_DLA, null);
         Date result = MhDlaNotifierUtils.parseDate(string);
+        return result;
+    }
+
+    public static Integer getPA(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
+        String string = preferences.getString(PROPERTY_PA_RESTANT, null);
+        Integer result = null;
+        try {
+            result = Integer.parseInt(string);
+        } catch (Exception eee) {
+            // Nothing to do
+        }
         return result;
     }
 }

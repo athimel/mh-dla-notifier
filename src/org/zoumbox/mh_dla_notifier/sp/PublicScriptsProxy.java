@@ -1,6 +1,5 @@
 package org.zoumbox.mh_dla_notifier.sp;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -26,11 +25,11 @@ import java.util.Map;
 /**
  * @author Arno <arno@zoumbox.org>
  */
-public class MhPublicScriptsProxy {
+public class PublicScriptsProxy {
 
-    private static final String TAG = "MhDlaNotifier-" + MhPublicScriptsProxy.class.getSimpleName();
+    private static final String TAG = "MhDlaNotifier-" + PublicScriptsProxy.class.getSimpleName();
 
-    protected static String query(String url) {
+    protected static PublicScriptResponse doHttpGET(String url) {
 
         String responseContent = "";
         BufferedReader in = null;
@@ -57,20 +56,21 @@ public class MhPublicScriptsProxy {
             }
         }
 
-        Log.i(TAG, "Response: '" + responseContent + "'");
-
-        // TODO 01/03/2012 AThimel Handle errors
-
-        return responseContent;
+        PublicScriptResponse result = new PublicScriptResponse(responseContent);
+        return result;
     }
 
-//    protected static String query(String url) {
+//    protected static PublicScriptResponse doHttpGET(String url) {
+//        String rawResult;
 //        if (url.contains("SP_Profil2.php")) {
-//            return "104259;57;-75;-41;85;80;0;2012-02-28 16:58:55;8;4;13;4;4;6;360;361;0;5;0;0;0;0;0;585;0;1;0";
+//            rawResult = "104259;57;-75;-41;85;80;0;2012-03-19 18:00:00;8;4;13;4;4;6;360;361;0;5;0;0;0;0;0;585;0;1;0";
 //        } else if (url.contains("SP_Profil3.php")) {
-//            return "104259;DevelZimZoum;57;-75;-41;6;2012-02-25 01:22:55;3;0;0;0;2;22;88;6042";
+//            rawResult = "104259;DevelZimZoum;57;-75;-41;6;2012-03-19 18:00:00;3;0;0;0;2;22;88;6042";
+//        } else {
+//            rawResult = "104259;DevelZimZoum;Kastar;19;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;122;9;1900;20;0";
 //        }
-//        return "104259;DevelZimZoum;Kastar;19;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;122;9;1900;20;0";
+//        PublicScriptResponse result = new PublicScriptResponse(rawResult);
+//        return result;
 //    }
 
     protected static final String SQL_COUNT = String.format("SELECT COUNT(*) FROM %s WHERE %s=? AND %s=? AND %s>=?",
@@ -148,7 +148,7 @@ public class MhPublicScriptsProxy {
         return result;
     }
 
-    public static Map<String, String> fetch(Context context, PublicScript script, String trollNumber, String trollPassword, boolean force) throws QuotaExceededException {
+    public static Map<String, String> fetch(Context context, PublicScript script, String trollNumber, String trollPassword, boolean force) throws QuotaExceededException, PublicScriptException {
 
         Log.i(TAG, "Fetch " + script.name() + " for troll " + trollNumber);
         ScriptCategory category = script.category;
@@ -161,19 +161,28 @@ public class MhPublicScriptsProxy {
         }
 
         String url = String.format(script.url, trollNumber, trollPassword);
-        String rawResult = query(url);
-        saveFetch(context, script, trollNumber);
+        PublicScriptResponse spResult = doHttpGET(url);
+        Log.i(TAG, "Public Script response: '" + spResult + "'");
 
-        Map<String, String> result = Maps.newLinkedHashMap();
+        if (spResult.hasError()) {
+            throw new PublicScriptException(spResult);
+        } else {
 
-        Iterable<String> iterable = Splitter.on(";").split(rawResult);
-        List<String> data = Lists.newArrayList(iterable);
+            saveFetch(context, script, trollNumber);
 
-        for (int i = 0; i < data.size(); i++) {
-            result.put(script.properties.get(i), data.get(i));
+            Map<String, String> result = Maps.newLinkedHashMap();
+
+            Iterable<String> iterable = Splitter.on(";").split(spResult.getRaw());
+            List<String> data = Lists.newArrayList(iterable);
+
+            for (int i = 0; i < data.size(); i++) {
+                String key = script.properties.get(i);
+                String value = data.get(i);
+                result.put(key, value);
+            }
+            return result;
         }
 
-        return result;
     }
 
 }

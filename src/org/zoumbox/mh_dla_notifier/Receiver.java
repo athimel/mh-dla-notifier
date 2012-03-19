@@ -7,7 +7,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 
 import java.util.Date;
@@ -23,17 +22,24 @@ public class Receiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         Log.i(TAG, "Alarm received : " + Math.random());
-        Toast.makeText(context, "Alarm received : " + Math.random(), Toast.LENGTH_LONG).show();
 
         Date date = ProfileProxy.getDLA(context);
+        Integer pa = ProfileProxy.getPA(context);
+
         CharSequence notifTitle = context.getText(R.string.dla_notif);
-        CharSequence notifText = context.getText(R.string.dla_notif_expires) + " " + MhDlaNotifierUtils.formatHour(date);
+        String format = context.getText(R.string.dla_notif_expires).toString();
+        CharSequence notifText = String.format(format, MhDlaNotifierUtils.formatHour(date), pa);
+
+        long now = System.currentTimeMillis();
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = new Notification(R.drawable.troll_accueil_1, notifTitle, System.currentTimeMillis());
+        Notification notification = new Notification(R.drawable.troll_accueil_1, notifTitle, now);
+        notification.defaults |= Notification.DEFAULT_SOUND;
+        notification.defaults |= Notification.DEFAULT_VIBRATE;
 
         // The PendingIntent to launch our activity if the user selects this notification
         Intent main = new Intent(context, Main.class);
+        main.putExtra(Main.EXTRA_FROM_NOTIFICATION, true);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, main, 0);
 
         // Set the info for the views that show in the notification panel.
@@ -41,4 +47,5 @@ public class Receiver extends BroadcastReceiver {
 
         notificationManager.notify(0, notification);
     }
+
 }
