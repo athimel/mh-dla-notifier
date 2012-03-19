@@ -65,6 +65,8 @@ public class Register extends AbstractActivity {
         String trollNumber = troll.getText().toString();
         String trollPassword = password.getText().toString();
 
+        showToast("Enregistrement. Merci de patienter...");
+
         boolean result = ProfileProxy.saveLoginPassword(this, trollNumber, trollPassword);
 
         if (result) {

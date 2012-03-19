@@ -101,39 +101,6 @@ public class Main extends AbstractActivity {
         loadDLAs();
     }
 
-    private void registerDlaAlarm() {
-
-        boolean fromNotification = getIntent().getBooleanExtra(EXTRA_FROM_NOTIFICATION, false);
-        Log.i(TAG, "From notification: " + fromNotification);
-        if (fromNotification) {
-            // Do not add a notification because, intent is coming from the notification itself
-
-            Log.i(TAG, "Clear notifications");
-            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.cancelAll();
-        } else {
-            Date dla = ProfileProxy.getDLA(this);
-            if (dla != null && dla.getTime() > System.currentTimeMillis()) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(dla);
-                calendar.add(Calendar.MINUTE, -5);
-                dla = calendar.getTime();
-
-                Intent intent = new Intent(this, Receiver.class);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                        this.getApplicationContext(), 86956675, intent, 0);
-                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                alarmManager.set(AlarmManager.RTC_WAKEUP, dla.getTime(), pendingIntent);
-    //            alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pendingIntent);
-
-                Log.i(TAG, "Next alarm at " + dla);
-                showToast("Prochaine alarme à " + MhDlaNotifierUtils.formatDate(dla)); // TODO AThimel 19/03/2012 Remove this
-            } else {
-                Log.w(TAG, "DLA null or expired: " + dla);
-            }
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -240,6 +207,39 @@ public class Main extends AbstractActivity {
             }
         }
 
+    }
+
+    private void registerDlaAlarm() {
+
+        boolean fromNotification = getIntent().getBooleanExtra(EXTRA_FROM_NOTIFICATION, false);
+        Log.i(TAG, "From notification: " + fromNotification);
+        if (fromNotification) {
+            // Do not add a notification because, intent is coming from the notification itself
+
+            Log.i(TAG, "Clear notifications");
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancelAll();
+        } else {
+            Date dla = ProfileProxy.getDLA(this);
+            if (dla != null && dla.getTime() > System.currentTimeMillis()) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(dla);
+                calendar.add(Calendar.MINUTE, -5);
+                dla = calendar.getTime();
+
+                Intent intent = new Intent(this, Receiver.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                        this.getApplicationContext(), 86956675, intent, 0);
+                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, dla.getTime(), pendingIntent);
+                //            alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pendingIntent);
+
+                Log.i(TAG, "Next alarm at " + dla);
+                showToast("Prochaine alarme à " + MhDlaNotifierUtils.formatDate(dla)); // TODO AThimel 19/03/2012 Remove this
+            } else {
+                Log.w(TAG, "DLA null or expired: " + dla);
+            }
+        }
     }
 
     protected Bitmap loadBlason(String blasonUrl) {

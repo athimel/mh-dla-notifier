@@ -3,6 +3,7 @@ package org.zoumbox.mh_dla_notifier.profile;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
@@ -117,6 +118,9 @@ public class ProfileProxy {
         });
 
         if (!scripts.isEmpty()) {
+
+            Toast.makeText(context, "Mise à jour des informations...", Toast.LENGTH_LONG).show();
+
             for (PublicScript type : scripts) {
                 Map<String, String> propertiesFetched = PublicScriptsProxy.fetch(context, type, trollNumber, trollPassword, false);
                 SharedPreferences.Editor editor = preferences.edit();
