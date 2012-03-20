@@ -68,11 +68,11 @@ public class PublicScriptsProxy {
     protected static PublicScriptResponse doMockHttpGET(String url) {
         String rawResult;
         if (url.contains("SP_Profil2.php")) {
-            rawResult = "104259;57;-75;-41;85;80;4;2012-03-20 10:42:00;8;4;13;4;4;6;360;361;0;5;0;0;0;0;0;585;0;1;0";
+            rawResult = "123456;57;-75;-41;85;80;4;2012-03-20 10:42:00;8;4;13;4;4;6;360;361;0;5;0;0;0;0;0;585;0;1;0";
         } else if (url.contains("SP_Profil3.php")) {
-            rawResult = "104259;DevelZimZoum;57;-75;-41;4;2012-03-20 10:42:00;3;0;0;0;2;22;88;6042";
+            rawResult = "123456;Mon Trõll;57;-75;-41;4;2012-03-20 10:42:00;3;0;0;0;2;22;88;6042";
         } else {
-            rawResult = "104259;DevelZimZoum;Kastar;19;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;122;9;1900;20;0";
+            rawResult = "123456;Mon Trõll;Kastar;19;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;122;9;1900;20;0";
         }
         PublicScriptResponse result = new PublicScriptResponse(rawResult);
         return result;
