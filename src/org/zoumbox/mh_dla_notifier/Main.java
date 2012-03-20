@@ -33,9 +33,12 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -66,7 +69,7 @@ import java.util.Map;
  */
 public class Main extends AbstractActivity {
 
-    private static final String TAG = "MhDlaNotifier-" + Main.class.getSimpleName();
+    private static final String TAG = Constants.LOG_PREFIX + Main.class.getSimpleName();
 
     public static final int REGISTER = 0;
     protected static final int CREDIT_DIALOG = 0;
@@ -174,18 +177,32 @@ public class Main extends AbstractActivity {
             pvs.setText(String.format("%s / %s", properties.get("pv"), properties.get("pvMax")));
             position.setText(String.format("X=%s | Y=%s | N=%s", properties.get("posX"), properties.get("posY"), properties.get("posN")));
 
-            Date rawDla = MhDlaNotifierUtils.parseDate(properties.get(ProfileProxy.PROPERTY_DLA));
-            if (rawDla != null) {
-                SpannableString dlaSpannable = new SpannableString(MhDlaNotifierUtils.formatDate(rawDla));
+            Date rawDla = ProfileProxy.getDLA(this);
+            Integer pa = ProfileProxy.getPA(this);
 
-                if (rawDla.getTime() < System.currentTimeMillis()) {
-                    showToast("Vous pouvez réactiver votre DLA");
-                    dlaSpannable.setSpan(new ForegroundColorSpan(Color.GREEN), 0, dlaSpannable.length(), 0);
+            SpannableString dlaSpannable = new SpannableString(MhDlaNotifierUtils.formatDate(rawDla));
+            SpannableString paSpannable = new SpannableString(""+pa); // Leave ""+ as integer is considered as an Android id
+
+            Date now = new Date();
+            if (now.after(rawDla)) {
+                showToast("Vous pouvez réactiver votre DLA !");
+                dlaSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.dla_expired)), 0, dlaSpannable.length(), 0);
+                dlaSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, dlaSpannable.length(), 0);
+            } else {
+                Date dlaMinus5Min = MhDlaNotifierUtils.substractMinutes(rawDla, 5);
+                if (now.after(dlaMinus5Min)) {
+                    dlaSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.dla_to_expire)), 0, dlaSpannable.length(), 0);
+                    dlaSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, dlaSpannable.length(), 0);
+                    if (pa > 0) {
+                        showToast("Il vous reste des PA à jouer !");
+                        paSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.dla_to_expire)), 0, paSpannable.length(), 0);
+                        paSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, paSpannable.length(), 0);
+                    }
                 }
-                dla.setText(dlaSpannable);
             }
 
-            remainingPAs.setText(properties.get(ProfileProxy.PROPERTY_PA_RESTANT));
+            dla.setText(dlaSpannable);
+            remainingPAs.setText(paSpannable);
 
             registerDlaAlarm();
         } catch (MissingLoginPasswordException mlpe) {
@@ -220,24 +237,22 @@ public class Main extends AbstractActivity {
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancelAll();
         } else {
-            Date dla = ProfileProxy.getDLA(this);
-            if (dla != null && dla.getTime() > System.currentTimeMillis()) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(dla);
-                calendar.add(Calendar.MINUTE, -5);
-                dla = calendar.getTime();
+            Date nextAlarm = ProfileProxy.getDLA(this);
+            if (nextAlarm != null && nextAlarm.getTime() > System.currentTimeMillis()) {
+                nextAlarm = MhDlaNotifierUtils.substractMinutes(nextAlarm, 5);
 
                 Intent intent = new Intent(this, Receiver.class);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(
                         this.getApplicationContext(), 86956675, intent, 0);
                 AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                alarmManager.set(AlarmManager.RTC_WAKEUP, dla.getTime(), pendingIntent);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, nextAlarm.getTime(), pendingIntent);
                 //            alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pendingIntent);
 
-                Log.i(TAG, "Next alarm at " + dla);
-                showToast("Prochaine alarme à " + MhDlaNotifierUtils.formatDate(dla)); // TODO AThimel 19/03/2012 Remove this
+                Log.i(TAG, "Next alarm at " + nextAlarm);
+                String text = getText(R.string.next_alarm).toString();
+                showToast(String.format(text, MhDlaNotifierUtils.formatDay(nextAlarm), MhDlaNotifierUtils.formatHour(nextAlarm)));
             } else {
-                Log.w(TAG, "DLA null or expired: " + dla);
+                Log.w(TAG, "DLA null or expired: " + nextAlarm);
             }
         }
     }
@@ -322,4 +337,9 @@ public class Main extends AbstractActivity {
         return result;
     }
 
+    public void onPlayButtonClicked(View target) {
+        Uri uri = Uri.parse(Constants.MH_PLAY_URL);
+        Intent webIntent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(webIntent);
+    }
 }

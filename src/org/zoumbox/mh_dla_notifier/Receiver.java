@@ -16,7 +16,7 @@ import java.util.Date;
  */
 public class Receiver extends BroadcastReceiver {
 
-    private static final String TAG = "MhDlaNotifier-" + Receiver.class.getSimpleName();
+    private static final String TAG = Constants.LOG_PREFIX + Receiver.class.getSimpleName();
 
     @Override
     public void onReceive(Context context, Intent intent) {

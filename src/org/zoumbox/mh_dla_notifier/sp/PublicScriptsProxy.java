@@ -12,6 +12,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.zoumbox.mh_dla_notifier.Constants;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,9 +28,13 @@ import java.util.Map;
  */
 public class PublicScriptsProxy {
 
-    private static final String TAG = "MhDlaNotifier-" + PublicScriptsProxy.class.getSimpleName();
+    private static final String TAG = Constants.LOG_PREFIX + PublicScriptsProxy.class.getSimpleName();
 
     protected static PublicScriptResponse doHttpGET(String url) {
+
+        if (Constants.mock) {
+            return doMockHttpGET(url);
+        }
 
         String responseContent = "";
         BufferedReader in = null;
@@ -60,18 +65,18 @@ public class PublicScriptsProxy {
         return result;
     }
 
-//    protected static PublicScriptResponse doHttpGET(String url) {
-//        String rawResult;
-//        if (url.contains("SP_Profil2.php")) {
-//            rawResult = "104259;57;-75;-41;85;80;0;2012-03-19 18:00:00;8;4;13;4;4;6;360;361;0;5;0;0;0;0;0;585;0;1;0";
-//        } else if (url.contains("SP_Profil3.php")) {
-//            rawResult = "104259;DevelZimZoum;57;-75;-41;6;2012-03-19 18:00:00;3;0;0;0;2;22;88;6042";
-//        } else {
-//            rawResult = "104259;DevelZimZoum;Kastar;19;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;122;9;1900;20;0";
-//        }
-//        PublicScriptResponse result = new PublicScriptResponse(rawResult);
-//        return result;
-//    }
+    protected static PublicScriptResponse doMockHttpGET(String url) {
+        String rawResult;
+        if (url.contains("SP_Profil2.php")) {
+            rawResult = "104259;57;-75;-41;85;80;4;2012-03-20 10:42:00;8;4;13;4;4;6;360;361;0;5;0;0;0;0;0;585;0;1;0";
+        } else if (url.contains("SP_Profil3.php")) {
+            rawResult = "104259;DevelZimZoum;57;-75;-41;4;2012-03-20 10:42:00;3;0;0;0;2;22;88;6042";
+        } else {
+            rawResult = "104259;DevelZimZoum;Kastar;19;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;122;9;1900;20;0";
+        }
+        PublicScriptResponse result = new PublicScriptResponse(rawResult);
+        return result;
+    }
 
     protected static final String SQL_COUNT = String.format("SELECT COUNT(*) FROM %s WHERE %s=? AND %s=? AND %s>=?",
             MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_CATEGORY_COLUMN, MhDlaSQLHelper.SCRIPTS_DATE_COLUMN);

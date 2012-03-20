@@ -9,6 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -17,11 +18,12 @@ import java.util.Locale;
  */
 public class MhDlaNotifierUtils {
 
-    private static final String TAG = "MhDlaNotifier-" + MhDlaNotifierUtils.class.getSimpleName();
+    private static final String TAG = Constants.LOG_PREFIX + MhDlaNotifierUtils.class.getSimpleName();
 
     public static final String INTPUT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String HOUR_DATE_FORMAT = "HH:mm:ss";
-    public static final String DISPLAY_DATE_FORMAT = "dd MMM yyyy - " + HOUR_DATE_FORMAT;
+    public static final String DAY_DATE_FORMAT = "dd MMM yyyy";
+    public static final String DISPLAY_DATE_FORMAT = DAY_DATE_FORMAT + " - " + HOUR_DATE_FORMAT;
 
     /**
      * Encodes a raw byte[] to an hexadecimal String
@@ -83,12 +85,29 @@ public class MhDlaNotifierUtils {
         return result;
     }
 
+    public static String formatDay(Date input) {
+        String result = "n/c";
+        if (input != null) {
+            DateFormat outputDF = new SimpleDateFormat(DAY_DATE_FORMAT, Locale.FRENCH);
+            result = outputDF.format(input);
+        }
+        return result;
+    }
+
     public static String formatHour(Date input) {
         String result = "n/c";
         if (input != null) {
             DateFormat outputDF = new SimpleDateFormat(HOUR_DATE_FORMAT, Locale.FRENCH);
             result = outputDF.format(input);
         }
+        return result;
+    }
+
+    public static Date substractMinutes(Date date, int minutes) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.MINUTE, -minutes);
+        Date result = calendar.getTime();
         return result;
     }
 

@@ -43,6 +43,8 @@
     <string name="close">Fermer</string>
     <string name="save">Enregistrer</string>
 
+    <string name="play">Jouer votre Trõll</string>
+
     <string name="troll">Trõll</string>
     <string name="troll_number">Numéro de Trõll</string>
     <string name="password">Mot de passe</string>
@@ -53,6 +55,7 @@
     <string name="pvs">Points de vie</string>
     <string name="position">Position</string>
 
+    <string name="next_alarm" formatted="false">Prochaine alarme le %s à %s</string>
     <string name="dla_notif">Attention à votre DLA !</string>
     <string name="dla_notif_expires" formatted="false">DLA: %s - %d PA restant(s)</string>
 

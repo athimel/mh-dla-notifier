@@ -37,7 +37,7 @@ import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
  */
 public class Register extends AbstractActivity {
 
-    private static final String TAG = "MhDlaNotifier-" + Register.class.getSimpleName();
+    private static final String TAG = Constants.LOG_PREFIX + Register.class.getSimpleName();
 
     protected EditText troll;
     protected EditText password;
@@ -70,7 +70,6 @@ public class Register extends AbstractActivity {
         boolean result = ProfileProxy.saveLoginPassword(this, trollNumber, trollPassword);
 
         if (result) {
-            showToast("Identifiants enregistrés");
             setResult(RESULT_OK);
             finish();
         } else {

@@ -61,4 +61,6 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <color name="dla_expired">#009400</color>
+    <color name="dla_to_expire">#FF0000</color>
 </resources>

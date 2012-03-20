@@ -9,6 +9,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import org.zoumbox.mh_dla_notifier.Constants;
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierUtils;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptsProxy;
@@ -25,7 +26,7 @@ import java.util.Set;
  */
 public class ProfileProxy {
 
-    private static final String TAG = "MhDlaNotifier-" + ProfileProxy.class.getSimpleName();
+    private static final String TAG = Constants.LOG_PREFIX + ProfileProxy.class.getSimpleName();
 
     public static final String PREFS_NAME = "org.zoumbox.mh.dla.notifier.preferences";
 
