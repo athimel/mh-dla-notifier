@@ -39,6 +39,7 @@
 
     <string name="credits_leader">Project Leader</string>
     <string name="credits_contributor">Contributeur</string>
+    <string name="credits_illustrator">Illustrateur</string>
 
     <string name="close">Fermer</string>
     <string name="save">Enregistrer</string>
