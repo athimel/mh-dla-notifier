@@ -33,7 +33,7 @@ public class Receiver extends BroadcastReceiver {
         long now = System.currentTimeMillis();
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = new Notification(R.drawable.troll_accueil_1, notifTitle, now);
+        Notification notification = new Notification(R.drawable.trarnoll_square, notifTitle, now);
         notification.defaults |= Notification.DEFAULT_SOUND;
         notification.defaults |= Notification.DEFAULT_VIBRATE;
 
