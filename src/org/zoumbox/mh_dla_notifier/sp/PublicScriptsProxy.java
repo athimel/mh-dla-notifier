@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
@@ -18,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.UnknownHostException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -30,7 +33,7 @@ public class PublicScriptsProxy {
 
     private static final String TAG = Constants.LOG_PREFIX + PublicScriptsProxy.class.getSimpleName();
 
-    protected static PublicScriptResponse doHttpGET(String url) {
+    protected static PublicScriptResponse doHttpGET(String url) throws NetworkUnavailableException {
 
         if (Constants.mock) {
             return doMockHttpGET(url);
@@ -49,6 +52,9 @@ public class PublicScriptsProxy {
                 responseContent += line;
             }
             in.close();
+        } catch (UnknownHostException uhe) {
+            Log.e(TAG, "Network error", uhe);
+            throw new NetworkUnavailableException(uhe);
         } catch (Exception eee) {
             Log.e(TAG, "Exception", eee);
         } finally {
@@ -153,7 +159,7 @@ public class PublicScriptsProxy {
         return result;
     }
 
-    public static Map<String, String> fetch(Context context, PublicScript script, String trollNumber, String trollPassword, boolean force) throws QuotaExceededException, PublicScriptException {
+    public static Map<String, String> fetch(Context context, PublicScript script, String trollNumber, String trollPassword, boolean force) throws QuotaExceededException, PublicScriptException, NetworkUnavailableException {
 
         Log.i(TAG, "Fetch " + script.name() + " for troll " + trollNumber);
         ScriptCategory category = script.category;

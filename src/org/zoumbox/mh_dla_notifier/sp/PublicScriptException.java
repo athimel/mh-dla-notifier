@@ -3,7 +3,7 @@ package org.zoumbox.mh_dla_notifier.sp;
 /**
  * @author Arnaud Thimel <thimel@codelutin.com>
  */
-public class PublicScriptException extends Throwable {
+public class PublicScriptException extends Exception {
 
     private static final long serialVersionUID = 1L;
 

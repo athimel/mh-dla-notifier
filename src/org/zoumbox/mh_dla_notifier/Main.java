@@ -50,6 +50,7 @@ import android.widget.TextView;
 import com.google.common.base.Strings;
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
+import org.zoumbox.mh_dla_notifier.sp.NetworkUnavailableException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
 import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
 
@@ -222,6 +223,9 @@ public class Main extends AbstractActivity {
                 Intent intent = new Intent(this, Register.class);
                 startActivityForResult(intent, REGISTER);
             }
+        } catch (NetworkUnavailableException e) {
+            Log.i(TAG, "Pas de réseau, mise à jour des informations impossible");
+            showToast("Pas de réseau, mise à jour des informations impossible");
         }
 
     }

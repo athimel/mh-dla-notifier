@@ -11,6 +11,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.zoumbox.mh_dla_notifier.Constants;
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierUtils;
+import org.zoumbox.mh_dla_notifier.sp.NetworkUnavailableException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptsProxy;
 import org.zoumbox.mh_dla_notifier.sp.PublicScript;
@@ -90,7 +91,7 @@ public class ProfileProxy {
         return trollNumber;
     }
 
-    public static Map<String, String> fetchProperties(final Context context, String... names) throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException {
+    public static Map<String, String> fetchProperties(final Context context, String... names) throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException, NetworkUnavailableException {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
