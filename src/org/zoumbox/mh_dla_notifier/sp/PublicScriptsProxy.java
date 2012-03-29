@@ -4,8 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.util.Log;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
@@ -15,6 +13,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.zoumbox.mh_dla_notifier.Constants;
+import org.zoumbox.mh_dla_notifier.Pair;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -74,9 +73,9 @@ public class PublicScriptsProxy {
     protected static PublicScriptResponse doMockHttpGET(String url) {
         String rawResult;
         if (url.contains("SP_Profil2.php")) {
-            rawResult = "123456;57;-75;-41;85;80;4;2012-03-24 22:05:00;8;4;13;4;4;6;360;361;0;5;0;0;0;0;0;585;0;1;0";
+            rawResult = "123456;57;-75;-41;85;80;0;2012-03-29 11:30:00;8;4;13;4;4;6;360;361;0;5;0;0;0;0;0;585;0;1;0";
         } else if (url.contains("SP_Profil3.php")) {
-            rawResult = "123456;Mon Trõll;57;-75;-41;4;2012-03-24 22:05:00;3;0;0;0;2;22;88;6042";
+            rawResult = "123456;Mon Trõll;57;-75;-41;0;2012-03-29 11:30:00;3;0;0;0;2;22;88;6042";
         } else {
             rawResult = "123456;Mon Trõll;Kastar;19;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;122;9;1900;20;0";
         }
@@ -159,16 +158,14 @@ public class PublicScriptsProxy {
         return result;
     }
 
-    public static Map<String, String> fetch(Context context, PublicScript script, String trollNumber, String trollPassword, boolean force) throws QuotaExceededException, PublicScriptException, NetworkUnavailableException {
+    public static Map<String, String> fetch(Context context, PublicScript script, String trollNumber, String trollPassword) throws QuotaExceededException, PublicScriptException, NetworkUnavailableException {
 
         Log.i(TAG, "Fetch " + script.name() + " for troll " + trollNumber);
         ScriptCategory category = script.category;
         int count = checkQuota(context, script, trollNumber);
         if (count >= category.quota) {
-            Log.i(TAG, "Quota is exceeded for category '" + category + "': " + count + "/" + category.quota + ". Force usage ? " + force);
-            if (!force) {
-                throw new QuotaExceededException(category, count);
-            }
+            Log.i(TAG, "Quota is exceeded for category '" + category + "': " + count + "/" + category.quota);
+            throw new QuotaExceededException(category, count);
         }
 
         String url = String.format(script.url, trollNumber, trollPassword);
@@ -196,4 +193,9 @@ public class PublicScriptsProxy {
 
     }
 
+    public static Map<String, String> fetch(Context context, PublicScript script, Pair<String, String> idAndPassword) throws PublicScriptException, QuotaExceededException, NetworkUnavailableException {
+        String trollNumber = idAndPassword.left();
+        String trollPassword = idAndPassword.right();
+        return fetch(context, script, trollNumber, trollPassword);
+    }
 }

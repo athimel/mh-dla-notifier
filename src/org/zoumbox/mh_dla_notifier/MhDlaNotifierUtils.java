@@ -1,6 +1,8 @@
 package org.zoumbox.mh_dla_notifier;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 import com.google.common.base.Strings;
 import org.apache.commons.codec.binary.Hex;
 
@@ -109,6 +111,10 @@ public class MhDlaNotifierUtils {
         calendar.add(Calendar.MINUTE, -minutes);
         Date result = calendar.getTime();
         return result;
+    }
+
+    public static void toast(Context context, CharSequence message) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
 
 }

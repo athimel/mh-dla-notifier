@@ -57,7 +57,9 @@
     <string name="position">Position</string>
 
     <string name="next_alarm" formatted="false">Prochaine alarme le %s à %s</string>
-    <string name="dla_notif">Attention à votre DLA !</string>
-    <string name="dla_notif_expires" formatted="false">DLA: %s - %d PA restant(s)</string>
+    <string name="dla_expiring_title">Attention à votre DLA !</string>
+    <string name="dla_expiring_text" formatted="false">DLA: %s - %d PA restant(s)</string>
+    <string name="dla_expired_title">Vous pouvez réactiver votre DLA !</string>
+    <string name="dla_expired_text" formatted="false">Elle a expiré à %s</string>
 
 </resources>

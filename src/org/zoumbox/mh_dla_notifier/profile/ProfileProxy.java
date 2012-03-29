@@ -11,10 +11,11 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.zoumbox.mh_dla_notifier.Constants;
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierUtils;
+import org.zoumbox.mh_dla_notifier.Pair;
 import org.zoumbox.mh_dla_notifier.sp.NetworkUnavailableException;
+import org.zoumbox.mh_dla_notifier.sp.PublicScript;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptsProxy;
-import org.zoumbox.mh_dla_notifier.sp.PublicScript;
 import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
 
 import java.util.Calendar;
@@ -95,11 +96,8 @@ public class ProfileProxy {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
-        final String trollNumber = preferences.getString(PROPERTY_TROLL_ID, null);
-        String trollPassword = preferences.getString(PROPERTY_TROLL_PASSWORD, null);
-        if (Strings.isNullOrEmpty(trollNumber) || Strings.isNullOrEmpty(trollPassword)) {
-            throw new MissingLoginPasswordException();
-        }
+        Pair<String, String> idAndPassword = loadIdPassword(preferences);
+        final String trollNumber = idAndPassword.left();
 
         Set<PublicScript> scripts = Sets.newLinkedHashSet();
         Log.i(TAG, "Requesting properties: " + names);
@@ -124,12 +122,8 @@ public class ProfileProxy {
             Toast.makeText(context, "Mise à jour des informations...", Toast.LENGTH_LONG).show();
 
             for (PublicScript type : scripts) {
-                Map<String, String> propertiesFetched = PublicScriptsProxy.fetch(context, type, trollNumber, trollPassword, false);
-                SharedPreferences.Editor editor = preferences.edit();
-                for (Map.Entry<String, String> prop : propertiesFetched.entrySet()) {
-                    editor.putString(prop.getKey(), prop.getValue());
-                }
-                editor.commit();
+                Map<String, String> propertiesFetched = PublicScriptsProxy.fetch(context, type, idAndPassword);
+                saveProperties(preferences, propertiesFetched);
             }
         }
 
@@ -141,6 +135,14 @@ public class ProfileProxy {
         return result;
     }
 
+    protected static void saveProperties(SharedPreferences preferences, Map<String, String> propertiesFetched) {
+        SharedPreferences.Editor editor = preferences.edit();
+        for (Map.Entry<String, String> prop : propertiesFetched.entrySet()) {
+            editor.putString(prop.getKey(), prop.getValue());
+        }
+        editor.commit();
+    }
+
     public static String loadLogin(Context context) {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
@@ -149,7 +151,7 @@ public class ProfileProxy {
         return result;
     }
 
-    public static boolean saveLoginPassword(Context context, String trollNumber, String trollPassword) {
+    public static boolean saveIdPassword(Context context, String trollNumber, String trollPassword) {
         String checkedTrollNumber = Strings.nullToEmpty(trollNumber).trim();
         String checkedTrollPassword = Strings.nullToEmpty(trollPassword).trim();
 
@@ -168,15 +170,57 @@ public class ProfileProxy {
         return true;
     }
 
-    public static Date getDLA(Context context) {
+    protected static Pair<String, String> loadIdPassword(SharedPreferences preferences) throws MissingLoginPasswordException {
+
+        if (Constants.mock) {
+            return new Pair<String, String>("123456", "******");
+        }
+
+        final String trollNumber = preferences.getString(PROPERTY_TROLL_ID, null);
+        String trollPassword = preferences.getString(PROPERTY_TROLL_PASSWORD, null);
+        if (Strings.isNullOrEmpty(trollNumber) || Strings.isNullOrEmpty(trollPassword)) {
+            throw new MissingLoginPasswordException();
+        }
+
+        Pair<String, String> result = new Pair<String, String>(trollNumber, trollPassword);
+        return result;
+    }
+
+    public static Pair<Date, Integer> refreshDLA(Context context) throws MissingLoginPasswordException, PublicScriptException {
+
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
+
+        Pair<String, String> idAndPassword = loadIdPassword(preferences);
+
+        Map<String, String> propertiesFetched = null;
+        try {
+            propertiesFetched = PublicScriptsProxy.fetch(context, PublicScript.Profil2, idAndPassword);
+            saveProperties(preferences, propertiesFetched);
+        } catch (QuotaExceededException qee) {
+            MhDlaNotifierUtils.toast(context, "Quota atteint, pas de mise à jour");
+        } catch (NetworkUnavailableException nue) {
+            MhDlaNotifierUtils.toast(context, "Pas de réseau, pas de mise à jour");
+        }
+
+        Date dla = getDLA(preferences);
+        Integer pa = getPA(preferences);
+        Pair<Date, Integer> result = new Pair<Date, Integer>(dla, pa);
+        return result;
+    }
+
+    protected static Date getDLA(SharedPreferences preferences) {
         String string = preferences.getString(PROPERTY_DLA, null);
         Date result = MhDlaNotifierUtils.parseDate(string);
         return result;
     }
 
-    public static Integer getPA(Context context) {
+    public static Date getDLA(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
+        Date result = getDLA(preferences);
+        return result;
+    }
+
+    public static Integer getPA(SharedPreferences preferences) {
         String string = preferences.getString(PROPERTY_PA_RESTANT, null);
         Integer result = null;
         try {
@@ -184,6 +228,11 @@ public class ProfileProxy {
         } catch (Exception eee) {
             // Nothing to do
         }
+        return result;
+    }
+    public static Integer getPA(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
+        Integer result = getPA(preferences);
         return result;
     }
 }

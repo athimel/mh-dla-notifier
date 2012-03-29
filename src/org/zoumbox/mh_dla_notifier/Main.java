@@ -85,7 +85,6 @@ public class Main extends AbstractActivity {
     protected TextView dla;
     protected TextView remainingPAs;
 
-
     /**
      * Called when the activity is first created.
      */
@@ -186,7 +185,7 @@ public class Main extends AbstractActivity {
 
             Date now = new Date();
             if (now.after(rawDla)) {
-                showToast("Vous pouvez réactiver votre DLA !");
+                showToast(getText(R.string.dla_expired_title));
                 dlaSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.dla_expired)), 0, dlaSpannable.length(), 0);
                 dlaSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, dlaSpannable.length(), 0);
             } else {
@@ -241,22 +240,14 @@ public class Main extends AbstractActivity {
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancelAll();
         } else {
-            Date nextAlarm = ProfileProxy.getDLA(this);
-            if (nextAlarm != null && nextAlarm.getTime() > System.currentTimeMillis()) {
-                nextAlarm = MhDlaNotifierUtils.substractMinutes(nextAlarm, 5);
-
-                Intent intent = new Intent(this, Receiver.class);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                        this.getApplicationContext(), 86956675, intent, 0);
-                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                alarmManager.set(AlarmManager.RTC_WAKEUP, nextAlarm.getTime(), pendingIntent);
-                //            alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pendingIntent);
-
+            Date dla = ProfileProxy.getDLA(this);
+            Date nextAlarm = Receiver.registerDlaAlarm(this, dla);
+            if (nextAlarm != null) {
                 Log.i(TAG, "Next alarm at " + nextAlarm);
                 String text = getText(R.string.next_alarm).toString();
                 showToast(String.format(text, MhDlaNotifierUtils.formatDay(nextAlarm), MhDlaNotifierUtils.formatHour(nextAlarm)));
             } else {
-                Log.w(TAG, "DLA null or expired: " + nextAlarm);
+                Log.w(TAG, "DLA null or expired: " + dla);
             }
         }
     }
