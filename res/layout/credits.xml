@@ -35,7 +35,7 @@
         <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent"
                       android:layout_height="wrap_content" android:layout_marginBottom="10dip">
             <ImageView android:layout_width="256px" android:layout_height="256px"
-            android:src="@drawable/trarnoll_256" android:scaleType="fitXY" />
+                       android:src="@drawable/trarnoll_256" android:scaleType="fitXY"/>
             <LinearLayout android:orientation="vertical" android:layout_width="wrap_content"
                           android:layout_height="wrap_content" android:layout_marginTop="10dip"
                           android:layout_marginLeft="20dip">
@@ -68,7 +68,8 @@
                 <TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="Maxime"
                           android:textColor="#444444"/>
                 <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
-                          android:text="@string/credits_illustrator" android:textColor="#444444" android:textStyle="italic"/>
+                          android:text="@string/credits_illustrator" android:textColor="#444444"
+                          android:textStyle="italic"/>
             </LinearLayout>
         </LinearLayout>
 

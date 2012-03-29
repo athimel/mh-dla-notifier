@@ -248,6 +248,7 @@ public class ProfileProxy {
         }
         return result;
     }
+
     public static Integer getPA(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
         Integer result = getPA(preferences);

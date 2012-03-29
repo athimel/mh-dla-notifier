@@ -24,15 +24,12 @@
  */
 package org.zoumbox.mh_dla_notifier;
 
-import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -62,7 +59,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
@@ -175,7 +171,7 @@ public class Main extends AbstractActivity {
     }
 
     protected void loadDLAs() {
-        
+
         Log.i(TAG, "Loading DLAs");
 
         try {
@@ -196,7 +192,7 @@ public class Main extends AbstractActivity {
             Integer pa = ProfileProxy.getPA(this);
 
             SpannableString dlaSpannable = new SpannableString(MhDlaNotifierUtils.formatDate(rawDla));
-            SpannableString paSpannable = new SpannableString(""+pa); // Leave ""+ as integer is considered as an Android id
+            SpannableString paSpannable = new SpannableString("" + pa); // Leave ""+ as integer is considered as an Android id
 
             Date now = new Date();
             if (now.after(rawDla)) {
