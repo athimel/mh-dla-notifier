@@ -173,7 +173,10 @@ public class ProfileProxy {
     protected static Pair<String, String> loadIdPassword(SharedPreferences preferences) throws MissingLoginPasswordException {
 
         if (Constants.mock) {
-            return new Pair<String, String>("123456", "******");
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString(PROPERTY_TROLL_ID, "123456");
+            editor.putString(PROPERTY_TROLL_PASSWORD, "*******");
+            editor.commit();
         }
 
         final String trollNumber = preferences.getString(PROPERTY_TROLL_ID, null);
