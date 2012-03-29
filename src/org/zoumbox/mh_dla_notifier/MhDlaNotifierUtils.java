@@ -113,8 +113,14 @@ public class MhDlaNotifierUtils {
         return result;
     }
 
-    public static void toast(Context context, CharSequence message) {
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+    public static void toast(Context context, CharSequence message, Object... args) {
+        if (message != null) {
+            String messageString = message.toString();
+            if (args != null) {
+                messageString = String.format(messageString, args);
+            }
+            Toast.makeText(context, messageString, Toast.LENGTH_LONG).show();
+        }
     }
 
 }

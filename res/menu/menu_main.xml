@@ -31,6 +31,10 @@
           android:icon="@android:drawable/ic_menu_info_details"
           android:title="@string/register"/>
 
+    <item android:id="@+id/refresh"
+          android:icon="@android:drawable/ic_menu_view"
+          android:title="@string/refresh"/>
+
     <item android:id="@+id/qr_code_market"
           android:icon="@android:drawable/ic_menu_share"
           android:title="@string/qr_code_market"/>

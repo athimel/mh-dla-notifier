@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
@@ -17,7 +18,9 @@ import org.zoumbox.mh_dla_notifier.sp.PublicScript;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptsProxy;
 import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
+import org.zoumbox.mh_dla_notifier.sp.ScriptCategory;
 
+import javax.annotation.Nullable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -75,8 +78,8 @@ public class ProfileProxy {
         if (lastUpdate == null) {
             return true;
         } else {
-            int dailyQuota = script.category.getQuota();
-            int minutesDelay = 72 * 60 / dailyQuota; //FIXME AThimel 29/03/2012 72h instead of 24 for the moment to avoid mistakes
+            int dailyQuota = GET_USABLE_QUOTA.apply(script.category);
+            int minutesDelay = 24 * 60 / dailyQuota;
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.MINUTE, -minutesDelay);
             Date delay = calendar.getTime();
@@ -84,6 +87,18 @@ public class ProfileProxy {
             return result;
         }
     }
+
+    public static final Function<ScriptCategory, Integer> GET_USABLE_QUOTA = new Function<ScriptCategory, Integer>() {
+        @Override
+        public Integer apply(@Nullable ScriptCategory input) {
+            if (input == null) {
+                return 1;
+            }
+            int dailyQuota = input.getQuota();
+            int result = dailyQuota / 3; //FIXME AThimel 29/03/2012 divide by 3 for the moment to avoid mistakes
+            return result;
+        }
+    };
 
     public static String getTrollNumber(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);

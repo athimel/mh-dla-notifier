@@ -53,6 +53,7 @@ import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.sp.NetworkUnavailableException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
 import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
+import org.zoumbox.mh_dla_notifier.sp.ScriptCategory;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -126,9 +127,23 @@ public class Main extends AbstractActivity {
                 Intent intent = new Intent(this, Register.class);
                 startActivityForResult(intent, REGISTER);
                 return true;
+            case R.id.refresh:
+                refresh();
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    protected void refresh() {
+        int quota = ProfileProxy.GET_USABLE_QUOTA.apply(ScriptCategory.DYNAMIC) / 2; // %2 pour garder une marge de sécu vis à vis des maj auto
+        showToast("Attention à ne pas dépasser %d mises à jour manuelles par jour", quota);
+        try {
+            ProfileProxy.refreshDLA(this);
+        } catch (Exception eee) {
+            // Nevermind refresh is successful or not
+            Log.w(TAG, "Unexpected error", eee);
+        }
+        loadDLAs();
     }
 
     @Override
