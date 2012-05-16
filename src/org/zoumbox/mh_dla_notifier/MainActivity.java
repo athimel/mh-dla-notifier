@@ -70,6 +70,8 @@ public class MainActivity extends AbstractActivity {
     private static final String TAG = Constants.LOG_PREFIX + MainActivity.class.getSimpleName();
 
     public static final int REGISTER = 0;
+    public static final int PREFERENCES = 1;
+
     protected static final int CREDIT_DIALOG = 0;
 
     public static final String EXTRA_FROM_NOTIFICATION = "from-notification";
@@ -127,7 +129,7 @@ public class MainActivity extends AbstractActivity {
                 refresh();
             case R.id.preferences:
                 Intent intent_preferences = new Intent(this, PreferencesActivity.class);
-                startActivity(intent_preferences);
+                startActivityForResult(intent_preferences, PREFERENCES);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -170,6 +172,8 @@ public class MainActivity extends AbstractActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == REGISTER) {
                 loadDLAs();
+            } else if (requestCode == PREFERENCES) {
+                registerDlaAlarm();
             }
         }
     }
@@ -196,10 +200,10 @@ public class MainActivity extends AbstractActivity {
             SpannableString pvSpannable = new SpannableString(pvText);
             try {
                 if (Integer.parseInt(pv) < (Integer.parseInt(pvMax) * Constants.PV_ALARM_THRESHOLD / 100)) {
-                    pvSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.pv_too_low)), 0, pv.length(), 0);
+                    pvSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.pv_alarm)), 0, pv.length(), 0);
                     pvSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, pv.length(), 0);
                 } else if (Integer.parseInt(pv) < (Integer.parseInt(pvMax) * Constants.PV_WARM_THRESHOLD / 100)) {
-                    pvSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.pv_too_low)), 0, pv.length(), 0);
+                    pvSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.pv_warn)), 0, pv.length(), 0);
                     pvSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, pv.length(), 0);
                 }
             } catch (NumberFormatException nfe) {

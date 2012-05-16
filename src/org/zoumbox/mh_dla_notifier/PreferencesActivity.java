@@ -26,18 +26,19 @@ package org.zoumbox.mh_dla_notifier;
 
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
-import com.google.common.base.Strings;
-import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 
 /**
- * Activité principale
+ * Activité pour l'affichage/saisie des préférences
  */
 public class PreferencesActivity extends AbstractActivity {
 
     private static final String TAG = Constants.LOG_PREFIX + PreferencesActivity.class.getSimpleName();
+
+    protected EditText notificationDelayEditText;
+    protected CheckBox notifyWithoutPaCheckBox;
 
     /**
      * Called when the activity is first created.
@@ -46,12 +47,38 @@ public class PreferencesActivity extends AbstractActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.preferences);
+
+        notificationDelayEditText = (EditText) findViewById(R.id.notification_delay);
+        notificationDelayEditText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        notifyWithoutPaCheckBox = (CheckBox) findViewById(R.id.notify_without_pa);
+
+        PreferencesHolder preferences = PreferencesHolder.load(this);
+        notificationDelayEditText.setText(String.format("%d", preferences.notificationDelay));
+        notifyWithoutPaCheckBox.setChecked(preferences.notifyWithoutPA);
     }
 
     public void onSaveButtonClicked(View target) {
 
         showToast("Enregistrement des préférences");
 
+        PreferencesHolder preferencesHolder = new PreferencesHolder();
+
+        try {
+            preferencesHolder.notificationDelay = Integer.parseInt(notificationDelayEditText.getText().toString());
+        } catch (NumberFormatException nfe) {
+            // Nothing to do
+        }
+        if (preferencesHolder.notificationDelay <= 0) {
+            showToast("Le délai de notification doit être une valeur positive");
+        } else {
+
+            preferencesHolder.notifyWithoutPA = notifyWithoutPaCheckBox.isChecked();
+
+            preferencesHolder.save(this);
+
+            setResult(RESULT_OK);
+            finish();
+        }
     }
 
 }

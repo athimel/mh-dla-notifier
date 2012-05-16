@@ -34,25 +34,19 @@ public class Receiver extends BroadcastReceiver {
         }
     };
 
-    protected static final Predicate<Date> IS_MORE_THAN_5_MIN = new Predicate<Date>() {
-        @Override
-        public boolean apply(@Nullable Date dla) {
-            if (dla == null) {
-                return false;
-            }
-            Date dlaMinus5Min = MhDlaNotifierUtils.substractMinutes(dla, Constants.NOTIFICATION_DELAY);
-            boolean result = new Date().before(dlaMinus5Min);
-            return result;
-        }
-    };
+    protected boolean needsNotificationAccordingToPA(PreferencesHolder preferences, int pa) {
+        boolean result = pa > 0 || preferences.notifyWithoutPA;
+        return result;
+    }
 
-    protected static final Predicate<Integer> NOTIFY_WITHOUT_PA = new Predicate<Integer>() {
-        @Override
-        public boolean apply(@Nullable Integer input) {
-            // TODO AThimel 29/03/2012 Evolution #87
-            return true;
+    protected boolean mustRegisterAlarm(PreferencesHolder preferences, Date dla) {
+        if (dla == null) {
+            return false;
         }
-    };
+        Date dlaMinusDelay = MhDlaNotifierUtils.substractMinutes(dla, preferences.notificationDelay);
+        boolean result = new Date().before(dlaMinusDelay);
+        return result;
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -72,11 +66,13 @@ public class Receiver extends BroadcastReceiver {
             Date dla = dlaPaPair.left();
             Integer pa = dlaPaPair.right();
 
-            if (IS_MORE_THAN_5_MIN.apply(dla)) {
-                registerDlaAlarm(context, dla);
+            PreferencesHolder preferences = PreferencesHolder.load(context);
+
+            if (mustRegisterAlarm(preferences, dla)) {
+                registerDlaAlarm(context, dla, preferences);
             } else
                 // On vérifie que la date est bien dans le futur et dans moins de 5 min
-                if (IS_IN_THE_FUTURE.apply(dla) && NOTIFY_WITHOUT_PA.apply(pa)) {
+                if (IS_IN_THE_FUTURE.apply(dla) && needsNotificationAccordingToPA(preferences, pa)) {
                     notifyDlaAboutToExpire(context, dla, pa);
                 } else {
                     notifyDlaExpired(context, dla, pa);
@@ -126,9 +122,15 @@ public class Receiver extends BroadcastReceiver {
     }
 
     public static Date registerDlaAlarm(Context context, Date dla) {
+        PreferencesHolder preferencesHolder = PreferencesHolder.load(context);
+        Date result = registerDlaAlarm(context, dla, preferencesHolder);
+        return result;
+    }
+
+    protected static Date registerDlaAlarm(Context context, Date dla, PreferencesHolder preferences) {
         Date nextAlarm = null;
         if (dla != null && IS_IN_THE_FUTURE.apply(dla)) {
-            nextAlarm = MhDlaNotifierUtils.substractMinutes(dla, Constants.NOTIFICATION_DELAY);
+            nextAlarm = MhDlaNotifierUtils.substractMinutes(dla, preferences.notificationDelay);
 
             Intent intent = new Intent(context, Receiver.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(

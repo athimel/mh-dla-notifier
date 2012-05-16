@@ -43,7 +43,6 @@ public class ProfileProxy {
 
     protected static Map<String, PublicScript> properties = Maps.newHashMap();
 
-
     static {
         properties.put("nom", PublicScript.ProfilPublic2);
         properties.put("race", PublicScript.ProfilPublic2);
