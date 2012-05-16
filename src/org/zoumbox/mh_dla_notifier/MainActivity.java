@@ -195,12 +195,15 @@ public class MainActivity extends AbstractActivity {
             String pvText = String.format("%s / %s", pv, pvMax);
             SpannableString pvSpannable = new SpannableString(pvText);
             try {
-                if (Integer.parseInt(pv) < (Integer.parseInt(pvMax) * Constants.PV_WARM_THRESHOLD / 100)) {
+                if (Integer.parseInt(pv) < (Integer.parseInt(pvMax) * Constants.PV_ALARM_THRESHOLD / 100)) {
+                    pvSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.pv_too_low)), 0, pv.length(), 0);
+                    pvSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, pv.length(), 0);
+                } else if (Integer.parseInt(pv) < (Integer.parseInt(pvMax) * Constants.PV_WARM_THRESHOLD / 100)) {
                     pvSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.pv_too_low)), 0, pv.length(), 0);
                     pvSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, pv.length(), 0);
                 }
             } catch (NumberFormatException nfe) {
-
+                // Nothing to do, ignore it
             }
             pvs.setText(pvSpannable);
 

@@ -12,6 +12,7 @@ public class Constants {
 
 
     public static final int NOTIFICATION_DELAY = 5;
-    public static final int PV_WARM_THRESHOLD = 33;
+    public static final int PV_WARM_THRESHOLD = 66;
+    public static final int PV_ALARM_THRESHOLD = 33;
 
 }
