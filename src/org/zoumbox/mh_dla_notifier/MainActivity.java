@@ -185,7 +185,21 @@ public class MainActivity extends AbstractActivity {
             String nom = String.format("%s (n°%s) - %s (%s)", properties.get("nom"), ProfileProxy.getTrollNumber(this), properties.get("race"), properties.get("niveau"));
             name.setText(nom);
             kd.setText(String.format("%s / %s", properties.get("nbKills"), properties.get("nbMorts")));
-            pvs.setText(String.format("%s / %s", properties.get("pv"), properties.get("pvMax")));
+
+            String pv = properties.get("pv");
+            String pvMax = properties.get("pvMax");
+            String pvText = String.format("%s / %s", pv, pvMax);
+            SpannableString pvSpannable = new SpannableString(pvText);
+            try {
+                if (Integer.parseInt(pv) < (Integer.parseInt(pvMax) * Constants.PV_WARM_THRESHOLD / 100)) {
+                    pvSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.pv_too_low)), 0, pv.length(), 0);
+                    pvSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, pv.length(), 0);
+                }
+            } catch (NumberFormatException nfe) {
+
+            }
+            pvs.setText(pvSpannable);
+
             position.setText(String.format("X=%s | Y=%s | N=%s", properties.get("posX"), properties.get("posY"), properties.get("posN")));
 
             Date rawDla = ProfileProxy.getDLA(this);

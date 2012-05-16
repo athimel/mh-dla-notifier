@@ -40,7 +40,7 @@ public class Receiver extends BroadcastReceiver {
             if (dla == null) {
                 return false;
             }
-            Date dlaMinus5Min = MhDlaNotifierUtils.substractMinutes(dla, 5);
+            Date dlaMinus5Min = MhDlaNotifierUtils.substractMinutes(dla, Constants.NOTIFICATION_DELAY);
             boolean result = new Date().before(dlaMinus5Min);
             return result;
         }
@@ -128,7 +128,7 @@ public class Receiver extends BroadcastReceiver {
     public static Date registerDlaAlarm(Context context, Date dla) {
         Date nextAlarm = null;
         if (dla != null && IS_IN_THE_FUTURE.apply(dla)) {
-            nextAlarm = MhDlaNotifierUtils.substractMinutes(dla, 5);
+            nextAlarm = MhDlaNotifierUtils.substractMinutes(dla, Constants.NOTIFICATION_DELAY);
 
             Intent intent = new Intent(context, Receiver.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(

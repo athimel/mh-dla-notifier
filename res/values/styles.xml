@@ -63,4 +63,5 @@
 
     <color name="dla_expired">#009400</color>
     <color name="dla_to_expire">#FF0000</color>
+    <color name="pv_too_low">#FF0000</color>
 </resources>

@@ -10,4 +10,8 @@ public class Constants {
     public static final String LOG_PREFIX = "MhDlaNotifier-";
     public static final String MH_PLAY_URL = "http://games.mountyhall.com/mountyhall/MH_Play/PlayStart.php";
 
+
+    public static final int NOTIFICATION_DELAY = 5;
+    public static final int PV_WARM_THRESHOLD = 33;
+
 }
