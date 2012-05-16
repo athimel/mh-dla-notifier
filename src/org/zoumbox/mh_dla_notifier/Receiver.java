@@ -77,14 +77,14 @@ public class Receiver extends BroadcastReceiver {
             } else
                 // On vérifie que la date est bien dans le futur et dans moins de 5 min
                 if (IS_IN_THE_FUTURE.apply(dla) && NOTIFY_WITHOUT_PA.apply(pa)) {
-                    displayDlaAboutToExpire(context, dla, pa);
+                    notifyDlaAboutToExpire(context, dla, pa);
                 } else {
-                    displayDlaExpired(context, dla, pa);
+                    notifyDlaExpired(context, dla, pa);
                 }
         }
     }
 
-    protected void displayDlaAboutToExpire(Context context, Date dla, Integer pa) {
+    protected void notifyDlaAboutToExpire(Context context, Date dla, Integer pa) {
         CharSequence notifTitle = context.getText(R.string.dla_expiring_title);
         String format = context.getText(R.string.dla_expiring_text).toString();
         CharSequence notifText = String.format(format, MhDlaNotifierUtils.formatHour(dla), pa);
@@ -94,7 +94,7 @@ public class Receiver extends BroadcastReceiver {
         displayNotification(context, notifTitle, notifText, vibrate);
     }
 
-    protected void displayDlaExpired(Context context, Date dla, Integer pa) {
+    protected void notifyDlaExpired(Context context, Date dla, Integer pa) {
         if (pa == 0 && !IS_IN_THE_FUTURE.apply(dla)) {
             CharSequence notifTitle = context.getText(R.string.dla_expired_title);
             String format = context.getText(R.string.dla_expired_text).toString();

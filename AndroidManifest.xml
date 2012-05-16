@@ -26,6 +26,15 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".PreferencesActivity"
+                  android:label="@string/preferences"
+                  android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PREFERENCES"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
         <activity android:name=".QRCodeMarketActivity"
                   android:noHistory="true">
             <intent-filter>

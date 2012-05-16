@@ -31,6 +31,10 @@
           android:icon="@android:drawable/ic_menu_info_details"
           android:title="@string/register"/>
 
+    <item android:id="@+id/preferences"
+          android:icon="@android:drawable/ic_menu_info_details"
+          android:title="@string/preferences"/>
+
     <item android:id="@+id/refresh"
           android:icon="@android:drawable/ic_menu_view"
           android:title="@string/refresh"/>

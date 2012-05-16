@@ -125,6 +125,10 @@ public class MainActivity extends AbstractActivity {
                 return true;
             case R.id.refresh:
                 refresh();
+            case R.id.preferences:
+                Intent intent_preferences = new Intent(this, PreferencesActivity.class);
+                startActivity(intent_preferences);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

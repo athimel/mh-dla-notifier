@@ -34,6 +34,7 @@
     <string name="version_full">Version 0.6</string>
 
     <string name="register">Saisie de vos identifiants</string>
+    <string name="preferences">Préférences</string>
     <string name="refresh">Mise à jour</string>
     <string name="qr_code_market">QR code (Market)</string>
     <string name="credits">Crédits</string>
@@ -64,5 +65,9 @@
     <string name="dla_expiring_text" formatted="false">DLA: %s - %d PA restant(s)</string>
     <string name="dla_expired_title">Vous pouvez réactiver votre DLA !</string>
     <string name="dla_expired_text" formatted="false">Elle a expiré à %s</string>
+
+    <string name="notify_without_pa">Notification si plus de PA ?</string>
+    <string name="vibration_mode">Mode de vibration</string>
+    <string name="notification_delay">Délai de notification (minutes)</string>
 
 </resources>
