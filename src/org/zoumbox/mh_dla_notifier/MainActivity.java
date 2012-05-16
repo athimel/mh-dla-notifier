@@ -65,9 +65,9 @@ import java.util.Map;
 /**
  * Activité principale
  */
-public class Main extends AbstractActivity {
+public class MainActivity extends AbstractActivity {
 
-    private static final String TAG = Constants.LOG_PREFIX + Main.class.getSimpleName();
+    private static final String TAG = Constants.LOG_PREFIX + MainActivity.class.getSimpleName();
 
     public static final int REGISTER = 0;
     protected static final int CREDIT_DIALOG = 0;
@@ -113,14 +113,14 @@ public class Main extends AbstractActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.qr_code_market:
-                Intent intent_market = new Intent(this, QRCodeMarket.class);
+                Intent intent_market = new Intent(this, QRCodeMarketActivity.class);
                 startActivity(intent_market);
                 return true;
             case R.id.credits:
                 showDialog(CREDIT_DIALOG);
                 return true;
             case R.id.register:
-                Intent intent = new Intent(this, Register.class);
+                Intent intent = new Intent(this, RegisterActivity.class);
                 startActivityForResult(intent, REGISTER);
                 return true;
             case R.id.refresh:
@@ -218,8 +218,8 @@ public class Main extends AbstractActivity {
             registerDlaAlarm();
         } catch (MissingLoginPasswordException mlpe) {
             showToast("Vous devez saisir vos identifiants");
-            Log.i(TAG, "Login or password are missing, calling Register");
-            Intent intent = new Intent(this, Register.class);
+            Log.i(TAG, "Login or password are missing, calling RegisterActivity");
+            Intent intent = new Intent(this, RegisterActivity.class);
             startActivityForResult(intent, REGISTER);
         } catch (QuotaExceededException e) {
             showToast("Rafraichissement impossible pour le moment, quota dépassé");
@@ -230,7 +230,7 @@ public class Main extends AbstractActivity {
             showToast(message);
             if (message.startsWith("Erreur 2") || message.startsWith("Erreur 3")) {
                 showToast("Veuillez vérifier vos paramètres");
-                Intent intent = new Intent(this, Register.class);
+                Intent intent = new Intent(this, RegisterActivity.class);
                 startActivityForResult(intent, REGISTER);
             }
         } catch (NetworkUnavailableException e) {

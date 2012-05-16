@@ -115,8 +115,8 @@ public class Receiver extends BroadcastReceiver {
         }
 
         // The PendingIntent to launch our activity if the user selects this notification
-        Intent main = new Intent(context, Main.class);
-        main.putExtra(Main.EXTRA_FROM_NOTIFICATION, true);
+        Intent main = new Intent(context, MainActivity.class);
+        main.putExtra(MainActivity.EXTRA_FROM_NOTIFICATION, true);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, main, 0);
 
         // Set the info for the views that show in the notification panel.

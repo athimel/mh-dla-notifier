@@ -23,82 +23,86 @@
   <http://www.gnu.org/licenses/gpl-3.0.html>.
   #L%
   -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:orientation="vertical"
-              style="@style/Main">
-
-
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:layout_width="fill_parent"
-                  android:layout_height="300px"
-                  android:orientation="horizontal"
-                  android:gravity="center_horizontal">
-        <ImageView android:id="@+id/blason"
-                   android:orientation="vertical"
-                   android:layout_height="300px"
-                   android:layout_width="300px"
-                   android:scaleType="fitXY"
-                />
+                  android:layout_height="fill_parent"
+                  android:orientation="vertical"
+                  style="@style/Main">
+
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:layout_width="fill_parent"
+                      android:layout_height="300px"
+                      android:orientation="horizontal"
+                      android:gravity="center_horizontal">
+            <ImageView android:id="@+id/blason"
+                       android:orientation="vertical"
+                       android:layout_height="300px"
+                       android:layout_width="300px"
+                       android:scaleType="fitXY"
+                    />
+        </LinearLayout>
+
+        <TextView android:id="@+id/name"
+                  android:layout_height="wrap_content"
+                  android:layout_width="fill_parent"
+                  android:gravity="center_horizontal"
+                  style="@style/Header"/>
+
+        <TextView android:text="@string/pvs"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/DT"/>
+        <TextView android:id="@+id/pvs"
+                  android:layout_height="wrap_content"
+                  android:layout_width="fill_parent"
+                  style="@style/DD"/>
+
+        <TextView android:text="@string/position"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/DT"/>
+        <TextView android:id="@+id/position"
+                  android:layout_height="wrap_content"
+                  android:layout_width="fill_parent"
+                  style="@style/DD"/>
+
+        <TextView android:text="@string/kd"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/DT"/>
+        <TextView android:id="@+id/kd"
+                  android:layout_height="wrap_content"
+                  android:layout_width="fill_parent"
+                  style="@style/DD"/>
+
+        <TextView android:text="@string/dla"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/DT"/>
+        <TextView android:id="@+id/dla_field"
+                  android:layout_height="wrap_content"
+                  android:layout_width="fill_parent"
+                  style="@style/DD"/>
+
+        <TextView android:text="@string/remaining_pas"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/DT"/>
+        <TextView android:id="@+id/pas"
+                  android:layout_height="wrap_content"
+                  android:layout_width="fill_parent"
+                  style="@style/DD"/>
+
+        <Button android:id="@+id/play"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/Buttons"
+                android:text="@string/play"
+                android:onClick="onPlayButtonClicked"/>
+
     </LinearLayout>
-
-    <TextView android:id="@+id/name"
-              android:layout_height="wrap_content"
-              android:layout_width="fill_parent"
-              android:gravity="center_horizontal"
-              style="@style/Header"/>
-
-    <TextView android:text="@string/pvs"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              style="@style/DT"/>
-    <TextView android:id="@+id/pvs"
-              android:layout_height="wrap_content"
-              android:layout_width="fill_parent"
-              style="@style/DD"/>
-
-    <TextView android:text="@string/position"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              style="@style/DT"/>
-    <TextView android:id="@+id/position"
-              android:layout_height="wrap_content"
-              android:layout_width="fill_parent"
-              style="@style/DD"/>
-
-    <TextView android:text="@string/kd"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              style="@style/DT"/>
-    <TextView android:id="@+id/kd"
-              android:layout_height="wrap_content"
-              android:layout_width="fill_parent"
-              style="@style/DD"/>
-
-    <TextView android:text="@string/dla"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              style="@style/DT"/>
-    <TextView android:id="@+id/dla_field"
-              android:layout_height="wrap_content"
-              android:layout_width="fill_parent"
-              style="@style/DD"/>
-
-    <TextView android:text="@string/remaining_pas"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              style="@style/DT"/>
-    <TextView android:id="@+id/pas"
-              android:layout_height="wrap_content"
-              android:layout_width="fill_parent"
-              style="@style/DD"/>
-
-    <Button android:id="@+id/play"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            style="@style/Buttons"
-            android:text="@string/play"
-            android:onClick="onPlayButtonClicked"/>
-
-</LinearLayout>
+</ScrollView>

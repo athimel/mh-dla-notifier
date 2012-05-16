@@ -33,7 +33,7 @@ import android.widget.ImageView;
  *
  * @author Arnaud Thimel <arno@zoumbox.org>
  */
-public class QRCodeMarket extends Activity {
+public class QRCodeMarketActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
