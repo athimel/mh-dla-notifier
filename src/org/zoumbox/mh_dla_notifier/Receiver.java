@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.util.Log;
 import com.google.common.base.Predicate;
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
@@ -14,6 +15,7 @@ import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
 
 import javax.annotation.Nullable;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -73,30 +75,49 @@ public class Receiver extends BroadcastReceiver {
             } else
                 // On vérifie que la date est bien dans le futur et dans moins de 5 min
                 if (IS_IN_THE_FUTURE.apply(dla) && needsNotificationAccordingToPA(preferences, pa)) {
-                    notifyDlaAboutToExpire(context, dla, pa);
+                    notifyDlaAboutToExpire(context, dla, pa, preferences);
                 } else {
-                    notifyDlaExpired(context, dla, pa);
+                    notifyDlaExpired(context, dla, pa, preferences);
                 }
         }
     }
 
-    protected void notifyDlaAboutToExpire(Context context, Date dla, Integer pa) {
+    protected boolean shouldVibrate(Context context, PreferencesHolder preferences) {
+        switch (preferences.silentNotification) {
+            case ALWAYS:
+                return false;
+            case NEVER:
+                return true;
+            case BY_NIGHT:
+                Calendar now = Calendar.getInstance();
+                return (now.get(Calendar.HOUR_OF_DAY) >= 7 || now.get(Calendar.HOUR_OF_DAY) < 23);
+            case WHEN_SILENT:
+                AudioManager am = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+                return am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL;
+            default:
+                Log.w(TAG, "Unexpected mode : " + preferences.silentNotification);
+                throw new IllegalStateException("Unexpected mode : " + preferences.silentNotification);
+        }
+    }
+
+    protected void notifyDlaAboutToExpire(Context context, Date dla, Integer pa, PreferencesHolder preferences) {
         CharSequence notifTitle = context.getText(R.string.dla_expiring_title);
         String format = context.getText(R.string.dla_expiring_text).toString();
         CharSequence notifText = String.format(format, MhDlaNotifierUtils.formatHour(dla), pa);
 
-        boolean vibrate = pa > 0;
+        boolean vibrate = shouldVibrate(context, preferences);
 
         displayNotification(context, notifTitle, notifText, vibrate);
     }
 
-    protected void notifyDlaExpired(Context context, Date dla, Integer pa) {
+    protected void notifyDlaExpired(Context context, Date dla, Integer pa, PreferencesHolder preferences) {
         if (pa == 0 && !IS_IN_THE_FUTURE.apply(dla)) {
             CharSequence notifTitle = context.getText(R.string.dla_expired_title);
             String format = context.getText(R.string.dla_expired_text).toString();
             CharSequence notifText = String.format(format, MhDlaNotifierUtils.formatHour(dla));
 
-            displayNotification(context, notifTitle, notifText, false);
+            boolean vibrate = shouldVibrate(context, preferences);
+            displayNotification(context, notifTitle, notifText, vibrate);
         }
     }
 

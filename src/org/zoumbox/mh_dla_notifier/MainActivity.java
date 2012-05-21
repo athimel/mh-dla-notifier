@@ -128,7 +128,7 @@ public class MainActivity extends AbstractActivity {
             case R.id.refresh:
                 refresh();
             case R.id.preferences:
-                Intent intent_preferences = new Intent(this, PreferencesActivity.class);
+                Intent intent_preferences = new Intent(this, MhPreferencesActivity.class);
                 startActivityForResult(intent_preferences, PREFERENCES);
                 return true;
             default:
@@ -169,12 +169,11 @@ public class MainActivity extends AbstractActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            if (requestCode == REGISTER) {
-                loadDLAs();
-            } else if (requestCode == PREFERENCES) {
-                registerDlaAlarm();
-            }
+        if (requestCode == REGISTER && resultCode == RESULT_OK) {
+            loadDLAs();
+        }
+        if (requestCode == PREFERENCES) {
+            registerDlaAlarm();
         }
     }
 

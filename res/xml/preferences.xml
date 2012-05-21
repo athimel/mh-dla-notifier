@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+            android:title="Notifications">
+        <CheckBoxPreference
+                android:key="prefs.notify_without_pa"
+                android:title="@string/notify_without_pa"
+                android:summary="Voulez-vous être notifié si vous n'avez plus de PA ?"
+                android:defaultValue="true"/>
+        <ListPreference
+                android:key="prefs.silent_notification"
+                android:title="@string/silent_notification"
+                android:summary="Pas de son, pas de vibration"
+                android:defaultValue="BY_NIGHT"
+                android:entries="@array/silent_notification"
+                android:entryValues="@array/silent_notification_keys" />
+        <EditTextPreference
+                android:key="prefs.notification_delay"
+                android:title="@string/notification_delay"
+                android:summary="Choisissez le délai de notification (par défaut: 10min)"
+                android:defaultValue="10"
+                android:inputType="number"/>
+    </PreferenceCategory>
+</PreferenceScreen>

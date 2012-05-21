@@ -1,0 +1,14 @@
+<resources>
+    <array name="silent_notification_keys">
+        <item>ALWAYS</item>
+        <item>BY_NIGHT</item>
+        <item>WHEN_SILENT</item>
+        <item>NEVER</item>
+    </array>
+    <array name="silent_notification">
+        <item>Toujours</item>
+        <item>Seulement la nuit (23h-7h)</item>
+        <item>En mode silencieux</item>
+        <item>Jamais</item>
+    </array>
+</resources>

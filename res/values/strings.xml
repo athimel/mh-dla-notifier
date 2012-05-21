@@ -66,8 +66,8 @@
     <string name="dla_expired_title">Vous pouvez réactiver votre DLA !</string>
     <string name="dla_expired_text" formatted="false">Elle a expiré à %s</string>
 
-    <string name="notify_without_pa">Notification si plus de PA ?</string>
-    <string name="vibration_mode">Mode de vibration</string>
-    <string name="notification_delay">Délai de notification (minutes)</string>
+    <string name="notify_without_pa">Notification si plus de PA</string>
+    <string name="silent_notification">Notification silencieuse</string>
+    <string name="notification_delay">Délai de notification</string>
 
 </resources>
