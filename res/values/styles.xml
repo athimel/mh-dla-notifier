@@ -46,6 +46,11 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="DL" parent="Info">
+        <item name="android:layout_marginTop">10px</item>
+        <item name="android:layout_marginBottom">10px</item>
+    </style>
+
     <style name="DT" parent="Info">
         <item name="android:gravity">left</item>
         <item name="android:textStyle">bold</item>
@@ -59,6 +64,12 @@
         <item name="android:ellipsize">end</item>
         <item name="android:textSize">16dp</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="hr" parent="DL">
+        <item name="android:background">#888888</item>
+        <item name="android:layout_marginLeft">10px</item>
+        <item name="android:layout_marginRight">10px</item>
     </style>
 
     <color name="dla_expired">#009400</color>
