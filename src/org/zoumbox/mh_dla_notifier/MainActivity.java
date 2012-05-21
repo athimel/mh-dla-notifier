@@ -184,14 +184,23 @@ public class MainActivity extends AbstractActivity {
 
         try {
             Map<String, String> properties = ProfileProxy.fetchProperties(this,
-                    "nom", "race", "niveau", "pv", "pvMax", "posX", "posY", "posN", ProfileProxy.PROPERTY_DLA, ProfileProxy.PROPERTY_PA_RESTANT, "blason", "nbKills", "nbMorts");
+                    "nom", "race", "niveau", "pv", "pvMax", "posX", "posY", "posN",
+                    ProfileProxy.PROPERTY_DLA, ProfileProxy.PROPERTY_PA_RESTANT, "blason", "nbKills", "nbMorts");
             String blasonUri = properties.get("blason");
             Bitmap blason = loadBlason(blasonUri);
             if (blason != null) {
                 this.blason.setImageBitmap(blason);
             }
-            String nom = String.format("%s (n°%s) - %s (%s)", properties.get("nom"), ProfileProxy.getTrollNumber(this), properties.get("race"), properties.get("niveau"));
-            name.setText(nom);
+
+            String propNom = properties.get("nom");
+            String propRace = properties.get("race");
+            String propNival = properties.get("niveau");
+            String trollNumber = ProfileProxy.getTrollNumber(this);
+
+            String nom = String.format("%s (n°%s) - %s (%s)", propNom, trollNumber, propRace, propNival);
+            SpannableString nomSpannable = new SpannableString(nom);
+            nomSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, propNom.length(), 0);
+            name.setText(nomSpannable);
             kd.setText(String.format("%s / %s", properties.get("nbKills"), properties.get("nbMorts")));
 
             String pv = properties.get("pv");

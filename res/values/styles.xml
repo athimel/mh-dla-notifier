@@ -43,7 +43,6 @@
 
     <style name="Header" parent="Info">
         <item name="android:gravity">center_horizontal</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="DL" parent="Info">
