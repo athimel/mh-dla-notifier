@@ -70,6 +70,8 @@ public class ProfileProxy {
         properties.put("pxPerso", PublicScript.Profil3);
         properties.put("pi", PublicScript.Profil3);
         properties.put("gg", PublicScript.Profil3);
+
+        properties.put("nbTelaites", PublicScript.Mouche);
     }
 
     public static boolean needsUpdate(Context context, PublicScript script, String trollNumber) {

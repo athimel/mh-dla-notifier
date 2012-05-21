@@ -184,7 +184,8 @@ public class MainActivity extends AbstractActivity {
         try {
             Map<String, String> properties = ProfileProxy.fetchProperties(this,
                     "nom", "race", "niveau", "pv", "pvMax", "posX", "posY", "posN",
-                    ProfileProxy.PROPERTY_DLA, ProfileProxy.PROPERTY_PA_RESTANT, "blason", "nbKills", "nbMorts");
+                    ProfileProxy.PROPERTY_DLA, ProfileProxy.PROPERTY_PA_RESTANT, "blason", "nbKills", "nbMorts",
+                    "nbTelaites");
             String blasonUri = properties.get("blason");
             Bitmap blason = loadBlason(blasonUri);
             if (blason != null) {
@@ -203,14 +204,22 @@ public class MainActivity extends AbstractActivity {
             kd.setText(String.format("%s / %s", properties.get("nbKills"), properties.get("nbMorts")));
 
             String pv = properties.get("pv");
-            String pvMax = properties.get("pvMax");
-            String pvText = String.format("%s / %s", pv, pvMax);
+            String pvMaxString = properties.get("pvMax");
+            int nbTelaites = Integer.parseInt(properties.get("nbTelaites"));
+            int pvMax = Integer.parseInt(pvMaxString);
+
+            if (nbTelaites > 0) {
+                int additionalPvs = nbTelaites * 5;
+                pvMaxString = String.format("%s+%d", pvMaxString, additionalPvs);
+                pvMax += additionalPvs;
+            }
+            String pvText = String.format("%s / %s", pv, pvMaxString);
             SpannableString pvSpannable = new SpannableString(pvText);
             try {
-                if (Integer.parseInt(pv) < (Integer.parseInt(pvMax) * Constants.PV_ALARM_THRESHOLD / 100)) {
+                if (Integer.parseInt(pv) < (pvMax * Constants.PV_ALARM_THRESHOLD / 100)) {
                     pvSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.pv_alarm)), 0, pv.length(), 0);
                     pvSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, pv.length(), 0);
-                } else if (Integer.parseInt(pv) < (Integer.parseInt(pvMax) * Constants.PV_WARM_THRESHOLD / 100)) {
+                } else if (Integer.parseInt(pv) < (pvMax * Constants.PV_WARM_THRESHOLD / 100)) {
                     pvSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.pv_warn)), 0, pv.length(), 0);
                     pvSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, pv.length(), 0);
                 }
@@ -381,4 +390,5 @@ public class MainActivity extends AbstractActivity {
         Intent webIntent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(webIntent);
     }
+
 }

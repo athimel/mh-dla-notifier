@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.http.HttpResponse;
@@ -48,6 +49,9 @@ public class PublicScriptsProxy {
             in = new BufferedReader(new InputStreamReader(content));
             String line;
             while ((line = in.readLine()) != null) {
+                if (!Strings.isNullOrEmpty(responseContent)) {
+                    responseContent += "\n";
+                }
                 responseContent += line;
             }
             in.close();
@@ -78,6 +82,31 @@ public class PublicScriptsProxy {
             rawResult = "123456;57;-75;-41;50;80;" + pa + ";" + dla + ";8;4;13;4;4;6;360;361;0;5;0;0;0;0;0;585;0;1;0";
         } else if (url.contains("SP_Profil3.php")) {
             rawResult = "123456;Mon Trõll;57;-75;-41;" + pa + ";" + dla + ";3;0;0;0;2;22;88;6042";
+        } else if (url.contains("Mouche.php")) {
+            rawResult = "567856;ers;Lunettes;404;LA\n" +
+                    "563814;ToMars;Crobate;453;LA\n" +
+                    "562632;ingToTheMoon;Nabolisants;467;LA\n" +
+                    "565369;ToGether;Crobate;434;LA\n" +
+                    "569033;fe;Telaite;389;LA\n" +
+                    "571309;ingToTheSpace;Nabolisants;361;LA\n" +
+                    "570159;ingToTheSun;Nabolisants;375;LA\n" +
+                    "572547;Faster;Rivatant;350;LA\n" +
+                    "574887;Strong;Xidant;318;LA\n" +
+                    "575785;eRs;Lunettes;305;LA\n" +
+                    "578000;;Vertie;272;LA\n" +
+                    "579486;;Rivatant;241;LA\n" +
+                    "581779;;Vertie;210;LA\n" +
+                    "583093;;Rivatant;194;LA\n" +
+                    "586569;;Rivatant;149;LA\n" +
+                    "588345;;Vertie;126;LA\n" +
+                    "589627;;Xidant;110;LA\n" +
+                    "591596;;Miel;83;LA\n" +
+                    "592829;;Rivatant;67;LA\n" +
+                    "594975;;Xidant;38;LA\n" +
+                    "596944;;Nabolisants;12;LA\n" +
+                    "\n" +
+                    "\n" +
+                    "\n";
         } else {
             rawResult = "123456;Mon Trõll;Kastar;19;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;122;9;1900;20;0";
         }
@@ -180,19 +209,44 @@ public class PublicScriptsProxy {
 
             saveFetch(context, script, trollNumber);
 
-            Map<String, String> result = Maps.newLinkedHashMap();
+            String raw = spResult.getRaw();
+            Map<String, String> result = interpretFetchedContent(script, raw);
 
-            Iterable<String> iterable = Splitter.on(";").split(spResult.getRaw());
-            List<String> data = Lists.newArrayList(iterable);
-
-            for (int i = 0; i < data.size(); i++) {
-                String key = script.properties.get(i);
-                String value = data.get(i);
-                result.put(key, value);
-            }
             return result;
         }
 
+    }
+
+    protected static Map<String, String> interpretFetchedContent(PublicScript script, String raw) {
+        List<String> lines = Lists.newArrayList(Splitter.on("\n").omitEmptyStrings().trimResults().split(raw));
+        Map<String, String> result = Maps.newLinkedHashMap();
+        switch (script) {
+            case Profil2:
+            case Profil3:
+            case ProfilPublic2:
+                Iterable<String> iterable = Splitter.on(";").split(lines.get(0));
+                List<String> data = Lists.newArrayList(iterable);
+                for (int i = 0; i < data.size(); i++) {
+                    String key = script.properties.get(i);
+                    String value = data.get(i);
+                    result.put(key, value);
+                }
+                break;
+            case Mouche:
+
+                int telaiteCount = 0;
+                for (String line : lines) {
+                    List<String> fields = Lists.newArrayList(Splitter.on(";").split(line));
+                    if ("Telaite".equals(fields.get(2)) && "LA".equals(fields.get(4))) {
+                        telaiteCount++;
+                    }
+                }
+                result.put("nbTelaites", ""+telaiteCount);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected script : " + script);
+        }
+        return result;
     }
 
     public static Map<String, String> fetch(Context context, PublicScript script, Pair<String, String> idAndPassword) throws PublicScriptException, QuotaExceededException, NetworkUnavailableException {

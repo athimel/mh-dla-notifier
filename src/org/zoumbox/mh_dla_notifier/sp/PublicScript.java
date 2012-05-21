@@ -22,7 +22,14 @@ public enum PublicScript {
     ProfilPublic2(
             ScriptCategory.STATIC,
             "http://sp.mountyhall.com/SP_ProfilPublic2.php?Numero=%s&Motdepasse=%s",
-            Lists.newArrayList("numero", "nom", "race", "niveau", "dateInscription", "email", "blason", "nbMouches", "nbKills", "nbMorts", "numeroDeGuilde", "niveauDeRang", "pnj"));
+            Lists.newArrayList("numero", "nom", "race", "niveau", "dateInscription", "email", "blason", "nbMouches", "nbKills", "nbMorts", "numeroDeGuilde", "niveauDeRang", "pnj")),
+
+    Mouche(
+            ScriptCategory.STATIC,
+            "http://sp.mountyhall.com/SP_Mouche.php?Numero=%s&Motdepasse=%s",
+//            Lists.newArrayList("moucheId", "moucheNom", "moucheType", "moucheAge", "mouchePresence")
+            Lists.newArrayList("nbTelaites")
+    );
 
     public ScriptCategory category;
     protected String url;
