@@ -80,7 +80,7 @@
                        android:scaleType="fitXY" android:src="@drawable/ic_contact_picture"/>
             <LinearLayout android:orientation="vertical" android:layout_width="wrap_content"
                           android:layout_height="wrap_content" android:layout_marginLeft="10dip">
-                <TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="Loïc"
+                <TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="omnipotente"
                           android:textColor="#444444"/>
                 <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
                           android:text="@string/credits_contributor" android:textColor="#444444"
