@@ -311,7 +311,7 @@ public class MainActivity extends AbstractActivity {
         if (!Strings.isNullOrEmpty(blasonUrl)) {
             String localFilePath = MhDlaNotifierUtils.md5(blasonUrl);
             Log.i(TAG, "localFilePath: " + localFilePath);
-            File filesDir = getExternalCacheDir();
+            File filesDir = getCacheDir();
             File localFile = new File(filesDir, localFilePath);
             Log.i(TAG, "localFile: " + localFile);
             if (!localFile.exists()) {
