@@ -100,7 +100,7 @@ public class PublicScriptsProxy {
 
     protected static PublicScriptResponse doMockHttpGET(String url) {
         String rawResult;
-        String dla = "2012-05-21 17:00:00";
+        String dla = "2012-05-22 12:25:36";
         int pa = 3;
         if (url.contains("SP_Profil2.php")) {
             rawResult = "123456;57;-75;-41;50;80;" + pa + ";" + dla + ";8;4;13;4;4;6;360;361;0;5;0;0;0;0;0;585;0;1;0";
