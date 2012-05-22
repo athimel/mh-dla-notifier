@@ -127,6 +127,7 @@ public class MainActivity extends AbstractActivity {
                 return true;
             case R.id.refresh:
                 refresh();
+                return true;
             case R.id.preferences:
                 Intent intent_preferences = new Intent(this, MhPreferencesActivity.class);
                 startActivityForResult(intent_preferences, PREFERENCES);
