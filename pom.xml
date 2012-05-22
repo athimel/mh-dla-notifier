@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -256,6 +257,49 @@
                                 <debug>false</debug>
                             </sign>
                         </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- This profile update license stuff with new goal update-file-header -->
+        <profile>
+            <id>update-file-header</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+
+            <properties>
+                <license.descriptor>src/license/project.xml</license.descriptor>
+            </properties>
+            <build>
+                <defaultGoal>process-resources</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>license-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>update-file-header</id>
+                                <goals>
+                                    <goal>update-file-header</goal>
+                                </goals>
+                                <configuration>
+                                    <addSvnKeyWords>true</addSvnKeyWords>
+                                    <excludes>
+                                        <exclude>**/i18n/*.properties</exclude>
+                                        <exclude>**/THIRD-PARTY.properties</exclude>
+                                        <!-- since sh scripts must begins by the line #!/bin/sh,
+                                can not use the mojo for the mojo -->
+                                        <exclude>**/*.sh</exclude>
+                                    </excludes>
+                                </configuration>
+                                <phase>process-resources</phase>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
