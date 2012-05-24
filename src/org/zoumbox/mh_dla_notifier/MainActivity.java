@@ -32,6 +32,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -44,6 +45,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.google.common.base.Strings;
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
@@ -105,7 +107,12 @@ public class MainActivity extends AbstractActivity {
         next_dla = (TextView) findViewById(R.id.next_dla_field);
         remainingPAs = (TextView) findViewById(R.id.pas);
 
-        loadDLAs();
+        boolean needsUpdate = loadDLAs();
+
+        if (needsUpdate) {
+            Toast.makeText(this, "Mise à jour des informations...", Toast.LENGTH_LONG).show();
+            new UpdateTrollTask().execute();
+        }
     }
 
     @Override
@@ -183,92 +190,16 @@ public class MainActivity extends AbstractActivity {
         }
     }
 
-    protected void loadDLAs() {
+    protected boolean loadDLAs() {
 
         Log.i(TAG, "Loading DLAs");
 
         try {
-            Troll troll = ProfileProxy.fetchTroll(this);
-            Bitmap blason = loadBlason(troll.blason);
-            if (blason != null) {
-                this.blason.setImageBitmap(blason);
-            }
+            Troll troll = ProfileProxy.fetchTroll(this, false);
 
-            String nom = String.format("%s (n°%s) - %s (%d)", troll.nom, troll.id, troll.race, troll.nival);
-            SpannableString nomSpannable = new SpannableString(nom);
-            nomSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, troll.nom.length(), 0);
-            name.setText(nomSpannable);
+            pushTrollToUI(troll);
+            return troll.needsUpdate;
 
-            kd.setText(String.format("%d / %d", troll.nbKills, troll.nbMorts));
-
-            int pvMax = troll.getPvMax();
-
-            int additionalPvs = pvMax - troll.pvMaxBase;
-            String pvMaxString = "" + troll.pvMaxBase;
-            if (additionalPvs > 0) {
-                pvMaxString += String.format("+%d", additionalPvs);
-            }
-            String pvText = String.format("%s / %s", troll.pv, pvMaxString);
-            SpannableString pvSpannable = new SpannableString(pvText);
-            try {
-                int pvLength = 1;
-                if (troll.pv > 100) {
-                    pvLength = 3;
-                } else if (troll.pv > 10) {
-                    pvLength = 2;
-                }
-
-                if (troll.pv < (pvMax * Constants.PV_ALARM_THRESHOLD / 100)) {
-                    pvSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.pv_alarm)), 0, pvLength, 0);
-                    pvSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, pvLength, 0);
-                } else if (troll.pv < (pvMax * Constants.PV_WARM_THRESHOLD / 100)) {
-                    pvSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.pv_warn)), 0, pvLength, 0);
-                    pvSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, pvLength, 0);
-                }
-            } catch (NumberFormatException nfe) {
-                // Nothing to do, ignore it
-            }
-            pvs.setText(pvSpannable);
-
-            position.setText(String.format("X=%d | Y=%d | N=%d", troll.posX, troll.posY, troll.posN));
-
-            Date rawDla = troll.dla;
-            int pa = troll.pa;
-
-            SpannableString dlaSpannable = new SpannableString(MhDlaNotifierUtils.formatDate(rawDla));
-            SpannableString paSpannable = new SpannableString("" + pa); // Leave ""+ as integer is considered as an Android id
-
-            Date now = new Date();
-            if (now.after(rawDla)) {
-                showToast(getText(R.string.dla_expired_title));
-                dlaSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.dla_expired)), 0, dlaSpannable.length(), 0);
-                dlaSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, dlaSpannable.length(), 0);
-            } else {
-                Date dlaMinus5Min = MhDlaNotifierUtils.substractMinutes(rawDla, 5);
-                if (now.after(dlaMinus5Min)) {
-                    dlaSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.dla_to_expire)), 0, dlaSpannable.length(), 0);
-                    dlaSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, dlaSpannable.length(), 0);
-                    if (pa > 0) {
-                        showToast("Il vous reste des PA à jouer !");
-                        paSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.dla_to_expire)), 0, paSpannable.length(), 0);
-                        paSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, paSpannable.length(), 0);
-                    }
-                }
-            }
-
-            dla.setText(dlaSpannable);
-            remainingPAs.setText(paSpannable);
-
-            dla_duration.setText(MhDlaNotifierUtils.formatCountDown(troll.dureeDuTour));
-
-            Calendar nextDla = Calendar.getInstance();
-            nextDla.setTime(rawDla);
-            nextDla.add(Calendar.MINUTE, troll.dureeDuTour);
-            String nextDlaText = MhDlaNotifierUtils.formatDate(nextDla.getTime());
-            next_dla.setText(nextDlaText);
-
-
-            registerDlaAlarm();
         } catch (MissingLoginPasswordException mlpe) {
             showToast("Vous devez saisir vos identifiants");
             Log.i(TAG, "Login or password are missing, calling RegisterActivity");
@@ -290,7 +221,89 @@ public class MainActivity extends AbstractActivity {
             Log.i(TAG, "Pas de réseau, mise à jour des informations impossible");
             showToast("Pas de réseau, mise à jour des informations impossible");
         }
+        return false;
+    }
 
+    protected void pushTrollToUI(Troll troll) {
+        Bitmap blason = loadBlason(troll.blason);
+        if (blason != null) {
+            this.blason.setImageBitmap(blason);
+        }
+
+        String nom = String.format("%s (n°%s) - %s (%d)", troll.nom, troll.id, troll.race, troll.nival);
+        SpannableString nomSpannable = new SpannableString(nom);
+        nomSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, troll.nom.length(), 0);
+        name.setText(nomSpannable);
+
+        kd.setText(String.format("%d / %d", troll.nbKills, troll.nbMorts));
+
+        int pvMax = troll.getPvMax();
+
+        int additionalPvs = pvMax - troll.pvMaxBase;
+        String pvMaxString = "" + troll.pvMaxBase;
+        if (additionalPvs > 0) {
+            pvMaxString += String.format("+%d", additionalPvs);
+        }
+        String pvText = String.format("%s / %s", troll.pv, pvMaxString);
+        SpannableString pvSpannable = new SpannableString(pvText);
+        try {
+            int pvLength = 1;
+            if (troll.pv > 100) {
+                pvLength = 3;
+            } else if (troll.pv > 10) {
+                pvLength = 2;
+            }
+
+            if (troll.pv < (pvMax * Constants.PV_ALARM_THRESHOLD / 100)) {
+                pvSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.pv_alarm)), 0, pvLength, 0);
+                pvSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, pvLength, 0);
+            } else if (troll.pv < (pvMax * Constants.PV_WARM_THRESHOLD / 100)) {
+                pvSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.pv_warn)), 0, pvLength, 0);
+                pvSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, pvLength, 0);
+            }
+        } catch (NumberFormatException nfe) {
+            // Nothing to do, ignore it
+        }
+        pvs.setText(pvSpannable);
+
+        position.setText(String.format("X=%d | Y=%d | N=%d", troll.posX, troll.posY, troll.posN));
+
+        Date rawDla = troll.dla;
+        int pa = troll.pa;
+
+        SpannableString dlaSpannable = new SpannableString(MhDlaNotifierUtils.formatDate(rawDla));
+        SpannableString paSpannable = new SpannableString("" + pa); // Leave ""+ as integer is considered as an Android id
+
+        Date now = new Date();
+        if (now.after(rawDla)) {
+            showToast(getText(R.string.dla_expired_title));
+            dlaSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.dla_expired)), 0, dlaSpannable.length(), 0);
+            dlaSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, dlaSpannable.length(), 0);
+        } else {
+            Date dlaMinus5Min = MhDlaNotifierUtils.substractMinutes(rawDla, 5);
+            if (now.after(dlaMinus5Min)) {
+                dlaSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.dla_to_expire)), 0, dlaSpannable.length(), 0);
+                dlaSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, dlaSpannable.length(), 0);
+                if (pa > 0) {
+                    showToast("Il vous reste des PA à jouer !");
+                    paSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.dla_to_expire)), 0, paSpannable.length(), 0);
+                    paSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, paSpannable.length(), 0);
+                }
+            }
+        }
+
+        dla.setText(dlaSpannable);
+        remainingPAs.setText(paSpannable);
+
+        dla_duration.setText(MhDlaNotifierUtils.formatCountDown(troll.dureeDuTour));
+
+        Calendar nextDla = Calendar.getInstance();
+        nextDla.setTime(rawDla);
+        nextDla.add(Calendar.MINUTE, troll.dureeDuTour);
+        String nextDlaText = MhDlaNotifierUtils.formatDate(nextDla.getTime());
+        next_dla.setText(nextDlaText);
+
+        registerDlaAlarm();
     }
 
     private void registerDlaAlarm() {
@@ -402,4 +415,29 @@ public class MainActivity extends AbstractActivity {
         startActivity(webIntent);
     }
 
+    private class UpdateTrollTask extends AsyncTask<Void, Void, Troll> {
+
+        @Override
+        protected Troll doInBackground(Void... params) {
+            Troll result = null;
+            try {
+                ProfileProxy.refreshDLA(MainActivity.this);
+                result = ProfileProxy.fetchTroll(MainActivity.this, true);
+            } catch (QuotaExceededException e) {
+                e.printStackTrace();
+            } catch (MissingLoginPasswordException e) {
+                e.printStackTrace();
+            } catch (PublicScriptException e) {
+                e.printStackTrace();
+            } catch (NetworkUnavailableException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Troll troll) {
+            pushTrollToUI(troll);
+        }
+    }
 }

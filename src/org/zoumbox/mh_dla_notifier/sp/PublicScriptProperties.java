@@ -4,7 +4,8 @@ package org.zoumbox.mh_dla_notifier.sp;
  * @author Arnaud Thimel <thimel@codelutin.com>
  */
 public enum PublicScriptProperties {
-    
+    NEEDS_UPDATE,
+
     NOM,
     RACE,
     NIVAL,

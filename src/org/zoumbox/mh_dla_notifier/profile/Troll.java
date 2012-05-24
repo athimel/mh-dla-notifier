@@ -30,6 +30,8 @@ public class Troll {
     public String blason;
     public int nbKills, nbMorts;
 
+    public boolean needsUpdate;
+
     // Computed
     int pvMax = -1;
 

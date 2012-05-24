@@ -121,11 +121,11 @@ public class ProfileProxy {
         return trollNumber;
     }
 
-    public static Troll fetchTroll(final Context context) throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException, NetworkUnavailableException {
+    public static Troll fetchTroll(final Context context, boolean requestForUpdate) throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException, NetworkUnavailableException {
 
         Troll result = new Troll();
 
-        Map<PublicScriptProperties, String> properties = ProfileProxy.fetchProperties(context,
+        Map<PublicScriptProperties, String> properties = ProfileProxy.fetchProperties(context, requestForUpdate,
                 NOM, RACE, NIVAL, PV, PV_MAX, POS_X, POS_Y, POS_N,
                 CAMOU, INVISIBLE, INTANGIBLE, DUREE_DU_TOUR,
                 DLA, PA_RESTANT, BLASON, NB_KILLS, NB_MORTS,
@@ -170,10 +170,12 @@ public class ProfileProxy {
             result.mouches.add(mouche);
         }
 
+        result.needsUpdate = Boolean.TRUE.toString().endsWith(properties.get(NEEDS_UPDATE));
+
         return result;
     }
 
-    public static Map<PublicScriptProperties, String> fetchProperties(final Context context, PublicScriptProperties ... names) throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException, NetworkUnavailableException {
+    public static Map<PublicScriptProperties, String> fetchProperties(final Context context, boolean requestForUpdate, PublicScriptProperties ... names) throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException, NetworkUnavailableException {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
@@ -187,24 +189,38 @@ public class ProfileProxy {
             scripts.add(script);
         }
 
-        Iterables.removeIf(scripts, new Predicate<PublicScript>() {
-            @Override
-            public boolean apply(PublicScript script) {
-                return !needsUpdate(context, script, trollNumber);
-            }
-        });
-
-        if (!scripts.isEmpty()) {
-
-            Toast.makeText(context, "Mise à jour des informations...", Toast.LENGTH_LONG).show();
-
-            for (PublicScript type : scripts) {
-                Map<String, String> propertiesFetched = PublicScriptsProxy.fetch(context, type, idAndPassword);
-                saveProperties(preferences, propertiesFetched);
+        boolean forceUpdate = requestForUpdate;
+        if (!forceUpdate) {
+            for (PublicScriptProperties property : names) {
+                String value = preferences.getString(property.name(), null);
+                if (value == null) {
+                    forceUpdate = true;
+                    break;
+                }
             }
         }
 
+        boolean needsBackgroundUpdate;
+        if (forceUpdate) {
+            needsBackgroundUpdate = false;
+            for (PublicScript type : scripts) { // FIXME AThimel 25/05/2012 Even if I force update, not all scripts should be updated
+                Map<String, String> propertiesFetched = PublicScriptsProxy.fetch(context, type, idAndPassword);
+                saveProperties(preferences, propertiesFetched);
+            }
+        } else {
+            Iterables.removeIf(scripts, new Predicate<PublicScript>() {
+                @Override
+                public boolean apply(PublicScript script) {
+                    return !needsUpdate(context, script, trollNumber);
+                }
+            });
+
+            needsBackgroundUpdate =  !scripts.isEmpty();
+        }
+
         Map<PublicScriptProperties, String> result = Maps.newLinkedHashMap();
+        result.put(NEEDS_UPDATE, ""+needsBackgroundUpdate);
+
         for (PublicScriptProperties property : names) {
             String oldValue = preferences.getString(oldKeys.get(property), null);
             String value = preferences.getString(property.name(), oldValue);
