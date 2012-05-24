@@ -40,10 +40,10 @@ public enum PublicScript {
             "http://sp.mountyhall.com/SP_Profil2.php?Numero=%s&Motdepasse=%s",
             Lists.newArrayList("numero", POS_X.name(), POS_Y.name(), POS_N.name(), PV.name(), PV_MAX.name(), PA_RESTANT.name(), DLA.name(), "attaque", "esquive", "degats", "regeneration", "vue", "armure", "mm", "rm", "attaquesSubies", "fatigue", CAMOU.name(), INVISIBLE.name(), INTANGIBLE.name(), "nbParadeProgrammes", "nbContreAttaquesProgrammes", DUREE_DU_TOUR.name(), "bonusDuree", "armureNaturelle", "desDArmureEnMoins")),
 
-    Profil3(
-            ScriptCategory.DYNAMIC,
-            "http://sp.mountyhall.com/SP_Profil3.php?Numero=%s&Motdepasse=%s",
-            Lists.newArrayList("numero", NOM.name(), POS_X.name(), POS_Y.name(), POS_N.name(), PA_RESTANT.name(), DLA.name(), "fatigue", CAMOU.name(), INVISIBLE.name(), INTANGIBLE.name(), "px", "pxPerso", "pi", "gg")),
+//    Profil3(
+//            ScriptCategory.DYNAMIC,
+//            "http://sp.mountyhall.com/SP_Profil3.php?Numero=%s&Motdepasse=%s",
+//            Lists.newArrayList("numero", NOM.name(), POS_X.name(), POS_Y.name(), POS_N.name(), PA_RESTANT.name(), DLA.name(), "fatigue", CAMOU.name(), INVISIBLE.name(), INTANGIBLE.name(), "px", "pxPerso", "pi", "gg")),
 
     ProfilPublic2(
             ScriptCategory.STATIC,

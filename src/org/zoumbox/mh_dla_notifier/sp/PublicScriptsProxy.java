@@ -246,7 +246,7 @@ public class PublicScriptsProxy {
         Map<String, String> result = Maps.newLinkedHashMap();
         switch (script) {
             case Profil2:
-            case Profil3:
+//            case Profil3:
             case ProfilPublic2:
                 Iterable<String> iterable = Splitter.on(";").split(lines.get(0));
                 List<String> data = Lists.newArrayList(iterable);
