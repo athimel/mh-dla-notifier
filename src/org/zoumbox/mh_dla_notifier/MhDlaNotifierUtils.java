@@ -129,6 +129,17 @@ public class MhDlaNotifierUtils {
         return result;
     }
 
+    public static String formatCountDown(int duration) {
+        int durationHours = duration / 60;
+        int durationMinutes = duration % 60;
+        String result = String.format("%d heures et %d minute", durationHours, durationMinutes);
+        if (durationMinutes > 1) {
+            result += "s";
+        }
+
+        return result;
+    }
+
     public static Date substractMinutes(Date date, int minutes) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);

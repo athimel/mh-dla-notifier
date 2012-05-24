@@ -124,6 +124,38 @@
                       android:layout_height="wrap_content"
                       style="@style/DL">
 
+            <TextView android:text="@string/dla_duration"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      style="@style/DT"/>
+            <TextView android:id="@+id/dla_duration_field"
+                      android:layout_height="wrap_content"
+                      android:layout_width="wrap_content"
+                      android:layout_weight="1"
+                      style="@style/DD"/>
+
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      style="@style/DL">
+
+            <TextView android:text="@string/next_dla"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      style="@style/DT"/>
+            <TextView android:id="@+id/next_dla_field"
+                      android:layout_height="wrap_content"
+                      android:layout_width="wrap_content"
+                      android:layout_weight="1"
+                      style="@style/DD"/>
+
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      style="@style/DL">
+
             <TextView android:text="@string/remaining_pas"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"

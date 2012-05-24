@@ -28,6 +28,8 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.*;
+
 /**
  * @author Arno <arno@zoumbox.org>
  */
@@ -36,23 +38,22 @@ public enum PublicScript {
     Profil2(
             ScriptCategory.DYNAMIC,
             "http://sp.mountyhall.com/SP_Profil2.php?Numero=%s&Motdepasse=%s",
-            Lists.newArrayList("numero", "posX", "posY", "posN", "pv", "pvMax", "paRestant", "dla", "attaque", "esquive", "degats", "regeneration", "vue", "armure", "mm", "rm", "attaquesSubies", "fatigue", "camou", "invisible", "intangible", "nbParadeProgrammes", "nbContreAttaquesProgrammes", "dureeDuTour", "bonusDuree", "armureNaturelle", "desDArmureEnMoins")),
+            Lists.newArrayList("numero", POS_X.name(), POS_Y.name(), POS_N.name(), PV.name(), PV_MAX.name(), PA_RESTANT.name(), DLA.name(), "attaque", "esquive", "degats", "regeneration", "vue", "armure", "mm", "rm", "attaquesSubies", "fatigue", CAMOU.name(), INVISIBLE.name(), INTANGIBLE.name(), "nbParadeProgrammes", "nbContreAttaquesProgrammes", DUREE_DU_TOUR.name(), "bonusDuree", "armureNaturelle", "desDArmureEnMoins")),
 
     Profil3(
             ScriptCategory.DYNAMIC,
             "http://sp.mountyhall.com/SP_Profil3.php?Numero=%s&Motdepasse=%s",
-            Lists.newArrayList("numero", "nom", "posX", "posY", "posN", "paRestant", "dla", "fatigue", "camou", "invisible", "intangible", "px", "pxPerso", "pi", "gg")),
+            Lists.newArrayList("numero", NOM.name(), POS_X.name(), POS_Y.name(), POS_N.name(), PA_RESTANT.name(), DLA.name(), "fatigue", CAMOU.name(), INVISIBLE.name(), INTANGIBLE.name(), "px", "pxPerso", "pi", "gg")),
 
     ProfilPublic2(
             ScriptCategory.STATIC,
             "http://sp.mountyhall.com/SP_ProfilPublic2.php?Numero=%s&Motdepasse=%s",
-            Lists.newArrayList("numero", "nom", "race", "niveau", "dateInscription", "email", "blason", "nbMouches", "nbKills", "nbMorts", "numeroDeGuilde", "niveauDeRang", "pnj")),
+            Lists.newArrayList("numero", NOM.name(), RACE.name(), NIVAL.name(), "dateInscription", "email", BLASON.name(), "nbMouches", NB_KILLS.name(), NB_MORTS.name(), "numeroDeGuilde", "niveauDeRang", "pnj")),
 
     Mouche(
             ScriptCategory.STATIC,
             "http://sp.mountyhall.com/SP_Mouche.php?Numero=%s&Motdepasse=%s",
-//            Lists.newArrayList("moucheId", "moucheNom", "moucheType", "moucheAge", "mouchePresence")
-            Lists.newArrayList("nbTelaites")
+            Lists.newArrayList(MOUCHES.name())
     );
 
     public ScriptCategory category;
@@ -65,4 +66,12 @@ public enum PublicScript {
         this.properties = properties;
     }
 
+    public static PublicScript forProperty(PublicScriptProperties property) {
+        for (PublicScript script : values()) {
+            if (script.properties.contains(property.name())) {
+                return script;
+            }
+        }
+        throw new IllegalStateException("Unmapped property: " + property);
+    }
 }

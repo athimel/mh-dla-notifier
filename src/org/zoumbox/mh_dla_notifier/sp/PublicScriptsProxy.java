@@ -120,14 +120,14 @@ public class PublicScriptsProxy {
                     "578000;;Vertie;272;LA\n" +
                     "579486;;Rivatant;241;LA\n" +
                     "581779;;Vertie;210;LA\n" +
-                    "583093;;Rivatant;194;LA\n" +
+                    "583093;;Telaite;194;LA\n" +
                     "586569;;Rivatant;149;LA\n" +
                     "588345;;Vertie;126;LA\n" +
                     "589627;;Xidant;110;LA\n" +
                     "591596;;Miel;83;LA\n" +
                     "592829;;Rivatant;67;LA\n" +
                     "594975;;Xidant;38;LA\n" +
-                    "596944;;Nabolisants;12;LA\n" +
+                    "596944;;Telaite;12;LA\n" +
                     "\n" +
                     "\n" +
                     "\n";
@@ -257,15 +257,7 @@ public class PublicScriptsProxy {
                 }
                 break;
             case Mouche:
-
-                int telaiteCount = 0;
-                for (String line : lines) {
-                    List<String> fields = Lists.newArrayList(Splitter.on(";").split(line));
-                    if ("Telaite".equals(fields.get(2)) && "LA".equals(fields.get(4))) {
-                        telaiteCount++;
-                    }
-                }
-                result.put("nbTelaites", ""+telaiteCount);
+                result.put(PublicScriptProperties.MOUCHES.name(), raw);
                 break;
             default:
                 throw new IllegalStateException("Unexpected script : " + script);

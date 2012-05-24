@@ -30,8 +30,10 @@ import android.util.Log;
 import android.widget.Toast;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.zoumbox.mh_dla_notifier.Constants;
@@ -40,6 +42,7 @@ import org.zoumbox.mh_dla_notifier.Pair;
 import org.zoumbox.mh_dla_notifier.sp.NetworkUnavailableException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScript;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
+import org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptsProxy;
 import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
 import org.zoumbox.mh_dla_notifier.sp.ScriptCategory;
@@ -47,9 +50,11 @@ import org.zoumbox.mh_dla_notifier.sp.ScriptCategory;
 import javax.annotation.Nullable;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.*;
 /**
  * @author Arno <arno@zoumbox.org>
  */
@@ -62,41 +67,25 @@ public class ProfileProxy {
     public static final String PROPERTY_TROLL_ID = "trollId";
     public static final String PROPERTY_TROLL_PASSWORD = "trollPassword";
 
-    public static final String PROPERTY_DLA = "dla";
-    public static final String PROPERTY_PA_RESTANT = "paRestant";
-
-    protected static Map<String, PublicScript> properties = Maps.newHashMap();
-
+    @Deprecated
+    protected static final Map<PublicScriptProperties, String> oldKeys = Maps.newHashMap();
     static {
-        properties.put("nom", PublicScript.ProfilPublic2);
-        properties.put("race", PublicScript.ProfilPublic2);
-        properties.put("niveau", PublicScript.ProfilPublic2);
-        properties.put("dateInscription", PublicScript.ProfilPublic2);
-        properties.put("email", PublicScript.ProfilPublic2);
-        properties.put("blason", PublicScript.ProfilPublic2);
-        properties.put("nbMouches", PublicScript.ProfilPublic2);
-        properties.put("nbKills", PublicScript.ProfilPublic2);
-        properties.put("nbMorts", PublicScript.ProfilPublic2);
-        properties.put("numeroDeGuilde", PublicScript.ProfilPublic2);
-
-        properties.put("posX", PublicScript.Profil2);
-        properties.put("posY", PublicScript.Profil2);
-        properties.put("posN", PublicScript.Profil2);
-        properties.put("pv", PublicScript.Profil2);
-        properties.put("pvMax", PublicScript.Profil2);
-        properties.put(PROPERTY_PA_RESTANT, PublicScript.Profil2);
-        properties.put(PROPERTY_DLA, PublicScript.Profil2);
-        properties.put("fatigue", PublicScript.Profil2);
-        properties.put("dureeDuTour", PublicScript.Profil2);
-        properties.put("bonusDuree", PublicScript.Profil2);
-
-        properties.put("px", PublicScript.Profil3);
-        properties.put("pxPerso", PublicScript.Profil3);
-        properties.put("pi", PublicScript.Profil3);
-        properties.put("gg", PublicScript.Profil3);
-
-        properties.put("nbTelaites", PublicScript.Mouche);
+        oldKeys.put(NOM, "nom");
+        oldKeys.put(RACE, "race");
+        oldKeys.put(NIVAL, "niveau");
+        oldKeys.put(BLASON, "blason");
+        oldKeys.put(NB_KILLS, "nbKills");
+        oldKeys.put(NB_MORTS, "nbMorts");
+        oldKeys.put(POS_X, "posX");
+        oldKeys.put(POS_Y, "posY");
+        oldKeys.put(POS_N, "posN");
+        oldKeys.put(PV, "pv");
+        oldKeys.put(PV_MAX, "pvMax");
+        oldKeys.put(PA_RESTANT, "paRestant");
+        oldKeys.put(DLA, "dla");
+        oldKeys.put(DUREE_DU_TOUR, "dureeDuTour");
     }
+
 
     public static boolean needsUpdate(Context context, PublicScript script, String trollNumber) {
         Date lastUpdate = PublicScriptsProxy.geLastUpdate(context, script, trollNumber);
@@ -132,7 +121,59 @@ public class ProfileProxy {
         return trollNumber;
     }
 
-    public static Map<String, String> fetchProperties(final Context context, String... names) throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException, NetworkUnavailableException {
+    public static Troll fetchTroll(final Context context) throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException, NetworkUnavailableException {
+
+        Troll result = new Troll();
+
+        Map<PublicScriptProperties, String> properties = ProfileProxy.fetchProperties(context,
+                NOM, RACE, NIVAL, PV, PV_MAX, POS_X, POS_Y, POS_N,
+                CAMOU, INVISIBLE, INTANGIBLE, DUREE_DU_TOUR,
+                DLA, PA_RESTANT, BLASON, NB_KILLS, NB_MORTS,
+                MOUCHES);
+
+        result.id = getTrollNumber(context);
+
+        result.nom = properties.get(NOM);
+        result.race = Race.valueOf(properties.get(RACE));
+        result.nival = Integer.parseInt(properties.get(NIVAL));
+
+        result.pv = Integer.parseInt(properties.get(PV));
+        result.pvMaxBase = Integer.parseInt(properties.get(PV_MAX));
+
+        result.posX = Integer.parseInt(properties.get(POS_X));
+        result.posY = Integer.parseInt(properties.get(POS_Y));
+        result.posN = Integer.parseInt(properties.get(POS_N));
+
+        result.camou = "1".equals(properties.get(CAMOU));
+        result.invisible = "1".equals(properties.get(INVISIBLE));
+        result.intangible = "1".equals(properties.get(INTANGIBLE));
+
+        result.dureeDuTour = Integer.parseInt(properties.get(DUREE_DU_TOUR));
+        result.dla = MhDlaNotifierUtils.parseDate(properties.get(DLA));
+        result.pa = Integer.parseInt(properties.get(PA_RESTANT));
+
+        result.blason = properties.get(BLASON);
+        result.nbKills = Integer.parseInt(properties.get(NB_KILLS));
+        result.nbMorts = Integer.parseInt(properties.get(NB_MORTS));
+
+        result.mouches = Lists.newArrayList();
+        List<String> lines = Lists.newArrayList(Splitter.on("\n").omitEmptyStrings().trimResults().split(properties.get(MOUCHES)));
+        for (String line : lines) {
+            List<String> fields = Lists.newArrayList(Splitter.on(";").split(line));
+            Mouche mouche = new Mouche();
+            mouche.id = fields.get(0);
+            mouche.nom = fields.get(1);
+            mouche.type = MoucheType.valueOf(fields.get(2));
+            mouche.age = Integer.parseInt(fields.get(3));
+            mouche.presente = "LA".equals(fields.get(4));
+
+            result.mouches.add(mouche);
+        }
+
+        return result;
+    }
+
+    public static Map<PublicScriptProperties, String> fetchProperties(final Context context, PublicScriptProperties ... names) throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException, NetworkUnavailableException {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
@@ -141,13 +182,9 @@ public class ProfileProxy {
 
         Set<PublicScript> scripts = Sets.newLinkedHashSet();
         Log.i(TAG, "Requesting properties: " + names);
-        for (String propertyName : names) {
-            PublicScript script = properties.get(propertyName);
-            if (script == null) {
-                Log.i(TAG, "Unknown property: " + propertyName);
-            } else {
-                scripts.add(script);
-            }
+        for (PublicScriptProperties property : names) {
+            PublicScript script = PublicScript.forProperty(property);
+            scripts.add(script);
         }
 
         Iterables.removeIf(scripts, new Predicate<PublicScript>() {
@@ -167,10 +204,11 @@ public class ProfileProxy {
             }
         }
 
-        Map<String, String> result = Maps.newLinkedHashMap();
-        for (String propertyName : names) {
-            String value = preferences.getString(propertyName, null);
-            result.put(propertyName, value);
+        Map<PublicScriptProperties, String> result = Maps.newLinkedHashMap();
+        for (PublicScriptProperties property : names) {
+            String oldValue = preferences.getString(oldKeys.get(property), null);
+            String value = preferences.getString(property.name(), oldValue);
+            result.put(property, value);
         }
         return result;
     }
@@ -235,7 +273,7 @@ public class ProfileProxy {
 
         Pair<String, String> idAndPassword = loadIdPassword(preferences);
 
-        Map<String, String> propertiesFetched = null;
+        Map<String, String> propertiesFetched;
         try {
             propertiesFetched = PublicScriptsProxy.fetch(context, PublicScript.Profil2, idAndPassword);
             saveProperties(preferences, propertiesFetched);
@@ -252,7 +290,7 @@ public class ProfileProxy {
     }
 
     protected static Date getDLA(SharedPreferences preferences) {
-        String string = preferences.getString(PROPERTY_DLA, null);
+        String string = preferences.getString(DLA.name(), null);
         Date result = MhDlaNotifierUtils.parseDate(string);
         return result;
     }
@@ -264,7 +302,7 @@ public class ProfileProxy {
     }
 
     public static Integer getPA(SharedPreferences preferences) {
-        String string = preferences.getString(PROPERTY_PA_RESTANT, null);
+        String string = preferences.getString(PA_RESTANT.name(), null);
         Integer result = null;
         try {
             result = Integer.parseInt(string);
