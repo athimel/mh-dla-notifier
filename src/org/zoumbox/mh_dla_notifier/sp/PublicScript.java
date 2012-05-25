@@ -45,16 +45,28 @@ public enum PublicScript {
 //            "http://sp.mountyhall.com/SP_Profil3.php?Numero=%s&Motdepasse=%s",
 //            Lists.newArrayList("numero", NOM.name(), POS_X.name(), POS_Y.name(), POS_N.name(), PA_RESTANT.name(), DLA.name(), "fatigue", CAMOU.name(), INVISIBLE.name(), INTANGIBLE.name(), "px", "pxPerso", "pi", "gg")),
 
+//    BonusMalus(
+//            ScriptCategory.DYNAMIC,
+//            "http://sp.mountyhall.com/SP_Bonusmalus.php?Numero=%s&Motdepasse=%s",
+//            Lists.newArrayList(BONUS_MALUS.name())),
+
     ProfilPublic2(
             ScriptCategory.STATIC,
             "http://sp.mountyhall.com/SP_ProfilPublic2.php?Numero=%s&Motdepasse=%s",
             Lists.newArrayList("numero", NOM.name(), RACE.name(), NIVAL.name(), "dateInscription", "email", BLASON.name(), "nbMouches", NB_KILLS.name(), NB_MORTS.name(), "numeroDeGuilde", "niveauDeRang", "pnj")),
 
+//    Equipement(
+//            ScriptCategory.STATIC,
+//            "http://sp.mountyhall.com/SP_Equipement.php?Numero=%s&Motdepasse=%s",
+//            Lists.newArrayList(EQUIPEMENT.name())),
+
     Mouche(
             ScriptCategory.STATIC,
             "http://sp.mountyhall.com/SP_Mouche.php?Numero=%s&Motdepasse=%s",
-            Lists.newArrayList(MOUCHES.name())
-    );
+            Lists.newArrayList(MOUCHES.name()));
+
+
+
 
     public ScriptCategory category;
     protected String url;

@@ -60,7 +60,7 @@ public class PublicScriptsProxy {
     protected static PublicScriptResponse doHttpGET(String url) throws NetworkUnavailableException {
 
         if (Constants.mock) {
-            return doMockHttpGET(url);
+            return PublicScriptsProxyMock.doMockHttpGET(url);
         }
 
         String responseContent = "";
@@ -95,46 +95,6 @@ public class PublicScriptsProxy {
         }
 
         PublicScriptResponse result = new PublicScriptResponse(responseContent);
-        return result;
-    }
-
-    protected static PublicScriptResponse doMockHttpGET(String url) {
-        String rawResult;
-        String dla = "2012-05-22 12:25:36";
-        int pa = 3;
-        if (url.contains("SP_Profil2.php")) {
-            rawResult = "123456;57;-75;-41;50;80;" + pa + ";" + dla + ";8;4;13;4;4;6;360;361;0;5;0;0;0;0;0;585;0;1;0";
-        } else if (url.contains("SP_Profil3.php")) {
-            rawResult = "123456;Mon Trõll;57;-75;-41;" + pa + ";" + dla + ";3;0;0;0;2;22;88;6042";
-        } else if (url.contains("Mouche.php")) {
-            rawResult = "567856;ers;Lunettes;404;LA\n" +
-                    "563814;ToMars;Crobate;453;LA\n" +
-                    "562632;ingToTheMoon;Nabolisants;467;LA\n" +
-                    "565369;ToGether;Crobate;434;LA\n" +
-                    "569033;fe;Telaite;389;LA\n" +
-                    "571309;ingToTheSpace;Nabolisants;361;LA\n" +
-                    "570159;ingToTheSun;Nabolisants;375;LA\n" +
-                    "572547;Faster;Rivatant;350;LA\n" +
-                    "574887;Strong;Xidant;318;LA\n" +
-                    "575785;eRs;Lunettes;305;LA\n" +
-                    "578000;;Vertie;272;LA\n" +
-                    "579486;;Rivatant;241;LA\n" +
-                    "581779;;Vertie;210;LA\n" +
-                    "583093;;Telaite;194;LA\n" +
-                    "586569;;Rivatant;149;LA\n" +
-                    "588345;;Vertie;126;LA\n" +
-                    "589627;;Xidant;110;LA\n" +
-                    "591596;;Miel;83;LA\n" +
-                    "592829;;Rivatant;67;LA\n" +
-                    "594975;;Xidant;38;LA\n" +
-                    "596944;;Telaite;12;LA\n" +
-                    "\n" +
-                    "\n" +
-                    "\n";
-        } else {
-            rawResult = "123456;Mon Trõll;Kastar;19;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;122;9;1900;20;0";
-        }
-        PublicScriptResponse result = new PublicScriptResponse(rawResult);
         return result;
     }
 
