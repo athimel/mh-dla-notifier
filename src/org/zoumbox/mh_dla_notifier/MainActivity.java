@@ -227,11 +227,15 @@ public class MainActivity extends AbstractActivity {
         return UpdateRequestType.NONE;
     }
 
-    protected void pushTrollToUI(Troll troll) {
-        Bitmap blason = loadBlason(troll.blason);
-        if (blason != null) {
+    protected void updateBlason(Bitmap blason) {
+        if (blason == null) {
+            this.blason.setImageResource(R.drawable.pas_de_blason);
+        } else {
             this.blason.setImageBitmap(blason);
         }
+    }
+
+    protected void pushTrollToUI(Troll troll) {
 
         String nom = String.format("%s (n°%s) - %s (%d)", troll.nom, troll.id, troll.race, troll.nival);
         SpannableString nomSpannable = new SpannableString(nom);
@@ -269,7 +273,9 @@ public class MainActivity extends AbstractActivity {
         }
         pvs.setText(pvSpannable);
 
-        position.setText(String.format("X=%d | Y=%d | N=%d", troll.posX, troll.posY, troll.posN));
+        position.setText(
+                String.format("X=%d | Y=%d | N=%d",
+                troll.posX, troll.posY, troll.posN));
 
         Date rawDla = troll.dla;
         int pa = troll.pa;
@@ -306,6 +312,9 @@ public class MainActivity extends AbstractActivity {
         String nextDlaText = MhDlaNotifierUtils.formatDate(nextDla.getTime());
         next_dla.setText(nextDlaText);
 
+        blason.setImageResource(R.drawable.loading);
+        new LoadBlasonTask().execute(troll.blason);
+
         registerDlaAlarm();
     }
 
@@ -331,90 +340,102 @@ public class MainActivity extends AbstractActivity {
         }
     }
 
-    protected Bitmap loadBlason(String blasonUrl) {
 
-        Bitmap result = null;
-        if (!Strings.isNullOrEmpty(blasonUrl)) {
-            String localFilePath = MhDlaNotifierUtils.md5(blasonUrl);
-            Log.i(TAG, "localFilePath: " + localFilePath);
-            File filesDir = getCacheDir();
-            File localFile = new File(filesDir, localFilePath);
-            Log.i(TAG, "localFile: " + localFile);
-            if (!localFile.exists()) {
+    public void onPlayButtonClicked(View target) {
+        Uri uri = Uri.parse(Constants.MH_PLAY_URL);
+        Intent webIntent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(webIntent);
+    }
 
-                Log.i(TAG, "Not existing, fetching from " + blasonUrl);
-                BufferedInputStream bis = null;
-                try {
-                    URL url = new URL(blasonUrl);
-                    URLConnection conn = url.openConnection();
-                    conn.connect();
-                    bis = new BufferedInputStream(conn.getInputStream());
-                    result = BitmapFactory.decodeStream(bis);
+    private class LoadBlasonTask extends AsyncTask<String, Void, Bitmap> {
 
-                } catch (Exception eee) {
-                    Log.e(TAG, "Exception", eee);
-                } finally {
-                    if (bis != null) {
-                        try {
-                            bis.close();
-                        } catch (IOException ioe) {
-                            Log.e(TAG, "IOException", ioe);
-                        }
-                    }
-                }
+        @Override
+        protected Bitmap doInBackground(String... params) {
 
-                if (result != null) {
-                    Log.i(TAG, "Save fetched result to " + localFile);
-                    FileOutputStream fos = null;
+            String blasonUrl = params[0];
+
+            Bitmap result = null;
+            if (!Strings.isNullOrEmpty(blasonUrl)) {
+                String localFilePath = MhDlaNotifierUtils.md5(blasonUrl);
+                Log.i(TAG, "localFilePath: " + localFilePath);
+                File filesDir = getCacheDir();
+                File localFile = new File(filesDir, localFilePath);
+                Log.i(TAG, "localFile: " + localFile);
+                if (!localFile.exists()) {
+
+                    Log.i(TAG, "Not existing, fetching from " + blasonUrl);
+                    BufferedInputStream bis = null;
                     try {
-                        fos = new FileOutputStream(localFile);
-
-                        result.compress(Bitmap.CompressFormat.PNG, 90, fos);
+                        URL url = new URL(blasonUrl);
+                        URLConnection conn = url.openConnection();
+                        conn.connect();
+                        bis = new BufferedInputStream(conn.getInputStream());
+                        result = BitmapFactory.decodeStream(bis);
 
                     } catch (Exception eee) {
                         Log.e(TAG, "Exception", eee);
-                        return null;
                     } finally {
-                        if (fos != null) {
+                        if (bis != null) {
                             try {
-                                fos.close();
+                                bis.close();
+                            } catch (IOException ioe) {
+                                Log.e(TAG, "IOException", ioe);
+                            }
+                        }
+                    }
+
+                    if (result != null) {
+                        Log.i(TAG, "Save fetched result to " + localFile);
+                        FileOutputStream fos = null;
+                        try {
+                            fos = new FileOutputStream(localFile);
+
+                            result.compress(Bitmap.CompressFormat.PNG, 90, fos);
+
+                        } catch (Exception eee) {
+                            Log.e(TAG, "Exception", eee);
+                            return null;
+                        } finally {
+                            if (fos != null) {
+                                try {
+                                    fos.close();
+                                } catch (IOException ioe) {
+                                    Log.e(TAG, "IOException", ioe);
+                                }
+                            }
+                        }
+                    }
+                } else {
+
+                    Log.i(TAG, "Existing, loading from cache");
+                    BufferedInputStream bis = null;
+                    try {
+                        bis = new BufferedInputStream(new FileInputStream(localFile));
+
+                        result = BitmapFactory.decodeStream(bis);
+
+                        bis.close();
+                    } catch (Exception eee) {
+                        Log.e(TAG, "Exception", eee);
+                    } finally {
+                        if (bis != null) {
+                            try {
+                                bis.close();
                             } catch (IOException ioe) {
                                 Log.e(TAG, "IOException", ioe);
                             }
                         }
                     }
                 }
-            } else {
-
-                Log.i(TAG, "Existing, loading from cache");
-                BufferedInputStream bis = null;
-                try {
-                    bis = new BufferedInputStream(new FileInputStream(localFile));
-
-                    result = BitmapFactory.decodeStream(bis);
-
-                    bis.close();
-                } catch (Exception eee) {
-                    Log.e(TAG, "Exception", eee);
-                } finally {
-                    if (bis != null) {
-                        try {
-                            bis.close();
-                        } catch (IOException ioe) {
-                            Log.e(TAG, "IOException", ioe);
-                        }
-                    }
-                }
             }
+
+            return result;
         }
 
-        return result;
-    }
-
-    public void onPlayButtonClicked(View target) {
-        Uri uri = Uri.parse(Constants.MH_PLAY_URL);
-        Intent webIntent = new Intent(Intent.ACTION_VIEW, uri);
-        startActivity(webIntent);
+        @Override
+        protected void onPostExecute(Bitmap blason) {
+            updateBlason(blason);
+        }
     }
 
     private class UpdateTrollTask extends AsyncTask<Void, Void, Troll> {
