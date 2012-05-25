@@ -166,13 +166,14 @@ public class Receiver extends BroadcastReceiver {
         notificationManager.notify(0, notification);
     }
 
-    public static Date registerDlaAlarm(Context context, Date dla) {
+    public static Date registerDlaAlarm(Context context) {
         PreferencesHolder preferencesHolder = PreferencesHolder.load(context);
+        Date dla = ProfileProxy.getDLA(context);
         Date result = registerDlaAlarm(context, dla, preferencesHolder);
         return result;
     }
 
-    protected static Date registerDlaAlarm(Context context, Date dla, PreferencesHolder preferences) {
+    private static Date registerDlaAlarm(Context context, Date dla, PreferencesHolder preferences) {
         Date nextAlarm = null;
         if (dla != null && IS_IN_THE_FUTURE.apply(dla)) {
             nextAlarm = MhDlaNotifierUtils.substractMinutes(dla, preferences.notificationDelay);

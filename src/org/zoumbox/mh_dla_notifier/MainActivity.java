@@ -45,11 +45,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.google.common.base.Strings;
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.Troll;
+import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
 import org.zoumbox.mh_dla_notifier.sp.NetworkUnavailableException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
 import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
@@ -107,10 +107,10 @@ public class MainActivity extends AbstractActivity {
         next_dla = (TextView) findViewById(R.id.next_dla_field);
         remainingPAs = (TextView) findViewById(R.id.pas);
 
-        boolean needsUpdate = loadDLAs();
+        UpdateRequestType updateRequestType = loadTroll(UpdateRequestType.NONE);
 
-        if (needsUpdate) {
-            Toast.makeText(this, "Mise à jour des informations...", Toast.LENGTH_LONG).show();
+        if (updateRequestType.needUpdate()) {
+            showToast("Mise à jour des informations...");
             new UpdateTrollTask().execute();
         }
     }
@@ -152,13 +152,13 @@ public class MainActivity extends AbstractActivity {
     protected void refresh() {
         int quota = ProfileProxy.GET_USABLE_QUOTA.apply(ScriptCategory.DYNAMIC) / 2; // %2 pour garder une marge de sécu vis à vis des maj auto
         showToast("Attention à ne pas dépasser %d mises à jour manuelles par jour", quota);
-        try {
-            ProfileProxy.refreshDLA(this);
-        } catch (Exception eee) {
-            // Nevermind refresh is successful or not
-            Log.w(TAG, "Unexpected error", eee);
-        }
-        loadDLAs();
+//        try {
+//            ProfileProxy.refreshDLA(this);
+//        } catch (Exception eee) {
+//            // Nevermind refresh is successful or not
+//            Log.w(TAG, "Unexpected error", eee);
+//        }
+        loadTroll(UpdateRequestType.FULL);
     }
 
     @Override
@@ -183,22 +183,25 @@ public class MainActivity extends AbstractActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REGISTER && resultCode == RESULT_OK) {
-            loadDLAs();
+            loadTroll(UpdateRequestType.FULL);
         }
         if (requestCode == PREFERENCES) {
             registerDlaAlarm();
         }
     }
 
-    protected boolean loadDLAs() {
+    protected UpdateRequestType loadTroll(UpdateRequestType updateRequestType) {
 
-        Log.i(TAG, "Loading DLAs");
+        Log.i(TAG, "Loading Troll with requestType: " + updateRequestType);
 
         try {
-            Troll troll = ProfileProxy.fetchTroll(this, false);
+            if (updateRequestType.needUpdate()) {
+                showToast("Mise à jour des informations...");
+            }
+            Troll troll = ProfileProxy.fetchTroll(this, updateRequestType);
 
             pushTrollToUI(troll);
-            return troll.needsUpdate;
+            return troll.updateRequestType;
 
         } catch (MissingLoginPasswordException mlpe) {
             showToast("Vous devez saisir vos identifiants");
@@ -221,7 +224,7 @@ public class MainActivity extends AbstractActivity {
             Log.i(TAG, "Pas de réseau, mise à jour des informations impossible");
             showToast("Pas de réseau, mise à jour des informations impossible");
         }
-        return false;
+        return UpdateRequestType.NONE;
     }
 
     protected void pushTrollToUI(Troll troll) {
@@ -274,16 +277,16 @@ public class MainActivity extends AbstractActivity {
         SpannableString dlaSpannable = new SpannableString(MhDlaNotifierUtils.formatDate(rawDla));
         SpannableString paSpannable = new SpannableString("" + pa); // Leave ""+ as integer is considered as an Android id
 
+        dlaSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, dlaSpannable.length(), 0);
+
         Date now = new Date();
         if (now.after(rawDla)) {
             showToast(getText(R.string.dla_expired_title));
             dlaSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.dla_expired)), 0, dlaSpannable.length(), 0);
-            dlaSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, dlaSpannable.length(), 0);
         } else {
             Date dlaMinus5Min = MhDlaNotifierUtils.substractMinutes(rawDla, 5);
             if (now.after(dlaMinus5Min)) {
                 dlaSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.dla_to_expire)), 0, dlaSpannable.length(), 0);
-                dlaSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, dlaSpannable.length(), 0);
                 if (pa > 0) {
                     showToast("Il vous reste des PA à jouer !");
                     paSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.dla_to_expire)), 0, paSpannable.length(), 0);
@@ -317,8 +320,7 @@ public class MainActivity extends AbstractActivity {
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancelAll();
         } else {
-            Date dla = ProfileProxy.getDLA(this);
-            Date nextAlarm = Receiver.registerDlaAlarm(this, dla);
+            Date nextAlarm = Receiver.registerDlaAlarm(this);
             if (nextAlarm != null) {
                 Log.i(TAG, "Next alarm at " + nextAlarm);
                 String text = getText(R.string.next_alarm).toString();
@@ -421,8 +423,7 @@ public class MainActivity extends AbstractActivity {
         protected Troll doInBackground(Void... params) {
             Troll result = null;
             try {
-                ProfileProxy.refreshDLA(MainActivity.this);
-                result = ProfileProxy.fetchTroll(MainActivity.this, true);
+                result = ProfileProxy.fetchTroll(MainActivity.this, UpdateRequestType.ONLY_NECESSARY);
             } catch (QuotaExceededException e) {
                 e.printStackTrace();
             } catch (MissingLoginPasswordException e) {

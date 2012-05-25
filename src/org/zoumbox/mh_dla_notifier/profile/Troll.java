@@ -11,12 +11,14 @@ import java.util.List;
  * @author Arnaud Thimel <thimel@codelutin.com>
  */
 public class Troll {
+
     public static final Function<Mouche,MoucheType> GET_MOUCHE_TYPE = new Function<Mouche, MoucheType>() {
         @Override
         public MoucheType apply(Mouche mouche) {
             return mouche.type;
         }
     };
+
     public String id, nom;
     public Race race;
     public int nival;
@@ -30,7 +32,7 @@ public class Troll {
     public String blason;
     public int nbKills, nbMorts;
 
-    public boolean needsUpdate;
+    public UpdateRequestType updateRequestType;
 
     // Computed
     int pvMax = -1;

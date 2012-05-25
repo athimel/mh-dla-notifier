@@ -27,7 +27,6 @@ package org.zoumbox.mh_dla_notifier.profile;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
-import android.widget.Toast;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
@@ -54,7 +53,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.*;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.BLASON;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.CAMOU;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.DLA;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.DUREE_DU_TOUR;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.INTANGIBLE;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.INVISIBLE;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.MOUCHES;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NB_KILLS;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NB_MORTS;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NEEDS_UPDATE;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NIVAL;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NOM;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.PA_RESTANT;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.POS_N;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.POS_X;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.POS_Y;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.PV;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.PV_MAX;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.RACE;
 /**
  * @author Arno <arno@zoumbox.org>
  */
@@ -66,26 +83,6 @@ public class ProfileProxy {
 
     public static final String PROPERTY_TROLL_ID = "trollId";
     public static final String PROPERTY_TROLL_PASSWORD = "trollPassword";
-
-    @Deprecated
-    protected static final Map<PublicScriptProperties, String> oldKeys = Maps.newHashMap();
-    static {
-        oldKeys.put(NOM, "nom");
-        oldKeys.put(RACE, "race");
-        oldKeys.put(NIVAL, "niveau");
-        oldKeys.put(BLASON, "blason");
-        oldKeys.put(NB_KILLS, "nbKills");
-        oldKeys.put(NB_MORTS, "nbMorts");
-        oldKeys.put(POS_X, "posX");
-        oldKeys.put(POS_Y, "posY");
-        oldKeys.put(POS_N, "posN");
-        oldKeys.put(PV, "pv");
-        oldKeys.put(PV_MAX, "pvMax");
-        oldKeys.put(PA_RESTANT, "paRestant");
-        oldKeys.put(DLA, "dla");
-        oldKeys.put(DUREE_DU_TOUR, "dureeDuTour");
-    }
-
 
     public static boolean needsUpdate(Context context, PublicScript script, String trollNumber) {
         Date lastUpdate = PublicScriptsProxy.geLastUpdate(context, script, trollNumber);
@@ -121,15 +118,15 @@ public class ProfileProxy {
         return trollNumber;
     }
 
-    public static Troll fetchTroll(final Context context, boolean requestForUpdate) throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException, NetworkUnavailableException {
+    public static Troll fetchTroll(final Context context, UpdateRequestType updateRequest) throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException, NetworkUnavailableException {
 
         Troll result = new Troll();
 
-        Map<PublicScriptProperties, String> properties = ProfileProxy.fetchProperties(context, requestForUpdate,
-                NOM, RACE, NIVAL, PV, PV_MAX, POS_X, POS_Y, POS_N,
+        List<PublicScriptProperties> requestedProperties = Lists.newArrayList(NOM, RACE, NIVAL, PV, PV_MAX, POS_X, POS_Y, POS_N,
                 CAMOU, INVISIBLE, INTANGIBLE, DUREE_DU_TOUR,
                 DLA, PA_RESTANT, BLASON, NB_KILLS, NB_MORTS,
                 MOUCHES);
+        Map<PublicScriptProperties, String> properties = ProfileProxy.fetchProperties(context, updateRequest,requestedProperties);
 
         result.id = getTrollNumber(context);
 
@@ -170,60 +167,72 @@ public class ProfileProxy {
             result.mouches.add(mouche);
         }
 
-        result.needsUpdate = Boolean.TRUE.toString().endsWith(properties.get(NEEDS_UPDATE));
+        result.updateRequestType = UpdateRequestType.valueOf(properties.get(NEEDS_UPDATE));
 
         return result;
     }
 
-    public static Map<PublicScriptProperties, String> fetchProperties(final Context context, boolean requestForUpdate, PublicScriptProperties ... names) throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException, NetworkUnavailableException {
+    protected static Predicate<PublicScript> noNeedToUpdate(final Context context, final String trollNumber) {
+        return new Predicate<PublicScript>() {
+            @Override
+            public boolean apply(PublicScript script) {
+                return !needsUpdate(context, script, trollNumber);
+            }
+        };
+    }
 
+    public static Map<PublicScriptProperties, String> fetchProperties(final Context context, UpdateRequestType updateRequest, List<PublicScriptProperties> requestedProperties) throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException, NetworkUnavailableException {
+
+        Log.i(TAG, "Fetching properties with updateRequest: " + updateRequest);
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
         Pair<String, String> idAndPassword = loadIdPassword(preferences);
         final String trollNumber = idAndPassword.left();
 
         Set<PublicScript> scripts = Sets.newLinkedHashSet();
-        Log.i(TAG, "Requesting properties: " + names);
-        for (PublicScriptProperties property : names) {
+        Log.i(TAG, "Requesting properties: " + requestedProperties);
+        for (PublicScriptProperties property : requestedProperties) {
             PublicScript script = PublicScript.forProperty(property);
             scripts.add(script);
         }
 
-        boolean forceUpdate = requestForUpdate;
-        if (!forceUpdate) {
-            for (PublicScriptProperties property : names) {
+        UpdateRequestType updateRequestType = updateRequest;
+        if (!updateRequestType.needUpdate()) {
+            for (PublicScriptProperties property : requestedProperties) {
                 String value = preferences.getString(property.name(), null);
                 if (value == null) {
-                    forceUpdate = true;
+                    updateRequestType = UpdateRequestType.FULL;
+                    Log.i(TAG, "updateRequestType changed from " + updateRequest + " to " + updateRequestType);
                     break;
                 }
             }
         }
 
-        boolean needsBackgroundUpdate;
-        if (forceUpdate) {
-            needsBackgroundUpdate = false;
-            for (PublicScript type : scripts) { // FIXME AThimel 25/05/2012 Even if I force update, not all scripts should be updated
+        UpdateRequestType backgroundUpdate = UpdateRequestType.NONE;
+        if (updateRequestType.needUpdate()) {
+
+            if (UpdateRequestType.ONLY_NECESSARY.equals(updateRequestType)) {
+                Iterables.removeIf(scripts, noNeedToUpdate(context, trollNumber));
+            }
+
+            for (PublicScript type : scripts) {
                 Map<String, String> propertiesFetched = PublicScriptsProxy.fetch(context, type, idAndPassword);
                 saveProperties(preferences, propertiesFetched);
             }
         } else {
-            Iterables.removeIf(scripts, new Predicate<PublicScript>() {
-                @Override
-                public boolean apply(PublicScript script) {
-                    return !needsUpdate(context, script, trollNumber);
-                }
-            });
+            Iterables.removeIf(scripts, noNeedToUpdate(context, trollNumber));
 
-            needsBackgroundUpdate =  !scripts.isEmpty();
+            if (!scripts.isEmpty()) {
+                backgroundUpdate = UpdateRequestType.ONLY_NECESSARY;
+            }
         }
 
         Map<PublicScriptProperties, String> result = Maps.newLinkedHashMap();
-        result.put(NEEDS_UPDATE, ""+needsBackgroundUpdate);
+        Log.i(TAG, "Background update needed ? " + backgroundUpdate);
+        result.put(NEEDS_UPDATE, backgroundUpdate.name());
 
-        for (PublicScriptProperties property : names) {
-            String oldValue = preferences.getString(oldKeys.get(property), null);
-            String value = preferences.getString(property.name(), oldValue);
+        for (PublicScriptProperties property : requestedProperties) {
+            String value = preferences.getString(property.name(), null);
             result.put(property, value);
         }
         return result;
@@ -305,7 +314,7 @@ public class ProfileProxy {
         return result;
     }
 
-    protected static Date getDLA(SharedPreferences preferences) {
+    private static Date getDLA(SharedPreferences preferences) {
         String string = preferences.getString(DLA.name(), null);
         Date result = MhDlaNotifierUtils.parseDate(string);
         return result;
@@ -317,7 +326,7 @@ public class ProfileProxy {
         return result;
     }
 
-    public static Integer getPA(SharedPreferences preferences) {
+    private static Integer getPA(SharedPreferences preferences) {
         String string = preferences.getString(PA_RESTANT.name(), null);
         Integer result = null;
         try {
@@ -328,9 +337,4 @@ public class ProfileProxy {
         return result;
     }
 
-    public static Integer getPA(Context context) {
-        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
-        Integer result = getPA(preferences);
-        return result;
-    }
 }

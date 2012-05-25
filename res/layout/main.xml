@@ -108,11 +108,11 @@
                       android:layout_height="wrap_content"
                       style="@style/DL">
 
-            <TextView android:text="@string/dla"
+            <TextView android:text="@string/dla_duration"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       style="@style/DT"/>
-            <TextView android:id="@+id/dla_field"
+            <TextView android:id="@+id/dla_duration_field"
                       android:layout_height="wrap_content"
                       android:layout_width="wrap_content"
                       android:layout_weight="1"
@@ -124,11 +124,11 @@
                       android:layout_height="wrap_content"
                       style="@style/DL">
 
-            <TextView android:text="@string/dla_duration"
+            <TextView android:text="@string/dla"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       style="@style/DT"/>
-            <TextView android:id="@+id/dla_duration_field"
+            <TextView android:id="@+id/dla_field"
                       android:layout_height="wrap_content"
                       android:layout_width="wrap_content"
                       android:layout_weight="1"
