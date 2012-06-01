@@ -22,17 +22,24 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.zoumbox.mh_dla_notifier.sp;
+package org.zoumbox.mh_dla_notifier.profile;
 
 /**
  * @author Arno <arno@zoumbox.org>
  */
-public class NetworkUnavailableException extends Exception {
+public class Equipement {
 
-    private static final long serialVersionUID = 1L;
+    // ID, équipé ? ; type ; identifié ? ; nom ; magie ; description ; poids
 
-    public NetworkUnavailableException(Exception source) {
-        super(source);
+    public String id;
+    public int emplacement;
+    public EquipementType type;
+    public boolean identified;
+    public String nom, magie, description;
+    public double poids;
+
+    public boolean isEquiped() {
+        return emplacement > 0;
     }
 
 }

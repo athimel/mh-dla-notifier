@@ -219,6 +219,9 @@ public class PublicScriptsProxy {
             case Mouche:
                 result.put(PublicScriptProperties.MOUCHES.name(), raw);
                 break;
+            case Equipement:
+                result.put(PublicScriptProperties.EQUIPEMENT.name(), raw);
+                break;
             default:
                 throw new IllegalStateException("Unexpected script : " + script);
         }

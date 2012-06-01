@@ -25,7 +25,7 @@
 package org.zoumbox.mh_dla_notifier.sp;
 
 /**
- * @author Arnaud Thimel <thimel@codelutin.com>
+ * @author Arno <arno@zoumbox.org>
  */
 public enum PublicScriptProperties {
     NEEDS_UPDATE,
@@ -54,6 +54,8 @@ public enum PublicScriptProperties {
     CAMOU,
     INVISIBLE,
     INTANGIBLE,
+
+    EQUIPEMENT,
 
     MOUCHES;
 

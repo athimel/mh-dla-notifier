@@ -28,7 +28,7 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
 /**
- * @author Arnaud Thimel <thimel@codelutin.com>
+ * @author Arno <arno@zoumbox.org>
  */
 public class MhPreferencesActivity extends PreferenceActivity {
 

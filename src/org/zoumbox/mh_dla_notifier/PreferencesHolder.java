@@ -29,7 +29,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 /**
- * @author Arnaud Thimel <thimel@codelutin.com>
+ * @author Arno <arno@zoumbox.org>
  */
 public class PreferencesHolder {
 

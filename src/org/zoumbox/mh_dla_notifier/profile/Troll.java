@@ -32,7 +32,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @author Arnaud Thimel <thimel@codelutin.com>
+ * @author Arno <arno@zoumbox.org>
  */
 public class Troll {
 
@@ -53,6 +53,7 @@ public class Troll {
     public Date dla;
     public int pa;
     public List<Mouche> mouches;
+    public List<Equipement> equipements;
     public String blason;
     public int nbKills, nbMorts;
 

@@ -22,17 +22,21 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.zoumbox.mh_dla_notifier.sp;
+package org.zoumbox.mh_dla_notifier.profile;
 
 /**
  * @author Arno <arno@zoumbox.org>
  */
-public class NetworkUnavailableException extends Exception {
-
-    private static final long serialVersionUID = 1L;
-
-    public NetworkUnavailableException(Exception source) {
-        super(source);
-    }
-
+public enum EquipementType {
+    Champignon,
+    Potion,
+    Casque,
+    Composant,
+    Parchemin,
+    Talisman,
+    Armure,
+    Bouclier,
+    Arme,
+    Bottes,
+    Anneau
 }

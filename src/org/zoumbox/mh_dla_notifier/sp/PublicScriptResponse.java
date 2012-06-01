@@ -27,7 +27,7 @@ package org.zoumbox.mh_dla_notifier.sp;
 import com.google.common.base.Objects;
 
 /**
- * @author Arnaud Thimel <thimel@codelutin.com>
+ * @author Arno <arno@zoumbox.org>
  */
 public class PublicScriptResponse {
 

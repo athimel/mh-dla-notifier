@@ -134,6 +134,11 @@ public class PublicScriptsProxyMock {
                     "9228659;16;Arme (1 main);1;Crochet;de l\\'Ours;ATT : -2 | DEG : +5 | PV : +5 | TOUR : +30 min;12.5\n" +
                     "4332957;32;Bottes;1;Jambières en os;des Cyclopes;ATT : +1 | ESQ : -1 | DEG : +1 | Vue : -1 | Armure : +2 | RM : +7 %;10\n" +
                     "2841600;64;Anneau;1;Anneau de Protection;;Protection;7\n";
+        } else if (url.contains("SP_Bonusmalus.php")) {
+            rawResult = "Vue Troublée;Sortilège;Vue : -6;0\n" +
+                    "Vue Troublée;Sortilège;Vue : -6;0\n" +
+                    "Glue;Sortilège;;0\n" +
+                    "Désorientation;Téléportation;ATT : -12 | ESQ : -13;2\n";
         } else {
             rawResult = "123456;Mon Trõll;Kastar;19;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;122;9;1900;20;0";
         }

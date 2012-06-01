@@ -43,7 +43,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * @author Arnaud Thimel <thimel@codelutin.com>
+ * @author Arno <arno@zoumbox.org>
  */
 public class Receiver extends BroadcastReceiver {
 

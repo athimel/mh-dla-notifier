@@ -55,10 +55,10 @@ public enum PublicScript {
             "http://sp.mountyhall.com/SP_ProfilPublic2.php?Numero=%s&Motdepasse=%s",
             Lists.newArrayList("numero", NOM.name(), RACE.name(), NIVAL.name(), "dateInscription", "email", BLASON.name(), "nbMouches", NB_KILLS.name(), NB_MORTS.name(), "numeroDeGuilde", "niveauDeRang", "pnj")),
 
-//    Equipement(
-//            ScriptCategory.STATIC,
-//            "http://sp.mountyhall.com/SP_Equipement.php?Numero=%s&Motdepasse=%s",
-//            Lists.newArrayList(EQUIPEMENT.name())),
+    Equipement(
+            ScriptCategory.STATIC,
+            "http://sp.mountyhall.com/SP_Equipement.php?Numero=%s&Motdepasse=%s",
+            Lists.newArrayList(EQUIPEMENT.name())),
 
     Mouche(
             ScriptCategory.STATIC,

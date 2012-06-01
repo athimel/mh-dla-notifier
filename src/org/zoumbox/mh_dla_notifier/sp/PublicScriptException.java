@@ -25,7 +25,7 @@
 package org.zoumbox.mh_dla_notifier.sp;
 
 /**
- * @author Arnaud Thimel <thimel@codelutin.com>
+ * @author Arno <arno@zoumbox.org>
  */
 public class PublicScriptException extends Exception {
 
