@@ -49,6 +49,16 @@ public enum PublicScript {
 //            ScriptCategory.DYNAMIC,
 //            "http://sp.mountyhall.com/SP_Bonusmalus.php?Numero=%s&Motdepasse=%s",
 //            Lists.newArrayList(BONUS_MALUS.name())),
+//
+//    Caract(
+//            ScriptCategory.DYNAMIC,
+//            "http://sp.mountyhall.com/SP_Caract.php?Numero=%s&Motdepasse=%s",
+//            Lists.newArrayList(CARACT.name())),
+//
+//    Aptitudes2(
+//            ScriptCategory.DYNAMIC,
+//            "http://sp.mountyhall.com/SP_Aptitudes2.php?Numero=%s&Motdepasse=%s",
+//            Lists.newArrayList(APTITUDES.name())),
 
     ProfilPublic2(
             ScriptCategory.STATIC,

@@ -24,21 +24,46 @@
  */
 package org.zoumbox.mh_dla_notifier.sp;
 
+import com.google.common.collect.Maps;
+
+import java.util.Map;
+
 /**
  * @author Arno <arno@zoumbox.org>
  */
 public class PublicScriptsProxyMock {
 
+    private enum MockTroll {
+        DevelZimzoum, Snorf, omnipotente
+    }
+
     public static PublicScriptResponse doMockHttpGET(String url) {
-        String rawResult;
-        String dla = "2012-05-22 12:25:36";
-        int pa = 3;
-        if (url.contains("SP_Profil2.php")) {
-            rawResult = "123456;57;-75;-41;50;80;" + pa + ";" + dla + ";8;4;13;4;4;6;360;361;0;5;0;0;0;0;0;585;0;1;0";
-        } else if (url.contains("SP_Profil3.php")) {
-            rawResult = "123456;Mon Trõll;57;-75;-41;" + pa + ";" + dla + ";3;0;0;0;2;22;88;6042";
-        } else if (url.contains("Mouche.php")) {
-            rawResult = "567856;ers;Lunettes;404;LA\n" +
+        MockTroll mockTroll = MockTroll.DevelZimzoum;
+
+        String rawResult = null;
+        for (PublicScript ps : PublicScript.values()) {
+            if (url.contains(ps.name() + ".php")) {
+                rawResult = scripts.get(ps).get(mockTroll);
+                if (rawResult == null) {
+                    rawResult = scripts.get(ps).get(MockTroll.DevelZimzoum);
+                }
+                if (rawResult != null) {
+                    break;
+                }
+            }
+        }
+        if (rawResult == null) {
+            throw new UnsupportedOperationException("URL non prévue : " + url  + " troll: " + mockTroll);
+        }
+        PublicScriptResponse result = new PublicScriptResponse(rawResult);
+        return result;
+    }
+
+    public static final String DEVEL_PROFIL2 = "123456;57;-75;-41;50;80;3;2012-05-22 12:25:36;8;4;13;4;4;6;360;361;0;5;0;0;0;0;0;585;0;1;0";
+    public static final String DEVEL_PROFIL_PUBLIC2 =
+            "123456;Mon Trõll;Kastar;19;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;122;9;1900;20;0";
+    public static final String DEVEL_MOUCHES =
+            "567856;ers;Lunettes;404;LA\n" +
                     "563814;ToMars;Crobate;453;LA\n" +
                     "562632;ingToTheMoon;Nabolisants;467;LA\n" +
                     "565369;ToGether;Crobate;434;LA\n" +
@@ -62,8 +87,27 @@ public class PublicScriptsProxyMock {
                     "\n" +
                     "\n" +
                     "\n";
-        } else if (url.contains("SP_Equipement.php")) {
-            rawResult = "9332117;0;Potion;1;Jus de Chronomètre;;TOUR : -120 min;5\n" +
+    public static final String DEVEL_BONUS_MALUS =
+            "Vue Troublée;Sortilège;Vue : -6;0\n" +
+                    "Vue Troublée;Sortilège;Vue : -6;0\n" +
+                    "Glue;Sortilège;;0\n" +
+                    "Désorientation;Téléportation;ATT : -12 | ESQ : -13;2\n";
+    public static final String DEVEL_APTITUDES2 =
+            "C;18;52;0;1\n" +
+                    "C;3;90;0;1\n" +
+                    "C;16;38;0;2\n" +
+                    "C;16;90;0;1\n" +
+                    "C;12;90;0;1\n" +
+                    "C;21;83;0;1\n" +
+                    "C;8;73;0;3\n" +
+                    "C;8;87;0;2\n" +
+                    "C;8;87;0;1\n" +
+                    "C;14;69;0;1\n" +
+                    "S;3;80;0;1\n" +
+                    "S;10;80;0;1\n" +
+                    "S;27;61;0;1\n";
+    public static final String DEVEL_EQUIP =
+            "9332117;0;Potion;1;Jus de Chronomètre;;TOUR : -120 min;5\n" +
                     "9332290;0;Potion;1;Voï'Pu'Rin;;Vue : -20;5\n" +
                     "9333962;0;Potion;1;Jus de Chronomètre;;TOUR : -30 min;5\n" +
                     "6237353;0;Parchemin;1;Invention Extraordinaire;;Aucune description disponible;2.5\n" +
@@ -85,8 +129,15 @@ public class PublicScriptsProxyMock {
                     "4911535;16;Arme (1 main);1;Lame en os;du Temps;DEG : +2 | TOUR : -30 min;7.5\n" +
                     "5403228;32;Bottes;1;Bottes;des Cyclopes;ATT : +1 | ESQ : +2 | DEG : +1 | Vue : -1;5\n" +
                     "8138607;64;Anneau;1;Anneau de Protection;;Protection;11\n";
-        } else if (url.contains("SP_Equipement.php")) {
-            rawResult = "9384101;0;Champignon;1;Fungus Rampant;Acide;7° jour du Démon du 11° cycle après Ragnarok;0.5\n" +
+    public static final String DEVEL_CARACT =
+            "BMM;6;3;5;4;5;0;1;262;193;3;-130;0;0\n" +
+                    "BMP;1;2;4;-4;0;0;-1;0;0;6;0;125;13\n" +
+                    "CAR;9;4;16;4;80;85;4;486;510;1;585;0;0\n";
+
+
+    public static final String OMNI_PROFIL_PUBLIC2 = "104098;omnipotente;Kastar;17;2011-01-01 11:40:46;loicoudard@yahoo.fr;http://blason.mountyhall.com/Blason_PJ/104098;16;72;8;281;80;0\n";
+    public static final String OMNI_EQUIP =
+            "9384101;0;Champignon;1;Fungus Rampant;Acide;7° jour du Démon du 11° cycle après Ragnarok;0.5\n" +
                     "9373814;0;Potion;1;Toxine Violente;;PV : -2 D3;5\n" +
                     "9367799;0;Casque;1;Casque en cuir;;Armure : +1 | RM : +9 %;5\n" +
                     "9375533;0;Champignon;1;Fungus Rampant;Acide;2° jour du Démon du 11° cycle après Ragnarok;0.5\n" +
@@ -134,16 +185,51 @@ public class PublicScriptsProxyMock {
                     "9228659;16;Arme (1 main);1;Crochet;de l\\'Ours;ATT : -2 | DEG : +5 | PV : +5 | TOUR : +30 min;12.5\n" +
                     "4332957;32;Bottes;1;Jambières en os;des Cyclopes;ATT : +1 | ESQ : -1 | DEG : +1 | Vue : -1 | Armure : +2 | RM : +7 %;10\n" +
                     "2841600;64;Anneau;1;Anneau de Protection;;Protection;7\n";
-        } else if (url.contains("SP_Bonusmalus.php")) {
-            rawResult = "Vue Troublée;Sortilège;Vue : -6;0\n" +
-                    "Vue Troublée;Sortilège;Vue : -6;0\n" +
-                    "Glue;Sortilège;;0\n" +
-                    "Désorientation;Téléportation;ATT : -12 | ESQ : -13;2\n";
-        } else {
-            rawResult = "123456;Mon Trõll;Kastar;19;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;122;9;1900;20;0";
+    public static final String OMNI_CARACT =
+            "BMM;5;3;9;0;15;0;-1;257;292;3;-20;0;0\n" +
+                    "BMP;-1;1;5;-4;0;0;0;0;0;4;0;192.5;0\n" +
+                    "CAR;5;6;12;3;70;85;5;373;1129;3;639;0;0\n";
+
+    public static final String SNORF_PROFIL2 = "86133;-31;-71;-55;161;190;0;2012-06-06 05:30:46;16;15;19;9;12;23;10311;2211;2;0;0;0;0;0;0;585;0;5;1";
+    public static final String SNORF_PROFIL_PUBLIC2 = "86133;Snorf le jeune;Skrim;44;2007-02-06 23:09:17;;http://blason.mountyhall.com/Blason_PJ/86133;44;338;7;1900;160;0";
+    public static final String SNORF_BONUS_MALUS =
+            "Charme;Capacité Spéciale;ATT : -2 | ESQ : -5 | Vue : -1;1\n" +
+            "Charme;Capacité Spéciale;ATT : -2 | ESQ : -3 | Vue : -1;1\n" +
+            "Elixir de Feu;Potion;ESQ : +11 | Vue : +5;5\n" +
+            "Maladie;Capacité Spéciale;DEG : -8 | REG : -4;2\n";
+    public static final String SNORF_CARACT =
+            "BMM;5;13;11;6;5;0;11;5544;4122;10;-160;0;0\n" +
+                    "BMP;-1;-5;-5;-8;0;0;-2;0;0;23;0;114;0\n" +
+                    "CAR;16;15;19;9;190;161;12;2211;10311;5;585;0;0\n";
+
+
+    private static Map<PublicScript, Map<MockTroll, String>> scripts = Maps.newHashMap();
+    static {
+        for (PublicScript ps : PublicScript.values()) {
+            Map<MockTroll, String> trollStringMap = Maps.newHashMap();
+            scripts.put(ps, trollStringMap);
         }
-        PublicScriptResponse result = new PublicScriptResponse(rawResult);
-        return result;
+
+        // Devel
+        scripts.get(PublicScript.Mouche).put(MockTroll.DevelZimzoum, DEVEL_MOUCHES);
+        scripts.get(PublicScript.Profil2).put(MockTroll.DevelZimzoum, DEVEL_PROFIL2);
+        scripts.get(PublicScript.ProfilPublic2).put(MockTroll.DevelZimzoum, DEVEL_PROFIL_PUBLIC2);
+        scripts.get(PublicScript.Equipement).put(MockTroll.DevelZimzoum, DEVEL_EQUIP);
+//        scripts.get(PublicScript.Aptitudes2).put(MockTroll.DevelZimzoum, DEVEL_APTITUDES2);
+//        scripts.get(PublicScript.BonusMalus).put(MockTroll.DevelZimzoum, DEVEL_BONUS_MALUS);
+//        scripts.get(PublicScript.Caract).put(MockTroll.DevelZimzoum, DEVEL_CARACT);
+
+        // omnipotente
+        scripts.get(PublicScript.ProfilPublic2).put(MockTroll.omnipotente, OMNI_PROFIL_PUBLIC2);
+        scripts.get(PublicScript.Equipement).put(MockTroll.omnipotente, OMNI_EQUIP);
+//        scripts.get(PublicScript.Caract).put(MockTroll.omnipotente, OMNI_CARACT);
+
+        // Snorf
+        scripts.get(PublicScript.Profil2).put(MockTroll.Snorf, SNORF_PROFIL2);
+        scripts.get(PublicScript.ProfilPublic2).put(MockTroll.Snorf, SNORF_PROFIL_PUBLIC2);
+//        scripts.get(PublicScript.BonusMalus).put(MockTroll.Snorf, SNORF_BONUS_MALUS);
+//        scripts.get(PublicScript.Caract).put(MockTroll.Snorf, SNORF_CARACT);
+
     }
 
 }

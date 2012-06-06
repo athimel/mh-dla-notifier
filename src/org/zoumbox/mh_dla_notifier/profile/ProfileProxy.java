@@ -176,7 +176,7 @@ public class ProfileProxy {
             Equipement equipement = new Equipement();
             equipement.id = fields.get(0);
             equipement.emplacement = Integer.parseInt(fields.get(1));
-            equipement.type = EquipementType.valueOf(fields.get(2));
+            equipement.type = EquipementType.fromType(fields.get(2));
             equipement.identified = "1".equals(fields.get(3));
             equipement.nom = fields.get(4);
             equipement.magie = fields.get(5);

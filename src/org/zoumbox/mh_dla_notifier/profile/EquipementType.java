@@ -24,6 +24,11 @@
  */
 package org.zoumbox.mh_dla_notifier.profile;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
+
+import java.util.List;
+
 /**
  * @author Arno <arno@zoumbox.org>
  */
@@ -38,5 +43,11 @@ public enum EquipementType {
     Bouclier,
     Arme,
     Bottes,
-    Anneau
+    Anneau;
+
+    public static EquipementType fromType(String type) {
+        List<String> types = Lists.newArrayList(Splitter.on(" ").trimResults().split(type));
+        String searchedType = types.get(0);
+        return valueOf(searchedType);
+    }
 }
