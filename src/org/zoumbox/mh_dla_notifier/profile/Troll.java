@@ -71,4 +71,28 @@ public class Troll {
         }
         return pvMax;
     }
+
+    // Gain en minutes par PV sacrifié = 120 / ( Fatigue * (1 + Arrondi.Inférieur(Fatigue / 10) ) ) minutes. (arrondi inférieur)
+    public static final Function<Integer, Integer> GET_DLA_GAIN_BY_PV = new Function<Integer, Integer>() {
+        @Override
+        public Integer apply(Integer fatigue) {
+            int result = 30;
+            if (fatigue > 4) {
+                result = 120 / (fatigue * (1+fatigue/10));
+            }
+            return result;
+        }
+    };
+
+    // Au début de chaque DLA (Date Limite d'Action), ce compteur est divisé par 1,25 (arrondi à l'inférieur). Le gain en minutes par PV sacrifié est calculé en fonction de ce compteur, si celui-ci est supérieur à 4, sinon le gain est toujours de 30 minutes par PV sacrifié.
+    public static final Function<Integer, Integer> GET_NEXT_FATIGUE = new Function<Integer, Integer>() {
+        @Override
+        public Integer apply(Integer fatigue) {
+            double result = fatigue.doubleValue() / 1.25;
+            Double resultRounded = Math.floor(result);
+            int resultRoundedToInt = resultRounded.intValue();
+            return resultRoundedToInt;
+        }
+    };
+
 }

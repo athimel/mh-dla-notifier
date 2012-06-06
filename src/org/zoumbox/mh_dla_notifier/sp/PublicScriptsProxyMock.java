@@ -38,7 +38,7 @@ public class PublicScriptsProxyMock {
     }
 
     public static PublicScriptResponse doMockHttpGET(String url) {
-        MockTroll mockTroll = MockTroll.DevelZimzoum;
+        MockTroll mockTroll = MockTroll.Snorf;
 
         String rawResult = null;
         for (PublicScript ps : PublicScript.values()) {
@@ -130,6 +130,7 @@ public class PublicScriptsProxyMock {
                     "5403228;32;Bottes;1;Bottes;des Cyclopes;ATT : +1 | ESQ : +2 | DEG : +1 | Vue : -1;5\n" +
                     "8138607;64;Anneau;1;Anneau de Protection;;Protection;11\n";
     public static final String DEVEL_CARACT =
+            // Type; Attaque; Esquive; Dégats; Régénération; PVMax; PVActuels; Portée deVue; RM; MM; Armure; Duree du Tour; Poids; Concentration
             "BMM;6;3;5;4;5;0;1;262;193;3;-130;0;0\n" +
                     "BMP;1;2;4;-4;0;0;-1;0;0;6;0;125;13\n" +
                     "CAR;9;4;16;4;80;85;4;486;510;1;585;0;0\n";
@@ -198,6 +199,7 @@ public class PublicScriptsProxyMock {
             "Elixir de Feu;Potion;ESQ : +11 | Vue : +5;5\n" +
             "Maladie;Capacité Spéciale;DEG : -8 | REG : -4;2\n";
     public static final String SNORF_CARACT =
+            // Type; Attaque; Esquive; Dégats; Régénération; PVMax; PVActuels; Portée deVue; RM; MM; Armure; Duree du Tour; Poids; Concentration
             "BMM;5;13;11;6;5;0;11;5544;4122;10;-160;0;0\n" +
                     "BMP;-1;-5;-5;-8;0;0;-2;0;0;23;0;114;0\n" +
                     "CAR;16;15;19;9;190;161;12;2211;10311;5;585;0;0\n";
