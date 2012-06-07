@@ -55,12 +55,11 @@ import java.util.Set;
 
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.BLASON;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.CAMOU;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.CARACT;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.DLA;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.DUREE_DU_TOUR;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.EQUIPEMENT;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.INTANGIBLE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.INVISIBLE;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.MOUCHES;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NB_KILLS;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NB_MORTS;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NEEDS_UPDATE;
@@ -127,7 +126,7 @@ public class ProfileProxy {
         List<PublicScriptProperties> requestedProperties = Lists.newArrayList(NOM, RACE, NIVAL, PV, PV_MAX, POS_X, POS_Y, POS_N,
                 CAMOU, INVISIBLE, INTANGIBLE, DUREE_DU_TOUR,
                 DLA, PA_RESTANT, BLASON, NB_KILLS, NB_MORTS,
-                EQUIPEMENT, MOUCHES);
+                CARACT);
         Map<PublicScriptProperties, String> properties = ProfileProxy.fetchProperties(context, updateRequest, requestedProperties);
 
         result.id = getTrollNumber(context);
@@ -155,35 +154,49 @@ public class ProfileProxy {
         result.nbKills = Integer.parseInt(properties.get(NB_KILLS));
         result.nbMorts = Integer.parseInt(properties.get(NB_MORTS));
 
-        result.mouches = Lists.newArrayList();
-        List<String> moucheLines = Lists.newArrayList(Splitter.on("\n").omitEmptyStrings().trimResults().split(properties.get(MOUCHES)));
-        for (String line : moucheLines) {
-            List<String> fields = Lists.newArrayList(Splitter.on(";").split(line));
-            Mouche mouche = new Mouche();
-            mouche.id = fields.get(0);
-            mouche.nom = fields.get(1);
-            mouche.type = MoucheType.valueOf(fields.get(2));
-            mouche.age = Integer.parseInt(fields.get(3));
-            mouche.presente = "LA".equals(fields.get(4));
+//        result.mouches = Lists.newArrayList();
+//        List<String> moucheLines = Lists.newArrayList(Splitter.on("\n").omitEmptyStrings().trimResults().split(properties.get(MOUCHES)));
+//        for (String line : moucheLines) {
+//            List<String> fields = Lists.newArrayList(Splitter.on(";").split(line));
+//            Mouche mouche = new Mouche();
+//            mouche.id = fields.get(0);
+//            mouche.nom = fields.get(1);
+//            mouche.type = MoucheType.valueOf(fields.get(2));
+//            mouche.age = Integer.parseInt(fields.get(3));
+//            mouche.presente = "LA".equals(fields.get(4));
+//
+//            result.mouches.add(mouche);
+//        }
 
-            result.mouches.add(mouche);
-        }
+//        result.equipements = Lists.newArrayList();
+//        List<String> equipementLines = Lists.newArrayList(Splitter.on("\n").omitEmptyStrings().trimResults().split(properties.get(EQUIPEMENT)));
+//        for (String line : equipementLines) {
+//            List<String> fields = Lists.newArrayList(Splitter.on(";").split(line));
+//            Equipement equipement = new Equipement();
+//            equipement.id = fields.get(0);
+//            equipement.emplacement = Integer.parseInt(fields.get(1));
+//            equipement.type = EquipementType.fromType(fields.get(2));
+//            equipement.identified = "1".equals(fields.get(3));
+//            equipement.nom = fields.get(4);
+//            equipement.magie = fields.get(5);
+//            equipement.description = fields.get(6);
+//            equipement.poids = Double.parseDouble(fields.get(7));
+//
+//            result.equipements.add(equipement);
+//        }
 
-        result.equipements = Lists.newArrayList();
-        List<String> equipementLines = Lists.newArrayList(Splitter.on("\n").omitEmptyStrings().trimResults().split(properties.get(EQUIPEMENT)));
-        for (String line : equipementLines) {
-            List<String> fields = Lists.newArrayList(Splitter.on(";").split(line));
-            Equipement equipement = new Equipement();
-            equipement.id = fields.get(0);
-            equipement.emplacement = Integer.parseInt(fields.get(1));
-            equipement.type = EquipementType.fromType(fields.get(2));
-            equipement.identified = "1".equals(fields.get(3));
-            equipement.nom = fields.get(4);
-            equipement.magie = fields.get(5);
-            equipement.description = fields.get(6);
-            equipement.poids = Double.parseDouble(fields.get(7));
-
-            result.equipements.add(equipement);
+        List<String> caractLines = Lists.newArrayList(Splitter.on("\n").omitEmptyStrings().trimResults().split(properties.get(CARACT)));
+        result.pvBM = 0;
+        result.dlaBM = 0;
+        result.poids = 0;
+        for (String line : caractLines) {
+            List<String> fields = Lists.newArrayList(Splitter.on(";").trimResults().split(line));
+            String type = fields.get(0);
+            if ("BMM".equals(type) || "BMP".equals(type)) {
+                result.pvBM += Integer.parseInt(fields.get(5));
+                result.dlaBM += Integer.parseInt(fields.get(11));
+                result.poids += Double.parseDouble(fields.get(12));
+            }
         }
 
         result.updateRequestType = UpdateRequestType.valueOf(properties.get(NEEDS_UPDATE));

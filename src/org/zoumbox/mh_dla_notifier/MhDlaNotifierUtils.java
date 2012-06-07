@@ -27,9 +27,11 @@ package org.zoumbox.mh_dla_notifier;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
+import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import org.apache.commons.codec.binary.Hex;
 
+import javax.annotation.Nullable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
@@ -129,16 +131,32 @@ public class MhDlaNotifierUtils {
         return result;
     }
 
-    public static String formatCountDown(int duration) {
-        int durationHours = duration / 60;
-        int durationMinutes = duration % 60;
-        String result = String.format("%d heures et %d minute", durationHours, durationMinutes);
-        if (durationMinutes > 1) {
-            result += "s";
-        }
+    public static final Function<Double, String> PRETTY_PRINT_DURATION = new Function<Double, String>() {
+        @Override
+        public String apply(Double duration) {
+            int durationInt = ((Double)Math.floor(duration)).intValue();
+            int durationHours = durationInt / 60;
+            int durationMinutes = durationInt % 60;
+            Double durationSeconds = 60d * (duration - Math.floor(duration));
+            String result;
+            String hours = String.format("%d heures", durationHours);
+            String minutes = String.format("%d minute", durationMinutes);
+            if (durationMinutes > 1) {
+                minutes += "s";
+            }
+            if (durationSeconds > 0) {
+                String seconds = String.format("%.0f seconde", durationSeconds);
+                if (durationSeconds > 1) {
+                    seconds += "s";
+                }
+                result = String.format("%s, %s et %s", hours, minutes, seconds);
+            } else {
+                result = String.format("%s et %s", hours, minutes);
+            }
 
-        return result;
-    }
+            return result;
+        }
+    };
 
     public static Date substractMinutes(Date date, int minutes) {
         Calendar calendar = Calendar.getInstance();

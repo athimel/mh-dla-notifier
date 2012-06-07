@@ -55,9 +55,11 @@ public enum PublicScriptProperties {
     INVISIBLE,
     INTANGIBLE,
 
-    EQUIPEMENT,
+    CARACT;
 
-    MOUCHES;
+//    EQUIPEMENT,
+//
+//    MOUCHES;
 
 //    properties.put("px", PublicScript.Profil3);
 //    properties.put("pxPerso", PublicScript.Profil3);

@@ -216,12 +216,15 @@ public class PublicScriptsProxy {
                     result.put(key, value);
                 }
                 break;
-            case Mouche:
-                result.put(PublicScriptProperties.MOUCHES.name(), raw);
+            case Caract:
+                result.put(PublicScriptProperties.CARACT.name(), raw);
                 break;
-            case Equipement:
-                result.put(PublicScriptProperties.EQUIPEMENT.name(), raw);
-                break;
+//            case Mouche:
+//                result.put(PublicScriptProperties.MOUCHES.name(), raw);
+//                break;
+//            case Equipement:
+//                result.put(PublicScriptProperties.EQUIPEMENT.name(), raw);
+//                break;
             default:
                 throw new IllegalStateException("Unexpected script : " + script);
         }

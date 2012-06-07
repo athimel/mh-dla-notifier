@@ -38,7 +38,7 @@ public class PublicScriptsProxyMock {
     }
 
     public static PublicScriptResponse doMockHttpGET(String url) {
-        MockTroll mockTroll = MockTroll.Snorf;
+        MockTroll mockTroll = MockTroll.omnipotente ;
 
         String rawResult = null;
         for (PublicScript ps : PublicScript.values()) {
@@ -131,9 +131,9 @@ public class PublicScriptsProxyMock {
                     "8138607;64;Anneau;1;Anneau de Protection;;Protection;11\n";
     public static final String DEVEL_CARACT =
             // Type; Attaque; Esquive; Dégats; Régénération; PVMax; PVActuels; Portée deVue; RM; MM; Armure; Duree du Tour; Poids; Concentration
-            "BMM;6;3;5;4;5;0;1;262;193;3;-130;0;0\n" +
-                    "BMP;1;2;4;-4;0;0;-1;0;0;6;0;125;13\n" +
-                    "CAR;9;4;16;4;80;85;4;486;510;1;585;0;0\n";
+            "BMM;6;3;5; 4; 5; 0; 1;262;193;3;-130;  0; 0\n" +
+            "BMP;1;2;4;-4; 0; 0;-1;  0;  0;6;   0;125;13\n" +
+            "CAR;9;4;16;4;80;85; 4;486;510;1; 585;  0; 0\n";
 
 
     public static final String OMNI_PROFIL_PUBLIC2 = "104098;omnipotente;Kastar;17;2011-01-01 11:40:46;loicoudard@yahoo.fr;http://blason.mountyhall.com/Blason_PJ/104098;16;72;8;281;80;0\n";
@@ -187,9 +187,9 @@ public class PublicScriptsProxyMock {
                     "4332957;32;Bottes;1;Jambières en os;des Cyclopes;ATT : +1 | ESQ : -1 | DEG : +1 | Vue : -1 | Armure : +2 | RM : +7 %;10\n" +
                     "2841600;64;Anneau;1;Anneau de Protection;;Protection;7\n";
     public static final String OMNI_CARACT =
-            "BMM;5;3;9;0;15;0;-1;257;292;3;-20;0;0\n" +
-                    "BMP;-1;1;5;-4;0;0;0;0;0;4;0;192.5;0\n" +
-                    "CAR;5;6;12;3;70;85;5;373;1129;3;639;0;0\n";
+            "BMM; 5;3; 9; 0;15; 0;-1;257; 292;3;-20;    0;0\n" +
+            "BMP;-1;1; 5;-4; 0; 0; 0;  0;   0;4;  0;192.5;0\n" +
+            "CAR; 5;6;12; 3;70;85; 5;373;1129;3;639;    0;0\n";
 
     public static final String SNORF_PROFIL2 = "86133;-31;-71;-55;161;190;0;2012-06-06 05:30:46;16;15;19;9;12;23;10311;2211;2;0;0;0;0;0;0;585;0;5;1";
     public static final String SNORF_PROFIL_PUBLIC2 = "86133;Snorf le jeune;Skrim;44;2007-02-06 23:09:17;;http://blason.mountyhall.com/Blason_PJ/86133;44;338;7;1900;160;0";
@@ -200,9 +200,9 @@ public class PublicScriptsProxyMock {
             "Maladie;Capacité Spéciale;DEG : -8 | REG : -4;2\n";
     public static final String SNORF_CARACT =
             // Type; Attaque; Esquive; Dégats; Régénération; PVMax; PVActuels; Portée deVue; RM; MM; Armure; Duree du Tour; Poids; Concentration
-            "BMM;5;13;11;6;5;0;11;5544;4122;10;-160;0;0\n" +
-                    "BMP;-1;-5;-5;-8;0;0;-2;0;0;23;0;114;0\n" +
-                    "CAR;16;15;19;9;190;161;12;2211;10311;5;585;0;0\n";
+            "BMM; 5;13;11; 6;  5;  0;11;5544; 4122;10;-160;  0;0\n" +
+            "BMP;-1;-5;-5;-8;  0;  0;-2;   0;    0;23;   0;114;0\n" +
+            "CAR;16;15;19; 9;190;161;12;2211;10311; 5; 585;  0;0\n";
 
 
     private static Map<PublicScript, Map<MockTroll, String>> scripts = Maps.newHashMap();
@@ -213,24 +213,24 @@ public class PublicScriptsProxyMock {
         }
 
         // Devel
-        scripts.get(PublicScript.Mouche).put(MockTroll.DevelZimzoum, DEVEL_MOUCHES);
+//        scripts.get(PublicScript.Mouche).put(MockTroll.DevelZimzoum, DEVEL_MOUCHES);
         scripts.get(PublicScript.Profil2).put(MockTroll.DevelZimzoum, DEVEL_PROFIL2);
         scripts.get(PublicScript.ProfilPublic2).put(MockTroll.DevelZimzoum, DEVEL_PROFIL_PUBLIC2);
-        scripts.get(PublicScript.Equipement).put(MockTroll.DevelZimzoum, DEVEL_EQUIP);
+//        scripts.get(PublicScript.Equipement).put(MockTroll.DevelZimzoum, DEVEL_EQUIP);
 //        scripts.get(PublicScript.Aptitudes2).put(MockTroll.DevelZimzoum, DEVEL_APTITUDES2);
 //        scripts.get(PublicScript.BonusMalus).put(MockTroll.DevelZimzoum, DEVEL_BONUS_MALUS);
-//        scripts.get(PublicScript.Caract).put(MockTroll.DevelZimzoum, DEVEL_CARACT);
+        scripts.get(PublicScript.Caract).put(MockTroll.DevelZimzoum, DEVEL_CARACT);
 
         // omnipotente
         scripts.get(PublicScript.ProfilPublic2).put(MockTroll.omnipotente, OMNI_PROFIL_PUBLIC2);
-        scripts.get(PublicScript.Equipement).put(MockTroll.omnipotente, OMNI_EQUIP);
-//        scripts.get(PublicScript.Caract).put(MockTroll.omnipotente, OMNI_CARACT);
+//        scripts.get(PublicScript.Equipement).put(MockTroll.omnipotente, OMNI_EQUIP);
+        scripts.get(PublicScript.Caract).put(MockTroll.omnipotente, OMNI_CARACT);
 
         // Snorf
         scripts.get(PublicScript.Profil2).put(MockTroll.Snorf, SNORF_PROFIL2);
         scripts.get(PublicScript.ProfilPublic2).put(MockTroll.Snorf, SNORF_PROFIL_PUBLIC2);
 //        scripts.get(PublicScript.BonusMalus).put(MockTroll.Snorf, SNORF_BONUS_MALUS);
-//        scripts.get(PublicScript.Caract).put(MockTroll.Snorf, SNORF_CARACT);
+        scripts.get(PublicScript.Caract).put(MockTroll.Snorf, SNORF_CARACT);
 
     }
 

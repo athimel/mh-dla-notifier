@@ -50,11 +50,6 @@ public enum PublicScript {
 //            "http://sp.mountyhall.com/SP_Bonusmalus.php?Numero=%s&Motdepasse=%s",
 //            Lists.newArrayList(BONUS_MALUS.name())),
 //
-//    Caract(
-//            ScriptCategory.DYNAMIC,
-//            "http://sp.mountyhall.com/SP_Caract.php?Numero=%s&Motdepasse=%s",
-//            Lists.newArrayList(CARACT.name())),
-//
 //    Aptitudes2(
 //            ScriptCategory.DYNAMIC,
 //            "http://sp.mountyhall.com/SP_Aptitudes2.php?Numero=%s&Motdepasse=%s",
@@ -65,15 +60,20 @@ public enum PublicScript {
             "http://sp.mountyhall.com/SP_ProfilPublic2.php?Numero=%s&Motdepasse=%s",
             Lists.newArrayList("numero", NOM.name(), RACE.name(), NIVAL.name(), "dateInscription", "email", BLASON.name(), "nbMouches", NB_KILLS.name(), NB_MORTS.name(), "numeroDeGuilde", "niveauDeRang", "pnj")),
 
-    Equipement(
-            ScriptCategory.STATIC,
-            "http://sp.mountyhall.com/SP_Equipement.php?Numero=%s&Motdepasse=%s",
-            Lists.newArrayList(EQUIPEMENT.name())),
+//    Equipement(
+//            ScriptCategory.STATIC,
+//            "http://sp.mountyhall.com/SP_Equipement.php?Numero=%s&Motdepasse=%s",
+//            Lists.newArrayList(EQUIPEMENT.name())),
+//
+//    Mouche(
+//            ScriptCategory.STATIC,
+//            "http://sp.mountyhall.com/SP_Mouche.php?Numero=%s&Motdepasse=%s",
+//            Lists.newArrayList(MOUCHES.name()));
 
-    Mouche(
-            ScriptCategory.STATIC,
-            "http://sp.mountyhall.com/SP_Mouche.php?Numero=%s&Motdepasse=%s",
-            Lists.newArrayList(MOUCHES.name()));
+    Caract(
+        ScriptCategory.DYNAMIC,
+        "http://sp.mountyhall.com/SP_Caract.php?Numero=%s&Motdepasse=%s",
+        Lists.newArrayList(CARACT.name()));
 
 
 

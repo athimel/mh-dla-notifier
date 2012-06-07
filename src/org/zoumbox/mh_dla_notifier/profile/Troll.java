@@ -52,10 +52,14 @@ public class Troll {
     public int dureeDuTour;
     public Date dla;
     public int pa;
-    public List<Mouche> mouches;
-    public List<Equipement> equipements;
+//    public List<Mouche> mouches;
+//    public List<Equipement> equipements;
     public String blason;
     public int nbKills, nbMorts;
+
+    public int pvBM;
+    public int dlaBM;
+    public double poids;
 
     public UpdateRequestType updateRequestType;
 
@@ -64,10 +68,7 @@ public class Troll {
 
     public int getPvMax() {
         if (pvMax == -1) {
-            int nbTelaites = Iterables.frequency(
-                    Iterables.transform(mouches, GET_MOUCHE_TYPE),
-                    MoucheType.Telaite);
-            pvMax = pvMaxBase + nbTelaites * 5;
+            pvMax = pvMaxBase + pvBM;
         }
         return pvMax;
     }
@@ -92,6 +93,27 @@ public class Troll {
             Double resultRounded = Math.floor(result);
             int resultRoundedToInt = resultRounded.intValue();
             return resultRoundedToInt;
+        }
+    };
+
+    // Lorsque vous êtes blessé, chaque point de vie en moins vous donnera un malus de DLA de (250 / PV max) minutes.
+    public static final Function<Troll, Integer> GET_PV_DLA_MALUS = new Function<Troll, Integer>() {
+        @Override
+        public Integer apply(Troll troll) {
+            int pvMax = troll.getPvMax();
+            int result = (250 / pvMax) * (pvMax - troll.pv);
+            return result;
+        }
+    };
+
+    public static final Function<Troll, Double> GET_NEXT_DLA_DURATION = new Function<Troll, Double>() {
+        @Override
+        public Double apply(Troll troll) {
+            // Duree de base du tour (585) + poids (125.5) + bonus magique (-130) + malus blessure (~120)
+            int dlaPVMalus = GET_PV_DLA_MALUS.apply(troll);
+            double result = troll.dureeDuTour + troll.poids + troll.dlaBM + dlaPVMalus;
+            result = Math.max(result, troll.dureeDuTour);
+            return result;
         }
     };
 

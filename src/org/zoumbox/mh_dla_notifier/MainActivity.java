@@ -304,11 +304,12 @@ public class MainActivity extends AbstractActivity {
         dla.setText(dlaSpannable);
         remainingPAs.setText(paSpannable);
 
-        dla_duration.setText(MhDlaNotifierUtils.formatCountDown(troll.dureeDuTour));
+        double nextDlaDuration = Troll.GET_NEXT_DLA_DURATION.apply(troll);
+        dla_duration.setText(MhDlaNotifierUtils.PRETTY_PRINT_DURATION.apply(nextDlaDuration));
 
         Calendar nextDla = Calendar.getInstance();
         nextDla.setTime(rawDla);
-        nextDla.add(Calendar.MINUTE, troll.dureeDuTour);
+        nextDla.add(Calendar.MINUTE, ((Double)Math.floor(nextDlaDuration)).intValue());
         String nextDlaText = MhDlaNotifierUtils.formatDate(nextDla.getTime());
         next_dla.setText(nextDlaText);
 
