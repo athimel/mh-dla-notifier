@@ -200,7 +200,8 @@ public class MainActivity extends AbstractActivity {
             }
             Troll troll = ProfileProxy.fetchTroll(this, updateRequestType);
 
-            pushTrollToUI(troll);
+            boolean displayToasts = !troll.updateRequestType.needUpdate();
+            pushTrollToUI(troll, displayToasts);
             return troll.updateRequestType;
 
         } catch (MissingLoginPasswordException mlpe) {
@@ -235,7 +236,7 @@ public class MainActivity extends AbstractActivity {
         }
     }
 
-    protected void pushTrollToUI(Troll troll) {
+    protected void pushTrollToUI(Troll troll, boolean displayToasts) {
 
         String nom = String.format("%s (n°%s) - %s (%d)", troll.nom, troll.id, troll.race, troll.nival);
         SpannableString nomSpannable = new SpannableString(nom);
@@ -287,14 +288,18 @@ public class MainActivity extends AbstractActivity {
 
         Date now = new Date();
         if (now.after(rawDla)) {
-            showToast(getText(R.string.dla_expired_title));
+            if (displayToasts) {
+                showToast(getText(R.string.dla_expired_title));
+            }
             dlaSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.dla_expired)), 0, dlaSpannable.length(), 0);
         } else {
             Date dlaMinus5Min = MhDlaNotifierUtils.substractMinutes(rawDla, 5);
             if (now.after(dlaMinus5Min)) {
                 dlaSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.dla_to_expire)), 0, dlaSpannable.length(), 0);
                 if (pa > 0) {
-                    showToast("Il vous reste des PA à jouer !");
+                    if (displayToasts) {
+                        showToast("Il vous reste des PA à jouer !");
+                    }
                     paSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.dla_to_expire)), 0, paSpannable.length(), 0);
                     paSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, paSpannable.length(), 0);
                 }
@@ -343,7 +348,11 @@ public class MainActivity extends AbstractActivity {
 
 
     public void onPlayButtonClicked(View target) {
-        Uri uri = Uri.parse(Constants.MH_PLAY_URL);
+        Uri uri = Constants.MH_PLAY_URI;
+        PreferencesHolder preferences = PreferencesHolder.load(this);
+        if (preferences.useSmartphoneInterface) {
+            uri = Constants.MH_PLAY_SMARTPHONE_URI;
+        }
         Intent webIntent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(webIntent);
     }
@@ -460,7 +469,7 @@ public class MainActivity extends AbstractActivity {
 
         @Override
         protected void onPostExecute(Troll troll) {
-            pushTrollToUI(troll);
+            pushTrollToUI(troll, true);
         }
     }
 }

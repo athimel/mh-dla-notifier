@@ -37,9 +37,13 @@ public class PreferencesHolder {
     protected static final String PREFS_SILENT_NOTIFICATION = "prefs.silent_notification";
     protected static final String PREFS_NOTIFY_WITHOUT_PA = "prefs.notify_without_pa";
 
+    protected static final String PREFS_SMARTPHONE_INTERFACE = "prefs.use_smartphone_interface";
+
     public int notificationDelay;
     public boolean notifyWithoutPA;
     public SilentNotification silentNotification;
+
+    public boolean useSmartphoneInterface;
 
     public static PreferencesHolder load(Context context) {
 
@@ -51,6 +55,8 @@ public class PreferencesHolder {
 
         String silentNotificationValue = prefs.getString(PREFS_SILENT_NOTIFICATION, SilentNotification.BY_NIGHT.name());
         result.silentNotification = SilentNotification.valueOf(silentNotificationValue);
+
+        result.useSmartphoneInterface = prefs.getBoolean(PREFS_SMARTPHONE_INTERFACE, true);
 
         return result;
     }

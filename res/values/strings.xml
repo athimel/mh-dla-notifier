@@ -71,5 +71,6 @@
     <string name="notify_without_pa">Notification si plus de PA</string>
     <string name="silent_notification">Notification silencieuse</string>
     <string name="notification_delay">Délai de notification</string>
+    <string name="use_smartphone_interface">Interface smartphone</string>
 
 </resources>
