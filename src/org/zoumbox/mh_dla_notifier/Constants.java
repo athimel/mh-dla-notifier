@@ -31,9 +31,10 @@ import android.net.Uri;
  */
 public class Constants {
 
-    public static final boolean mock = true;
+    public static final boolean mock = false;
 
     public static final String LOG_PREFIX = "MhDlaNotifier-";
+
     public static final Uri MH_PLAY_URI = Uri.parse("http://games.mountyhall.com/mountyhall/MH_Play/PlayStart.php");
     public static final Uri MH_PLAY_SMARTPHONE_URI = Uri.parse("http://smartphone.mountyhall.com/mountyhall/MH_Play/PlayStart.php");
 
