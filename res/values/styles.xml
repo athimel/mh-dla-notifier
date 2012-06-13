@@ -46,8 +46,8 @@
     </style>
 
     <style name="DL" parent="Info">
-        <item name="android:layout_marginTop">6px</item>
-        <item name="android:layout_marginBottom">6px</item>
+        <item name="android:layout_marginTop">5px</item>
+        <item name="android:layout_marginBottom">3px</item>
     </style>
 
     <style name="DT" parent="Info">

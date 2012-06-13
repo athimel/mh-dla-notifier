@@ -58,6 +58,7 @@ import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.CAMOU;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.CARACT;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.DLA;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.DUREE_DU_TOUR;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.FATIGUE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.INTANGIBLE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.INVISIBLE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NB_KILLS;
@@ -123,7 +124,7 @@ public class ProfileProxy {
 
         Troll result = new Troll();
 
-        List<PublicScriptProperties> requestedProperties = Lists.newArrayList(NOM, RACE, NIVAL, PV, PV_MAX, POS_X, POS_Y, POS_N,
+        List<PublicScriptProperties> requestedProperties = Lists.newArrayList(NOM, RACE, NIVAL, PV, PV_MAX, FATIGUE, POS_X, POS_Y, POS_N,
                 CAMOU, INVISIBLE, INTANGIBLE, DUREE_DU_TOUR,
                 DLA, PA_RESTANT, BLASON, NB_KILLS, NB_MORTS,
                 CARACT);
@@ -137,6 +138,7 @@ public class ProfileProxy {
 
         result.pv = Integer.parseInt(properties.get(PV));
         result.pvMaxBase = Integer.parseInt(properties.get(PV_MAX));
+        result.fatigue = Integer.parseInt(properties.get(FATIGUE));
 
         result.posX = Integer.parseInt(properties.get(POS_X));
         result.posY = Integer.parseInt(properties.get(POS_Y));

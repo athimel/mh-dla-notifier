@@ -50,7 +50,7 @@ public class MhDlaNotifierUtils {
 
     public static final String INTPUT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String HOUR_DATE_FORMAT = "HH:mm:ss";
-    public static final String DAY_DATE_FORMAT = "dd MMM yyyy";
+    public static final String DAY_DATE_FORMAT = "dd MMM";
     public static final String DISPLAY_DATE_FORMAT = DAY_DATE_FORMAT + " - " + HOUR_DATE_FORMAT;
 
     /**

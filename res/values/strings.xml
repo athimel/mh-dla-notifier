@@ -55,12 +55,13 @@
         MountyHall.
     </string>
     <string name="dla">DLA</string>
-    <string name="dla_duration">Durée du tour</string>
-    <string name="next_dla">DLA suivante</string>
     <string name="remaining_pas">PAs restants</string>
-    <string name="kd">Kills / Morts</string>
-    <string name="pvs">Points de vie</string>
+    <string name="dla_duration">Durée du tour</string>
+    <string name="next_dla">DLA suivante (estim.)</string>
     <string name="position">Position</string>
+    <string name="pvs">Points de vie</string>
+    <string name="fatigue">Fatigue</string>
+    <string name="kd">Kills / Morts</string>
 
     <string name="next_alarm" formatted="false">Prochaine alarme le %s à %s</string>
     <string name="dla_expiring_title">Attention à votre DLA !</string>

@@ -38,7 +38,7 @@ public enum PublicScript {
     Profil2(
             ScriptCategory.DYNAMIC,
             "http://sp.mountyhall.com/SP_Profil2.php?Numero=%s&Motdepasse=%s",
-            Lists.newArrayList("numero", POS_X.name(), POS_Y.name(), POS_N.name(), PV.name(), PV_MAX.name(), PA_RESTANT.name(), DLA.name(), "attaque", "esquive", "degats", "regeneration", "vue", "armure", "mm", "rm", "attaquesSubies", "fatigue", CAMOU.name(), INVISIBLE.name(), INTANGIBLE.name(), "nbParadeProgrammes", "nbContreAttaquesProgrammes", DUREE_DU_TOUR.name(), "bonusDuree", "armureNaturelle", "desDArmureEnMoins")),
+            Lists.newArrayList("numero", POS_X.name(), POS_Y.name(), POS_N.name(), PV.name(), PV_MAX.name(), PA_RESTANT.name(), DLA.name(), "attaque", "esquive", "degats", "regeneration", "vue", "armure", "mm", "rm", "attaquesSubies", FATIGUE.name(), CAMOU.name(), INVISIBLE.name(), INTANGIBLE.name(), "nbParadeProgrammes", "nbContreAttaquesProgrammes", DUREE_DU_TOUR.name(), "bonusDuree", "armureNaturelle", "desDArmureEnMoins")),
 
 //    Profil3(
 //            ScriptCategory.DYNAMIC,

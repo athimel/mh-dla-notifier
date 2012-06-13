@@ -49,6 +49,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
+import org.zoumbox.mh_dla_notifier.profile.Race;
 import org.zoumbox.mh_dla_notifier.profile.Troll;
 import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
 import org.zoumbox.mh_dla_notifier.sp.NetworkUnavailableException;
@@ -83,6 +84,7 @@ public class MainActivity extends AbstractActivity {
     protected ImageView blason;
     protected TextView name;
     protected TextView pvs;
+    protected TextView fatigue;
     protected TextView kd;
     protected TextView position;
     protected TextView dla;
@@ -102,6 +104,7 @@ public class MainActivity extends AbstractActivity {
         blason = (ImageView) findViewById(R.id.blason);
         name = (TextView) findViewById(R.id.name);
         pvs = (TextView) findViewById(R.id.pvs);
+        fatigue = (TextView) findViewById(R.id.fatigue);
         kd = (TextView) findViewById(R.id.kd);
         position = (TextView) findViewById(R.id.position);
         dla = (TextView) findViewById(R.id.dla_field);
@@ -277,6 +280,18 @@ public class MainActivity extends AbstractActivity {
             // Nothing to do, ignore it
         }
         pvs.setText(pvSpannable);
+
+        String fatigueString = "" + troll.fatigue;
+        SpannableString fatigueSpannable;
+        if (Race.Kastar.equals(troll.race)) {
+            int fatigueLength = fatigueString.length();
+            fatigueString += String.format(" (AM: 1 PV = %d') ", Troll.GET_DLA_GAIN_BY_PV.apply(troll.fatigue));
+            fatigueSpannable = new SpannableString(fatigueString);
+            fatigueSpannable.setSpan(new StyleSpan(Typeface.ITALIC), fatigueLength, fatigueString.length(), 0);
+        } else {
+            fatigueSpannable = new SpannableString(fatigueString);
+        }
+        fatigue.setText(fatigueSpannable);
 
         position.setText(
                 String.format("X=%d | Y=%d | N=%d",

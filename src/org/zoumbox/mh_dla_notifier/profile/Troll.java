@@ -47,6 +47,7 @@ public class Troll {
     public Race race;
     public int nival;
     public int pv, pvMaxBase;
+    public int fatigue;
     public int posX, posY, posN;
     public boolean camou, invisible, intangible;
     public int dureeDuTour;

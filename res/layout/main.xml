@@ -46,16 +46,104 @@
                     />
         </LinearLayout>
 
+        <!-- Name -->
         <TextView android:id="@+id/name"
                   android:layout_height="wrap_content"
                   android:layout_width="fill_parent"
                   android:gravity="center_horizontal"
                   style="@style/Header"/>
 
+        <!-- HR -->
         <LinearLayout android:layout_width="fill_parent"
                       android:layout_height="1px"
                       style="@style/hr"/>
 
+        <!-- DLA -->
+        <LinearLayout android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      style="@style/DL">
+
+            <TextView android:text="@string/dla"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      style="@style/DT"/>
+            <TextView android:id="@+id/dla_field"
+                      android:layout_height="wrap_content"
+                      android:layout_width="wrap_content"
+                      android:layout_weight="1"
+                      style="@style/DD"/>
+
+        </LinearLayout>
+
+        <!-- PA restants -->
+        <LinearLayout android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      style="@style/DL">
+
+            <TextView android:text="@string/remaining_pas"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      style="@style/DT"/>
+            <TextView android:id="@+id/pas"
+                      android:layout_height="wrap_content"
+                      android:layout_width="wrap_content"
+                      android:layout_weight="1"
+                      style="@style/DD"/>
+
+        </LinearLayout>
+
+        <!-- Durée tour -->
+        <LinearLayout android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      style="@style/DL">
+
+            <TextView android:text="@string/dla_duration"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      style="@style/DT"/>
+            <TextView android:id="@+id/dla_duration_field"
+                      android:layout_height="wrap_content"
+                      android:layout_width="wrap_content"
+                      android:layout_weight="1"
+                      style="@style/DD"/>
+
+        </LinearLayout>
+
+        <!-- DLA suivante -->
+        <LinearLayout android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      style="@style/DL">
+
+            <TextView android:text="@string/next_dla"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      style="@style/DT"/>
+            <TextView android:id="@+id/next_dla_field"
+                      android:layout_height="wrap_content"
+                      android:layout_width="wrap_content"
+                      android:layout_weight="1"
+                      style="@style/DD"/>
+
+        </LinearLayout>
+
+        <!-- Position -->
+        <LinearLayout android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      style="@style/DL">
+
+            <TextView android:text="@string/position"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      style="@style/DT"/>
+            <TextView android:id="@+id/position"
+                      android:layout_height="wrap_content"
+                      android:layout_width="wrap_content"
+                      android:layout_weight="1"
+                      style="@style/DD"/>
+
+        </LinearLayout>
+
+        <!-- Points de vie -->
         <LinearLayout android:layout_width="fill_parent"
                       android:layout_height="wrap_content"
                       style="@style/DL">
@@ -73,15 +161,18 @@
 
         </LinearLayout>
 
+
+        <!-- Fatigue -->
         <LinearLayout android:layout_width="fill_parent"
                       android:layout_height="wrap_content"
                       style="@style/DL">
 
-            <TextView android:text="@string/position"
+            <TextView android:text="@string/fatigue"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       style="@style/DT"/>
-            <TextView android:id="@+id/position"
+
+            <TextView android:id="@+id/fatigue"
                       android:layout_height="wrap_content"
                       android:layout_width="wrap_content"
                       android:layout_weight="1"
@@ -89,6 +180,7 @@
 
         </LinearLayout>
 
+        <!-- Kill / death -->
         <LinearLayout android:layout_width="fill_parent"
                       android:layout_height="wrap_content"
                       style="@style/DL">
@@ -98,70 +190,6 @@
                       android:layout_height="wrap_content"
                       style="@style/DT"/>
             <TextView android:id="@+id/kd"
-                      android:layout_height="wrap_content"
-                      android:layout_width="wrap_content"
-                      android:layout_weight="1"
-                      style="@style/DD"/>
-
-        </LinearLayout>
-
-        <LinearLayout android:layout_width="fill_parent"
-                      android:layout_height="wrap_content"
-                      style="@style/DL">
-
-            <TextView android:text="@string/dla_duration"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      style="@style/DT"/>
-            <TextView android:id="@+id/dla_duration_field"
-                      android:layout_height="wrap_content"
-                      android:layout_width="wrap_content"
-                      android:layout_weight="1"
-                      style="@style/DD"/>
-
-        </LinearLayout>
-
-        <LinearLayout android:layout_width="fill_parent"
-                      android:layout_height="wrap_content"
-                      style="@style/DL">
-
-            <TextView android:text="@string/dla"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      style="@style/DT"/>
-            <TextView android:id="@+id/dla_field"
-                      android:layout_height="wrap_content"
-                      android:layout_width="wrap_content"
-                      android:layout_weight="1"
-                      style="@style/DD"/>
-
-        </LinearLayout>
-
-        <LinearLayout android:layout_width="fill_parent"
-                      android:layout_height="wrap_content"
-                      style="@style/DL">
-
-            <TextView android:text="@string/next_dla"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      style="@style/DT"/>
-            <TextView android:id="@+id/next_dla_field"
-                      android:layout_height="wrap_content"
-                      android:layout_width="wrap_content"
-                      android:layout_weight="1"
-                      style="@style/DD"/>
-
-        </LinearLayout>
-
-        <LinearLayout android:layout_width="fill_parent"
-                      android:layout_height="wrap_content"
-                      style="@style/DL">
-
-            <TextView android:text="@string/remaining_pas"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      style="@style/DT"/>
-            <TextView android:id="@+id/pas"
                       android:layout_height="wrap_content"
                       android:layout_width="wrap_content"
                       android:layout_weight="1"

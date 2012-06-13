@@ -46,6 +46,7 @@ public enum PublicScriptProperties {
     POS_N,
     PV,
     PV_MAX,
+    FATIGUE,
     PA_RESTANT,
     DLA,
 //    properties.put("fatigue", PublicScript.Profil2);
