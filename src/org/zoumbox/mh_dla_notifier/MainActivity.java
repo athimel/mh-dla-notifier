@@ -45,6 +45,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
@@ -94,6 +95,7 @@ public class MainActivity extends AbstractActivity {
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
@@ -186,7 +188,7 @@ public class MainActivity extends AbstractActivity {
             loadTroll(UpdateRequestType.FULL);
         }
         if (requestCode == PREFERENCES) {
-            registerDlaAlarm();
+            registerDlaAlarm(true);
         }
     }
 
@@ -237,6 +239,8 @@ public class MainActivity extends AbstractActivity {
     }
 
     protected void pushTrollToUI(Troll troll, boolean displayToasts) {
+
+        Preconditions.checkArgument(troll != null, "Troll is null");
 
         String nom = String.format("%s (n°%s) - %s (%d)", troll.nom, troll.id, troll.race, troll.nival);
         SpannableString nomSpannable = new SpannableString(nom);
@@ -318,13 +322,12 @@ public class MainActivity extends AbstractActivity {
         String nextDlaText = MhDlaNotifierUtils.formatDate(nextDla.getTime());
         next_dla.setText(nextDlaText);
 
-        blason.setImageResource(R.drawable.loading);
         new LoadBlasonTask().execute(troll.blason);
 
-        registerDlaAlarm();
+        registerDlaAlarm(displayToasts);
     }
 
-    private void registerDlaAlarm() {
+    private void registerDlaAlarm(boolean displayToasts) {
 
         boolean fromNotification = getIntent().getBooleanExtra(EXTRA_FROM_NOTIFICATION, false);
         Log.i(TAG, "From notification: " + fromNotification);
@@ -338,8 +341,10 @@ public class MainActivity extends AbstractActivity {
             Date nextAlarm = Receiver.registerDlaAlarm(this);
             if (nextAlarm != null) {
                 Log.i(TAG, "Next alarm at " + nextAlarm);
-                String text = getText(R.string.next_alarm).toString();
-                showToast(String.format(text, MhDlaNotifierUtils.formatDay(nextAlarm), MhDlaNotifierUtils.formatHour(nextAlarm)));
+                if (displayToasts) {
+                    String text = getText(R.string.next_alarm).toString();
+                    showToast(String.format(text, MhDlaNotifierUtils.formatDay(nextAlarm), MhDlaNotifierUtils.formatHour(nextAlarm)));
+                }
             } else {
                 Log.w(TAG, "DLA null or expired: " + dla);
             }
@@ -469,7 +474,11 @@ public class MainActivity extends AbstractActivity {
 
         @Override
         protected void onPostExecute(Troll troll) {
-            pushTrollToUI(troll, true);
+            if (troll == null) {
+                showToast("Mise à jour des informations impossible...");
+            } else {
+                pushTrollToUI(troll, true);
+            }
         }
     }
 }
