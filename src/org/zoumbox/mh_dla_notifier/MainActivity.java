@@ -250,7 +250,16 @@ public class MainActivity extends AbstractActivity {
         nomSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, troll.nom.length(), 0);
         name.setText(nomSpannable);
 
-        kd.setText(String.format("%d / %d", troll.nbKills, troll.nbMorts));
+        String kdString = String.format("%d / %d", troll.nbKills, troll.nbMorts);
+        int kdStringLength = kdString.length();
+        if (troll.nbMorts > 0) {
+            kdString += String.format(" (ratio: %.1f) ", new Integer(troll.nbKills).doubleValue() / new Integer(troll.nbMorts).doubleValue());
+        }
+        SpannableString kdSpannable = new SpannableString(kdString);
+        if (kdString.length() > kdStringLength) {
+            kdSpannable.setSpan(new StyleSpan(Typeface.ITALIC), kdStringLength, kdString.length(), 0);
+        }
+        kd.setText(kdSpannable);
 
         int pvMax = troll.getPvMax();
 
