@@ -321,8 +321,9 @@ public class MainActivity extends AbstractActivity {
             }
             dlaSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.dla_expired)), 0, dlaSpannable.length(), 0);
         } else {
-            Date dlaMinus5Min = MhDlaNotifierUtils.substractMinutes(rawDla, 5);
-            if (now.after(dlaMinus5Min)) {
+            PreferencesHolder preferences = PreferencesHolder.load(this);
+            Date dlaMinusNDMin = MhDlaNotifierUtils.substractMinutes(rawDla, preferences.notificationDelay);
+            if (now.after(dlaMinusNDMin)) {
                 dlaSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.dla_to_expire)), 0, dlaSpannable.length(), 0);
                 if (pa > 0) {
                     if (displayToasts) {
