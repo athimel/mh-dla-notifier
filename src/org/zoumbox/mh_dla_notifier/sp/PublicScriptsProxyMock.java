@@ -59,7 +59,7 @@ public class PublicScriptsProxyMock {
         return result;
     }
 
-    public static final String DEVEL_PROFIL2 = "123456;57;-75;-41;50;80;3;2012-05-22 12:25:36;8;4;13;4;4;6;360;361;0;5;0;0;0;0;0;585;0;1;0";
+    public static final String DEVEL_PROFIL2 = "123456;57;-75;-41;50;80;3;2012-06-14 9:20:36;8;4;13;4;4;6;360;361;0;5;0;0;0;0;0;585;0;1;0";
     public static final String DEVEL_PROFIL_PUBLIC2 =
             "123456;Mon Trõll;Kastar;19;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;122;9;1900;20;0";
     public static final String DEVEL_MOUCHES =
