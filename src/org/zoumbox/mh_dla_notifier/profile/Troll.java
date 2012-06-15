@@ -102,7 +102,10 @@ public class Troll {
         @Override
         public Integer apply(Troll troll) {
             int pvMax = troll.getPvMax();
-            int result = (250 / pvMax) * (pvMax - troll.pv);
+            int result = 0;
+            if (pvMax > 0) {
+                result = (250 * (pvMax - troll.pv) / pvMax);
+            }
             return result;
         }
     };
