@@ -60,7 +60,7 @@ public class Troll {
 
     public int pvBM;
     public int dlaBM;
-    public double poids;
+    public int poids;
 
     public UpdateRequestType updateRequestType;
 
@@ -110,13 +110,13 @@ public class Troll {
         }
     };
 
-    public static final Function<Troll, Double> GET_NEXT_DLA_DURATION = new Function<Troll, Double>() {
+    public static final Function<Troll, Integer> GET_NEXT_DLA_DURATION = new Function<Troll, Integer>() {
         @Override
-        public Double apply(Troll troll) {
-            // Duree de base du tour (585) + poids (125.5) + bonus magique (-130) + malus blessure (~120)
+        public Integer apply(Troll troll) {
+            // Duree de base du tour (585) + poids (125) + bonus magique (-130) + malus blessure (~120)
             int dlaPVMalus = GET_PV_DLA_MALUS.apply(troll);
-            double result = troll.dureeDuTour + troll.poids + troll.dlaBM + dlaPVMalus;
-            result = Math.max(result, troll.dureeDuTour);
+            int computed = troll.dureeDuTour + troll.poids + troll.dlaBM + dlaPVMalus;
+            int result = Math.max(computed, troll.dureeDuTour);
             return result;
         }
     };

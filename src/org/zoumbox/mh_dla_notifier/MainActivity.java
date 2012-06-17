@@ -338,7 +338,7 @@ public class MainActivity extends AbstractActivity {
         dla.setText(dlaSpannable);
         remainingPAs.setText(paSpannable);
 
-        double nextDlaDuration = Troll.GET_NEXT_DLA_DURATION.apply(troll);
+        int nextDlaDuration = Troll.GET_NEXT_DLA_DURATION.apply(troll);
         dla_duration.setText(MhDlaNotifierUtils.PRETTY_PRINT_DURATION.apply(nextDlaDuration));
 
         Calendar nextDla = Calendar.getInstance();

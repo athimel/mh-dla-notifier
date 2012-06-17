@@ -59,7 +59,7 @@ public class PublicScriptsProxyMock {
         return result;
     }
 
-    public static final String DEVEL_PROFIL2 = "104259;83;-106;-78;75;80;0;2012-06-15 05:41:25;9;4;16;4;4;6;530;511;2;4;0;0;0;0;0;585;0;1;2";
+    public static final String DEVEL_PROFIL2 = "104259;83;-106;-78;85;80;6;2012-06-18 02:16:55;9;4;16;4;4;6;531;518;0;4;0;0;0;0;0;585;0;1;0";
     public static final String DEVEL_PROFIL_PUBLIC2 =
             "123456;Mon Trõll;Kastar;19;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;122;9;1900;20;0";
     public static final String DEVEL_MOUCHES =
@@ -134,9 +134,12 @@ public class PublicScriptsProxyMock {
 //            "BMM;6;3;5; 4; 5; 0; 1;262;193;3;-130;  0; 0\n" +
 //            "BMP;1;2;4;-4; 0; 0;-1;  0;  0;6;   0;125;13\n" +
 //            "CAR;9;4;16;4;80;85; 4;486;510;1; 585;  0; 0\n";
-            "BMM;14;3; 9; 4; 5; 0;-3;275;201;3;-130;  0;0\n" +
-            "BMP; 1;2; 4;-4; 0; 0;-1;  0;  0;6;   0;149;0\n" +
-            "CAR; 9;4;16; 4;80;75; 4;511;530;1; 585;  0;0\n";
+//            "BMM;14;3; 9; 4; 5; 0;-3;275;201;3;-130;  0;0\n" +
+//            "BMP; 1;2; 4;-4; 0; 0;-1;  0;  0;6;   0;149;0\n" +
+//            "CAR; 9;4;16; 4;80;75; 4;511;530;1; 585;  0;0\n";
+            "BMM;6;3; 5; 4; 5; 0; 1;279;201;3;-130;    0;0\n" +
+            "BMP;1;2; 4;-4; 0; 0;-1;  0;  0;6;   0;144.5;9\n" +
+            "CAR;9;4;16; 4;80;85; 4;518;531;1; 585;    0;0\n";
 
     public static final String OMNI_PROFIL_PUBLIC2 = "104098;omnipotente;Kastar;17;2011-01-01 11:40:46;loicoudard@yahoo.fr;http://blason.mountyhall.com/Blason_PJ/104098;16;72;8;281;80;0\n";
     public static final String OMNI_EQUIP =

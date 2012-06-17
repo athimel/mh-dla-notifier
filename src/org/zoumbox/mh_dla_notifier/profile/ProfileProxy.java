@@ -197,7 +197,8 @@ public class ProfileProxy {
             if ("BMM".equals(type) || "BMP".equals(type)) {
                 result.pvBM += Integer.parseInt(fields.get(5));
                 result.dlaBM += Integer.parseInt(fields.get(11));
-                result.poids += Double.parseDouble(fields.get(12));
+                Double poids = Math.floor(Double.parseDouble(fields.get(12)));
+                result.poids += poids.intValue();
             }
         }
 

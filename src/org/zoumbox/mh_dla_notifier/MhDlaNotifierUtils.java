@@ -131,28 +131,44 @@ public class MhDlaNotifierUtils {
         return result;
     }
 
-    public static final Function<Double, String> PRETTY_PRINT_DURATION = new Function<Double, String>() {
+//    public static final Function<Double, String> PRETTY_PRINT_DURATION_DOUBLE = new Function<Double, String>() {
+//        @Override
+//        public String apply(Double duration) {
+//            int durationInt = ((Double)Math.floor(duration)).intValue();
+//            int durationHours = durationInt / 60;
+//            int durationMinutes = durationInt % 60;
+//            Double durationSeconds = 60d * (duration - Math.floor(duration));
+//            String result;
+//            String hours = String.format("%d heures", durationHours);
+//            String minutes = String.format("%d minute", durationMinutes);
+//            if (durationMinutes > 1) {
+//                minutes += "s";
+//            }
+//            if (durationSeconds > 0) {
+//                String seconds = String.format("%.0f seconde", durationSeconds);
+//                if (durationSeconds > 1) {
+//                    seconds += "s";
+//                }
+//                result = String.format("%s, %s et %s", hours, minutes, seconds);
+//            } else {
+//                result = String.format("%s et %s", hours, minutes);
+//            }
+//
+//            return result;
+//        }
+//    };
+
+    public static final Function<Integer, String> PRETTY_PRINT_DURATION = new Function<Integer, String>() {
         @Override
-        public String apply(Double duration) {
-            int durationInt = ((Double)Math.floor(duration)).intValue();
-            int durationHours = durationInt / 60;
-            int durationMinutes = durationInt % 60;
-            Double durationSeconds = 60d * (duration - Math.floor(duration));
-            String result;
+        public String apply(Integer duration) {
+            int durationHours = duration / 60;
+            int durationMinutes = duration % 60;
             String hours = String.format("%d heures", durationHours);
             String minutes = String.format("%d minute", durationMinutes);
             if (durationMinutes > 1) {
                 minutes += "s";
             }
-            if (durationSeconds > 0) {
-                String seconds = String.format("%.0f seconde", durationSeconds);
-                if (durationSeconds > 1) {
-                    seconds += "s";
-                }
-                result = String.format("%s, %s et %s", hours, minutes, seconds);
-            } else {
-                result = String.format("%s et %s", hours, minutes);
-            }
+            String result = String.format("%s et %s", hours, minutes);
 
             return result;
         }
