@@ -31,5 +31,6 @@ public enum Race {
     Kastar,
     Tomawak,
     Durakuir,
-    Skrim
+    Skrim,
+    Darkling
 }
