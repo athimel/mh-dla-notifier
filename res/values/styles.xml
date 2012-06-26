@@ -42,7 +42,8 @@
     </style>
 
     <style name="Name" parent="Info">
-        <item name="android:layout_marginBottom">10px</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_marginBottom">20px</item>
         <item name="android:textStyle">bold</item>
     </style>
 
