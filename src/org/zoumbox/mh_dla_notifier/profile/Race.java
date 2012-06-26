@@ -32,5 +32,6 @@ public enum Race {
     Tomawak,
     Durakuir,
     Skrim,
-    Darkling
+    Darkling,
+    Nkrwapu
 }
