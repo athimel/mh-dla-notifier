@@ -37,18 +37,12 @@
                       android:layout_height="250px"
                       android:orientation="horizontal"
                       android:gravity="left">
-            <ImageView android:id="@+id/blason"
-                       android:orientation="vertical"
-                       android:layout_height="250px"
-                       android:layout_width="250px"
-                       android:scaleType="fitXY"
-                       android:src="@drawable/loading"
-                    />
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                           android:layout_width="fill_parent"
                           android:layout_height="fill_parent"
                           android:orientation="vertical"
-                          android:gravity="center_vertical">
+                          android:gravity="center_vertical"
+                          android:layout_weight="1">
 
                 <!-- Name -->
                 <TextView android:id="@+id/name"
@@ -77,7 +71,15 @@
                           android:layout_width="fill_parent"
                           android:gravity="left"
                           style="@style/Info"/>
-             </LinearLayout>
+            </LinearLayout>
+            <ImageView android:id="@+id/blason"
+                       android:orientation="vertical"
+                       android:layout_height="250px"
+                       android:layout_width="250px"
+                       android:scaleType="fitXY"
+                       android:src="@drawable/loading"
+                    />
+
         </LinearLayout>
 
         <!-- HR -->
