@@ -45,8 +45,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.io.Closeables;
+import com.google.common.io.Files;
+import com.google.common.io.InputSupplier;
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.Race;
@@ -54,18 +60,25 @@ import org.zoumbox.mh_dla_notifier.profile.Troll;
 import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
 import org.zoumbox.mh_dla_notifier.sp.NetworkUnavailableException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
+import org.zoumbox.mh_dla_notifier.sp.PublicScriptsProxy;
 import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
 import org.zoumbox.mh_dla_notifier.sp.ScriptCategory;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Activité principale
@@ -83,6 +96,9 @@ public class MainActivity extends AbstractActivity {
 
     protected ImageView blason;
     protected TextView name;
+    protected TextView numero;
+    protected TextView race;
+    protected TextView guilde;
     protected TextView pvs;
     protected TextView fatigue;
     protected TextView kd;
@@ -103,6 +119,9 @@ public class MainActivity extends AbstractActivity {
 
         blason = (ImageView) findViewById(R.id.blason);
         name = (TextView) findViewById(R.id.name);
+        numero = (TextView) findViewById(R.id.number);
+        race = (TextView) findViewById(R.id.race);
+        guilde = (TextView) findViewById(R.id.guilde);
         pvs = (TextView) findViewById(R.id.pvs);
         fatigue = (TextView) findViewById(R.id.fatigue);
         kd = (TextView) findViewById(R.id.kd);
@@ -245,10 +264,13 @@ public class MainActivity extends AbstractActivity {
 
         Preconditions.checkArgument(troll != null, "Troll is null");
 
-        String nom = String.format("%s (n°%s) - %s (%d)", troll.nom, troll.id, troll.race, troll.nival);
-        SpannableString nomSpannable = new SpannableString(nom);
-        nomSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, troll.nom.length(), 0);
-        name.setText(nomSpannable);
+        this.name.setText(troll.nom);
+
+        this.numero.setText("N° " + troll.id);
+
+        this.race.setText(String.format("%s (%d)", troll.race, troll.nival));
+
+        this.guilde.setText("");
 
         String kdString = String.format("%d / %d", troll.nbKills, troll.nbMorts);
         int kdStringLength = kdString.length();
@@ -349,6 +371,8 @@ public class MainActivity extends AbstractActivity {
 
         new LoadBlasonTask().execute(troll.blason);
 
+        new LoadGuildeTask().execute(troll.guilde);
+
         registerDlaAlarm(displayToasts);
     }
 
@@ -415,13 +439,7 @@ public class MainActivity extends AbstractActivity {
                     } catch (Exception eee) {
                         Log.e(TAG, "Exception", eee);
                     } finally {
-                        if (bis != null) {
-                            try {
-                                bis.close();
-                            } catch (IOException ioe) {
-                                Log.e(TAG, "IOException", ioe);
-                            }
-                        }
+                        Closeables.closeQuietly(bis);
                     }
 
                     if (result != null) {
@@ -436,13 +454,7 @@ public class MainActivity extends AbstractActivity {
                             Log.e(TAG, "Exception", eee);
                             return null;
                         } finally {
-                            if (fos != null) {
-                                try {
-                                    fos.close();
-                                } catch (IOException ioe) {
-                                    Log.e(TAG, "IOException", ioe);
-                                }
-                            }
+                            Closeables.closeQuietly(fos);
                         }
                     }
                 } else {
@@ -458,13 +470,7 @@ public class MainActivity extends AbstractActivity {
                     } catch (Exception eee) {
                         Log.e(TAG, "Exception", eee);
                     } finally {
-                        if (bis != null) {
-                            try {
-                                bis.close();
-                            } catch (IOException ioe) {
-                                Log.e(TAG, "IOException", ioe);
-                            }
-                        }
+                        Closeables.closeQuietly(bis);
                     }
                 }
             }
@@ -503,6 +509,72 @@ public class MainActivity extends AbstractActivity {
                 showToast("Mise à jour des informations impossible...");
             } else {
                 pushTrollToUI(troll, true);
+            }
+        }
+    }
+
+    private class LoadGuildeTask extends AsyncTask<Integer, Void, String> {
+
+        @Override
+        protected String doInBackground(Integer... params) {
+            int guildeNumber = params[0];
+            String result = null;
+            if (guildeNumber > 0) {
+                File filesDir = getCacheDir();
+                File localFile = new File(filesDir, "guildes.txt");
+
+                if (!localFile.exists()) {
+                    Log.i(TAG, "Not existing, fetching from " + "http://www.mountyhall.com/ftp/Public_Guildes.txt");
+                    BufferedInputStream bis = null;
+                    try {
+                        URL url = new URL("http://www.mountyhall.com/ftp/Public_Guildes.txt");
+                        URLConnection conn = url.openConnection();
+                        conn.connect();
+                        final BufferedInputStream fbis = new BufferedInputStream(conn.getInputStream());
+                        bis = fbis;
+
+                        Files.copy(new InputSupplier<InputStream>() {
+                            @Override
+                            public InputStream getInput() throws IOException {
+                                return fbis;
+                            }
+                        }, localFile);
+                    } catch (Exception eee) {
+                        Log.e(TAG, "Exception", eee);
+                    } finally {
+                        Closeables.closeQuietly(bis);
+                    }
+                }
+
+                BufferedReader reader = null;
+                try {
+                    reader = new BufferedReader(new FileReader(localFile));
+                    String str;
+                    String beginsWith = guildeNumber + ";";
+                    while ((str = reader.readLine()) != null) {
+                        if (str.startsWith(beginsWith)) {
+                            List<String> split = Lists.newArrayList(Splitter.on(";").omitEmptyStrings().trimResults().split(str));
+                            result = split.get(1);
+                            break;
+                        }
+                    }
+                } catch (FileNotFoundException e) {
+                    // Forget...
+                } catch (IOException e) {
+                    // Forget
+                } finally {
+                    Closeables.closeQuietly(reader);
+                }
+
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String guilde) {
+            Log.i(TAG, "Guilde: " + guilde);
+            if (!Strings.isNullOrEmpty(guilde)) {
+                MainActivity.this.guilde.setText(guilde);
             }
         }
     }

@@ -29,6 +29,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -57,7 +58,7 @@ public class PublicScriptsProxy {
 
     private static final String TAG = Constants.LOG_PREFIX + PublicScriptsProxy.class.getSimpleName();
 
-    protected static PublicScriptResponse doHttpGET(String url) throws NetworkUnavailableException {
+    public static PublicScriptResponse doHttpGET(String url) throws NetworkUnavailableException {
 
         if (Constants.mock) {
             return PublicScriptsProxyMock.doMockHttpGET(url);
@@ -225,6 +226,19 @@ public class PublicScriptsProxy {
 //            case Equipement:
 //                result.put(PublicScriptProperties.EQUIPEMENT.name(), raw);
 //                break;
+            case Vue:
+                int monstresStart = lines.indexOf("#DEBUT MONSTRES");
+                int monstresEnd = lines.indexOf("#FIN MONSTRES");
+                List<String> monstresList = lines.subList(monstresStart + 1, monstresEnd);
+                String monstres = Joiner.on("\n").join(monstresList);
+                result.put(PublicScriptProperties.MONSTRES.name(), monstres);
+
+                int trollsStart = lines.indexOf("#DEBUT TROLLS");
+                int trollsEnd = lines.indexOf("#FIN TROLLS");
+                List<String> trollsList = lines.subList(trollsStart + 1, trollsEnd);
+                String trolls = Joiner.on("\n").join(trollsList);
+                result.put(PublicScriptProperties.TROLLS.name(), trolls);
+                break;
             default:
                 throw new IllegalStateException("Unexpected script : " + script);
         }

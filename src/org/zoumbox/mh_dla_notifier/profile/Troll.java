@@ -36,12 +36,12 @@ import java.util.List;
  */
 public class Troll {
 
-    public static final Function<Mouche,MoucheType> GET_MOUCHE_TYPE = new Function<Mouche, MoucheType>() {
-        @Override
-        public MoucheType apply(Mouche mouche) {
-            return mouche.type;
-        }
-    };
+//    public static final Function<Mouche,MoucheType> GET_MOUCHE_TYPE = new Function<Mouche, MoucheType>() {
+//        @Override
+//        public MoucheType apply(Mouche mouche) {
+//            return mouche.type;
+//        }
+//    };
 
     public String id, nom;
     public Race race;
@@ -53,10 +53,9 @@ public class Troll {
     public int dureeDuTour;
     public Date dla;
     public int pa;
-//    public List<Mouche> mouches;
-//    public List<Equipement> equipements;
     public String blason;
     public int nbKills, nbMorts;
+    public int guilde;
 
     public int pvBM;
     public int dlaBM;

@@ -73,6 +73,7 @@ import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.POS_Y;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.PV;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.PV_MAX;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.RACE;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.GUILDE;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -126,7 +127,7 @@ public class ProfileProxy {
 
         List<PublicScriptProperties> requestedProperties = Lists.newArrayList(NOM, RACE, NIVAL, PV, PV_MAX, FATIGUE, POS_X, POS_Y, POS_N,
                 CAMOU, INVISIBLE, INTANGIBLE, DUREE_DU_TOUR,
-                DLA, PA_RESTANT, BLASON, NB_KILLS, NB_MORTS,
+                DLA, PA_RESTANT, BLASON, NB_KILLS, NB_MORTS, GUILDE,
                 CARACT);
         Map<PublicScriptProperties, String> properties = ProfileProxy.fetchProperties(context, updateRequest, requestedProperties);
 
@@ -153,6 +154,10 @@ public class ProfileProxy {
         result.pa = Integer.parseInt(properties.get(PA_RESTANT));
 
         result.blason = properties.get(BLASON);
+        String guildeNumber = properties.get(GUILDE);
+        if (!Strings.isNullOrEmpty(guildeNumber)) {
+            result.guilde = Integer.parseInt(guildeNumber);
+        }
         result.nbKills = Integer.parseInt(properties.get(NB_KILLS));
         result.nbMorts = Integer.parseInt(properties.get(NB_MORTS));
 

@@ -58,7 +58,7 @@ public enum PublicScript {
     ProfilPublic2(
             ScriptCategory.STATIC,
             "http://sp.mountyhall.com/SP_ProfilPublic2.php?Numero=%s&Motdepasse=%s",
-            Lists.newArrayList("numero", NOM.name(), RACE.name(), NIVAL.name(), "dateInscription", "email", BLASON.name(), "nbMouches", NB_KILLS.name(), NB_MORTS.name(), "numeroDeGuilde", "niveauDeRang", "pnj")),
+            Lists.newArrayList("numero", NOM.name(), RACE.name(), NIVAL.name(), "dateInscription", "email", BLASON.name(), "nbMouches", NB_KILLS.name(), NB_MORTS.name(), GUILDE.name(), "niveauDeRang", "pnj")),
 
 //    Equipement(
 //            ScriptCategory.STATIC,
@@ -73,7 +73,12 @@ public enum PublicScript {
     Caract(
         ScriptCategory.DYNAMIC,
         "http://sp.mountyhall.com/SP_Caract.php?Numero=%s&Motdepasse=%s",
-        Lists.newArrayList(CARACT.name()));
+        Lists.newArrayList(CARACT.name())),
+
+    Vue(
+        ScriptCategory.DYNAMIC,
+        "http://sp.mountyhall.com/SP_Vue2.php?Numero=%s&Motdepasse=%s",
+        Lists.newArrayList(TROLLS.name(), MONSTRES.name()));
 
 
 

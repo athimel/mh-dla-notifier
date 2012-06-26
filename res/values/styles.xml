@@ -41,8 +41,9 @@
         <item name="android:paddingRight">10px</item>
     </style>
 
-    <style name="Header" parent="Info">
-        <item name="android:gravity">center_horizontal</item>
+    <style name="Name" parent="Info">
+        <item name="android:layout_marginBottom">10px</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="DL" parent="Info">

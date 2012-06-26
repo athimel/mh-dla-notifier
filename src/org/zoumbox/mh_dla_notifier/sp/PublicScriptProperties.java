@@ -39,6 +39,7 @@ public enum PublicScriptProperties {
 //    properties.put("nbMouches", PublicScript.ProfilPublic2);
     NB_KILLS,
     NB_MORTS,
+    GUILDE,
 //    properties.put("numeroDeGuilde", PublicScript.ProfilPublic2);
 
     POS_X,
@@ -56,7 +57,10 @@ public enum PublicScriptProperties {
     INVISIBLE,
     INTANGIBLE,
 
-    CARACT;
+    CARACT,
+
+    MONSTRES,
+    TROLLS;
 
 //    EQUIPEMENT,
 //

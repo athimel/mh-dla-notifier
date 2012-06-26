@@ -34,7 +34,7 @@ import java.util.Map;
 public class PublicScriptsProxyMock {
 
     private enum MockTroll {
-        DevelZimzoum, Snorf, omnipotente
+        DevelZimzoum, Snorf, omnipotente, plusilyadefoumoinilyaderi
     }
 
     public static PublicScriptResponse doMockHttpGET(String url) {
@@ -140,6 +140,39 @@ public class PublicScriptsProxyMock {
             "BMM;6;3; 5; 4; 5; 0; 1;279;201;3;-130;    0;0\n" +
             "BMP;1;2; 4;-4; 0; 0;-1;  0;  0;6;   0;144.5;9\n" +
             "CAR;9;4;16; 4;80;85; 4;518;531;1; 585;    0;0\n";
+    public static final String DEVEL_VUE =
+            "#DEBUT TROLLS\n" +
+            "12517;83;-106;-78\n" +
+            "49604;83;-106;-78\n" +
+            "50362;83;-106;-78\n" +
+            "89138;83;-106;-78\n" +
+            "88222;83;-106;-78\n" +
+            "86132;83;-106;-78\n" +
+            "90568;83;-106;-78\n" +
+            "95636;83;-106;-78\n" +
+            "100160;83;-106;-78\n" +
+            "104259;83;-106;-78\n" +
+            "#FIN TROLLS\n" +
+            "#DEBUT MONSTRES\n" +
+            "1829509;Gowap Apprivoisé [Ancien] Pàpaäht;86;-108;-78\n" +
+            "3333207;Golem de cuir [Légendaire];86;-108;-78\n" +
+            "1782296;Gowap Apprivoisé [Ancien] Pétàüre;82;-106;-77\n" +
+            "3131275;Gowap Apprivoisé [Ancien];83;-106;-79\n" +
+            "3260316;Gowap Apprivoisé [Ancien];83;-106;-79\n" +
+            "4236780;Nâ-Hàniym-Hééé [Vénérable];83;-106;-79\n" +
+            "4266040;Squelette [Ancien];83;-106;-78\n" +
+            "4266434;Petit Squelette [Ancien];83;-106;-78\n" +
+            "4264646;Croquemitaine [Ancien];83;-106;-78\n" +
+            "4304082;Croquemitaine [Naissant];83;-106;-78\n" +
+            "4278807;Abishaii Rouge [Novice];83;-106;-78\n" +
+            "1881670;Gowap Apprivoisé [Ancien];83;-106;-77\n" +
+            "2023605;Gowap Apprivoisé [Ancien] Sühssùk;83;-106;-77\n" +
+            "2571623;Gowap Apprivoisé [Ancien] Nöhnõsse;83;-106;-77\n" +
+            "4272893;Abishaii Rouge [Novice];83;-106;-77\n" +
+            "#FIN MONSTRES\n" +
+            "#DEBUT ORIGINE\n" +
+            "4;83;-106;-78\n" +
+            "#FIN ORIGINE\n";
 
     public static final String OMNI_PROFIL_PUBLIC2 = "104098;omnipotente;Kastar;17;2011-01-01 11:40:46;loicoudard@yahoo.fr;http://blason.mountyhall.com/Blason_PJ/104098;16;72;8;281;80;0\n";
     public static final String OMNI_EQUIP =
@@ -209,6 +242,8 @@ public class PublicScriptsProxyMock {
             "BMP;-1;-5;-5;-8;  0;  0;-2;   0;    0;23;   0;114;0\n" +
             "CAR;16;15;19; 9;190;161;12;2211;10311; 5; 585;  0;0\n";
 
+    public static final String PYDFMYDR_PROFIL_PUBLIC2 =
+            "104259;plusilyadefoumoinilyaderi;Darkling;5;2010-04-26 17:22:39;plusilyadefoumoinilyaderi@hotmail.fr;http://blason.mountyhall.com/Blason_PJ/102611;9;75;11;1;00;0";
 
     private static Map<PublicScript, Map<MockTroll, String>> scripts = Maps.newHashMap();
     static {
@@ -236,6 +271,9 @@ public class PublicScriptsProxyMock {
         scripts.get(PublicScript.ProfilPublic2).put(MockTroll.Snorf, SNORF_PROFIL_PUBLIC2);
 //        scripts.get(PublicScript.BonusMalus).put(MockTroll.Snorf, SNORF_BONUS_MALUS);
         scripts.get(PublicScript.Caract).put(MockTroll.Snorf, SNORF_CARACT);
+
+        // plusilyadefoumoinilyaderi
+        scripts.get(PublicScript.ProfilPublic2).put(MockTroll.plusilyadefoumoinilyaderi, PYDFMYDR_PROFIL_PUBLIC2);
 
     }
 
