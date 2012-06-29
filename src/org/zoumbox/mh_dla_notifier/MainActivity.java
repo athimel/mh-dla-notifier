@@ -331,7 +331,7 @@ public class MainActivity extends AbstractActivity {
         Date rawDla = troll.dla;
         int pa = troll.pa;
 
-        SpannableString dlaSpannable = new SpannableString(MhDlaNotifierUtils.formatDate(rawDla));
+        SpannableString dlaSpannable = new SpannableString(MhDlaNotifierUtils.formatDLA(this, rawDla));
         SpannableString paSpannable = new SpannableString("" + pa); // Leave ""+ as integer is considered as an Android id
 
         dlaSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, dlaSpannable.length(), 0);
@@ -361,12 +361,12 @@ public class MainActivity extends AbstractActivity {
         remainingPAs.setText(paSpannable);
 
         int nextDlaDuration = Troll.GET_NEXT_DLA_DURATION.apply(troll);
-        dla_duration.setText(MhDlaNotifierUtils.PRETTY_PRINT_DURATION.apply(nextDlaDuration));
+        dla_duration.setText(MhDlaNotifierUtils.prettyPrintDuration(this, nextDlaDuration));
 
         Calendar nextDla = Calendar.getInstance();
         nextDla.setTime(rawDla);
         nextDla.add(Calendar.MINUTE, ((Double)Math.floor(nextDlaDuration)).intValue());
-        String nextDlaText = MhDlaNotifierUtils.formatDate(nextDla.getTime());
+        String nextDlaText = MhDlaNotifierUtils.formatDLA(this, nextDla.getTime());
         next_dla.setText(nextDlaText);
 
         new LoadBlasonTask().execute(troll.blason);

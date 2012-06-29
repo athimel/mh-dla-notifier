@@ -1,0 +1,5 @@
+<resources>
+    <string name="next_dla">DLA suivante (est.)</string>
+    <string name="dla_format">dd/MM - HH:mm:ss</string>
+    <string name="dla_duration_format" formatted="false">%dh%d</string>
+</resources>

@@ -73,6 +73,21 @@
         <item name="android:layout_marginRight">10px</item>
     </style>
 
+
+    <!-- Small styles -->
+
+    <style name="Name_small" parent="Info">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Info_small" parent="TextCommons">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:paddingLeft">5px</item>
+        <item name="android:paddingRight">5px</item>
+    </style>
+
+
     <color name="dla_expired">#009400</color>
     <color name="dla_to_expire">#FF0000</color>
     <color name="pv_warn">#fff9790d</color>

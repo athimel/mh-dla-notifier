@@ -98,9 +98,19 @@ public class MhDlaNotifierUtils {
         return result;
     }
 
-    public static String formatDate(String input) {
-        Date date = parseDate(input);
-        String result = formatDate(date);
+//    public static String formatDate(String input) {
+//        Date date = parseDate(input);
+//        String result = formatDate(date);
+//        return result;
+//    }
+
+    public static String formatDLA(Context context, Date input) {
+        String result = "n/c";
+        if (input != null) {
+            CharSequence format = context.getText(R.string.dla_format);
+            DateFormat outputDF = new SimpleDateFormat(format.toString(), Locale.FRENCH);
+            result = outputDF.format(input);
+        }
         return result;
     }
 
@@ -158,21 +168,29 @@ public class MhDlaNotifierUtils {
 //        }
 //    };
 
-    public static final Function<Integer, String> PRETTY_PRINT_DURATION = new Function<Integer, String>() {
-        @Override
-        public String apply(Integer duration) {
-            int durationHours = duration / 60;
-            int durationMinutes = duration % 60;
-            String hours = String.format("%d heures", durationHours);
-            String minutes = String.format("%d minute", durationMinutes);
-            if (durationMinutes > 1) {
-                minutes += "s";
-            }
-            String result = String.format("%s et %s", hours, minutes);
+//    public static final Function<Integer, String> PRETTY_PRINT_DURATION = new Function<Integer, String>() {
+//        @Override
+//        public String apply(Integer duration) {
+//            int durationHours = duration / 60;
+//            int durationMinutes = duration % 60;
+//            String hours = String.format("%d heures", durationHours);
+//            String minutes = String.format("%d minute", durationMinutes);
+//            if (durationMinutes > 1) {
+//                minutes += "s";
+//            }
+//            String result = String.format("%s et %s", hours, minutes);
+//
+//            return result;
+//        }
+//    };
 
-            return result;
-        }
-    };
+    public static String prettyPrintDuration(Context context, int duration) {
+        int durationHours = duration / 60;
+        int durationMinutes = duration % 60;
+        CharSequence format = context.getText(R.string.dla_duration_format);
+        String result = String.format(format.toString(), durationHours, durationMinutes);
+        return result;
+    }
 
     public static Date substractMinutes(Date date, int minutes) {
         Calendar calendar = Calendar.getInstance();
