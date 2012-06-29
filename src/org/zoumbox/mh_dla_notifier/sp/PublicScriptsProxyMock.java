@@ -34,7 +34,7 @@ import java.util.Map;
 public class PublicScriptsProxyMock {
 
     private enum MockTroll {
-        DevelZimzoum, Snorf, omnipotente, plusilyadefoumoinilyaderi
+        DevelZimzoum, Snorf, omnipotente, plusilyadefoumoinilyaderi, Uch
     }
 
     public static PublicScriptResponse doMockHttpGET(String url) {
@@ -245,6 +245,8 @@ public class PublicScriptsProxyMock {
     public static final String PYDFMYDR_PROFIL_PUBLIC2 =
             "104259;plusilyadefoumoinilyaderi;Darkling;5;2010-04-26 17:22:39;plusilyadefoumoinilyaderi@hotmail.fr;http://blason.mountyhall.com/Blason_PJ/102611;9;75;11;1;00;0";
 
+    public static final String UCH_PROFIL2 = "88222;81;-100;-76;100;100;0;2012-06-29 18:23:12;3;11;3;7;28;11;4336;1139;0;0;0;0;0;0;0;618;-50;1;0;0;0;0";
+
     private static Map<PublicScript, Map<MockTroll, String>> scripts = Maps.newHashMap();
     static {
         for (PublicScript ps : PublicScript.values()) {
@@ -274,6 +276,9 @@ public class PublicScriptsProxyMock {
 
         // plusilyadefoumoinilyaderi
         scripts.get(PublicScript.ProfilPublic2).put(MockTroll.plusilyadefoumoinilyaderi, PYDFMYDR_PROFIL_PUBLIC2);
+
+        // Uch
+        scripts.get(PublicScript.Profil2).put(MockTroll.Uch, UCH_PROFIL2);
 
     }
 

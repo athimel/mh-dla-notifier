@@ -211,7 +211,7 @@ public class PublicScriptsProxy {
             case ProfilPublic2:
                 Iterable<String> iterable = Splitter.on(";").split(lines.get(0));
                 List<String> data = Lists.newArrayList(iterable);
-                for (int i = 0; i < data.size(); i++) {
+                for (int i = 0; i < data.size() && i < script.properties.size(); i++) {
                     String key = script.properties.get(i);
                     String value = data.get(i);
                     result.put(key, value);
