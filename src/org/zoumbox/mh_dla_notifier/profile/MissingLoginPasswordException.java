@@ -24,11 +24,17 @@
  */
 package org.zoumbox.mh_dla_notifier.profile;
 
+import org.zoumbox.mh_dla_notifier.MhDlaException;
+
 /**
  * @author Arno <arno@zoumbox.org>
  */
-public class MissingLoginPasswordException extends Exception {
+public class MissingLoginPasswordException extends MhDlaException {
 
     private static final long serialVersionUID = 1L;
 
+    @Override
+    public String getText() {
+        return "Authentification";
+    }
 }

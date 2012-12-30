@@ -25,11 +25,8 @@
 package org.zoumbox.mh_dla_notifier.profile;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
 
-import javax.annotation.Nullable;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -79,7 +76,7 @@ public class Troll {
         public Integer apply(Integer fatigue) {
             int result = 30;
             if (fatigue > 4) {
-                result = 120 / (fatigue * (1+fatigue/10));
+                result = 120 / (fatigue * (1 + fatigue / 10));
             }
             return result;
         }

@@ -53,13 +53,13 @@ public class PublicScriptsProxyMock {
             }
         }
         if (rawResult == null) {
-            throw new UnsupportedOperationException("URL non prévue : " + url  + " troll: " + mockTroll);
+            throw new UnsupportedOperationException("URL non prévue : " + url + " troll: " + mockTroll);
         }
         PublicScriptResponse result = new PublicScriptResponse(rawResult);
         return result;
     }
 
-    public static final String DEVEL_PROFIL2 = "104259;83;-106;-78;85;80;6;2012-06-18 02:16:55;9;4;16;4;4;6;531;518;0;4;0;0;0;0;0;585;0;1;0";
+    public static final String DEVEL_PROFIL2 = "104259;83;-106;-78;85;80;6;2012-12-31 00:27:02;9;4;16;4;4;6;531;518;0;4;0;0;0;0;0;585;0;1;0";
     public static final String DEVEL_PROFIL_PUBLIC2 =
             "123456;Mon Trõll;Kastar;19;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;122;9;1900;20;0";
     public static final String DEVEL_MOUCHES =
@@ -138,41 +138,41 @@ public class PublicScriptsProxyMock {
 //            "BMP; 1;2; 4;-4; 0; 0;-1;  0;  0;6;   0;149;0\n" +
 //            "CAR; 9;4;16; 4;80;75; 4;511;530;1; 585;  0;0\n";
             "BMM;6;3; 5; 4; 5; 0; 1;279;201;3;-130;    0;0\n" +
-            "BMP;1;2; 4;-4; 0; 0;-1;  0;  0;6;   0;144.5;9\n" +
-            "CAR;9;4;16; 4;80;85; 4;518;531;1; 585;    0;0\n";
+                    "BMP;1;2; 4;-4; 0; 0;-1;  0;  0;6;   0;144.5;9\n" +
+                    "CAR;9;4;16; 4;80;85; 4;518;531;1; 585;    0;0\n";
     public static final String DEVEL_VUE =
             "#DEBUT TROLLS\n" +
-            "12517;83;-106;-78\n" +
-            "49604;83;-106;-78\n" +
-            "50362;83;-106;-78\n" +
-            "89138;83;-106;-78\n" +
-            "88222;83;-106;-78\n" +
-            "86132;83;-106;-78\n" +
-            "90568;83;-106;-78\n" +
-            "95636;83;-106;-78\n" +
-            "100160;83;-106;-78\n" +
-            "104259;83;-106;-78\n" +
-            "#FIN TROLLS\n" +
-            "#DEBUT MONSTRES\n" +
-            "1829509;Gowap Apprivoisé [Ancien] Pàpaäht;86;-108;-78\n" +
-            "3333207;Golem de cuir [Légendaire];86;-108;-78\n" +
-            "1782296;Gowap Apprivoisé [Ancien] Pétàüre;82;-106;-77\n" +
-            "3131275;Gowap Apprivoisé [Ancien];83;-106;-79\n" +
-            "3260316;Gowap Apprivoisé [Ancien];83;-106;-79\n" +
-            "4236780;Nâ-Hàniym-Hééé [Vénérable];83;-106;-79\n" +
-            "4266040;Squelette [Ancien];83;-106;-78\n" +
-            "4266434;Petit Squelette [Ancien];83;-106;-78\n" +
-            "4264646;Croquemitaine [Ancien];83;-106;-78\n" +
-            "4304082;Croquemitaine [Naissant];83;-106;-78\n" +
-            "4278807;Abishaii Rouge [Novice];83;-106;-78\n" +
-            "1881670;Gowap Apprivoisé [Ancien];83;-106;-77\n" +
-            "2023605;Gowap Apprivoisé [Ancien] Sühssùk;83;-106;-77\n" +
-            "2571623;Gowap Apprivoisé [Ancien] Nöhnõsse;83;-106;-77\n" +
-            "4272893;Abishaii Rouge [Novice];83;-106;-77\n" +
-            "#FIN MONSTRES\n" +
-            "#DEBUT ORIGINE\n" +
-            "4;83;-106;-78\n" +
-            "#FIN ORIGINE\n";
+                    "12517;83;-106;-78\n" +
+                    "49604;83;-106;-78\n" +
+                    "50362;83;-106;-78\n" +
+                    "89138;83;-106;-78\n" +
+                    "88222;83;-106;-78\n" +
+                    "86132;83;-106;-78\n" +
+                    "90568;83;-106;-78\n" +
+                    "95636;83;-106;-78\n" +
+                    "100160;83;-106;-78\n" +
+                    "104259;83;-106;-78\n" +
+                    "#FIN TROLLS\n" +
+                    "#DEBUT MONSTRES\n" +
+                    "1829509;Gowap Apprivoisé [Ancien] Pàpaäht;86;-108;-78\n" +
+                    "3333207;Golem de cuir [Légendaire];86;-108;-78\n" +
+                    "1782296;Gowap Apprivoisé [Ancien] Pétàüre;82;-106;-77\n" +
+                    "3131275;Gowap Apprivoisé [Ancien];83;-106;-79\n" +
+                    "3260316;Gowap Apprivoisé [Ancien];83;-106;-79\n" +
+                    "4236780;Nâ-Hàniym-Hééé [Vénérable];83;-106;-79\n" +
+                    "4266040;Squelette [Ancien];83;-106;-78\n" +
+                    "4266434;Petit Squelette [Ancien];83;-106;-78\n" +
+                    "4264646;Croquemitaine [Ancien];83;-106;-78\n" +
+                    "4304082;Croquemitaine [Naissant];83;-106;-78\n" +
+                    "4278807;Abishaii Rouge [Novice];83;-106;-78\n" +
+                    "1881670;Gowap Apprivoisé [Ancien];83;-106;-77\n" +
+                    "2023605;Gowap Apprivoisé [Ancien] Sühssùk;83;-106;-77\n" +
+                    "2571623;Gowap Apprivoisé [Ancien] Nöhnõsse;83;-106;-77\n" +
+                    "4272893;Abishaii Rouge [Novice];83;-106;-77\n" +
+                    "#FIN MONSTRES\n" +
+                    "#DEBUT ORIGINE\n" +
+                    "4;83;-106;-78\n" +
+                    "#FIN ORIGINE\n";
 
     public static final String OMNI_PROFIL_PUBLIC2 = "104098;omnipotente;Kastar;17;2011-01-01 11:40:46;loicoudard@yahoo.fr;http://blason.mountyhall.com/Blason_PJ/104098;16;72;8;281;80;0\n";
     public static final String OMNI_EQUIP =
@@ -226,21 +226,21 @@ public class PublicScriptsProxyMock {
                     "2841600;64;Anneau;1;Anneau de Protection;;Protection;7\n";
     public static final String OMNI_CARACT =
             "BMM; 5;3; 9; 0;15; 0;-1;257; 292;3;-20;    0;0\n" +
-            "BMP;-1;1; 5;-4; 0; 0; 0;  0;   0;4;  0;192.5;0\n" +
-            "CAR; 5;6;12; 3;70;85; 5;373;1129;3;639;    0;0\n";
+                    "BMP;-1;1; 5;-4; 0; 0; 0;  0;   0;4;  0;192.5;0\n" +
+                    "CAR; 5;6;12; 3;70;85; 5;373;1129;3;639;    0;0\n";
 
     public static final String SNORF_PROFIL2 = "86133;-31;-71;-55;161;190;0;2012-06-06 05:30:46;16;15;19;9;12;23;10311;2211;2;0;0;0;0;0;0;585;0;5;1";
     public static final String SNORF_PROFIL_PUBLIC2 = "86133;Snorf le jeune;Skrim;44;2007-02-06 23:09:17;;http://blason.mountyhall.com/Blason_PJ/86133;44;338;7;1900;160;0";
     public static final String SNORF_BONUS_MALUS =
             "Charme;Capacité Spéciale;ATT : -2 | ESQ : -5 | Vue : -1;1\n" +
-            "Charme;Capacité Spéciale;ATT : -2 | ESQ : -3 | Vue : -1;1\n" +
-            "Elixir de Feu;Potion;ESQ : +11 | Vue : +5;5\n" +
-            "Maladie;Capacité Spéciale;DEG : -8 | REG : -4;2\n";
+                    "Charme;Capacité Spéciale;ATT : -2 | ESQ : -3 | Vue : -1;1\n" +
+                    "Elixir de Feu;Potion;ESQ : +11 | Vue : +5;5\n" +
+                    "Maladie;Capacité Spéciale;DEG : -8 | REG : -4;2\n";
     public static final String SNORF_CARACT =
             // Type; Attaque; Esquive; Dégats; Régénération; PVMax; PVActuels; Portée deVue; RM; MM; Armure; Duree du Tour; Poids; Concentration
             "BMM; 5;13;11; 6;  5;  0;11;5544; 4122;10;-160;  0;0\n" +
-            "BMP;-1;-5;-5;-8;  0;  0;-2;   0;    0;23;   0;114;0\n" +
-            "CAR;16;15;19; 9;190;161;12;2211;10311; 5; 585;  0;0\n";
+                    "BMP;-1;-5;-5;-8;  0;  0;-2;   0;    0;23;   0;114;0\n" +
+                    "CAR;16;15;19; 9;190;161;12;2211;10311; 5; 585;  0;0\n";
 
     public static final String PYDFMYDR_PROFIL_PUBLIC2 =
             "104259;plusilyadefoumoinilyaderi;Darkling;5;2010-04-26 17:22:39;plusilyadefoumoinilyaderi@hotmail.fr;http://blason.mountyhall.com/Blason_PJ/102611;9;75;11;1;00;0";
@@ -248,6 +248,7 @@ public class PublicScriptsProxyMock {
     public static final String UCH_PROFIL2 = "88222;81;-100;-76;100;100;0;2012-06-29 18:23:12;3;11;3;7;28;11;4336;1139;0;0;0;0;0;0;0;618;-50;1;0;0;0;0";
 
     private static Map<PublicScript, Map<MockTroll, String>> scripts = Maps.newHashMap();
+
     static {
         for (PublicScript ps : PublicScript.values()) {
             Map<MockTroll, String> trollStringMap = Maps.newHashMap();

@@ -33,10 +33,10 @@ public enum PublicScriptProperties {
     NOM,
     RACE,
     NIVAL,
-//    properties.put("dateInscription", PublicScript.ProfilPublic2);
+    //    properties.put("dateInscription", PublicScript.ProfilPublic2);
 //    properties.put("email", PublicScript.ProfilPublic2);
     BLASON,
-//    properties.put("nbMouches", PublicScript.ProfilPublic2);
+    //    properties.put("nbMouches", PublicScript.ProfilPublic2);
     NB_KILLS,
     NB_MORTS,
     GUILDE,
@@ -50,9 +50,9 @@ public enum PublicScriptProperties {
     FATIGUE,
     PA_RESTANT,
     DLA,
-//    properties.put("fatigue", PublicScript.Profil2);
+    //    properties.put("fatigue", PublicScript.Profil2);
     DUREE_DU_TOUR,
-//    properties.put("bonusDuree", PublicScript.Profil2);
+    //    properties.put("bonusDuree", PublicScript.Profil2);
     CAMOU,
     INVISIBLE,
     INTANGIBLE,

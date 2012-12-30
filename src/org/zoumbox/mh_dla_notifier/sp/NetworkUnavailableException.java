@@ -24,10 +24,12 @@
  */
 package org.zoumbox.mh_dla_notifier.sp;
 
+import org.zoumbox.mh_dla_notifier.MhDlaException;
+
 /**
  * @author Arno <arno@zoumbox.org>
  */
-public class NetworkUnavailableException extends Exception {
+public class NetworkUnavailableException extends MhDlaException {
 
     private static final long serialVersionUID = 1L;
 
@@ -35,4 +37,8 @@ public class NetworkUnavailableException extends Exception {
         super(source);
     }
 
+    @Override
+    public String getText() {
+        return "Problème réseau";
+    }
 }

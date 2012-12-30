@@ -59,6 +59,7 @@ import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.CARACT;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.DLA;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.DUREE_DU_TOUR;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.FATIGUE;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.GUILDE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.INTANGIBLE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.INVISIBLE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NB_KILLS;
@@ -73,7 +74,6 @@ import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.POS_Y;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.PV;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.PV_MAX;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.RACE;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.GUILDE;
 
 /**
  * @author Arno <arno@zoumbox.org>

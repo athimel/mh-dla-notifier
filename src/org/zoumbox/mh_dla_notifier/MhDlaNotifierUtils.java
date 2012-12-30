@@ -25,13 +25,29 @@
 package org.zoumbox.mh_dla_notifier;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.widget.Toast;
-import com.google.common.base.Function;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.io.Closeables;
+import com.google.common.io.Files;
+import com.google.common.io.InputSupplier;
 import org.apache.commons.codec.binary.Hex;
 
-import javax.annotation.Nullable;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
@@ -39,6 +55,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -210,4 +227,114 @@ public class MhDlaNotifierUtils {
         }
     }
 
+    public static Bitmap loadBlason(String blasonUrl, File filesDir) {
+        Bitmap result = null;
+        if (!Strings.isNullOrEmpty(blasonUrl)) {
+            String localFilePath = MhDlaNotifierUtils.md5(blasonUrl);
+            Log.i(TAG, "localFilePath: " + localFilePath);
+            File localFile = new File(filesDir, localFilePath);
+            Log.i(TAG, "localFile: " + localFile);
+            if (!localFile.exists()) {
+
+                Log.i(TAG, "Not existing, fetching from " + blasonUrl);
+                BufferedInputStream bis = null;
+                try {
+                    URL url = new URL(blasonUrl);
+                    URLConnection conn = url.openConnection();
+                    conn.connect();
+                    bis = new BufferedInputStream(conn.getInputStream());
+                    result = BitmapFactory.decodeStream(bis);
+
+                } catch (Exception eee) {
+                    Log.e(TAG, "Exception", eee);
+                } finally {
+                    Closeables.closeQuietly(bis);
+                }
+
+                if (result != null) {
+                    Log.i(TAG, "Save fetched result to " + localFile);
+                    FileOutputStream fos = null;
+                    try {
+                        fos = new FileOutputStream(localFile);
+
+                        result.compress(Bitmap.CompressFormat.PNG, 90, fos);
+
+                    } catch (Exception eee) {
+                        Log.e(TAG, "Exception", eee);
+                        return null;
+                    } finally {
+                        Closeables.closeQuietly(fos);
+                    }
+                }
+            } else {
+
+                Log.i(TAG, "Existing, loading from cache");
+                BufferedInputStream bis = null;
+                try {
+                    bis = new BufferedInputStream(new FileInputStream(localFile));
+
+                    result = BitmapFactory.decodeStream(bis);
+
+                    bis.close();
+                } catch (Exception eee) {
+                    Log.e(TAG, "Exception", eee);
+                } finally {
+                    Closeables.closeQuietly(bis);
+                }
+            }
+        }
+        return result;
+    }
+
+    public static String loadGuilde(int guildeNumber, File filesDir) {
+        String result = "";
+        if (guildeNumber > 0) {
+            File localFile = new File(filesDir, "guildes.txt");
+
+            if (!localFile.exists()) {
+                Log.i(TAG, "Not existing, fetching from " + "http://www.mountyhall.com/ftp/Public_Guildes.txt");
+                BufferedInputStream bis = null;
+                try {
+                    URL url = new URL("http://www.mountyhall.com/ftp/Public_Guildes.txt");
+                    URLConnection conn = url.openConnection();
+                    conn.connect();
+                    final BufferedInputStream fbis = new BufferedInputStream(conn.getInputStream());
+                    bis = fbis;
+
+                    Files.copy(new InputSupplier<InputStream>() {
+                        @Override
+                        public InputStream getInput() throws IOException {
+                            return fbis;
+                        }
+                    }, localFile);
+                } catch (Exception eee) {
+                    Log.e(TAG, "Exception", eee);
+                } finally {
+                    Closeables.closeQuietly(bis);
+                }
+            }
+
+            BufferedReader reader = null;
+            try {
+                reader = new BufferedReader(new FileReader(localFile));
+                String str;
+                String beginsWith = guildeNumber + ";";
+                while ((str = reader.readLine()) != null) {
+                    if (str.startsWith(beginsWith)) {
+                        List<String> split = Lists.newArrayList(Splitter.on(";").omitEmptyStrings().trimResults().split(str));
+                        result = split.get(1);
+                        break;
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                // Forget...
+            } catch (IOException e) {
+                // Forget
+            } finally {
+                Closeables.closeQuietly(reader);
+            }
+
+        }
+        return result;
+    }
 }

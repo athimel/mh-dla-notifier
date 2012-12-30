@@ -50,7 +50,7 @@ public class PreferencesHolder {
         PreferencesHolder result = new PreferencesHolder();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
-        result.notificationDelay = Integer.parseInt(prefs.getString(PREFS_NOTIFICATION_DELAY, ""+Constants.DEFAULT_NOTIFICATION_DELAY));
+        result.notificationDelay = Integer.parseInt(prefs.getString(PREFS_NOTIFICATION_DELAY, "" + Constants.DEFAULT_NOTIFICATION_DELAY));
         result.notifyWithoutPA = prefs.getBoolean(PREFS_NOTIFY_WITHOUT_PA, Constants.DEFAULT_NOTIFY_WITHOUT_PA);
 
         String silentNotificationValue = prefs.getString(PREFS_SILENT_NOTIFICATION, SilentNotification.BY_NIGHT.name());

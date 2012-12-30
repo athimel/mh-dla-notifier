@@ -116,7 +116,7 @@ public class Receiver extends BroadcastReceiver {
                 Calendar now = Calendar.getInstance();
                 return (now.get(Calendar.HOUR_OF_DAY) >= 7 || now.get(Calendar.HOUR_OF_DAY) < 23);
             case WHEN_SILENT:
-                AudioManager am = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+                AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
                 return am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL;
             default:
                 Log.w(TAG, "Unexpected mode : " + preferences.silentNotification);
@@ -156,8 +156,8 @@ public class Receiver extends BroadcastReceiver {
         }
 
         // The PendingIntent to launch our activity if the user selects this notification
-        Intent main = new Intent(context, MainActivity.class);
-        main.putExtra(MainActivity.EXTRA_FROM_NOTIFICATION, true);
+        Intent main = new Intent(context, MhDlaNotifierImpl.class);
+        main.putExtra(MhDlaNotifierImpl.EXTRA_FROM_NOTIFICATION, true);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, main, 0);
 
         // Set the info for the views that show in the notification panel.
@@ -176,13 +176,17 @@ public class Receiver extends BroadcastReceiver {
     private static Date registerDlaAlarm(Context context, Date dla, PreferencesHolder preferences) {
         Date nextAlarm = null;
         if (dla != null && IS_IN_THE_FUTURE.apply(dla)) {
-            nextAlarm = MhDlaNotifierUtils.substractMinutes(dla, preferences.notificationDelay);
+            Date dlaAlarm = MhDlaNotifierUtils.substractMinutes(dla, preferences.notificationDelay);
 
-            Intent intent = new Intent(context, Receiver.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                    context, 86956675, intent, 0);
-            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            alarmManager.set(AlarmManager.RTC_WAKEUP, nextAlarm.getTime(), pendingIntent);
+            if (IS_IN_THE_FUTURE.apply(nextAlarm)) {
+                Intent intent = new Intent(context, Receiver.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                        context, 86956675, intent, 0);
+                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, dlaAlarm.getTime(), pendingIntent);
+
+                nextAlarm = dlaAlarm;
+            }
         }
         return nextAlarm;
 

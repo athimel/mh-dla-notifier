@@ -39,6 +39,14 @@
                   android:layout_width="fill_parent"
                   android:gravity="left"
                   style="@style/Info"/>
+
+        <!-- Zone de notif-->
+        <TextView android:id="@+id/status"
+                  android:layout_height="wrap_content"
+                  android:layout_width="fill_parent"
+                  android:gravity="center_horizontal"
+                  style="@style/Status"/>
+
     </LinearLayout>
     <ImageView android:id="@+id/blason"
                android:orientation="vertical"

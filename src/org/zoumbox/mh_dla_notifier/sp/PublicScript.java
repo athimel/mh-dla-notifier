@@ -28,7 +28,28 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.*;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.BLASON;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.CAMOU;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.CARACT;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.DLA;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.DUREE_DU_TOUR;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.FATIGUE;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.GUILDE;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.INTANGIBLE;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.INVISIBLE;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.MONSTRES;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NB_KILLS;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NB_MORTS;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NIVAL;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NOM;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.PA_RESTANT;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.POS_N;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.POS_X;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.POS_Y;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.PV;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.PV_MAX;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.RACE;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.TROLLS;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -71,16 +92,14 @@ public enum PublicScript {
 //            Lists.newArrayList(MOUCHES.name()));
 
     Caract(
-        ScriptCategory.DYNAMIC,
-        "http://sp.mountyhall.com/SP_Caract.php?Numero=%s&Motdepasse=%s",
-        Lists.newArrayList(CARACT.name())),
+            ScriptCategory.DYNAMIC,
+            "http://sp.mountyhall.com/SP_Caract.php?Numero=%s&Motdepasse=%s",
+            Lists.newArrayList(CARACT.name())),
 
     Vue(
-        ScriptCategory.DYNAMIC,
-        "http://sp.mountyhall.com/SP_Vue2.php?Numero=%s&Motdepasse=%s",
-        Lists.newArrayList(TROLLS.name(), MONSTRES.name()));
-
-
+            ScriptCategory.DYNAMIC,
+            "http://sp.mountyhall.com/SP_Vue2.php?Numero=%s&Motdepasse=%s",
+            Lists.newArrayList(TROLLS.name(), MONSTRES.name()));
 
 
     public ScriptCategory category;

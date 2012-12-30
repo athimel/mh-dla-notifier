@@ -24,10 +24,12 @@
  */
 package org.zoumbox.mh_dla_notifier.sp;
 
+import org.zoumbox.mh_dla_notifier.MhDlaException;
+
 /**
  * @author Arno <arno@zoumbox.org>
  */
-public class QuotaExceededException extends Exception {
+public class QuotaExceededException extends MhDlaException {
 
     private static final long serialVersionUID = 1L;
 
@@ -44,5 +46,10 @@ public class QuotaExceededException extends Exception {
 
     public int getCount() {
         return count;
+    }
+
+    @Override
+    public String getText() {
+        return "Quota dépassé";
     }
 }

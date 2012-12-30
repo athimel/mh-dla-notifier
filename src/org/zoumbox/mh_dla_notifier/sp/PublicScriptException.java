@@ -24,10 +24,12 @@
  */
 package org.zoumbox.mh_dla_notifier.sp;
 
+import org.zoumbox.mh_dla_notifier.MhDlaException;
+
 /**
  * @author Arno <arno@zoumbox.org>
  */
-public class PublicScriptException extends Exception {
+public class PublicScriptException extends MhDlaException {
 
     private static final long serialVersionUID = 1L;
 
@@ -42,4 +44,8 @@ public class PublicScriptException extends Exception {
         return spResult.getErrorMessage();
     }
 
+    @Override
+    public String getText() {
+        return getMessage();
+    }
 }
