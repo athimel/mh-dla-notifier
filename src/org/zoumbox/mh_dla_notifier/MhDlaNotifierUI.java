@@ -49,7 +49,6 @@ import org.zoumbox.mh_dla_notifier.profile.Race;
 import org.zoumbox.mh_dla_notifier.profile.Troll;
 import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
 
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -293,27 +292,30 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
                 String.format("X=%d | Y=%d | N=%d",
                         troll.posX, troll.posY, troll.posN));
 
-        Date rawDla = troll.dla;
+        Date currentDla = troll.dla;
         int pa = troll.pa;
 
-        SpannableString dlaSpannable = new SpannableString(MhDlaNotifierUtils.formatDLA(this, rawDla));
+        SpannableString dlaSpannable = new SpannableString(MhDlaNotifierUtils.formatDLA(this, currentDla));
         SpannableString paSpannable = new SpannableString("" + pa); // Leave ""+ as integer is considered as an Android id
 
-        dlaSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, dlaSpannable.length(), 0);
+        stylize(dlaSpannable, Typeface.BOLD);
 
         Date now = new Date();
-        if (now.after(rawDla)) {
-            showToast(getText(R.string.dla_expired_title));
-            dlaSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.dla_expired)), 0, dlaSpannable.length(), 0);
+        int dlaExpiredColor = getResources().getColor(R.color.dla_expired);
+        int dlaToExpireColor = getResources().getColor(R.color.dla_to_expire);
+
+        if (now.after(currentDla)) {
+            showToast(getText(R.string.current_dla_expired_title));
+            colorize(dlaSpannable, dlaExpiredColor);
         } else {
             PreferencesHolder preferences = PreferencesHolder.load(this);
-            Date dlaMinusNDMin = MhDlaNotifierUtils.substractMinutes(rawDla, preferences.notificationDelay);
+            Date dlaMinusNDMin = MhDlaNotifierUtils.substractMinutes(currentDla, preferences.notificationDelay);
             if (now.after(dlaMinusNDMin)) {
-                dlaSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.dla_to_expire)), 0, dlaSpannable.length(), 0);
+                colorize(dlaSpannable, dlaToExpireColor);
                 if (pa > 0) {
                     showToast("Il vous reste des PA à jouer !");
-                    paSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.dla_to_expire)), 0, paSpannable.length(), 0);
-                    paSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, paSpannable.length(), 0);
+                    colorize(paSpannable, dlaToExpireColor);
+                    stylize(paSpannable, Typeface.BOLD);
                 }
             }
         }
@@ -324,16 +326,35 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         int nextDlaDuration = Troll.GET_NEXT_DLA_DURATION.apply(troll);
         dla_duration.setText(MhDlaNotifierUtils.prettyPrintDuration(this, nextDlaDuration));
 
-        Calendar nextDla = Calendar.getInstance();
-        nextDla.setTime(rawDla);
-        nextDla.add(Calendar.MINUTE, ((Double) Math.floor(nextDlaDuration)).intValue());
-        String nextDlaText = MhDlaNotifierUtils.formatDLA(this, nextDla.getTime());
-        next_dla.setText(nextDlaText);
+        Date nextDla = Troll.GET_NEXT_DLA.apply(troll);
+        String nextDlaText = MhDlaNotifierUtils.formatDLA(this, nextDla);
+        SpannableString nextDlaSpannable = new SpannableString(nextDlaText);
+
+        if (now.after(nextDla)) {
+            showToast(getText(R.string.next_dla_expired_title));
+            colorize(nextDlaSpannable, dlaExpiredColor);
+        } else {
+            PreferencesHolder preferences = PreferencesHolder.load(this);
+            Date dlaMinusNDMin = MhDlaNotifierUtils.substractMinutes(nextDla, preferences.notificationDelay);
+            if (now.after(dlaMinusNDMin)) {
+                colorize(nextDlaSpannable, dlaToExpireColor);
+            }
+        }
+
+        next_dla.setText(nextDlaSpannable);
 
         new LoadBlasonTask().execute(troll.blason);
 
         new LoadGuildeTask().execute(troll.guilde);
 
+    }
+
+    protected void colorize(SpannableString spannable, int color) {
+        spannable.setSpan(new ForegroundColorSpan(color), 0, spannable.length(), 0);
+    }
+
+    protected void stylize(SpannableString spannable, int typeface) {
+        spannable.setSpan(new StyleSpan(typeface), 0, spannable.length(), 0);
     }
 
     protected void updateBlason(Bitmap blason) {

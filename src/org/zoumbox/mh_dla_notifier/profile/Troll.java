@@ -26,6 +26,7 @@ package org.zoumbox.mh_dla_notifier.profile;
 
 import com.google.common.base.Function;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -113,6 +114,21 @@ public class Troll {
             int dlaPVMalus = GET_PV_DLA_MALUS.apply(troll);
             int computed = troll.dureeDuTour + troll.poids + troll.dlaBM + dlaPVMalus;
             int result = Math.max(computed, troll.dureeDuTour);
+            return result;
+//            return 15;
+        }
+    };
+
+    public static final Function<Troll, Date> GET_NEXT_DLA = new Function<Troll, Date>() {
+        @Override
+        public Date apply(Troll troll) {
+
+            int nextDlaDuration = GET_NEXT_DLA_DURATION.apply(troll);
+
+            Calendar nextDla = Calendar.getInstance();
+            nextDla.setTime(troll.dla);
+            nextDla.add(Calendar.MINUTE, nextDlaDuration);
+            Date result = nextDla.getTime();
             return result;
         }
     };

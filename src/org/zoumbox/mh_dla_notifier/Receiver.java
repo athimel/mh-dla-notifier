@@ -34,9 +34,9 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.util.Log;
 import com.google.common.base.Predicate;
-import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
-import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
+import org.zoumbox.mh_dla_notifier.profile.Troll;
+import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
 
 import javax.annotation.Nullable;
 import java.util.Calendar;
@@ -70,7 +70,7 @@ public class Receiver extends BroadcastReceiver {
             return false;
         }
         Date dlaMinusDelay = MhDlaNotifierUtils.substractMinutes(dla, preferences.notificationDelay);
-        boolean result = new Date().before(dlaMinusDelay);
+        boolean result = IS_IN_THE_FUTURE.apply(dlaMinusDelay);
         return result;
     }
 
@@ -79,30 +79,45 @@ public class Receiver extends BroadcastReceiver {
 
         Log.i(TAG, "Alarm received : " + Math.random());
 
-        Pair<Date, Integer> dlaPaPair = null;
+        Triple<Date, Integer, Date> dlaPaDlaTriple = null;
         try {
-            dlaPaPair = ProfileProxy.refreshDLA(context);
-        } catch (MissingLoginPasswordException mlpe) {
-            // Nothing to do
-        } catch (PublicScriptException e) {
-            // Nothing to do
+            dlaPaDlaTriple = ProfileProxy.refreshDLA(context);
+        } catch (MhDlaException mde) {
+            Log.w(TAG, mde.getClass().getName() + ": " + mde.getMessage());
         }
 
-        if (dlaPaPair != null) {
-            Date dla = dlaPaPair.left();
-            Integer pa = dlaPaPair.right();
+        if (dlaPaDlaTriple != null) {
+            Date currentDla = dlaPaDlaTriple.left();
+            Integer pa = dlaPaDlaTriple.middle();
+            Date nextDla = dlaPaDlaTriple.right();
 
             PreferencesHolder preferences = PreferencesHolder.load(context);
 
-            if (mustRegisterAlarm(preferences, dla)) {
-                registerDlaAlarm(context, dla, preferences);
-            } else
+            boolean hasNextDlaNotification = false;
+
+            if (mustRegisterAlarm(preferences, nextDla)) {
+                registerDlaAlarm(context, nextDla, preferences, false);
+            } else {
                 // On vérifie que la date est bien dans le futur et dans moins de 5 min
-                if (IS_IN_THE_FUTURE.apply(dla) && needsNotificationAccordingToPA(preferences, pa)) {
-                    notifyDlaAboutToExpire(context, dla, pa, preferences);
+                if (IS_IN_THE_FUTURE.apply(nextDla)) {
+                    notifyNextDlaAboutToExpire(context, nextDla, preferences);
                 } else {
-                    notifyDlaExpired(context, dla, pa, preferences);
+                    notifyNextDlaExpired(context, nextDla, preferences);
                 }
+                hasNextDlaNotification = true;
+            }
+
+            if (mustRegisterAlarm(preferences, currentDla)) {
+                registerDlaAlarm(context, currentDla, preferences, true);
+            } else if (!hasNextDlaNotification) {
+                // On vérifie que la date est bien dans le futur et dans moins de 5 min
+                if (IS_IN_THE_FUTURE.apply(currentDla) && needsNotificationAccordingToPA(preferences, pa)) {
+                    notifyCurrentDlaAboutToExpire(context, currentDla, pa, preferences);
+                } else {
+                    notifyCurrentDlaExpired(context, currentDla, pa, preferences);
+                }
+            }
+
         }
     }
 
@@ -124,9 +139,9 @@ public class Receiver extends BroadcastReceiver {
         }
     }
 
-    protected void notifyDlaAboutToExpire(Context context, Date dla, Integer pa, PreferencesHolder preferences) {
-        CharSequence notifTitle = context.getText(R.string.dla_expiring_title);
-        String format = context.getText(R.string.dla_expiring_text).toString();
+    protected void notifyCurrentDlaAboutToExpire(Context context, Date dla, Integer pa, PreferencesHolder preferences) {
+        CharSequence notifTitle = context.getText(R.string.current_dla_expiring_title);
+        String format = context.getText(R.string.current_dla_expiring_text).toString();
         CharSequence notifText = String.format(format, MhDlaNotifierUtils.formatHour(dla), pa);
 
         boolean vibrate = shouldVibrate(context, preferences);
@@ -134,15 +149,34 @@ public class Receiver extends BroadcastReceiver {
         displayNotification(context, notifTitle, notifText, vibrate);
     }
 
-    protected void notifyDlaExpired(Context context, Date dla, Integer pa, PreferencesHolder preferences) {
+    protected void notifyCurrentDlaExpired(Context context, Date dla, Integer pa, PreferencesHolder preferences) {
         if (pa == 0 && !IS_IN_THE_FUTURE.apply(dla)) {
-            CharSequence notifTitle = context.getText(R.string.dla_expired_title);
-            String format = context.getText(R.string.dla_expired_text).toString();
+            CharSequence notifTitle = context.getText(R.string.current_dla_expired_title);
+            String format = context.getText(R.string.current_dla_expired_text).toString();
             CharSequence notifText = String.format(format, MhDlaNotifierUtils.formatHour(dla));
 
             boolean vibrate = shouldVibrate(context, preferences);
             displayNotification(context, notifTitle, notifText, vibrate);
         }
+    }
+
+    protected void notifyNextDlaAboutToExpire(Context context, Date dla, PreferencesHolder preferences) {
+        CharSequence notifTitle = context.getText(R.string.next_dla_expiring_title);
+        String format = context.getText(R.string.next_dla_expiring_text).toString();
+        CharSequence notifText = String.format(format, MhDlaNotifierUtils.formatHour(dla));
+
+        boolean vibrate = shouldVibrate(context, preferences);
+
+        displayNotification(context, notifTitle, notifText, vibrate);
+    }
+
+    protected void notifyNextDlaExpired(Context context, Date dla, PreferencesHolder preferences) {
+        CharSequence notifTitle = context.getText(R.string.next_dla_expired_title);
+        String format = context.getText(R.string.next_dla_expired_text).toString();
+        CharSequence notifText = String.format(format, MhDlaNotifierUtils.formatHour(dla));
+
+        boolean vibrate = shouldVibrate(context, preferences);
+        displayNotification(context, notifTitle, notifText, vibrate);
     }
 
     protected void displayNotification(Context context, CharSequence title, CharSequence text, boolean vibrate) {
@@ -166,22 +200,34 @@ public class Receiver extends BroadcastReceiver {
         notificationManager.notify(0, notification);
     }
 
-    public static Date registerDlaAlarm(Context context) {
+    public static Pair<Date, Date> registerDlaAlarms(Context context) {
         PreferencesHolder preferencesHolder = PreferencesHolder.load(context);
         Date dla = ProfileProxy.getDLA(context);
-        Date result = registerDlaAlarm(context, dla, preferencesHolder);
+        Date dlaAlarm = registerDlaAlarm(context, dla, preferencesHolder, true);
+
+        Date nextDlaAlarm = null;
+        try {
+            Troll troll = ProfileProxy.fetchTroll(context, UpdateRequestType.NONE);
+            Date nextDla = Troll.GET_NEXT_DLA.apply(troll);
+            nextDlaAlarm = registerDlaAlarm(context, nextDla, preferencesHolder, false);
+        } catch (MhDlaException e) {
+            // It should never happen
+            e.printStackTrace();
+        }
+
+        Pair<Date, Date> result = new Pair<Date, Date>(dlaAlarm, nextDlaAlarm);
         return result;
     }
 
-    private static Date registerDlaAlarm(Context context, Date dla, PreferencesHolder preferences) {
+    private static Date registerDlaAlarm(Context context, Date dla, PreferencesHolder preferences, boolean isCurrentDla) {
         Date nextAlarm = null;
         if (dla != null && IS_IN_THE_FUTURE.apply(dla)) {
             Date dlaAlarm = MhDlaNotifierUtils.substractMinutes(dla, preferences.notificationDelay);
 
-            if (IS_IN_THE_FUTURE.apply(nextAlarm)) {
+            if (IS_IN_THE_FUTURE.apply(dlaAlarm)) {
                 Intent intent = new Intent(context, Receiver.class);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                        context, 86956675, intent, 0);
+                        context, isCurrentDla ? 86956675 : 81913480, intent, PendingIntent.FLAG_ONE_SHOT);
                 AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
                 alarmManager.set(AlarmManager.RTC_WAKEUP, dlaAlarm.getTime(), pendingIntent);
 

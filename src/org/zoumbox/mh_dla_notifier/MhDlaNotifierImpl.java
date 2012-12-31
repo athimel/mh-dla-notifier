@@ -3,7 +3,6 @@ package org.zoumbox.mh_dla_notifier;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
-import com.google.common.base.Strings;
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.Troll;
@@ -96,11 +95,25 @@ public class MhDlaNotifierImpl extends MhDlaNotifierUI {
         Log.i(TAG, "From notification: " + fromNotification);
 
         if (!fromNotification) {
-            Date nextAlarm = Receiver.registerDlaAlarm(this);
-            if (nextAlarm != null) {
-                Log.i(TAG, "Next alarm at " + nextAlarm);
-                String text = getText(R.string.next_alarm).toString();
-                showToast(String.format(text, MhDlaNotifierUtils.formatDay(nextAlarm), MhDlaNotifierUtils.formatHour(nextAlarm)));
+            Pair<Date, Date> nextAlarms = Receiver.registerDlaAlarms(this);
+            if (nextAlarms != null) {
+                Date currentDlaAlarm = nextAlarms.left();
+                Date nextDlaAlarm = nextAlarms.right();
+
+                if (currentDlaAlarm != null) {
+                    Log.i(TAG, "Current DLA alarm at " + currentDlaAlarm);
+                    String text = getText(R.string.next_alarm).toString();
+                    String message = String.format(text, MhDlaNotifierUtils.formatDay(currentDlaAlarm), MhDlaNotifierUtils.formatHour(currentDlaAlarm));
+                    showToast(message);
+                }
+
+                if (nextDlaAlarm != null) {
+                    Log.i(TAG, "Next DLA alarm at " + nextDlaAlarm);
+                    String text = getText(R.string.next_alarm).toString();
+                    String message = String.format(text, MhDlaNotifierUtils.formatDay(nextDlaAlarm), MhDlaNotifierUtils.formatHour(nextDlaAlarm));
+                    showToast(message);
+                }
+
             }
         }
     }

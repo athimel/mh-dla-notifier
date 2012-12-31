@@ -38,6 +38,7 @@ import com.google.common.collect.Sets;
 import org.zoumbox.mh_dla_notifier.Constants;
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierUtils;
 import org.zoumbox.mh_dla_notifier.Pair;
+import org.zoumbox.mh_dla_notifier.Triple;
 import org.zoumbox.mh_dla_notifier.sp.NetworkUnavailableException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScript;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
@@ -332,25 +333,23 @@ public class ProfileProxy {
         return result;
     }
 
-    public static Pair<Date, Integer> refreshDLA(Context context) throws MissingLoginPasswordException, PublicScriptException {
+    public static Triple<Date, Integer, Date> refreshDLA(Context context) throws MissingLoginPasswordException, PublicScriptException, NetworkUnavailableException, QuotaExceededException {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
         Pair<String, String> idAndPassword = loadIdPassword(preferences);
 
         Map<String, String> propertiesFetched;
-        try {
-            propertiesFetched = PublicScriptsProxy.fetch(context, PublicScript.Profil2, idAndPassword);
-            saveProperties(preferences, propertiesFetched);
-        } catch (QuotaExceededException qee) {
-            MhDlaNotifierUtils.toast(context, "Quota atteint, pas de mise à jour");
-        } catch (NetworkUnavailableException nue) {
-            MhDlaNotifierUtils.toast(context, "Pas de réseau, pas de mise à jour");
-        }
+        propertiesFetched = PublicScriptsProxy.fetch(context, PublicScript.Profil2, idAndPassword);
+        saveProperties(preferences, propertiesFetched);
 
-        Date dla = getDLA(preferences);
-        Integer pa = getPA(preferences);
-        Pair<Date, Integer> result = new Pair<Date, Integer>(dla, pa);
+        Troll troll = fetchTroll(context, UpdateRequestType.NONE);
+
+        Date currentDla = troll.dla;
+        Integer pa = troll.pa;
+        Date nextDLA = Troll.GET_NEXT_DLA.apply(troll);
+
+        Triple<Date, Integer, Date> result = new Triple<Date, Integer, Date>(currentDla, pa, nextDLA);
         return result;
     }
 
