@@ -7,7 +7,7 @@
     <application android:label="@string/app_name"
                  android:icon="@drawable/trarnoll_square_transparent_128">
 
-        <activity android:name=".MhDlaNotifierImpl"
+        <activity android:name=".MainActivity"
                   android:label="@string/app_name"
                   android:screenOrientation="portrait">
             <intent-filter>

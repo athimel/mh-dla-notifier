@@ -51,8 +51,7 @@
     <string name="troll">Trõll</string>
     <string name="troll_number">Numéro de Trõll</string>
     <string name="password">Mot de passe</string>
-    <string name="password_info">Votre mot de passe ne sera pas stocké en clair, mais hashé en MD5 tel que préconisé par
-        MountyHall.
+    <string name="password_info">Votre mot de passe ne sera pas stocké en clair, mais hashé en MD5 tel que préconisé par MountyHall.
     </string>
     <string name="dla">DLA</string>
     <string name="remaining_pas">PAs restants</string>

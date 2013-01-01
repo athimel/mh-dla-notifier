@@ -14,9 +14,9 @@ import org.zoumbox.mh_dla_notifier.sp.ScriptCategory;
 
 import java.util.Date;
 
-public class MhDlaNotifierImpl extends MhDlaNotifierUI {
+public class MainActivity extends MhDlaNotifierUI {
 
-    private static final String TAG = Constants.LOG_PREFIX + MhDlaNotifierImpl.class.getSimpleName();
+    private static final String TAG = Constants.LOG_PREFIX + MainActivity.class.getSimpleName();
 
     @Override
     protected void loadTroll() {
@@ -125,7 +125,7 @@ public class MhDlaNotifierImpl extends MhDlaNotifierUI {
             Troll troll = null;
             MhDlaException exception = null;
             try {
-                troll = ProfileProxy.fetchTroll(MhDlaNotifierImpl.this, params[0]);
+                troll = ProfileProxy.fetchTroll(MainActivity.this, params[0]);
 
             } catch (MhDlaException e) {
                 exception = e;
