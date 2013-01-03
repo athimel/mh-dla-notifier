@@ -1,7 +1,7 @@
 package org.zoumbox.mh_dla_notifier;
 
-import android.content.Intent;
 import android.os.AsyncTask;
+import android.text.SpannableString;
 import android.util.Log;
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
@@ -13,6 +13,7 @@ import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
 import org.zoumbox.mh_dla_notifier.sp.ScriptCategory;
 
 import java.util.Date;
+import java.util.Map;
 
 public class MainActivity extends MhDlaNotifierUI {
 
@@ -25,7 +26,7 @@ public class MainActivity extends MhDlaNotifierUI {
 
         try {
             // First load the troll without update
-            Troll troll = ProfileProxy.fetchTroll(this, UpdateRequestType.NONE);
+            Troll troll = ProfileProxy.fetchTrollWithoutUpdate(this);
 
             trollUpdated(troll);
 
@@ -34,25 +35,7 @@ public class MainActivity extends MhDlaNotifierUI {
             }
 
         } catch (MissingLoginPasswordException mlpe) {
-            showToast("Vous devez saisir vos identifiants");
-            Log.i(TAG, "Login or password are missing, calling RegisterActivity");
-            Intent intent = new Intent(this, RegisterActivity.class);
-            startActivityForResult(intent, REGISTER);
-        } catch (QuotaExceededException e) {
-            showToast("Rafraichissement impossible pour le moment, quota dépassé");
-            Log.e(TAG, "Unable to refresh, quota exceeded", e);
-        } catch (PublicScriptException e) {
-            String message = e.getMessage();
-            Log.i(TAG, "Erreur de script public: " + message);
-            showToast(message);
-            if (message.startsWith("Erreur 2") || message.startsWith("Erreur 3")) {
-                showToast("Veuillez vérifier vos paramètres");
-                Intent intent = new Intent(this, RegisterActivity.class);
-                startActivityForResult(intent, REGISTER);
-            }
-        } catch (NetworkUnavailableException e) {
-            Log.i(TAG, "Pas de réseau, mise à jour des informations impossible");
-            showToast("Pas de réseau, mise à jour des informations impossible");
+            startRegister("Vous devez saisir vos identifiants");
         }
     }
 
@@ -75,46 +58,78 @@ public class MainActivity extends MhDlaNotifierUI {
 
     protected void updateSuccess() {
         String message = String.format("Mis à jour à %s", MhDlaNotifierUtils.formatHour(new Date()));
-        setStatus(message, 60);
+        setStatus(message);
     }
 
-    protected void updateFailure(String error) {
-        setStatus(error, 30);
+    protected void updateFailure(MhDlaException exception) {
+        String error = null;
+        if (exception instanceof QuotaExceededException) {
+            String message = "Rafraîchissement impossible pour le moment, quota atteint";
+            showToast(message);
+            Log.e(TAG, message, exception);
+
+            error = "Quota atteint";
+        } else if (exception instanceof PublicScriptException) {
+            String message = exception.getMessage();
+            Log.i(TAG, "Erreur : " + message);
+            showToast(message);
+
+            if (message.startsWith("Erreur 2") || message.startsWith("Erreur 3")) {
+                startRegister("Veuillez vérifier vos paramètres");
+            } else {
+                error = message;
+            }
+        } else if (exception instanceof NetworkUnavailableException) {
+            String message = "Pas de réseau, mise à jour des informations impossible";
+            Log.i(TAG, message);
+            showToast(message);
+
+            error = "Pas de réseau";
+        } else if (exception instanceof MissingLoginPasswordException) {
+            startRegister("Veuillez saisir vos identifiants");
+        } else {
+            throw new RuntimeException("Unexpected exception", exception);
+        }
+        setStatusError(error);
     }
 
     protected void trollUpdated(Troll troll) {
         pushTrollToUI(troll);
 
-        registerAlarms();
+        scheduleAlarms();
     }
 
     @Override
-    protected void registerAlarms() {
+    protected void scheduleAlarms() {
 
         boolean fromNotification = getIntent().getBooleanExtra(EXTRA_FROM_NOTIFICATION, false);
         Log.i(TAG, "From notification: " + fromNotification);
 
         if (!fromNotification) {
-            Pair<Date, Date> nextAlarms = Receiver.registerDlaAlarms(this);
-            if (nextAlarms != null) {
-                Date currentDlaAlarm = nextAlarms.left();
-                Date nextDlaAlarm = nextAlarms.right();
+            try {
+                Map<AlarmType, Date> scheduledAlarms = Receiver.scheduleAlarms(this);
+                if (scheduledAlarms != null) {
+                    Date currentDlaAlarm = scheduledAlarms.get(AlarmType.CURRENT_DLA);
+                    Date nextDlaAlarm = scheduledAlarms.get(AlarmType.NEXT_DLA);
 
-                if (currentDlaAlarm != null) {
-                    Log.i(TAG, "Current DLA alarm at " + currentDlaAlarm);
-                    String text = getText(R.string.next_alarm).toString();
-                    String message = String.format(text, MhDlaNotifierUtils.formatDay(currentDlaAlarm), MhDlaNotifierUtils.formatHour(currentDlaAlarm));
-                    showToast(message);
+                    if (currentDlaAlarm != null) {
+                        String text = getText(R.string.next_alarm).toString();
+                        String message = String.format(text, MhDlaNotifierUtils.formatDay(currentDlaAlarm), MhDlaNotifierUtils.formatHour(currentDlaAlarm));
+                        showToast(message);
+                    }
+
+                    if (nextDlaAlarm != null) {
+                        String text = getText(R.string.next_alarm).toString();
+                        String message = String.format(text, MhDlaNotifierUtils.formatDay(nextDlaAlarm), MhDlaNotifierUtils.formatHour(nextDlaAlarm));
+                        showToast(message);
+                    }
+
+
                 }
-
-                if (nextDlaAlarm != null) {
-                    Log.i(TAG, "Next DLA alarm at " + nextDlaAlarm);
-                    String text = getText(R.string.next_alarm).toString();
-                    String message = String.format(text, MhDlaNotifierUtils.formatDay(nextDlaAlarm), MhDlaNotifierUtils.formatHour(nextDlaAlarm));
-                    showToast(message);
-                }
-
+            } catch (MissingLoginPasswordException e) {
+                startRegister(null);
             }
+
         }
     }
 
@@ -139,8 +154,7 @@ public class MainActivity extends MhDlaNotifierUI {
         protected void onPostExecute(Pair<Troll, MhDlaException> result) {
             MhDlaException exception = result.right();
             if (exception != null) {
-                String reason = exception.getText();
-                updateFailure("Échec : " + reason);
+                updateFailure(exception);
             } else {
                 Troll troll = result.left();
                 trollUpdated(troll);

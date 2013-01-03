@@ -38,7 +38,6 @@ import com.google.common.collect.Sets;
 import org.zoumbox.mh_dla_notifier.Constants;
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierUtils;
 import org.zoumbox.mh_dla_notifier.Pair;
-import org.zoumbox.mh_dla_notifier.Triple;
 import org.zoumbox.mh_dla_notifier.sp.NetworkUnavailableException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScript;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
@@ -222,7 +221,9 @@ public class ProfileProxy {
         };
     }
 
-    public static Map<PublicScriptProperties, String> fetchProperties(final Context context, UpdateRequestType updateRequest, List<PublicScriptProperties> requestedProperties) throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException, NetworkUnavailableException {
+    public static Map<PublicScriptProperties, String> fetchProperties(
+            final Context context, UpdateRequestType updateRequest, List<PublicScriptProperties> requestedProperties)
+            throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException, NetworkUnavailableException {
 
         Log.i(TAG, "Fetching properties with updateRequest: " + updateRequest);
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
@@ -333,24 +334,28 @@ public class ProfileProxy {
         return result;
     }
 
-    public static Triple<Date, Integer, Date> refreshDLA(Context context) throws MissingLoginPasswordException, PublicScriptException, NetworkUnavailableException, QuotaExceededException {
+    public static Troll refreshDLA(Context context) throws MissingLoginPasswordException {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
         Pair<String, String> idAndPassword = loadIdPassword(preferences);
 
-        Map<String, String> propertiesFetched;
-        propertiesFetched = PublicScriptsProxy.fetch(context, PublicScript.Profil2, idAndPassword);
-        saveProperties(preferences, propertiesFetched);
+        Log.i(TAG, "Request for Profil2 fetch for refreshDLA()");
+        // Force Profil2 fetch
+        try {
+            Map<String, String> propertiesFetched = PublicScriptsProxy.fetch(context, PublicScript.Profil2, idAndPassword);
+            saveProperties(preferences, propertiesFetched);
+        } catch (QuotaExceededException qee) {
+            Log.w(TAG, "Quota exceeded, ignoring update", qee);
+        } catch (NetworkUnavailableException qee) {
+            Log.w(TAG, "Network failure, ignoring update", qee);
+        } catch (PublicScriptException pse) {
+            Log.w(TAG, "Script exception, ignoring update", pse);
+        }
 
-        Troll troll = fetchTroll(context, UpdateRequestType.NONE);
-
-        Date currentDla = troll.dla;
-        Integer pa = troll.pa;
-        Date nextDLA = Troll.GET_NEXT_DLA.apply(troll);
-
-        Triple<Date, Integer, Date> result = new Triple<Date, Integer, Date>(currentDla, pa, nextDLA);
-        return result;
+        // Get updated (by the previous fetch) troll info
+        Troll troll = fetchTrollWithoutUpdate(context);
+        return troll;
     }
 
     private static Date getDLA(SharedPreferences preferences) {
@@ -374,6 +379,22 @@ public class ProfileProxy {
             // Nothing to do
         }
         return result;
+    }
+
+    public static Troll fetchTrollWithoutUpdate(Context context) throws MissingLoginPasswordException {
+        try {
+            Troll result = fetchTroll(context, UpdateRequestType.NONE);
+            return result;
+        } catch (QuotaExceededException e) {
+            Log.e(TAG, "Should never happen", e);
+            throw new RuntimeException("Should never happen", e);
+        } catch (PublicScriptException e) {
+            Log.e(TAG, "Should never happen", e);
+            throw new RuntimeException("Should never happen", e);
+        } catch (NetworkUnavailableException e) {
+            Log.e(TAG, "Should never happen", e);
+            throw new RuntimeException("Should never happen", e);
+        }
     }
 
 }

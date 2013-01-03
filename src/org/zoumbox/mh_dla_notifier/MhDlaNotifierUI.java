@@ -44,7 +44,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import org.zoumbox.mh_dla_notifier.profile.Race;
 import org.zoumbox.mh_dla_notifier.profile.Troll;
 import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
@@ -141,8 +143,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
                 showDialog(CREDIT_DIALOG);
                 return true;
             case R.id.register:
-                Intent intent = new Intent(this, RegisterActivity.class);
-                startActivityForResult(intent, REGISTER);
+                startRegister(null);
                 return true;
             case R.id.refresh:
                 manualRefresh();
@@ -181,7 +182,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
             startUpdate(UpdateRequestType.FULL, "Récupération du profil");
         }
         if (requestCode == PREFERENCES) {
-            registerAlarms();
+            scheduleAlarms();
         }
     }
 
@@ -202,7 +203,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
     protected abstract void loadTroll();
 
-    protected abstract void registerAlarms();
+    protected abstract void scheduleAlarms();
 
     protected abstract void manualRefresh();
 
@@ -213,17 +214,36 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
     //  UI METHODS  //
     //////////////////
 
-    protected void setStatus(String message) {
+    protected void startRegister(String toast) {
+        if (!Strings.isNullOrEmpty(toast)) {
+            showToast(toast);
+        }
+        Log.i(TAG, "Login or password are missing, calling RegisterActivity");
+        Intent intent = new Intent(this, RegisterActivity.class);
+        startActivityForResult(intent, REGISTER);
+    }
+
+    private void internalSetStatus(CharSequence message) {
         this.status.setText(message);
     }
 
-    protected void setStatus(String message, int duration) {
-        setStatus(message);
+    protected void setStatus(CharSequence message) {
+        setStatus(message, 60);
+    }
+
+    protected void setStatus(CharSequence message, int duration) {
+        internalSetStatus(Objects.firstNonNull(message, ""));
         new ClearStatusTask().execute(duration);
     }
 
+    protected void setStatusError(CharSequence error) {
+        SpannableString spannable = new SpannableString(error);
+        colorize(spannable, getResources().getColor(R.color.error));
+        setStatus(spannable, 30);
+    }
+
     protected void clearStatus() {
-        this.status.setText("");
+        internalSetStatus("");
     }
 
     protected void pushTrollToUI(Troll troll) {
@@ -326,7 +346,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         int nextDlaDuration = Troll.GET_NEXT_DLA_DURATION.apply(troll);
         dla_duration.setText(MhDlaNotifierUtils.prettyPrintDuration(this, nextDlaDuration));
 
-        Date nextDla = Troll.GET_NEXT_DLA.apply(troll);
+        Date nextDla = troll.getNextDla();
         String nextDlaText = MhDlaNotifierUtils.formatDLA(this, nextDla);
         SpannableString nextDlaSpannable = new SpannableString(nextDlaText);
 
@@ -349,11 +369,11 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
     }
 
-    protected void colorize(SpannableString spannable, int color) {
+    private void colorize(SpannableString spannable, int color) {
         spannable.setSpan(new ForegroundColorSpan(color), 0, spannable.length(), 0);
     }
 
-    protected void stylize(SpannableString spannable, int typeface) {
+    private void stylize(SpannableString spannable, int typeface) {
         spannable.setSpan(new StyleSpan(typeface), 0, spannable.length(), 0);
     }
 

@@ -100,5 +100,6 @@
     <color name="dla_to_expire">#FF0000</color>
     <color name="pv_warn">#fff9790d</color>
     <color name="pv_alarm">#FF0000</color>
+    <color name="error">#FF0000</color>
 
 </resources>

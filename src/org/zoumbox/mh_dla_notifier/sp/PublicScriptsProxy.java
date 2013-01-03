@@ -107,16 +107,12 @@ public class PublicScriptsProxy {
 
     protected static int checkQuota(Context context, PublicScript script, String trollNumber) {
 
-        Log.i(TAG, "Check quota for category " + script + "(" + script.category + ") and troll " + trollNumber);
-
         MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
         SQLiteDatabase database = helper.getReadableDatabase();
 
         Calendar instance = Calendar.getInstance();
         instance.add(Calendar.HOUR_OF_DAY, -24);
         Date sinceDate = instance.getTime();
-
-        Log.i(TAG, "Since: " + sinceDate);
 
         Cursor cursor = database.rawQuery(SQL_COUNT, new String[]{trollNumber, script.category.name(), "" + sinceDate.getTime()});
         int result = 0;
@@ -128,14 +124,14 @@ public class PublicScriptsProxy {
         cursor.close();
         database.close();
 
-        Log.i(TAG, "Quota is : " + result);
+        Log.i(TAG, String.format("Quota for category %s (script=%s) and troll=%s since '%s' is: %d", script.category, script, trollNumber, sinceDate, result));
 
         return result;
     }
 
     protected static void saveFetch(Context context, PublicScript script, String trollNumber) {
 
-        Log.i(TAG, "Save fetch for category " + script + "(" + script.category + ") and troll " + trollNumber);
+        Log.i(TAG, String.format("Saving fetch for category %s (script=%s) and troll=%s", script.category, script, trollNumber));
 
         MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
         SQLiteDatabase database = helper.getWritableDatabase();
@@ -153,8 +149,6 @@ public class PublicScriptsProxy {
 
     public static Date geLastUpdate(Context context, PublicScript script, String trollNumber) {
 
-        Log.i(TAG, "Get last update for category " + script + "(" + script.category + ") and troll " + trollNumber);
-
         MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
         SQLiteDatabase database = helper.getReadableDatabase();
 
@@ -169,18 +163,18 @@ public class PublicScriptsProxy {
         cursor.close();
         database.close();
 
-        Log.i(TAG, "Last update is : " + result);
+        Log.i(TAG, String.format("Last update for category %s (script=%s) and troll=%s is: '%s'", script.category, script, trollNumber, result));
 
         return result;
     }
 
     public static Map<String, String> fetch(Context context, PublicScript script, String trollNumber, String trollPassword) throws QuotaExceededException, PublicScriptException, NetworkUnavailableException {
 
-        Log.i(TAG, "Fetch " + script.name() + " for troll " + trollNumber);
+        Log.i(TAG, String.format("Fetching in script=%s and troll=%s ", script, trollNumber));
         ScriptCategory category = script.category;
         int count = checkQuota(context, script, trollNumber);
         if (count >= category.quota) {
-            Log.i(TAG, "Quota is exceeded for category '" + category + "': " + count + "/" + category.quota);
+            Log.i(TAG, String.format("Quota is exceeded for category %s (script=%s) and troll=%s: %d§%d", category, script, trollNumber, count, category.quota));
             throw new QuotaExceededException(category, count);
         }
 

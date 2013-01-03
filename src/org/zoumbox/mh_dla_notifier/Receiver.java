@@ -33,14 +33,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.util.Log;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Maps;
+import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.Troll;
-import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
 
 import javax.annotation.Nullable;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -65,57 +68,57 @@ public class Receiver extends BroadcastReceiver {
         return result;
     }
 
-    protected boolean mustRegisterAlarm(PreferencesHolder preferences, Date dla) {
-        if (dla == null) {
-            return false;
-        }
-        Date dlaMinusDelay = MhDlaNotifierUtils.substractMinutes(dla, preferences.notificationDelay);
-        boolean result = IS_IN_THE_FUTURE.apply(dlaMinusDelay);
-        return result;
-    }
-
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Log.i(TAG, "Alarm received : " + Math.random());
+        String type = intent.getStringExtra("type");
+        AlarmType alarmType = AlarmType.valueOf(type);
 
-        Triple<Date, Integer, Date> dlaPaDlaTriple = null;
+        Log.i(TAG, "Alarm received : " + alarmType);
+
+        Troll troll;
         try {
-            dlaPaDlaTriple = ProfileProxy.refreshDLA(context);
-        } catch (MhDlaException mde) {
-            Log.w(TAG, mde.getClass().getName() + ": " + mde.getMessage());
+            troll = ProfileProxy.refreshDLA(context);
+        } catch (MissingLoginPasswordException mde) {
+            Intent registerIntent = new Intent(context, RegisterActivity.class);
+            context.startActivity(registerIntent);
+            return;
         }
 
-        if (dlaPaDlaTriple != null) {
-            Date currentDla = dlaPaDlaTriple.left();
-            Integer pa = dlaPaDlaTriple.middle();
-            Date nextDla = dlaPaDlaTriple.right();
+        if (troll != null) {
 
             PreferencesHolder preferences = PreferencesHolder.load(context);
 
-            boolean hasNextDlaNotification = false;
+            // Compute alarms
+            Map<AlarmType, Date> alarms = getAlarms(troll, preferences.notificationDelay);
 
-            if (mustRegisterAlarm(preferences, nextDla)) {
-                registerDlaAlarm(context, nextDla, preferences, false);
-            } else {
-                // On vérifie que la date est bien dans le futur et dans moins de 5 min
-                if (IS_IN_THE_FUTURE.apply(nextDla)) {
-                    notifyNextDlaAboutToExpire(context, nextDla, preferences);
-                } else {
-                    notifyNextDlaExpired(context, nextDla, preferences);
+            // Re-schedule them (in case it changed)
+            scheduleAlarms(context, alarms);
+
+            Date now = new Date();
+
+            Date beforeCurrentDla = alarms.get(AlarmType.CURRENT_DLA);
+            Date currentDla = troll.dla;
+            Date beforeNextDla = alarms.get(AlarmType.NEXT_DLA);
+            Date nextDla = troll.getNextDla();
+
+            if (now.after(beforeCurrentDla) && now.before(currentDla)) {
+                Log.i(TAG, String.format("Need to notify DLA='%s' about to expire", currentDla));
+                int pa = troll.pa;
+                boolean willNotify = needsNotificationAccordingToPA(preferences, pa);
+                Log.i(TAG, String.format("PA=%d. Will notify? %b", pa, willNotify));
+                if (willNotify) {
+                    notifyCurrentDlaAboutToExpire(context, currentDla, pa, preferences);
                 }
-                hasNextDlaNotification = true;
+            } else {
+                Log.i(TAG, String.format("No need to notify for DLA=%s", currentDla));
             }
 
-            if (mustRegisterAlarm(preferences, currentDla)) {
-                registerDlaAlarm(context, currentDla, preferences, true);
-            } else if (!hasNextDlaNotification) {
-                // On vérifie que la date est bien dans le futur et dans moins de 5 min
-                if (IS_IN_THE_FUTURE.apply(currentDla) && needsNotificationAccordingToPA(preferences, pa)) {
-                    notifyCurrentDlaAboutToExpire(context, currentDla, pa, preferences);
-                } else {
-                    notifyCurrentDlaExpired(context, currentDla, pa, preferences);
-                }
+            if (now.after(beforeNextDla) && now.before(nextDla)) {
+                Log.i(TAG, String.format("Need to notify NDLA='%s' about to expire", nextDla));
+                notifyNextDlaAboutToExpire(context, nextDla, preferences);
+            } else {
+                Log.i(TAG, String.format("No need to notify for NDLA=%s", nextDla));
             }
 
         }
@@ -149,17 +152,6 @@ public class Receiver extends BroadcastReceiver {
         displayNotification(context, notifTitle, notifText, vibrate);
     }
 
-    protected void notifyCurrentDlaExpired(Context context, Date dla, Integer pa, PreferencesHolder preferences) {
-        if (pa == 0 && !IS_IN_THE_FUTURE.apply(dla)) {
-            CharSequence notifTitle = context.getText(R.string.current_dla_expired_title);
-            String format = context.getText(R.string.current_dla_expired_text).toString();
-            CharSequence notifText = String.format(format, MhDlaNotifierUtils.formatHour(dla));
-
-            boolean vibrate = shouldVibrate(context, preferences);
-            displayNotification(context, notifTitle, notifText, vibrate);
-        }
-    }
-
     protected void notifyNextDlaAboutToExpire(Context context, Date dla, PreferencesHolder preferences) {
         CharSequence notifTitle = context.getText(R.string.next_dla_expiring_title);
         String format = context.getText(R.string.next_dla_expiring_text).toString();
@@ -167,15 +159,6 @@ public class Receiver extends BroadcastReceiver {
 
         boolean vibrate = shouldVibrate(context, preferences);
 
-        displayNotification(context, notifTitle, notifText, vibrate);
-    }
-
-    protected void notifyNextDlaExpired(Context context, Date dla, PreferencesHolder preferences) {
-        CharSequence notifTitle = context.getText(R.string.next_dla_expired_title);
-        String format = context.getText(R.string.next_dla_expired_text).toString();
-        CharSequence notifText = String.format(format, MhDlaNotifierUtils.formatHour(dla));
-
-        boolean vibrate = shouldVibrate(context, preferences);
         displayNotification(context, notifTitle, notifText, vibrate);
     }
 
@@ -200,41 +183,76 @@ public class Receiver extends BroadcastReceiver {
         notificationManager.notify(0, notification);
     }
 
-    public static Pair<Date, Date> registerDlaAlarms(Context context) {
-        PreferencesHolder preferencesHolder = PreferencesHolder.load(context);
-        Date dla = ProfileProxy.getDLA(context);
-        Date dlaAlarm = registerDlaAlarm(context, dla, preferencesHolder, true);
+    protected static Map<AlarmType, Date> getAlarms(Troll troll, int notificationDelay) {
+        Preconditions.checkNotNull(troll);
 
-        Date nextDlaAlarm = null;
-        try {
-            Troll troll = ProfileProxy.fetchTroll(context, UpdateRequestType.NONE);
-            Date nextDla = Troll.GET_NEXT_DLA.apply(troll);
-            nextDlaAlarm = registerDlaAlarm(context, nextDla, preferencesHolder, false);
-        } catch (MhDlaException e) {
-            // It should never happen
-            e.printStackTrace();
-        }
+        Date currentDla = troll.dla;
+        Date nextDla = troll.getNextDla();
 
-        Pair<Date, Date> result = new Pair<Date, Date>(dlaAlarm, nextDlaAlarm);
+        Log.i(TAG, String.format("Computing alarms for [DLA=%s] [NDLA=%s]", currentDla, nextDla));
+
+        long millisecondsBetween = nextDla.getTime() - currentDla.getTime();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(currentDla.getTime());
+        calendar.add(Calendar.MILLISECOND, new Long(millisecondsBetween / 2).intValue());
+        Date afterCurrentDla = calendar.getTime();
+
+        calendar.setTimeInMillis(nextDla.getTime());
+        calendar.add(Calendar.MILLISECOND, new Long(millisecondsBetween / 2).intValue());
+        Date afterNextDla = calendar.getTime();
+
+        Map<AlarmType, Date> result = Maps.newLinkedHashMap();
+
+        result.put(AlarmType.CURRENT_DLA, MhDlaNotifierUtils.substractMinutes(currentDla, notificationDelay));
+        result.put(AlarmType.AFTER_CURRENT_DLA, afterCurrentDla);
+        result.put(AlarmType.NEXT_DLA, MhDlaNotifierUtils.substractMinutes(nextDla, notificationDelay));
+        result.put(AlarmType.AFTER_NEXT_DLA, afterNextDla);
+
+        Log.i(TAG, "Computed alarms: " + result);
+
         return result;
     }
 
-    private static Date registerDlaAlarm(Context context, Date dla, PreferencesHolder preferences, boolean isCurrentDla) {
-        Date nextAlarm = null;
-        if (dla != null && IS_IN_THE_FUTURE.apply(dla)) {
-            Date dlaAlarm = MhDlaNotifierUtils.substractMinutes(dla, preferences.notificationDelay);
+    public static Map<AlarmType, Date> scheduleAlarms(Context context) throws MissingLoginPasswordException {
+        PreferencesHolder preferences = PreferencesHolder.load(context);
+        Troll troll = ProfileProxy.fetchTrollWithoutUpdate(context);
 
-            if (IS_IN_THE_FUTURE.apply(dlaAlarm)) {
-                Intent intent = new Intent(context, Receiver.class);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                        context, isCurrentDla ? 86956675 : 81913480, intent, PendingIntent.FLAG_ONE_SHOT);
-                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                alarmManager.set(AlarmManager.RTC_WAKEUP, dlaAlarm.getTime(), pendingIntent);
+        Map<AlarmType, Date> alarms = getAlarms(troll, preferences.notificationDelay);
+        Map<AlarmType, Date> scheduledAlarms = scheduleAlarms(context, alarms);
+        return scheduledAlarms;
+    }
 
-                nextAlarm = dlaAlarm;
+    protected static Map<AlarmType, Date> scheduleAlarms(Context context, Map<AlarmType, Date> alarms) {
+
+        Map<AlarmType, Date> result = Maps.newLinkedHashMap();
+        for (Map.Entry<AlarmType, Date> entry : alarms.entrySet()) {
+            AlarmType alarmType = entry.getKey();
+            Date alarmDate = entry.getValue();
+            boolean isScheduled = scheduleAlarm(context, alarmDate, alarmType);
+            if (isScheduled) {
+                result.put(alarmType, alarmDate);
             }
         }
-        return nextAlarm;
+
+        return result;
+    }
+
+    private static boolean scheduleAlarm(Context context, Date alarmDate, AlarmType type) {
+        if (alarmDate != null && IS_IN_THE_FUTURE.apply(alarmDate)) {
+            Intent intent = new Intent(context, Receiver.class);
+            intent.putExtra("type", type.name());
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    context, type.getIdentifier(), intent, PendingIntent.FLAG_ONE_SHOT);
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, alarmDate.getTime(), pendingIntent);
+
+            Log.i(TAG, String.format("Scheduled alarm [%s] at '%s'", type, alarmDate));
+            return true;
+        } else {
+            Log.i(TAG, String.format("No alarm [%s] scheduled at '%s'", type, alarmDate));
+            return false;
+        }
 
     }
 }

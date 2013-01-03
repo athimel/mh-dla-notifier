@@ -63,12 +63,20 @@ public class Troll {
 
     // Computed
     int pvMax = -1;
+    Date nextDla = null;
 
     public int getPvMax() {
         if (pvMax == -1) {
             pvMax = pvMaxBase + pvBM;
         }
         return pvMax;
+    }
+
+    public Date getNextDla() {
+        if (nextDla == null) {
+            nextDla = GET_NEXT_DLA.apply(this);
+        }
+        return nextDla;
     }
 
     // Gain en minutes par PV sacrifié = 120 / ( Fatigue * (1 + Arrondi.Inférieur(Fatigue / 10) ) ) minutes. (arrondi inférieur)
@@ -115,11 +123,11 @@ public class Troll {
             int computed = troll.dureeDuTour + troll.poids + troll.dlaBM + dlaPVMalus;
             int result = Math.max(computed, troll.dureeDuTour);
             return result;
-//            return 15;
+//            return 8;
         }
     };
 
-    public static final Function<Troll, Date> GET_NEXT_DLA = new Function<Troll, Date>() {
+    private static final Function<Troll, Date> GET_NEXT_DLA = new Function<Troll, Date>() {
         @Override
         public Date apply(Troll troll) {
 
