@@ -3,8 +3,8 @@ package org.zoumbox.mh_dla_notifier;
 /*
  * #%L
  * MountyHall DLA Notifier
- * $Id:$
- * $HeadURL:$
+ * $Id$
+ * $HeadURL$
  * %%
  * Copyright (C) 2012 - 2013 Zoumbox.org
  * %%
