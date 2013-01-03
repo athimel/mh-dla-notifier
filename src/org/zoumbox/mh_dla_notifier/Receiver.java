@@ -202,12 +202,17 @@ public class Receiver extends BroadcastReceiver {
         calendar.add(Calendar.MILLISECOND, new Long(millisecondsBetween / 2).intValue());
         Date afterNextDla = calendar.getTime();
 
+        calendar.setTimeInMillis(nextDla.getTime());
+        calendar.add(Calendar.MILLISECOND, new Long(millisecondsBetween * 9 / 10).intValue());
+        Date dlaEvenAfter = calendar.getTime();
+
         Map<AlarmType, Date> result = Maps.newLinkedHashMap();
 
         result.put(AlarmType.CURRENT_DLA, MhDlaNotifierUtils.substractMinutes(currentDla, notificationDelay));
         result.put(AlarmType.AFTER_CURRENT_DLA, afterCurrentDla);
         result.put(AlarmType.NEXT_DLA, MhDlaNotifierUtils.substractMinutes(nextDla, notificationDelay));
         result.put(AlarmType.AFTER_NEXT_DLA, afterNextDla);
+        result.put(AlarmType.DLA_EVEN_AFTER, MhDlaNotifierUtils.substractMinutes(dlaEvenAfter, notificationDelay));
 
         Log.i(TAG, "Computed alarms: " + result);
 
