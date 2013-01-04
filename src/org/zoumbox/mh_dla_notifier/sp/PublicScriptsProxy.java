@@ -104,7 +104,7 @@ public class PublicScriptsProxy {
     protected static final String SQL_LAST_UPDATE = String.format("SELECT MAX(%s) FROM %s WHERE %s=? AND %s=?",
             MhDlaSQLHelper.SCRIPTS_DATE_COLUMN, MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_SCRIPT_COLUMN);
 
-    protected static int checkQuota(Context context, PublicScript script, String trollNumber) {
+    protected static int computeRequestCount(Context context, PublicScript script, String trollNumber) {
 
         MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
         SQLiteDatabase database = helper.getReadableDatabase();
@@ -171,10 +171,11 @@ public class PublicScriptsProxy {
 
         Log.i(TAG, String.format("Fetching in script=%s and troll=%s ", script, trollNumber));
         ScriptCategory category = script.category;
-        int count = checkQuota(context, script, trollNumber);
-        if (count >= category.quota) {
-            Log.i(TAG, String.format("Quota is exceeded for category %s (script=%s) and troll=%s: %d§%d", category, script, trollNumber, count, category.quota));
-            throw new QuotaExceededException(category, count);
+        int requestCount = computeRequestCount(context, script, trollNumber);
+//        if (requestCount >= category.quota) {
+        if (requestCount > (category.quota / 2)) {
+            Log.i(TAG, String.format("Quota is exceeded for category %s (script=%s) and troll=%s: %d§%d", category, script, trollNumber, requestCount, category.quota));
+            throw new QuotaExceededException(category, requestCount);
         }
 
         String url = String.format(script.url, trollNumber, trollPassword);
