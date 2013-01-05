@@ -249,6 +249,8 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
         Preconditions.checkNotNull(troll, "Troll cannot be null");
 
+        boolean updateToFollow = troll.updateRequestType.needUpdate();
+
         this.name.setText(troll.nom);
 
         this.numero.setText("N° " + troll.id);
@@ -324,7 +326,9 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         int dlaToExpireColor = getResources().getColor(R.color.dla_to_expire);
 
         if (now.after(currentDla)) {
-            showToast(getText(R.string.current_dla_expired_title));
+            if (!updateToFollow) {
+                showToast(getText(R.string.current_dla_expired_title));
+            }
             colorize(dlaSpannable, dlaExpiredColor);
         } else {
             PreferencesHolder preferences = PreferencesHolder.load(this);
@@ -332,7 +336,9 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
             if (now.after(dlaMinusNDMin)) {
                 colorize(dlaSpannable, dlaToExpireColor);
                 if (pa > 0) {
-                    showToast("Il vous reste des PA à jouer !");
+                    if (!updateToFollow) {
+                        showToast("Il vous reste des PA à jouer !");
+                    }
                     colorize(paSpannable, dlaToExpireColor);
                     stylize(paSpannable, Typeface.BOLD);
                 }
@@ -350,7 +356,9 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         SpannableString nextDlaSpannable = new SpannableString(nextDlaText);
 
         if (now.after(nextDla)) {
-            showToast(getText(R.string.next_dla_expired_title));
+            if (!updateToFollow) {
+                showToast(getText(R.string.next_dla_expired_title));
+            }
             colorize(nextDlaSpannable, dlaExpiredColor);
         } else {
             PreferencesHolder preferences = PreferencesHolder.load(this);

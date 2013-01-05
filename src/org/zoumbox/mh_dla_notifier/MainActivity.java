@@ -25,7 +25,6 @@ package org.zoumbox.mh_dla_notifier;
  */
 
 import android.os.AsyncTask;
-import android.text.SpannableString;
 import android.util.Log;
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
@@ -55,6 +54,7 @@ public class MainActivity extends MhDlaNotifierUI {
             trollUpdated(troll);
 
             if (troll.updateRequestType.needUpdate()) {
+//                showToast("Mise à jour");
                 startUpdate(UpdateRequestType.ONLY_NECESSARY);
             }
 

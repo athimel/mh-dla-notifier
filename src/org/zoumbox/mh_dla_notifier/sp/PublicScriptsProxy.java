@@ -173,8 +173,8 @@ public class PublicScriptsProxy {
         ScriptCategory category = script.category;
         int requestCount = computeRequestCount(context, script, trollNumber);
 //        if (requestCount >= category.quota) {
-        if (requestCount > (category.quota / 2)) {
-            Log.i(TAG, String.format("Quota is exceeded for category %s (script=%s) and troll=%s: %d§%d", category, script, trollNumber, requestCount, category.quota));
+        if (requestCount >= (category.quota / 2)) {
+            Log.w(TAG, String.format("Quota is exceeded for category %s (script=%s) and troll=%s: %d§%d", category, script, trollNumber, requestCount, category.quota));
             throw new QuotaExceededException(category, requestCount);
         }
 
