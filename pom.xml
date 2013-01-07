@@ -80,6 +80,23 @@
             </roles>
         </developer>
 
+        <developer>
+            <id>bouloche61</id>
+            <name>Maxime Belloche</name>
+            <url>http://bouloche61.blogspot.fr/</url>
+            <roles>
+                <role>Illustrator</role>
+            </roles>
+        </developer>
+
+        <developer>
+            <id>testers</id>
+            <name>Heb, omnipotente, Verjus, 100, moljnir</name>
+            <roles>
+                <role>Testers</role>
+            </roles>
+        </developer>
+
     </developers>
 
     <organization>

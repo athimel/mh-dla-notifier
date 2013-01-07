@@ -61,10 +61,11 @@
                       android:layout_height="wrap_content" android:layout_marginTop="5dip"
                       android:layout_marginLeft="15dip">
             <ImageView android:layout_width="80px" android:layout_height="80px"
-                       android:scaleType="fitXY" android:src="@drawable/ic_contact_picture"/>
+                       android:scaleType="fitXY"
+                       android:src="@drawable/bouloche61"/>
             <LinearLayout android:orientation="vertical" android:layout_width="wrap_content"
                           android:layout_height="wrap_content" android:layout_marginLeft="10dip">
-                <TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="Maxime"
+                <TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="bouloche61"
                           android:textColor="#444444"/>
                 <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
                           android:text="@string/credits_illustrator" android:textColor="#444444"
@@ -79,10 +80,10 @@
                        android:scaleType="fitXY" android:src="@drawable/ic_contact_picture"/>
             <LinearLayout android:orientation="vertical" android:layout_width="wrap_content"
                           android:layout_height="wrap_content" android:layout_marginLeft="10dip">
-                <TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="omnipotente"
+                <TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="Heb, omnipotente, Verjus, 100, moljnir"
                           android:textColor="#444444"/>
                 <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
-                          android:text="@string/credits_contributor" android:textColor="#444444"
+                          android:text="@string/credits_testers" android:textColor="#444444"
                           android:textStyle="italic"/>
             </LinearLayout>
         </LinearLayout>
