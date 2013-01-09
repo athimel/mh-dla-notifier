@@ -242,7 +242,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         if (error != null) {
             SpannableString spannable = new SpannableString(error);
             colorize(spannable, getResources().getColor(R.color.error));
-            setStatus(spannable, 30);
+            setStatus(spannable, 60);
         }
     }
 
