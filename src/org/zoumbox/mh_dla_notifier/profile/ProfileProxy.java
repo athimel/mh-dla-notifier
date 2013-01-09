@@ -201,7 +201,8 @@ public class ProfileProxy {
             String type = fields.get(0);
             if ("BMM".equals(type) || "BMP".equals(type)) {
                 result.pvBM += Integer.parseInt(fields.get(5));
-                result.dlaBM += Integer.parseInt(fields.get(11));
+                Double dlaBM = Math.floor(Double.parseDouble(fields.get(11)));
+                result.dlaBM += dlaBM.intValue();
                 Double poids = Math.floor(Double.parseDouble(fields.get(12)));
                 result.poids += poids.intValue();
             }
