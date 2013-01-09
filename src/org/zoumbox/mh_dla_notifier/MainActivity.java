@@ -53,6 +53,8 @@ public class MainActivity extends MhDlaNotifierUI {
 
             trollUpdated(troll);
 
+            clearStatus();
+
             if (troll.updateRequestType.needUpdate()) {
 //                showToast("Mise à jour");
                 startUpdate(UpdateRequestType.ONLY_NECESSARY);
@@ -71,6 +73,19 @@ public class MainActivity extends MhDlaNotifierUI {
     }
 
     @Override
+    protected Date getLastUpdate() {
+        Date lastUpdate = null;
+        try {
+            Troll troll = ProfileProxy.fetchTrollWithoutUpdate(this);
+            lastUpdate = troll.lastUpdate;
+        } catch (MissingLoginPasswordException mlpe) {
+            // do nothing except log
+            Log.w("Missing login/password during getLastUpdate", mlpe);
+        }
+        return lastUpdate;
+    }
+
+    @Override
     protected void startUpdate(UpdateRequestType updateType, String message) {
         setStatus(message);
         new UpdateTrollTask().execute(updateType);
@@ -81,8 +96,7 @@ public class MainActivity extends MhDlaNotifierUI {
     }
 
     protected void updateSuccess() {
-        String message = String.format("Mis à jour à %s", MhDlaNotifierUtils.formatHour(new Date()));
-        setStatus(message);
+        clearStatus();
     }
 
     protected void updateFailure(MhDlaException exception) {

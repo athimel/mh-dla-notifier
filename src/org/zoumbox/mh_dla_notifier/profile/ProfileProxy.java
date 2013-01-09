@@ -61,6 +61,7 @@ import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.FATIGUE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.GUILDE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.INTANGIBLE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.INVISIBLE;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.LAST_UPDATE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NB_KILLS;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NB_MORTS;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NEEDS_UPDATE;
@@ -206,6 +207,8 @@ public class ProfileProxy {
             }
         }
 
+        result.lastUpdate = MhDlaNotifierUtils.parseDate(properties.get(LAST_UPDATE));
+
         result.updateRequestType = UpdateRequestType.valueOf(properties.get(NEEDS_UPDATE));
 
         return result;
@@ -256,8 +259,8 @@ public class ProfileProxy {
                 Iterables.removeIf(scripts, noNeedToUpdate(context, trollNumber));
             }
 
-            for (PublicScript type : scripts) {
-                Map<String, String> propertiesFetched = PublicScriptsProxy.fetch(context, type, idAndPassword);
+            for (PublicScript script : scripts) {
+                Map<String, String> propertiesFetched = PublicScriptsProxy.fetch(context, script, idAndPassword);
                 saveProperties(preferences, propertiesFetched);
             }
         } else {
@@ -272,6 +275,9 @@ public class ProfileProxy {
         Log.i(TAG, "Background update needed ? " + backgroundUpdate);
         result.put(NEEDS_UPDATE, backgroundUpdate.name());
 
+        String lastUpdate = preferences.getString(LAST_UPDATE.name(), null);
+        result.put(LAST_UPDATE, lastUpdate);
+
         for (PublicScriptProperties property : requestedProperties) {
             String value = preferences.getString(property.name(), null);
             result.put(property, value);
@@ -282,7 +288,9 @@ public class ProfileProxy {
     protected static void saveProperties(SharedPreferences preferences, Map<String, String> propertiesFetched) {
         SharedPreferences.Editor editor = preferences.edit();
         for (Map.Entry<String, String> prop : propertiesFetched.entrySet()) {
-            editor.putString(prop.getKey(), prop.getValue());
+            String key = prop.getKey();
+            String value = prop.getValue();
+            editor.putString(key, value);
         }
         editor.commit();
     }

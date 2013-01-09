@@ -46,12 +46,14 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="Status" parent="Info">
+    <style name="Status" parent="TextCommons">
         <item name="android:textColor">@android:color/darker_gray</item>
         <item name="android:gravity">center_horizontal</item>
-        <item name="android:layout_marginTop">20px</item>
+        <item name="android:layout_marginTop">50px</item>
+        <item name="android:paddingLeft">5px</item>
+        <item name="android:paddingRight">5px</item>
         <item name="android:textStyle">italic</item>
-        <item name="android:textSize">13dp</item>
+        <item name="android:textSize">12dp</item>
     </style>
 
     <style name="DL" parent="Info">

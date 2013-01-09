@@ -82,6 +82,8 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
     private TextView status;
 
+    private Date lastUpdate;
+
     ///////////////////////////////////
     //  ANDROID INTERACTION METHODS  //
     ///////////////////////////////////
@@ -208,6 +210,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
     protected abstract void startUpdate(UpdateRequestType updateType, String toast);
 
+    protected abstract Date getLastUpdate();
 
     //////////////////
     //  UI METHODS  //
@@ -244,12 +247,25 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
     }
 
     protected void clearStatus() {
-        internalSetStatus("");
+        if (lastUpdate == null) {
+            lastUpdate = getLastUpdate();
+        }
+        String status = "";
+        if (lastUpdate != null) {
+            status = "Dernière m-à-j : ";
+            if ((System.currentTimeMillis() - lastUpdate.getTime()) > (24l * 60l *60l *1000l)) {
+                status += MhDlaNotifierUtils.formatDay(lastUpdate) + " - ";
+            }
+            status += MhDlaNotifierUtils.formatHour(lastUpdate);
+        }
+        internalSetStatus(status);
     }
 
     protected void pushTrollToUI(Troll troll) {
 
         Preconditions.checkNotNull(troll, "Troll cannot be null");
+
+        this.lastUpdate = troll.lastUpdate;
 
         boolean updateToFollow = troll.updateRequestType.needUpdate();
 

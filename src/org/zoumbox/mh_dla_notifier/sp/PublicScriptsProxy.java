@@ -38,6 +38,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.zoumbox.mh_dla_notifier.Constants;
+import org.zoumbox.mh_dla_notifier.MhDlaNotifierUtils;
 import org.zoumbox.mh_dla_notifier.Pair;
 
 import java.io.BufferedReader;
@@ -45,6 +46,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -210,6 +212,9 @@ public class PublicScriptsProxy {
                     String value = data.get(i);
                     result.put(key, value);
                 }
+                Date now = new Date();
+                SimpleDateFormat df = new SimpleDateFormat(MhDlaNotifierUtils.INTPUT_DATE_FORMAT);
+                result.put(PublicScriptProperties.LAST_UPDATE.name(), df.format(now));
                 break;
             case Caract:
                 result.put(PublicScriptProperties.CARACT.name(), raw);
