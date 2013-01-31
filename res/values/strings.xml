@@ -29,8 +29,8 @@
 
     <string name="app_name">Avertisseur de DLA MountyHall</string>
 
-    <string name="version">0.10.1</string>
-    <string name="version_full">Version 0.10.1</string>
+    <string name="version">0.11</string>
+    <string name="version_full">Version 0.11</string>
 
     <string name="register">Saisie de vos identifiants</string>
     <string name="preferences">Préférences</string>
@@ -61,7 +61,7 @@
     <string name="fatigue">Fatigue</string>
     <string name="kd">Kills / Morts</string>
 
-    <string name="next_alarm" formatted="false">Alarme programmée le %s à %s</string>
+    <string name="next_alarm" formatted="false">Notification programmée le %s à %s</string>
 
     <string name="current_dla_expiring_title">Attention à votre DLA !</string>
     <string name="current_dla_expiring_text" formatted="false">DLA : %s - %d PA restant(s)</string>

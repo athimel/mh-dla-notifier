@@ -50,7 +50,7 @@
         <CheckBoxPreference
                 android:key="prefs.use_smartphone_interface"
                 android:title="@string/use_smartphone_interface"
-                android:summary="Gros doigts et petit écran ? (version \u03B2eta)"
+                android:summary="Gros doigts et petit écran ?"
                 android:defaultValue="true"/>
     </PreferenceCategory>
 </PreferenceScreen>
