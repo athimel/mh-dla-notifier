@@ -29,9 +29,9 @@
         <item>NEVER</item>
     </array>
     <array name="silent_notification">
-        <item>Toujours</item>
+        <item>Toujours silencieux</item>
         <item>Seulement la nuit (23h-7h)</item>
         <item>En mode silencieux</item>
-        <item>Jamais</item>
+        <item>Jamais silencieux</item>
     </array>
 </resources>

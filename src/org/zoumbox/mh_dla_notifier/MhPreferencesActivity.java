@@ -24,6 +24,7 @@
 package org.zoumbox.mh_dla_notifier;
 
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
 
 /**
@@ -35,5 +36,53 @@ public class MhPreferencesActivity extends PreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
+
+        PreferencesHolder preferences = PreferencesHolder.load(this);
+
+        {
+            Preference preference = findPreference("prefs.notify_without_pa");
+            String summary = getText(R.string.prefs_notify_without_pa_false).toString();
+            if (preferences.notifyWithoutPA) {
+                summary = getText(R.string.prefs_notify_without_pa_true).toString();
+            }
+            preference.setSummary(summary);
+        }
+
+        {
+            Preference preference = findPreference("prefs.silent_notification");
+            String summary;
+            switch (preferences.silentNotification) {
+                case NEVER:
+                    summary = getText(R.string.prefs_silent_notification_never).toString();
+                    break;
+                case ALWAYS:
+                    summary = getText(R.string.prefs_silent_notification_always).toString();
+                    break;
+                case WHEN_SILENT:
+                    summary = getText(R.string.prefs_silent_notification_when_silent).toString();
+                    break;
+                default:
+                    summary = getText(R.string.prefs_silent_notification_by_night).toString();
+                    break;
+            }
+            preference.setSummary(summary);
+        }
+
+        {
+            Preference preference = findPreference("prefs.notification_delay");
+            String summaryFormat = getText(R.string.prefs_notification_delay_summary).toString();
+            String summary = String.format(summaryFormat, preferences.notificationDelay);
+            preference.setSummary(summary);
+        }
+
+        {
+            Preference preference = findPreference("prefs.use_smartphone_interface");
+            String summary = getText(R.string.prefs_use_smartphone_interface_false).toString();
+            if (preferences.useSmartphoneInterface) {
+                summary = getText(R.string.prefs_use_smartphone_interface_true).toString();
+            }
+            preference.setSummary(summary);
+        }
+
     }
 }
