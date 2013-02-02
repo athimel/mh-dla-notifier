@@ -51,6 +51,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -58,6 +59,7 @@ import java.util.Map;
 public class PublicScriptsProxy {
 
     private static final String TAG = Constants.LOG_PREFIX + PublicScriptsProxy.class.getSimpleName();
+    protected static final Pattern LEGACY_PASSWORD_PATTERN = Pattern.compile("[0-9a-fA-F]{32}");
 
     public static PublicScriptResponse doHttpGET(String url) throws NetworkUnavailableException {
 
@@ -169,6 +171,8 @@ public class PublicScriptsProxy {
         return result;
     }
 
+
+
     public static Map<String, String> fetch(Context context, PublicScript script, String trollNumber, String trollPassword) throws QuotaExceededException, PublicScriptException, NetworkUnavailableException {
 
         Log.i(TAG, String.format("Fetching in script=%s and troll=%s ", script, trollNumber));
@@ -180,7 +184,12 @@ public class PublicScriptsProxy {
             throw new QuotaExceededException(category, requestCount);
         }
 
-        String url = String.format(script.url, trollNumber, trollPassword);
+        String url;
+        if (LEGACY_PASSWORD_PATTERN.matcher(trollPassword).matches()) {
+            url = String.format(script.legacyUrl, trollNumber, trollPassword);
+        } else {
+            url = String.format(script.url, trollNumber, trollPassword);
+        }
         PublicScriptResponse spResult = doHttpGET(url);
         Log.i(TAG, "Public Script response: '" + spResult + "'");
 
