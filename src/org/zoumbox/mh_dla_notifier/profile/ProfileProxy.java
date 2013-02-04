@@ -331,7 +331,7 @@ public class ProfileProxy {
         if (Constants.mock) {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString(PROPERTY_TROLL_ID, "123456");
-            editor.putString(PROPERTY_TROLL_PASSWORD, "*******");
+            editor.putString(PROPERTY_TROLL_PASSWORD, "ab4f63f9ac65152575886860dde480a1");
             editor.commit();
         }
 

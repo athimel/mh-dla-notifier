@@ -23,6 +23,8 @@
  */
 package org.zoumbox.mh_dla_notifier;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -57,7 +59,30 @@ public class RegisterActivity extends AbstractActivity {
         if (!Strings.isNullOrEmpty(trollNumber)) {
             troll.setText(trollNumber);
         }
+
+        displayHelp();
     }
+
+    private void displayHelp() {
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // 2. Chain together various setter methods to set the dialog characteristics
+        builder.setMessage(R.string.password_help_message)
+                .setTitle(R.string.password_help_title);
+
+        // 3. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+
+        dialog.setButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int which) {
+                // Nothing to do
+            }
+        });
+        dialog.show();
+    }
+
 
     public void onSaveButtonClicked(View target) {
 

@@ -34,7 +34,6 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.DialogPreference;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
@@ -49,7 +48,6 @@ import android.widget.TextView;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.Race;
 import org.zoumbox.mh_dla_notifier.profile.Troll;
@@ -144,7 +142,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
                     startRegister("Veuillez saisir le mot de passe \"spécifique\"");
                 }
             });
-            dialog.setButton("Non", new DialogInterface.OnClickListener() {
+            dialog.setButton2("Non", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int which) {
                     // Nothing to do
