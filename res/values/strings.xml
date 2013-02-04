@@ -92,4 +92,8 @@
     <string name="prefs_use_smartphone_interface_true">Oui</string>
     <string name="prefs_use_smartphone_interface_false">Non</string>
 
+
+    <string name="legacy_password_title">Nouvelle sécurité</string>
+    <string name="legacy_password_message">Avant le 1er mars 2013, vous allez devoir utiliser un mot de passe "spécifique" fournit par MountyHall. Voulez-vous saisir ce mot de passe maintenant ?</string>
+
 </resources>

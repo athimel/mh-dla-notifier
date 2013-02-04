@@ -23,6 +23,7 @@
  */
 package org.zoumbox.mh_dla_notifier;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -46,6 +47,7 @@ import android.widget.TextView;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.Race;
 import org.zoumbox.mh_dla_notifier.profile.Troll;
 import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
@@ -114,6 +116,19 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         status = (TextView) findViewById(R.id.status);
 
         loadTroll();
+
+        // From 01/02/2013 to 28/02/2013, password policy has changed. This should help user to migrate.
+        if (ProfileProxy.isLegacyPassword()) {
+            // 1. Instantiate an AlertDialog.Builder with its constructor
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            // 2. Chain together various setter methods to set the dialog characteristics
+            builder.setMessage(R.string.legacy_password_message)
+                    .setTitle(R.string.legacy_password_title);
+
+            // 3. Get the AlertDialog from create()
+            AlertDialog dialog = builder.create();
+        }
     }
 
     @Override

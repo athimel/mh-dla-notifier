@@ -405,4 +405,11 @@ public class ProfileProxy {
         }
     }
 
+    public static boolean isLegacyPassword(Context context) throws MissingLoginPasswordException {
+
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
+        Pair<String, String> idAndPassword = loadIdPassword(preferences);
+        LE
+        return false;  //To change body of created methods use File | Settings | File Templates.
+    }
 }
