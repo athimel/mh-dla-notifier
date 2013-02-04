@@ -184,12 +184,7 @@ public class PublicScriptsProxy {
             throw new QuotaExceededException(category, requestCount);
         }
 
-        String url;
-        if (LEGACY_PASSWORD_PATTERN.matcher(trollPassword).matches()) {
-            url = String.format(script.legacyUrl, trollNumber, trollPassword);
-        } else {
-            url = String.format(script.url, trollNumber, trollPassword);
-        }
+        String url = String.format(script.url, trollNumber, trollPassword);
         PublicScriptResponse spResult = doHttpGET(url);
         Log.i(TAG, "Public Script response: '" + spResult + "'");
 

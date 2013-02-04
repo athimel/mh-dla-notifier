@@ -27,12 +27,14 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.DialogPreference;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
@@ -47,6 +49,7 @@ import android.widget.TextView;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.Race;
 import org.zoumbox.mh_dla_notifier.profile.Troll;
@@ -117,8 +120,13 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
         loadTroll();
 
+        checkLegacyPassword();
+
+    }
+
+    protected void checkLegacyPassword() {
         // From 01/02/2013 to 28/02/2013, password policy has changed. This should help user to migrate.
-        if (ProfileProxy.isLegacyPassword()) {
+        if (ProfileProxy.isLegacyPassword(this)) {
             // 1. Instantiate an AlertDialog.Builder with its constructor
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -128,6 +136,21 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
             // 3. Get the AlertDialog from create()
             AlertDialog dialog = builder.create();
+
+            dialog.setButton("Oui", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int which) {
+                    // Explain how, and go register
+                    startRegister("Veuillez saisir le mot de passe \"spécifique\"");
+                }
+            });
+            dialog.setButton("Non", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int which) {
+                    // Nothing to do
+                }
+            });
+            dialog.show();
         }
     }
 

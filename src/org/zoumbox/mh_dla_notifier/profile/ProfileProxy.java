@@ -51,6 +51,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.BLASON;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.CAMOU;
@@ -86,6 +88,7 @@ public class ProfileProxy {
 
     public static final String PROPERTY_TROLL_ID = "trollId";
     public static final String PROPERTY_TROLL_PASSWORD = "trollPassword";
+    public static final Pattern LEGACY_PASSWORD_PATTERN = Pattern.compile("[0-9a-fA-F]{32}");
 
     public static boolean needsUpdate(Context context, PublicScript script, String trollNumber) {
         Date lastUpdate = PublicScriptsProxy.geLastUpdate(context, script, trollNumber);
@@ -405,11 +408,17 @@ public class ProfileProxy {
         }
     }
 
-    public static boolean isLegacyPassword(Context context) throws MissingLoginPasswordException {
+    public static boolean isLegacyPassword(Context context) {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
-        Pair<String, String> idAndPassword = loadIdPassword(preferences);
-        LE
-        return false;  //To change body of created methods use File | Settings | File Templates.
+        try {
+            Pair<String, String> idAndPassword = loadIdPassword(preferences);
+            String savedPassword = idAndPassword.right();
+            Matcher matcher = LEGACY_PASSWORD_PATTERN.matcher(savedPassword);
+            return matcher.matches();
+        } catch (MissingLoginPasswordException mlpe) {
+            Log.w(TAG, "Unable to get id+password", mlpe);
+            return false;
+        }
     }
 }

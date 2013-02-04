@@ -58,7 +58,6 @@ public enum PublicScript {
     Profil2(
             ScriptCategory.DYNAMIC,
             "http://sp.mountyhall.com/SP_Profil2.php?Numero=%s&Motdepasse=%s",
-            "http://sp.mountyhall.com/SP_Profil2.php?Numero=%s&Passe=%s",
             Lists.newArrayList("numero", POS_X.name(), POS_Y.name(), POS_N.name(), PV.name(), PV_MAX.name(), PA_RESTANT.name(), DLA.name(), "attaque", "esquive", "degats", "regeneration", "vue", "armure", "mm", "rm", "attaquesSubies", FATIGUE.name(), CAMOU.name(), INVISIBLE.name(), INTANGIBLE.name(), "nbParadeProgrammes", "nbContreAttaquesProgrammes", DUREE_DU_TOUR.name(), "bonusDuree", "armureNaturelle", "desDArmureEnMoins", "immobile", "aTerre", "enCourse")),
 
 //    Profil3(
@@ -79,7 +78,6 @@ public enum PublicScript {
     ProfilPublic2(
             ScriptCategory.STATIC,
             "http://sp.mountyhall.com/SP_ProfilPublic2.php?Numero=%s&Motdepasse=%s",
-            "http://sp.mountyhall.com/SP_ProfilPublic2.php?Numero=%s&Passe=%s",
             Lists.newArrayList("numero", NOM.name(), RACE.name(), NIVAL.name(), "dateInscription", "email", BLASON.name(), "nbMouches", NB_KILLS.name(), NB_MORTS.name(), GUILDE.name(), "niveauDeRang", "pnj")),
 
 //    Equipement(
@@ -95,24 +93,20 @@ public enum PublicScript {
     Caract(
             ScriptCategory.DYNAMIC,
             "http://sp.mountyhall.com/SP_Caract.php?Numero=%s&Motdepasse=%s",
-            "http://sp.mountyhall.com/SP_Caract.php?Numero=%s&Passe=%s",
             Lists.newArrayList(CARACT.name())),
 
     Vue(
             ScriptCategory.DYNAMIC,
             "http://sp.mountyhall.com/SP_Vue2.php?Numero=%s&Motdepasse=%s",
-            "http://sp.mountyhall.com/SP_Vue2.php?Numero=%s&Passe=%s",
             Lists.newArrayList(TROLLS.name(), MONSTRES.name()));
 
 
     public ScriptCategory category;
-    protected String legacyUrl;
     protected String url;
     protected List<String> properties;
 
-    private PublicScript(ScriptCategory category, String legacyUrl, String url, List<String> properties) {
+    private PublicScript(ScriptCategory category, String url, List<String> properties) {
         this.category = category;
-        this.legacyUrl = legacyUrl;
         this.url = url;
         this.properties = properties;
     }
