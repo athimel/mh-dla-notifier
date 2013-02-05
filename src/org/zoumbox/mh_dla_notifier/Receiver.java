@@ -143,6 +143,9 @@ public class Receiver extends BroadcastReceiver {
 
     protected void notifyCurrentDlaAboutToExpire(Context context, Date dla, Integer pa, PreferencesHolder preferences) {
         CharSequence notifTitle = context.getText(R.string.current_dla_expiring_title);
+        if (pa != null && pa == 0) {
+            notifTitle = context.getText(R.string.current_dla_expiring_title_noPA);
+        }
         String format = context.getText(R.string.current_dla_expiring_text).toString();
         CharSequence notifText = String.format(format, MhDlaNotifierUtils.formatHour(dla), pa);
 
