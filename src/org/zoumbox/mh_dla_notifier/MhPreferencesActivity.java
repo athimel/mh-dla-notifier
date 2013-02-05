@@ -23,66 +23,116 @@
  */
 package org.zoumbox.mh_dla_notifier;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
+
+import java.util.Map;
 
 /**
  * @author Arno <arno@zoumbox.org>
  */
-public class MhPreferencesActivity extends PreferenceActivity {
+public class MhPreferencesActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+    protected static final Function<Context, String> GET_PA_SUMMARY = new Function<Context, String>() {
+        @Override
+        public String apply(Context context) {
+            PreferencesHolder preferences = PreferencesHolder.load(context);
+            String result = context.getText(R.string.prefs_notify_without_pa_false).toString();
+            if (preferences.notifyWithoutPA) {
+                result = context.getText(R.string.prefs_notify_without_pa_true).toString();
+            }
+            return result;
+        }
+    };
+    protected static final Function<Context, String> GET_SILENT_NOTIF_SUMMARY = new Function<Context, String>() {
+        @Override
+        public String apply(Context context) {
+            PreferencesHolder preferences = PreferencesHolder.load(context);
+            String result;
+            switch (preferences.silentNotification) {
+                case NEVER:
+                    result = context.getText(R.string.prefs_silent_notification_never).toString();
+                    break;
+                case ALWAYS:
+                    result = context.getText(R.string.prefs_silent_notification_always).toString();
+                    break;
+                case WHEN_SILENT:
+                    result = context.getText(R.string.prefs_silent_notification_when_silent).toString();
+                    break;
+                default:
+                    result = context.getText(R.string.prefs_silent_notification_by_night).toString();
+                    break;
+            }
+            return result;
+        }
+    };
+    protected static final Function<Context, String> GET_NOTIF_DELAY_SUMMARY = new Function<Context, String>() {
+        @Override
+        public String apply(Context context) {
+            PreferencesHolder preferences = PreferencesHolder.load(context);
+            String summaryFormat = context.getText(R.string.prefs_notification_delay_summary).toString();
+            String result = String.format(summaryFormat, preferences.notificationDelay);
+            return result;
+        }
+    };
+    protected static final Function<Context, String> GET_USE_SMARTPHONE_SUMMARY = new Function<Context, String>() {
+        @Override
+        public String apply(Context context) {
+            PreferencesHolder preferences = PreferencesHolder.load(context);
+            String result = context.getText(R.string.prefs_use_smartphone_interface_false).toString();
+            if (preferences.useSmartphoneInterface) {
+                result = context.getText(R.string.prefs_use_smartphone_interface_true).toString();
+            }
+            return result;
+        }
+    };
+
+    protected static final Map<String, Function<Context, String>> preferencesFunctions = Maps.newLinkedHashMap();
+
+    static {
+        preferencesFunctions.put("prefs.notify_without_pa", GET_PA_SUMMARY);
+        preferencesFunctions.put("prefs.silent_notification", GET_SILENT_NOTIF_SUMMARY);
+        preferencesFunctions.put("prefs.notification_delay", GET_NOTIF_DELAY_SUMMARY);
+        preferencesFunctions.put("prefs.use_smartphone_interface", GET_USE_SMARTPHONE_SUMMARY);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
-        PreferencesHolder preferences = PreferencesHolder.load(this);
+        for (Map.Entry<String, Function<Context, String>> entry : preferencesFunctions.entrySet()) {
+            String key = entry.getKey();
+            String summary = entry.getValue().apply(this);
 
-        {
-            Preference preference = findPreference("prefs.notify_without_pa");
-            String summary = getText(R.string.prefs_notify_without_pa_false).toString();
-            if (preferences.notifyWithoutPA) {
-                summary = getText(R.string.prefs_notify_without_pa_true).toString();
-            }
+            Preference preference = findPreference(key);
             preference.setSummary(summary);
         }
 
-        {
-            Preference preference = findPreference("prefs.silent_notification");
-            String summary;
-            switch (preferences.silentNotification) {
-                case NEVER:
-                    summary = getText(R.string.prefs_silent_notification_never).toString();
-                    break;
-                case ALWAYS:
-                    summary = getText(R.string.prefs_silent_notification_always).toString();
-                    break;
-                case WHEN_SILENT:
-                    summary = getText(R.string.prefs_silent_notification_when_silent).toString();
-                    break;
-                default:
-                    summary = getText(R.string.prefs_silent_notification_by_night).toString();
-                    break;
-            }
-            preference.setSummary(summary);
-        }
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.registerOnSharedPreferenceChangeListener(this);
+    }
 
-        {
-            Preference preference = findPreference("prefs.notification_delay");
-            String summaryFormat = getText(R.string.prefs_notification_delay_summary).toString();
-            String summary = String.format(summaryFormat, preferences.notificationDelay);
-            preference.setSummary(summary);
-        }
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Function<Context, String> function = preferencesFunctions.get(key);
+        String summary = function.apply(this);
 
-        {
-            Preference preference = findPreference("prefs.use_smartphone_interface");
-            String summary = getText(R.string.prefs_use_smartphone_interface_false).toString();
-            if (preferences.useSmartphoneInterface) {
-                summary = getText(R.string.prefs_use_smartphone_interface_true).toString();
-            }
-            preference.setSummary(summary);
-        }
+        Preference preference = findPreference(key);
+        preference.setSummary(summary);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.unregisterOnSharedPreferenceChangeListener(this); // To make sure it is registered only once
     }
 }

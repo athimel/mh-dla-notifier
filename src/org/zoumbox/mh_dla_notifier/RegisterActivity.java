@@ -68,8 +68,7 @@ public class RegisterActivity extends AbstractActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         // 2. Chain together various setter methods to set the dialog characteristics
-        builder.setMessage(R.string.password_help_message)
-                .setTitle(R.string.password_help_title);
+        builder.setTitle(R.string.password_help_title).setMessage(R.string.password_help_message);
 
         // 3. Get the AlertDialog from create()
         AlertDialog dialog = builder.create();
@@ -102,8 +101,7 @@ public class RegisterActivity extends AbstractActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         // 2. Chain together various setter methods to set the dialog characteristics
-        builder.setMessage(R.string.is_new_password_message)
-                .setTitle(R.string.is_new_password_title);
+        builder.setTitle(R.string.is_new_password_title).setMessage(R.string.is_new_password_message);
 
         // 3. Get the AlertDialog from create()
         AlertDialog dialog = builder.create();

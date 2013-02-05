@@ -379,28 +379,28 @@ public class ProfileProxy {
         return troll;
     }
 
-    private static Date getDLA(SharedPreferences preferences) {
-        String string = preferences.getString(DLA.name(), null);
-        Date result = MhDlaNotifierUtils.parseDate(string);
-        return result;
-    }
+//    private static Date getDLA(SharedPreferences preferences) {
+//        String string = preferences.getString(DLA.name(), null);
+//        Date result = MhDlaNotifierUtils.parseDate(string);
+//        return result;
+//    }
 
-    public static Date getDLA(Context context) {
-        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
-        Date result = getDLA(preferences);
-        return result;
-    }
-
-    private static Integer getPA(SharedPreferences preferences) {
-        String string = preferences.getString(PA_RESTANT.name(), null);
-        Integer result = null;
-        try {
-            result = Integer.parseInt(string);
-        } catch (Exception eee) {
-            // Nothing to do
-        }
-        return result;
-    }
+//    public static Date getDLA(Context context) {
+//        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
+//        Date result = getDLA(preferences);
+//        return result;
+//    }
+//
+//    private static Integer getPA(SharedPreferences preferences) {
+//        String string = preferences.getString(PA_RESTANT.name(), null);
+//        Integer result = null;
+//        try {
+//            result = Integer.parseInt(string);
+//        } catch (Exception eee) {
+//            // Nothing to do
+//        }
+//        return result;
+//    }
 
     public static Troll fetchTrollWithoutUpdate(Context context) throws MissingLoginPasswordException {
         try {
