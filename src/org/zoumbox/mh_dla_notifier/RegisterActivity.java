@@ -83,15 +83,50 @@ public class RegisterActivity extends AbstractActivity {
         dialog.show();
     }
 
-
     public void onSaveButtonClicked(View target) {
 
-        String trollNumber = troll.getText().toString();
-        String trollPassword = password.getText().toString();
+        String trollNumber = Strings.nullToEmpty(troll.getText().toString());
+        String trollPassword = Strings.nullToEmpty(password.getText().toString());
 
+        if (ProfileProxy.isNewPassword(trollPassword)) {
+            saveIdAndPassword(trollNumber, trollPassword, false);
+        } else {
+            askIfIsNewPassword(trollNumber, trollPassword);
+        }
+
+    }
+
+    protected void askIfIsNewPassword(final String trollNumber, final String trollPassword) {
+
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // 2. Chain together various setter methods to set the dialog characteristics
+        builder.setMessage(R.string.is_new_password_message)
+                .setTitle(R.string.is_new_password_title);
+
+        // 3. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+
+        dialog.setButton("Oui", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int which) {
+                saveIdAndPassword(trollNumber, trollPassword, false);
+            }
+        });
+        dialog.setButton2("Non", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int which) {
+                saveIdAndPassword(trollNumber, trollPassword, true);
+            }
+        });
+        dialog.show();
+    }
+
+    protected void saveIdAndPassword(String trollNumber, String trollPassword, boolean needToHashPassword) {
         showToast("Enregistrement. Merci de patienter...");
 
-        boolean result = ProfileProxy.saveIdPassword(this, trollNumber, trollPassword);
+        boolean result = ProfileProxy.saveIdPassword(this, trollNumber, trollPassword, needToHashPassword);
 
         if (result) {
             setResult(RESULT_OK);
@@ -99,7 +134,6 @@ public class RegisterActivity extends AbstractActivity {
         } else {
             Log.i(TAG, "Impossible d'enregistrer les identifiants");
         }
-
     }
 
 }

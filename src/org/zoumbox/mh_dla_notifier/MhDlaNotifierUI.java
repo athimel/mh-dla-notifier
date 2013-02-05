@@ -124,7 +124,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
     protected void checkLegacyPassword() {
         // From 01/02/2013 to 28/02/2013, password policy has changed. This should help user to migrate.
-        if (ProfileProxy.isLegacyPassword(this)) {
+        if (ProfileProxy.isCurrentPasswordALegacyPassword(this)) {
             // 1. Instantiate an AlertDialog.Builder with its constructor
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 

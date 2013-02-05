@@ -86,9 +86,11 @@ public class ProfileProxy {
 
     public static final String PREFS_NAME = "org.zoumbox.mh.dla.notifier.preferences";
 
-    public static final String PROPERTY_TROLL_ID = "trollId";
-    public static final String PROPERTY_TROLL_PASSWORD = "trollPassword";
-    public static final Pattern LEGACY_PASSWORD_PATTERN = Pattern.compile("[0-9a-fA-F]{32}");
+    protected static final String PROPERTY_TROLL_ID = "trollId";
+    protected static final String PROPERTY_TROLL_PASSWORD = "trollPassword";
+
+    protected static final Pattern NEW_PASSWORD_PATTERN = Pattern.compile("[0-9A-Z]{8}");
+    protected static final Pattern LEGACY_PASSWORD_PATTERN = Pattern.compile("[0-9a-fA-F]{32}");
 
     public static boolean needsUpdate(Context context, PublicScript script, String trollNumber) {
         Date lastUpdate = PublicScriptsProxy.geLastUpdate(context, script, trollNumber);
@@ -307,20 +309,23 @@ public class ProfileProxy {
         return result;
     }
 
-    public static boolean saveIdPassword(Context context, String trollNumber, String trollPassword) {
-        String checkedTrollNumber = Strings.nullToEmpty(trollNumber).trim();
-        String checkedTrollPassword = Strings.nullToEmpty(trollPassword).trim();
-
-        if (Strings.isNullOrEmpty(checkedTrollNumber) || Strings.isNullOrEmpty(checkedTrollPassword)) {
+    public static boolean saveIdPassword(Context context, String trollNumber, String trollPassword, boolean needToHashPassword) {
+        if (Strings.isNullOrEmpty(trollNumber) || Strings.isNullOrEmpty(trollPassword)) {
             return false;
         }
 
-        String hashedTrollPassword = MhDlaNotifierUtils.md5(checkedTrollPassword);
-        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
+        String finalTrollPassword = trollPassword;
+        if (needToHashPassword) {
+            boolean alreadyHashed = LEGACY_PASSWORD_PATTERN.matcher(trollPassword).matches();
+            if (!alreadyHashed) {
+                finalTrollPassword = MhDlaNotifierUtils.md5(trollPassword);
+            }
+        }
 
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(PROPERTY_TROLL_ID, checkedTrollNumber);
-        editor.putString(PROPERTY_TROLL_PASSWORD, hashedTrollPassword);
+        editor.putString(PROPERTY_TROLL_ID, trollNumber);
+        editor.putString(PROPERTY_TROLL_PASSWORD, finalTrollPassword);
         editor.commit();
 
         return true;
@@ -408,7 +413,11 @@ public class ProfileProxy {
         }
     }
 
-    public static boolean isLegacyPassword(Context context) {
+    public static boolean isNewPassword(String password) {
+        return NEW_PASSWORD_PATTERN.matcher(password).matches();
+    }
+
+    public static boolean isCurrentPasswordALegacyPassword(Context context) {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
         try {
@@ -421,4 +430,5 @@ public class ProfileProxy {
             return false;
         }
     }
+
 }

@@ -47,6 +47,11 @@
               android:layout_width="fill_parent"
               android:textStyle="italic"/>
 
+    <TextView android:text="@string/password_help_warning"
+              android:layout_height="wrap_content"
+              android:layout_width="fill_parent"
+              android:textStyle="italic"/>
+
     <Button android:id="@+id/save"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
