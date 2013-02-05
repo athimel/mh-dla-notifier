@@ -39,7 +39,7 @@ import java.util.Map;
  */
 public class MhPreferencesActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    protected static final Function<Context, String> GET_PA_SUMMARY = new Function<Context, String>() {
+    protected static final Function<Context, String> GET_NOTIFY_WITHOUT_PA_SUMMARY = new Function<Context, String>() {
         @Override
         public String apply(Context context) {
             PreferencesHolder preferences = PreferencesHolder.load(context);
@@ -96,10 +96,10 @@ public class MhPreferencesActivity extends PreferenceActivity implements SharedP
     protected static final Map<String, Function<Context, String>> preferencesFunctions = Maps.newLinkedHashMap();
 
     static {
-        preferencesFunctions.put("prefs.notify_without_pa", GET_PA_SUMMARY);
-        preferencesFunctions.put("prefs.silent_notification", GET_SILENT_NOTIF_SUMMARY);
-        preferencesFunctions.put("prefs.notification_delay", GET_NOTIF_DELAY_SUMMARY);
-        preferencesFunctions.put("prefs.use_smartphone_interface", GET_USE_SMARTPHONE_SUMMARY);
+        preferencesFunctions.put(PreferencesHolder.PREFS_NOTIFY_WITHOUT_PA, GET_NOTIFY_WITHOUT_PA_SUMMARY);
+        preferencesFunctions.put(PreferencesHolder.PREFS_SILENT_NOTIFICATION, GET_SILENT_NOTIF_SUMMARY);
+        preferencesFunctions.put(PreferencesHolder.PREFS_NOTIFICATION_DELAY, GET_NOTIF_DELAY_SUMMARY);
+        preferencesFunctions.put(PreferencesHolder.PREFS_SMARTPHONE_INTERFACE, GET_USE_SMARTPHONE_SUMMARY);
     }
 
     @Override

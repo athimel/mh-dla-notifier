@@ -123,32 +123,38 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
     }
 
     protected void checkLegacyPassword() {
+
         // From 01/02/2013 to 28/02/2013, password policy has changed. This should help user to migrate.
         if (ProfileProxy.isCurrentPasswordALegacyPassword(this)) {
-            // 1. Instantiate an AlertDialog.Builder with its constructor
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-            // 2. Chain together various setter methods to set the dialog characteristics
-            builder.setMessage(R.string.legacy_password_message)
-                    .setTitle(R.string.legacy_password_title);
+            PreferencesHolder preferences = PreferencesHolder.load(this);
+            if (System.currentTimeMillis() > preferences.skipLegacyPasswordCheckUntil) {
 
-            // 3. Get the AlertDialog from create()
-            AlertDialog dialog = builder.create();
+                // 1. Instantiate an AlertDialog.Builder with its constructor
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-            dialog.setButton("Oui", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int which) {
-                    // Explain how, and go register
-                    startRegister("Veuillez saisir le mot de passe \"spécifique\"");
-                }
-            });
-            dialog.setButton2("Non", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int which) {
-                    // Nothing to do
-                }
-            });
-            dialog.show();
+                // 2. Chain together various setter methods to set the dialog characteristics
+                builder.setMessage(R.string.legacy_password_message)
+                        .setTitle(R.string.legacy_password_title);
+
+                // 3. Get the AlertDialog from create()
+                AlertDialog dialog = builder.create();
+
+                dialog.setButton("Oui", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        // Explain how, and go register
+                        startRegister("Veuillez saisir le mot de passe \"spécifique\"");
+                    }
+                });
+                dialog.setButton2("Non", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        PreferencesHolder.skipLegacyPasswordCheckForToday(MhDlaNotifierUI.this);
+                    }
+                });
+                dialog.show();
+            }
         }
     }
 

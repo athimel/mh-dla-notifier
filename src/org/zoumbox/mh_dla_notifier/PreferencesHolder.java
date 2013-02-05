@@ -27,22 +27,30 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * @author Arno <arno@zoumbox.org>
  */
 public class PreferencesHolder {
 
-    protected static final String PREFS_NOTIFICATION_DELAY = "prefs.notification_delay";
-    protected static final String PREFS_SILENT_NOTIFICATION = "prefs.silent_notification";
-    protected static final String PREFS_NOTIFY_WITHOUT_PA = "prefs.notify_without_pa";
+    public static final String PREFS_NOTIFICATION_DELAY = "prefs.notification_delay";
+    public static final String PREFS_SILENT_NOTIFICATION = "prefs.silent_notification";
+    public static final String PREFS_NOTIFY_WITHOUT_PA = "prefs.notify_without_pa";
 
-    protected static final String PREFS_SMARTPHONE_INTERFACE = "prefs.use_smartphone_interface";
+    public static final String PREFS_SMARTPHONE_INTERFACE = "prefs.use_smartphone_interface";
+
+    public static final String SKIP_LEGACY_PASSWORD_CHECK_UNTIL = "prefs.skip_legacy_password_check_until";
 
     public int notificationDelay;
     public boolean notifyWithoutPA;
     public SilentNotification silentNotification;
 
     public boolean useSmartphoneInterface;
+
+    public long skipLegacyPasswordCheckUntil;
+
 
     public static PreferencesHolder load(Context context) {
 
@@ -57,7 +65,25 @@ public class PreferencesHolder {
 
         result.useSmartphoneInterface = prefs.getBoolean(PREFS_SMARTPHONE_INTERFACE, true);
 
+        result.skipLegacyPasswordCheckUntil = prefs.getLong(SKIP_LEGACY_PASSWORD_CHECK_UNTIL, 0l);
+
         return result;
+    }
+
+    public static void skipLegacyPasswordCheckForToday(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        SharedPreferences.Editor editor = prefs.edit();
+
+        Calendar instance = Calendar.getInstance();
+        instance.set(Calendar.HOUR_OF_DAY, 23);
+        instance.set(Calendar.MINUTE, 59);
+        instance.set(Calendar.SECOND, 59);
+        instance.set(Calendar.MILLISECOND, 59);
+
+        editor.putLong(SKIP_LEGACY_PASSWORD_CHECK_UNTIL, instance.getTimeInMillis());
+        editor.commit();
+
     }
 
 }
