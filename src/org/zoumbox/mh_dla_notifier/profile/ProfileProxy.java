@@ -92,7 +92,7 @@ public class ProfileProxy {
     protected static final Pattern NEW_PASSWORD_PATTERN = Pattern.compile("[0-9A-Z]{8}");
     protected static final Pattern LEGACY_PASSWORD_PATTERN = Pattern.compile("[0-9a-fA-F]{32}");
 
-    public static boolean needsUpdate(Context context, PublicScript script, String trollNumber) {
+    public static boolean shouldUpdate(Context context, PublicScript script, String trollNumber) {
         Date lastUpdate = PublicScriptsProxy.geLastUpdate(context, script, trollNumber);
         if (lastUpdate == null) {
             return true;
@@ -224,7 +224,7 @@ public class ProfileProxy {
         return new Predicate<PublicScript>() {
             @Override
             public boolean apply(PublicScript script) {
-                return !needsUpdate(context, script, trollNumber);
+                return !shouldUpdate(context, script, trollNumber);
             }
         };
     }
@@ -239,6 +239,7 @@ public class ProfileProxy {
         Pair<String, String> idAndPassword = loadIdPassword(preferences);
         final String trollNumber = idAndPassword.left();
 
+        // Iterate over requested properties to know which SP are concerned
         Set<PublicScript> scripts = Sets.newLinkedHashSet();
         Log.i(TAG, "Requesting properties: " + requestedProperties);
         for (PublicScriptProperties property : requestedProperties) {
@@ -246,6 +247,7 @@ public class ProfileProxy {
             scripts.add(script);
         }
 
+        // Maybe no update is requested, but needed because of missing property
         UpdateRequestType updateRequestType = updateRequest;
         if (!updateRequestType.needUpdate()) {
             for (PublicScriptProperties property : requestedProperties) {
@@ -262,7 +264,8 @@ public class ProfileProxy {
         if (updateRequestType.needUpdate()) {
 
             if (UpdateRequestType.ONLY_NECESSARY.equals(updateRequestType)) {
-                Iterables.removeIf(scripts, noNeedToUpdate(context, trollNumber));
+                Predicate<PublicScript> noNeedToUpdatePredicate = noNeedToUpdate(context, trollNumber);
+                Iterables.removeIf(scripts, noNeedToUpdatePredicate);
             }
 
             for (PublicScript script : scripts) {
@@ -270,9 +273,11 @@ public class ProfileProxy {
                 saveProperties(preferences, propertiesFetched);
             }
         } else {
-            Iterables.removeIf(scripts, noNeedToUpdate(context, trollNumber));
+            Predicate<PublicScript> noNeedToUpdatePredicate = noNeedToUpdate(context, trollNumber);
+            Iterables.removeIf(scripts, noNeedToUpdatePredicate);
 
-            if (!scripts.isEmpty()) {
+//            if (!scripts.isEmpty()) {
+            if (scripts.contains(PublicScript.Profil2)) { // Ask for update only if profil2 needs an update
                 backgroundUpdate = UpdateRequestType.ONLY_NECESSARY;
             }
         }
