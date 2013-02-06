@@ -26,9 +26,12 @@ package org.zoumbox.mh_dla_notifier;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import com.google.common.base.Strings;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
@@ -42,6 +45,8 @@ public class RegisterActivity extends AbstractActivity {
 
     protected EditText troll;
     protected EditText password;
+
+    protected Button saveButton;
 
     /**
      * Called when the activity is first created.
@@ -59,6 +64,30 @@ public class RegisterActivity extends AbstractActivity {
         if (!Strings.isNullOrEmpty(trollNumber)) {
             troll.setText(trollNumber);
         }
+
+        saveButton = (Button)findViewById(R.id.save);
+        saveButton.setEnabled(false);
+
+        password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                // nothing to do
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                boolean enableSaveButton = false;
+                if (charSequence != null && charSequence.length() >= 1) {
+                    enableSaveButton = true;
+                }
+                saveButton.setEnabled(enableSaveButton);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // nothing to do
+            }
+        });
 
         displayHelp();
     }
