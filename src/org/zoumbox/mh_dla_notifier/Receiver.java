@@ -120,6 +120,11 @@ public class Receiver extends BroadcastReceiver {
                 Log.i(TAG, String.format("No need to notify for NDLA=%s", nextDla));
             }
 
+            if (troll.pvVariation < 0) {
+                int pvLoss = Math.abs(troll.pvVariation);
+                Log.i(TAG, String.format("Troll lost %d PV", pvLoss));
+                notifyPvLoss(context, pvLoss, troll.pv, preferences);
+            }
         }
     }
 
@@ -158,6 +163,17 @@ public class Receiver extends BroadcastReceiver {
         CharSequence notifTitle = context.getText(R.string.next_dla_expiring_title);
         String format = context.getText(R.string.next_dla_expiring_text).toString();
         CharSequence notifText = String.format(format, MhDlaNotifierUtils.formatHour(dla));
+
+        boolean vibrate = shouldVibrate(context, preferences);
+
+        displayNotification(context, notifTitle, notifText, vibrate);
+    }
+
+    protected void notifyPvLoss(Context context, int pvLoss, int pv, PreferencesHolder preferences) {
+        String titleFormat = context.getText(R.string.pv_loss_title).toString();
+        CharSequence notifTitle = String.format(titleFormat, pvLoss);
+        String messageFormat = context.getText(R.string.pv_loss_text).toString();
+        CharSequence notifText = String.format(messageFormat, pv);
 
         boolean vibrate = shouldVibrate(context, preferences);
 

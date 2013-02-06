@@ -71,6 +71,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
     private ImageView blason;
     private TextView name;
+    private TextView trollStatus;
     private TextView numero;
     private TextView race;
     private TextView guilde;
@@ -83,7 +84,8 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
     private TextView dla_duration;
     private TextView remainingPAs;
 
-    private TextView status;
+    private TextView trollInfo;
+    private TextView technicalStatus;
 
     private Date lastUpdate;
 
@@ -102,6 +104,8 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
         blason = (ImageView) findViewById(R.id.blason);
         name = (TextView) findViewById(R.id.name);
+        trollStatus = (TextView) findViewById(R.id.troll_status);
+
         numero = (TextView) findViewById(R.id.number);
         race = (TextView) findViewById(R.id.race);
         guilde = (TextView) findViewById(R.id.guilde);
@@ -114,7 +118,8 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         next_dla = (TextView) findViewById(R.id.next_dla_field);
         remainingPAs = (TextView) findViewById(R.id.pas);
 
-        status = (TextView) findViewById(R.id.status);
+        trollInfo = (TextView) findViewById(R.id.troll_info);
+        technicalStatus = (TextView) findViewById(R.id.technical_status);
 
         loadTroll();
 
@@ -267,28 +272,28 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         startActivityForResult(intent, REGISTER);
     }
 
-    private void internalSetStatus(CharSequence message) {
-        this.status.setText(message);
+    private void internalSetTechnicalStatus(CharSequence message) {
+        this.technicalStatus.setText(message);
     }
 
-    protected void setStatus(CharSequence message) {
-        setStatus(message, 60);
+    protected void setTechnicalStatus(CharSequence message) {
+        setTechnicalStatus(message, 60);
     }
 
-    protected void setStatus(CharSequence message, int duration) {
-        internalSetStatus(Objects.firstNonNull(message, ""));
+    protected void setTechnicalStatus(CharSequence message, int duration) {
+        internalSetTechnicalStatus(Objects.firstNonNull(message, ""));
         new ClearStatusTask().execute(duration);
     }
 
-    protected void setStatusError(CharSequence error) {
+    protected void setTechnicalStatusError(CharSequence error) {
         if (error != null) {
             SpannableString spannable = new SpannableString(error);
             colorize(spannable, getResources().getColor(R.color.error));
-            setStatus(spannable, 60);
+            setTechnicalStatus(spannable, 60);
         }
     }
 
-    protected void clearStatus() {
+    protected void clearTechnicalStatus() {
         if (lastUpdate == null) {
             lastUpdate = getLastUpdate();
         }
@@ -300,7 +305,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
             }
             status += MhDlaNotifierUtils.formatHour(lastUpdate);
         }
-        internalSetStatus(status);
+        internalSetTechnicalStatus(status);
     }
 
     protected void pushTrollToUI(Troll troll) {
@@ -316,6 +321,17 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         this.numero.setText("N° " + troll.id);
 
         this.race.setText(String.format("%s (%d)", troll.race, troll.nival));
+
+        if (troll.pvVariation < 0) {
+            String messageFormat = getText(R.string.pv_loss_title).toString();
+            String message = String.format(messageFormat, Math.abs(troll.pvVariation));
+            SpannableString pvVariationSpannable = new SpannableString(message);
+            int pvWarnColor = getResources().getColor(R.color.pv_warn);
+            colorize(pvVariationSpannable, pvWarnColor);
+            this.trollInfo.setText(pvVariationSpannable);
+        }
+//        this.trollStatus.setText("[Englué]");
+
 
         String kdString = String.format("%d / %d", troll.nbKills, troll.nbMorts);
         int kdStringLength = kdString.length();
@@ -490,7 +506,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
         @Override
         protected void onPostExecute(Integer duration) {
-            clearStatus();
+            clearTechnicalStatus();
         }
     }
 

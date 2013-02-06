@@ -46,6 +46,7 @@ public enum PublicScriptProperties {
     POS_Y,
     POS_N,
     PV,
+    PV_VARIATION,
     PV_MAX,
     FATIGUE,
     PA_RESTANT,

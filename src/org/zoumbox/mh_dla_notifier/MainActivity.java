@@ -53,7 +53,7 @@ public class MainActivity extends MhDlaNotifierUI {
 
             trollUpdated(troll);
 
-            clearStatus();
+            clearTechnicalStatus();
 
             if (troll.updateRequestType.needUpdate()) {
 //                showToast("Mise à jour");
@@ -87,7 +87,7 @@ public class MainActivity extends MhDlaNotifierUI {
 
     @Override
     protected void startUpdate(UpdateRequestType updateType, String message) {
-        setStatus(message);
+        setTechnicalStatus(message);
         new UpdateTrollTask().execute(updateType);
     }
 
@@ -96,7 +96,7 @@ public class MainActivity extends MhDlaNotifierUI {
     }
 
     protected void updateSuccess() {
-        clearStatus();
+        clearTechnicalStatus();
     }
 
     protected void updateFailure(MhDlaException exception) {
@@ -128,7 +128,7 @@ public class MainActivity extends MhDlaNotifierUI {
         } else {
             throw new RuntimeException("Unexpected exception", exception);
         }
-        setStatusError(error);
+        setTechnicalStatusError(error);
     }
 
     protected void trollUpdated(Troll troll) {

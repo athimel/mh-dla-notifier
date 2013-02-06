@@ -75,6 +75,7 @@ import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.POS_X;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.POS_Y;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.PV;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.PV_MAX;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.PV_VARIATION;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.RACE;
 
 /**
@@ -143,6 +144,7 @@ public class ProfileProxy {
         result.nival = Integer.parseInt(properties.get(NIVAL));
 
         result.pv = Integer.parseInt(properties.get(PV));
+        result.pvVariation = Integer.parseInt(properties.get(PV_VARIATION));
         result.pvMaxBase = Integer.parseInt(properties.get(PV_MAX));
         result.fatigue = Integer.parseInt(properties.get(FATIGUE));
 
@@ -289,10 +291,14 @@ public class ProfileProxy {
         String lastUpdate = preferences.getString(LAST_UPDATE.name(), null);
         result.put(LAST_UPDATE, lastUpdate);
 
+        String pvVariation = preferences.getString(PV_VARIATION.name(), "0");
+        result.put(PV_VARIATION, pvVariation);
+
         for (PublicScriptProperties property : requestedProperties) {
             String value = preferences.getString(property.name(), null);
             result.put(property, value);
         }
+
         return result;
     }
 
@@ -301,9 +307,20 @@ public class ProfileProxy {
         for (Map.Entry<String, String> prop : propertiesFetched.entrySet()) {
             String key = prop.getKey();
             String value = prop.getValue();
+
+            checkForPvLoss(preferences, editor, key, value);
+
             editor.putString(key, value);
         }
         editor.commit();
+    }
+
+    protected static void checkForPvLoss(SharedPreferences preferences, SharedPreferences.Editor editor, String key, String value) {
+        if (key.equals(PublicScriptProperties.PV.name())) {
+            int actualPV = preferences.getInt(PublicScriptProperties.PV.name(), -1);
+            int newPV = Integer.parseInt(value);
+            editor.putInt(PublicScriptProperties.PV_VARIATION.name(), newPV - actualPV);
+        }
     }
 
     public static String loadLogin(Context context) {

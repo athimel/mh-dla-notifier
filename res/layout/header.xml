@@ -42,6 +42,11 @@
                   android:layout_width="fill_parent"
                   android:gravity="center_horizontal"
                   style="@style/Name"/>
+        <TextView android:id="@+id/troll_status"
+                  android:layout_height="wrap_content"
+                  android:layout_width="fill_parent"
+                  android:gravity="center_horizontal"
+                  style="@style/TrollStatus"/>
 
         <!-- Numéro -->
         <TextView android:id="@+id/number"
@@ -65,7 +70,12 @@
                   style="@style/Info"/>
 
         <!-- Zone de notif-->
-        <TextView android:id="@+id/status"
+        <TextView android:id="@+id/troll_info"
+                  android:layout_height="wrap_content"
+                  android:layout_width="fill_parent"
+                  android:gravity="center_horizontal"
+                  style="@style/TrollInfo"/>
+        <TextView android:id="@+id/technical_status"
                   android:layout_height="wrap_content"
                   android:layout_width="fill_parent"
                   android:gravity="center_horizontal"

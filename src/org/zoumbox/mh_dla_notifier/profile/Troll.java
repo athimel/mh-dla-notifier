@@ -43,7 +43,7 @@ public class Troll {
     public String id, nom;
     public Race race;
     public int nival;
-    public int pv, pvMaxBase;
+    public int pv, pvMaxBase, pvVariation;
     public int fatigue;
     public int posX, posY, posN;
     public boolean camou, invisible, intangible;
