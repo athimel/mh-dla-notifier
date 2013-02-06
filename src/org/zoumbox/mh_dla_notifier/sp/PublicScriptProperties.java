@@ -33,7 +33,7 @@ public enum PublicScriptProperties {
     NOM,
     RACE,
     NIVAL,
-    //    properties.put("dateInscription", PublicScript.ProfilPublic2);
+    DATE_INSCRIPTION, // 2011-01-21 14:07:48
 //    properties.put("email", PublicScript.ProfilPublic2);
     BLASON,
     //    properties.put("nbMouches", PublicScript.ProfilPublic2);
@@ -57,6 +57,9 @@ public enum PublicScriptProperties {
     CAMOU,
     INVISIBLE,
     INTANGIBLE,
+    IMMOBILE,
+    A_TERRE,
+    EN_COURSE,
 
     CARACT,
 

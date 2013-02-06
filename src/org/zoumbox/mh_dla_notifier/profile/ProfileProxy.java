@@ -54,13 +54,17 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.A_TERRE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.BLASON;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.CAMOU;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.CARACT;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.DATE_INSCRIPTION;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.DLA;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.DUREE_DU_TOUR;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.EN_COURSE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.FATIGUE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.GUILDE;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.IMMOBILE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.INTANGIBLE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.INVISIBLE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.LAST_UPDATE;
@@ -142,6 +146,7 @@ public class ProfileProxy {
         result.nom = properties.get(NOM);
         result.race = Race.valueOf(properties.get(RACE));
         result.nival = Integer.parseInt(properties.get(NIVAL));
+        result.dateInscription = MhDlaNotifierUtils.parseDate(properties.get(DATE_INSCRIPTION));
 
         result.pv = Integer.parseInt(properties.get(PV));
         result.pvVariation = Integer.parseInt(properties.get(PV_VARIATION));
@@ -155,6 +160,9 @@ public class ProfileProxy {
         result.camou = "1".equals(properties.get(CAMOU));
         result.invisible = "1".equals(properties.get(INVISIBLE));
         result.intangible = "1".equals(properties.get(INTANGIBLE));
+        result.immobile = "1".equals(properties.get(IMMOBILE));
+        result.aTerre = "1".equals(properties.get(A_TERRE));
+        result.enCourse = "1".equals(properties.get(EN_COURSE));
 
         result.dureeDuTour = Integer.parseInt(properties.get(DUREE_DU_TOUR));
         result.dla = MhDlaNotifierUtils.parseDate(properties.get(DLA));

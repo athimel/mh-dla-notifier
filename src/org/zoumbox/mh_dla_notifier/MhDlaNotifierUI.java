@@ -45,15 +45,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.Race;
 import org.zoumbox.mh_dla_notifier.profile.Troll;
 import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Activité principale
@@ -329,9 +333,27 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
             int pvWarnColor = getResources().getColor(R.color.pv_warn);
             colorize(pvVariationSpannable, pvWarnColor);
             this.trollInfo.setText(pvVariationSpannable);
+        } else {
+            if (troll.dateInscription != null) {
+                Calendar now = Calendar.getInstance();
+                Calendar inscription = Calendar.getInstance();
+                inscription.setTime(troll.dateInscription);
+                if (now.get(Calendar.MONTH) == inscription.get(Calendar.MONTH) && now.get(Calendar.DAY_OF_MONTH) == inscription.get(Calendar.DAY_OF_MONTH)) {
+                    this.trollInfo.setText("Joyeux anniversaire ;)");
+                }
+            }
         }
-//        this.trollStatus.setText("[Englué]");
 
+        Set<String> statuses = Sets.newLinkedHashSet();
+        if (troll.aTerre) { statuses.add("[À terre]"); }
+        if (troll.camou) { statuses.add("[Camou]"); }
+        if (troll.invisible) { statuses.add("[Invi]"); }
+        if (troll.intangible) { statuses.add("[Intangible]"); }
+        if (troll.immobile) { statuses.add("[Glué]"); }
+        if (troll.enCourse) { statuses.add("[Course]"); }
+
+        String status = Joiner.on(" ").join(statuses);
+        this.trollStatus.setText(status);
 
         String kdString = String.format("%d / %d", troll.nbKills, troll.nbMorts);
         int kdStringLength = kdString.length();
