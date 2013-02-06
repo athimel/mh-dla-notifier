@@ -317,9 +317,9 @@ public class ProfileProxy {
 
     protected static void checkForPvLoss(SharedPreferences preferences, SharedPreferences.Editor editor, String key, String value) {
         if (key.equals(PublicScriptProperties.PV.name())) {
-            int actualPV = preferences.getInt(PublicScriptProperties.PV.name(), -1);
+            int actualPV = Integer.parseInt(preferences.getString(PublicScriptProperties.PV.name(), "-1"));
             int newPV = Integer.parseInt(value);
-            editor.putInt(PublicScriptProperties.PV_VARIATION.name(), newPV - actualPV);
+            editor.putString(PublicScriptProperties.PV_VARIATION.name(), Integer.toString(newPV - actualPV));
         }
     }
 
