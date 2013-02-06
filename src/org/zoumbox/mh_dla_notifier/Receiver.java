@@ -146,6 +146,11 @@ public class Receiver extends BroadcastReceiver {
         }
     }
 
+    enum NotificationType {
+        DLA,
+        PV_LOSS
+    }
+
     protected void notifyCurrentDlaAboutToExpire(Context context, Date dla, Integer pa, PreferencesHolder preferences) {
         CharSequence notifTitle = context.getText(R.string.current_dla_expiring_title);
         if (pa != null && pa == 0) {
@@ -156,7 +161,7 @@ public class Receiver extends BroadcastReceiver {
 
         boolean vibrate = shouldVibrate(context, preferences);
 
-        displayNotification(context, notifTitle, notifText, vibrate);
+        displayNotification(context, NotificationType.DLA, notifTitle, notifText, vibrate);
     }
 
     protected void notifyNextDlaAboutToExpire(Context context, Date dla, PreferencesHolder preferences) {
@@ -166,7 +171,7 @@ public class Receiver extends BroadcastReceiver {
 
         boolean vibrate = shouldVibrate(context, preferences);
 
-        displayNotification(context, notifTitle, notifText, vibrate);
+        displayNotification(context, NotificationType.DLA, notifTitle, notifText, vibrate);
     }
 
     protected void notifyPvLoss(Context context, int pvLoss, int pv, PreferencesHolder preferences) {
@@ -177,10 +182,10 @@ public class Receiver extends BroadcastReceiver {
 
         boolean vibrate = shouldVibrate(context, preferences);
 
-        displayNotification(context, notifTitle, notifText, vibrate);
+        displayNotification(context, NotificationType.PV_LOSS, notifTitle, notifText, vibrate);
     }
 
-    protected void displayNotification(Context context, CharSequence title, CharSequence text, boolean vibrate) {
+    protected void displayNotification(Context context, NotificationType type, CharSequence title, CharSequence text, boolean vibrate) {
         long now = System.currentTimeMillis();
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -198,7 +203,7 @@ public class Receiver extends BroadcastReceiver {
         // Set the info for the views that show in the notification panel.
         notification.setLatestEventInfo(context, title, text, contentIntent);
 
-        notificationManager.notify(0, notification);
+        notificationManager.notify(type.name().hashCode(), notification);
     }
 
     protected static Map<AlarmType, Date> getAlarms(Troll troll, int notificationDelay) {
