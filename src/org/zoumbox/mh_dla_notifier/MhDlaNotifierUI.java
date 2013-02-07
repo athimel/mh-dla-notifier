@@ -349,7 +349,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         if (troll.camou) { statuses.add("[Camou]"); }
         if (troll.invisible) { statuses.add("[Invi]"); }
         if (troll.intangible) { statuses.add("[Intangible]"); }
-        if (troll.immobile) { statuses.add("[Glué]"); }
+        if (troll.immobile) { statuses.add("[Englué]"); }
         if (troll.enCourse) { statuses.add("[Course]"); }
 
         String status = Joiner.on(" ").join(statuses);

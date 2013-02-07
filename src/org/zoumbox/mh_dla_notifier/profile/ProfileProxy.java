@@ -135,10 +135,11 @@ public class ProfileProxy {
 
         Troll result = new Troll();
 
-        List<PublicScriptProperties> requestedProperties = Lists.newArrayList(NOM, RACE, NIVAL, PV, PV_MAX, FATIGUE, POS_X, POS_Y, POS_N,
-                CAMOU, INVISIBLE, INTANGIBLE, DUREE_DU_TOUR,
-                DLA, PA_RESTANT, BLASON, NB_KILLS, NB_MORTS, GUILDE,
-                CARACT);
+        List<PublicScriptProperties> requestedProperties = Lists.newArrayList(NOM, RACE, NIVAL,
+                BLASON, NB_KILLS, NB_MORTS, GUILDE, CARACT,
+                PV, PV_MAX, FATIGUE, POS_X, POS_Y, POS_N,
+                DUREE_DU_TOUR, DLA, PA_RESTANT,
+                CAMOU, INVISIBLE, INTANGIBLE, IMMOBILE, A_TERRE, EN_COURSE);
         Map<PublicScriptProperties, String> properties = ProfileProxy.fetchProperties(context, updateRequest, requestedProperties);
 
         result.id = getTrollNumber(context);
