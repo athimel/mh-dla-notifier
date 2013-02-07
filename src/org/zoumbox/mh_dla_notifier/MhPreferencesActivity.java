@@ -50,6 +50,19 @@ public class MhPreferencesActivity extends PreferenceActivity implements SharedP
             return result;
         }
     };
+
+    protected static final Function<Context, String> GET_NOTIFY_ON_PV_LOSS_SUMMARY = new Function<Context, String>() {
+        @Override
+        public String apply(Context context) {
+            PreferencesHolder preferences = PreferencesHolder.load(context);
+            String result = context.getText(R.string.boolean_false).toString();
+            if (preferences.notifyOnPvLoss) {
+                result = context.getText(R.string.boolean_true).toString();
+            }
+            return result;
+        }
+    };
+
     protected static final Function<Context, String> GET_SILENT_NOTIF_SUMMARY = new Function<Context, String>() {
         @Override
         public String apply(Context context) {
@@ -72,6 +85,7 @@ public class MhPreferencesActivity extends PreferenceActivity implements SharedP
             return result;
         }
     };
+
     protected static final Function<Context, String> GET_NOTIF_DELAY_SUMMARY = new Function<Context, String>() {
         @Override
         public String apply(Context context) {
@@ -81,13 +95,14 @@ public class MhPreferencesActivity extends PreferenceActivity implements SharedP
             return result;
         }
     };
+
     protected static final Function<Context, String> GET_USE_SMARTPHONE_SUMMARY = new Function<Context, String>() {
         @Override
         public String apply(Context context) {
             PreferencesHolder preferences = PreferencesHolder.load(context);
-            String result = context.getText(R.string.prefs_use_smartphone_interface_false).toString();
+            String result = context.getText(R.string.boolean_false).toString();
             if (preferences.useSmartphoneInterface) {
-                result = context.getText(R.string.prefs_use_smartphone_interface_true).toString();
+                result = context.getText(R.string.boolean_true).toString();
             }
             return result;
         }
@@ -100,6 +115,7 @@ public class MhPreferencesActivity extends PreferenceActivity implements SharedP
         preferencesFunctions.put(PreferencesHolder.PREFS_SILENT_NOTIFICATION, GET_SILENT_NOTIF_SUMMARY);
         preferencesFunctions.put(PreferencesHolder.PREFS_NOTIFICATION_DELAY, GET_NOTIF_DELAY_SUMMARY);
         preferencesFunctions.put(PreferencesHolder.PREFS_SMARTPHONE_INTERFACE, GET_USE_SMARTPHONE_SUMMARY);
+        preferencesFunctions.put(PreferencesHolder.PREFS_NOTIFY_ON_PV_LOSS, GET_NOTIFY_ON_PV_LOSS_SUMMARY);
     }
 
     @Override

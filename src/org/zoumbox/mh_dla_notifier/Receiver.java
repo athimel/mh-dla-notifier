@@ -120,7 +120,7 @@ public class Receiver extends BroadcastReceiver {
                 Log.i(TAG, String.format("No need to notify for NDLA=%s", nextDla));
             }
 
-            if (troll.pvVariation < 0) {
+            if (troll.pvVariation < 0 && preferences.notifyOnPvLoss) {
                 int pvLoss = Math.abs(troll.pvVariation);
                 Log.i(TAG, String.format("Troll lost %d PV", pvLoss));
                 notifyPvLoss(context, pvLoss, troll.pv, preferences);

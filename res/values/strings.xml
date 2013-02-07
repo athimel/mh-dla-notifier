@@ -45,6 +45,9 @@
     <string name="close">Fermer</string>
     <string name="save">Enregistrer</string>
 
+    <string name="boolean_true">Oui</string>
+    <string name="boolean_false">Non</string>
+
     <string name="play">Jouer votre Trõll</string>
 
     <string name="troll">Trõll</string>
@@ -82,6 +85,8 @@
     <string name="prefs_notify_without_pa_true">Vous serez notifié même si vous n\'avez plus de PA</string>
     <string name="prefs_notify_without_pa_false">Vous ne serez pas notifié si vous n\'avez plus de PA</string>
 
+    <string name="prefs_notify_on_pv_loss">Notifier les pertes de PV ?</string>
+
     <string name="prefs_silent_notification">Notification silencieuse</string>
     <string name="prefs_silent_notification_always">Toujours silencieux</string>
     <string name="prefs_silent_notification_when_silent">Uniquement sur vibreur</string>
@@ -92,8 +97,6 @@
     <string name="prefs_notification_delay_summary" formatted="false">%d minutes avant la DLA</string>
 
     <string name="prefs_use_smartphone_interface">Interface smartphone ?</string>
-    <string name="prefs_use_smartphone_interface_true">Oui</string>
-    <string name="prefs_use_smartphone_interface_false">Non</string>
 
     <string name="legacy_password_title">Nouvelle sécurité</string>
     <string name="legacy_password_message">Avant le 1er mars 2013, vous allez devoir utiliser un mot de passe "spécifique" fournit par MountyHall. Voulez-vous entrer ce mot de passe maintenant ?</string>

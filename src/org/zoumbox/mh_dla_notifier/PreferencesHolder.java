@@ -28,7 +28,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -38,6 +37,7 @@ public class PreferencesHolder {
     public static final String PREFS_NOTIFICATION_DELAY = "prefs.notification_delay";
     public static final String PREFS_SILENT_NOTIFICATION = "prefs.silent_notification";
     public static final String PREFS_NOTIFY_WITHOUT_PA = "prefs.notify_without_pa";
+    public static final String PREFS_NOTIFY_ON_PV_LOSS = "prefs.notify_on_pv_loss";
 
     public static final String PREFS_SMARTPHONE_INTERFACE = "prefs.use_smartphone_interface";
 
@@ -45,6 +45,7 @@ public class PreferencesHolder {
 
     public int notificationDelay;
     public boolean notifyWithoutPA;
+    public boolean notifyOnPvLoss;
     public SilentNotification silentNotification;
 
     public boolean useSmartphoneInterface;
@@ -63,7 +64,9 @@ public class PreferencesHolder {
         String silentNotificationValue = prefs.getString(PREFS_SILENT_NOTIFICATION, SilentNotification.BY_NIGHT.name());
         result.silentNotification = SilentNotification.valueOf(silentNotificationValue);
 
-        result.useSmartphoneInterface = prefs.getBoolean(PREFS_SMARTPHONE_INTERFACE, true);
+        result.useSmartphoneInterface = prefs.getBoolean(PREFS_SMARTPHONE_INTERFACE, Constants.DEFAULT_USE_SMARTPHONE_INTERFACE);
+
+        result.notifyOnPvLoss = prefs.getBoolean(PREFS_NOTIFY_ON_PV_LOSS, Constants.DEFAULT_NOTIFI_ON_PV_LOSS);
 
         result.skipLegacyPasswordCheckUntil = prefs.getLong(SKIP_LEGACY_PASSWORD_CHECK_UNTIL, 0l);
 

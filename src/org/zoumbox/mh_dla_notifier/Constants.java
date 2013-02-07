@@ -39,6 +39,8 @@ public class Constants {
 
     public static final int DEFAULT_NOTIFICATION_DELAY = 10;
     public static final boolean DEFAULT_NOTIFY_WITHOUT_PA = true;
+    public static final boolean DEFAULT_USE_SMARTPHONE_INTERFACE = true;
+    public static final boolean DEFAULT_NOTIFI_ON_PV_LOSS = true;
 
     public static final int PV_WARM_THRESHOLD = 66;
     public static final int PV_ALARM_THRESHOLD = 33;
