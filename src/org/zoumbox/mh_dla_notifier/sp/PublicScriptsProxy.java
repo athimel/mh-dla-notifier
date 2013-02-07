@@ -51,7 +51,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -59,9 +58,8 @@ import java.util.regex.Pattern;
 public class PublicScriptsProxy {
 
     private static final String TAG = Constants.LOG_PREFIX + PublicScriptsProxy.class.getSimpleName();
-    protected static final Pattern LEGACY_PASSWORD_PATTERN = Pattern.compile("[0-9a-fA-F]{32}");
 
-    public static PublicScriptResponse doHttpGET(String url) throws NetworkUnavailableException {
+    public static PublicScriptResponse doHttpGET(String url) throws NetworkUnavailableException, PublicScriptException {
 
         if (Constants.mock) {
             return PublicScriptsProxyMock.doMockHttpGET(url);
@@ -88,6 +86,7 @@ public class PublicScriptsProxy {
             throw new NetworkUnavailableException(uhe);
         } catch (Exception eee) {
             Log.e(TAG, "Exception", eee);
+            throw new PublicScriptException(eee);
         } finally {
             if (in != null) {
                 try {
@@ -127,14 +126,18 @@ public class PublicScriptsProxy {
         cursor.close();
         database.close();
 
-        Log.i(TAG, String.format("Quota for category %s (script=%s) and troll=%s since '%s' is: %d", script.category, script, trollNumber, sinceDate, result));
+        String format = "Quota for category %s (script=%s) and troll=%s since '%s' is: %d";
+        String message = String.format(format, script.category, script, trollNumber, sinceDate, result);
+        Log.i(TAG, message);
 
         return result;
     }
 
     protected static void saveFetch(Context context, PublicScript script, String trollNumber) {
 
-        Log.i(TAG, String.format("Saving fetch for category %s (script=%s) and troll=%s", script.category, script, trollNumber));
+        String format = "Saving fetch for category %s (script=%s) and troll=%s";
+        String message = String.format(format, script.category, script, trollNumber);
+        Log.i(TAG, message);
 
         MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
         SQLiteDatabase database = helper.getWritableDatabase();
@@ -166,21 +169,27 @@ public class PublicScriptsProxy {
         cursor.close();
         database.close();
 
-        Log.i(TAG, String.format("Last update for category %s (script=%s) and troll=%s is: '%s'", script.category, script, trollNumber, result));
+        String format = "Last update for category %s (script=%s) and troll=%s is: '%s'";
+        String message = String.format(format, script.category, script, trollNumber, result);
+        Log.i(TAG, message);
 
         return result;
     }
 
 
 
-    public static Map<String, String> fetch(Context context, PublicScript script, String trollNumber, String trollPassword) throws QuotaExceededException, PublicScriptException, NetworkUnavailableException {
+    public static Map<String, String> fetch(Context context, PublicScript script,
+                                            String trollNumber, String trollPassword)
+            throws QuotaExceededException, PublicScriptException, NetworkUnavailableException {
 
         Log.i(TAG, String.format("Fetching in script=%s and troll=%s ", script, trollNumber));
         ScriptCategory category = script.category;
         int requestCount = computeRequestCount(context, script, trollNumber);
 //        if (requestCount >= category.quota) {
         if (requestCount >= (category.quota / 2)) {
-            Log.w(TAG, String.format("Quota is exceeded for category %s (script=%s) and troll=%s: %d§%d", category, script, trollNumber, requestCount, category.quota));
+            String format = "Quota is exceeded for category %s (script=%s) and troll=%s: %d§%d";
+            String message = String.format(format, category, script, trollNumber, requestCount, category.quota);
+            Log.w(TAG, message);
             throw new QuotaExceededException(category, requestCount);
         }
 
@@ -248,7 +257,8 @@ public class PublicScriptsProxy {
         return result;
     }
 
-    public static Map<String, String> fetch(Context context, PublicScript script, Pair<String, String> idAndPassword) throws PublicScriptException, QuotaExceededException, NetworkUnavailableException {
+    public static Map<String, String> fetch(Context context, PublicScript script, Pair<String, String> idAndPassword)
+            throws PublicScriptException, QuotaExceededException, NetworkUnavailableException {
         String trollNumber = idAndPassword.left();
         String trollPassword = idAndPassword.right();
         return fetch(context, script, trollNumber, trollPassword);
