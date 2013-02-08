@@ -34,6 +34,7 @@ import android.media.AudioManager;
 import android.util.Log;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
@@ -70,14 +71,20 @@ public class Receiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        String type = intent.getStringExtra("type");
-        AlarmType alarmType = AlarmType.valueOf(type);
+        String intentAction = intent.getAction();
+        Log.w(TAG, getClass().getName() + "#onReceive action=" + intentAction);
 
-        Log.i(TAG, "Alarm received : " + alarmType);
+        boolean startup = "android.intent.action.BOOT_COMPLETED".equals(intentAction);
+        if (startup) {
+            Log.i(TAG, "Device just started, doing initial update");
+        } else {
+            String type = intent.getStringExtra("type");
+            Log.i(TAG, "Wakeup received : " + type);
+        }
 
         Troll troll;
         try {
-            troll = ProfileProxy.refreshDLA(context);
+            troll = ProfileProxy.refreshDLA(context, startup);
         } catch (MissingLoginPasswordException mde) {
             Intent registerIntent = new Intent(context, RegisterActivity.class);
             context.startActivity(registerIntent);

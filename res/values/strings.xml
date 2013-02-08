@@ -101,7 +101,7 @@
     <string name="legacy_password_title">Nouvelle sécurité</string>
     <string name="legacy_password_message">Avant le 1er mars 2013, vous allez devoir utiliser un mot de passe "spécifique" fournit par MountyHall. Voulez-vous entrer ce mot de passe maintenant ?</string>
 
-    <string name="password_help_title">Aide</string>
+    <string name="password_help_title">Bienvenue !</string>
     <string name="password_help_message">Pour connaître votre mot de passe spécifique, connectez-vous à MountyHall, allez dans Options » Options Trõll » Générer un code d\'accès spécifique.</string>
     <string name="password_help_warning">ATTENTION: N\'entrez pas votre mot de passe MountyHall ! Si vous entrez votre mot de passe MountyHall, l\'application ne fonctionnera plus à partir du 1er mars 2013</string>
 

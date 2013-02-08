@@ -34,6 +34,7 @@ import java.util.Calendar;
  */
 public class PreferencesHolder {
 
+    public static final String PREFS_ALLOW_AUTOMATIC_UPDATES = "prefs.allow_automatic_updates";
     public static final String PREFS_NOTIFICATION_DELAY = "prefs.notification_delay";
     public static final String PREFS_SILENT_NOTIFICATION = "prefs.silent_notification";
     public static final String PREFS_NOTIFY_WITHOUT_PA = "prefs.notify_without_pa";
@@ -49,6 +50,8 @@ public class PreferencesHolder {
     public SilentNotification silentNotification;
 
     public boolean useSmartphoneInterface;
+
+    public boolean enableAutomaticUpdates;
 
     public long skipLegacyPasswordCheckUntil;
 
@@ -66,7 +69,9 @@ public class PreferencesHolder {
 
         result.useSmartphoneInterface = prefs.getBoolean(PREFS_SMARTPHONE_INTERFACE, Constants.DEFAULT_USE_SMARTPHONE_INTERFACE);
 
-        result.notifyOnPvLoss = prefs.getBoolean(PREFS_NOTIFY_ON_PV_LOSS, Constants.DEFAULT_NOTIFI_ON_PV_LOSS);
+        result.notifyOnPvLoss = prefs.getBoolean(PREFS_NOTIFY_ON_PV_LOSS, Constants.DEFAULT_NOTIFY_ON_PV_LOSS);
+
+        result.enableAutomaticUpdates = prefs.getBoolean(PREFS_ALLOW_AUTOMATIC_UPDATES, Constants.DEFAULT_ALLOW_AUTOMATIC_UPDATES);
 
         result.skipLegacyPasswordCheckUntil = prefs.getLong(SKIP_LEGACY_PASSWORD_CHECK_UNTIL, 0l);
 

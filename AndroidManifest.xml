@@ -38,7 +38,13 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="Receiver"/>
+        <receiver android:name="Receiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <category android:name="android.intent.category.HOME"/>
+            </intent-filter>
+        </receiver>
+
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.VIBRATE"/>

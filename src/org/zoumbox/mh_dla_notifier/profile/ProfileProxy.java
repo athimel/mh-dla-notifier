@@ -37,6 +37,7 @@ import com.google.common.collect.Sets;
 import org.zoumbox.mh_dla_notifier.Constants;
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierUtils;
 import org.zoumbox.mh_dla_notifier.Pair;
+import org.zoumbox.mh_dla_notifier.PreferencesHolder;
 import org.zoumbox.mh_dla_notifier.sp.NetworkUnavailableException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScript;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
@@ -375,23 +376,43 @@ public class ProfileProxy {
         return result;
     }
 
-    public static Troll refreshDLA(Context context) throws MissingLoginPasswordException {
+    public static Troll refreshDLA(Context context, boolean onStartup) throws MissingLoginPasswordException {
 
-        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
+        PreferencesHolder preferences = PreferencesHolder.load(context);
 
-        Pair<String, String> idAndPassword = loadIdPassword(preferences);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, 0);
 
-        Log.i(TAG, "Request for Profil2 fetch for refreshDLA()");
-        // Force Profil2 fetch
-        try {
-            Map<String, String> propertiesFetched = PublicScriptsProxy.fetch(context, PublicScript.Profil2, idAndPassword);
-            saveProperties(preferences, propertiesFetched);
-        } catch (QuotaExceededException qee) {
-            Log.w(TAG, "Quota exceeded, ignoring update", qee);
-        } catch (NetworkUnavailableException qee) {
-            Log.w(TAG, "Network failure, ignoring update", qee);
-        } catch (PublicScriptException pse) {
-            Log.w(TAG, "Script exception, ignoring update", pse);
+        boolean performUpdate = preferences.enableAutomaticUpdates;
+
+        if (performUpdate && onStartup) {
+
+            // Was updated in the 2 last hours ?
+            String lastUpdate = sharedPreferences.getString(LAST_UPDATE.name(), null);
+            if (!Strings.isNullOrEmpty(lastUpdate)) {
+                Date date = MhDlaNotifierUtils.parseDate(lastUpdate);
+                Log.i(TAG, "Previous update: " + date);
+                long elapsed = System.currentTimeMillis() - date.getTime();
+                performUpdate = elapsed > (1000l * 60l * 60l * 2l); // 2 hours
+                Log.i(TAG, "Will perform update: " + performUpdate);
+            }
+        }
+
+        if (performUpdate) {
+
+            Pair<String, String> idAndPassword = loadIdPassword(sharedPreferences);
+
+            Log.i(TAG, "Request for Profil2 fetch for refreshDLA()");
+            // Force Profil2 fetch
+            try {
+                Map<String, String> propertiesFetched = PublicScriptsProxy.fetch(context, PublicScript.Profil2, idAndPassword);
+                saveProperties(sharedPreferences, propertiesFetched);
+            } catch (QuotaExceededException qee) {
+                Log.w(TAG, "Quota exceeded, ignoring update", qee);
+            } catch (NetworkUnavailableException qee) {
+                Log.w(TAG, "Network failure, ignoring update", qee);
+            } catch (PublicScriptException pse) {
+                Log.w(TAG, "Script exception, ignoring update", pse);
+            }
         }
 
         // Get updated (by the previous fetch) troll info
