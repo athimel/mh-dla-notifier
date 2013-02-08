@@ -30,7 +30,7 @@ import android.net.Uri;
  */
 public class Constants {
 
-    public static final boolean mock = false;
+    public static final String MOCK_TROLL_ID = "123456789";
 
     public static final String LOG_PREFIX = "MhDlaNotifier-";
 

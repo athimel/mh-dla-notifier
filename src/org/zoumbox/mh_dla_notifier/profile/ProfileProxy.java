@@ -45,7 +45,6 @@ import org.zoumbox.mh_dla_notifier.sp.PublicScriptsProxy;
 import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
 import org.zoumbox.mh_dla_notifier.sp.ScriptCategory;
 
-import javax.annotation.Nullable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -68,6 +67,7 @@ import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.IMMOBILE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.INTANGIBLE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.INVISIBLE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.LAST_UPDATE;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.LEVITATION;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NB_KILLS;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NB_MORTS;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NEEDS_UPDATE;
@@ -97,6 +97,18 @@ public class ProfileProxy {
     protected static final Pattern NEW_PASSWORD_PATTERN = Pattern.compile("[0-9A-Z]{8}");
     protected static final Pattern LEGACY_PASSWORD_PATTERN = Pattern.compile("[0-9a-fA-F]{32}");
 
+    public static final Function<ScriptCategory, Integer> GET_USABLE_QUOTA = new Function<ScriptCategory, Integer>() {
+        @Override
+        public Integer apply(ScriptCategory input) {
+            if (input == null) {
+                return 1;
+            }
+            int dailyQuota = input.getQuota();
+            int result = dailyQuota / 3; //FIXME AThimel 29/03/2012 divide by 3 for the moment to avoid mistakes
+            return result;
+        }
+    };
+
     public static boolean shouldUpdate(Context context, PublicScript script, String trollNumber) {
         Date lastUpdate = PublicScriptsProxy.geLastUpdate(context, script, trollNumber);
         if (lastUpdate == null) {
@@ -111,18 +123,6 @@ public class ProfileProxy {
             return result;
         }
     }
-
-    public static final Function<ScriptCategory, Integer> GET_USABLE_QUOTA = new Function<ScriptCategory, Integer>() {
-        @Override
-        public Integer apply(@Nullable ScriptCategory input) {
-            if (input == null) {
-                return 1;
-            }
-            int dailyQuota = input.getQuota();
-            int result = dailyQuota / 3; //FIXME AThimel 29/03/2012 divide by 3 for the moment to avoid mistakes
-            return result;
-        }
-    };
 
     public static String getTrollNumber(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
@@ -139,7 +139,7 @@ public class ProfileProxy {
                 BLASON, NB_KILLS, NB_MORTS, GUILDE, CARACT,
                 PV, PV_MAX, FATIGUE, POS_X, POS_Y, POS_N,
                 DUREE_DU_TOUR, DLA, PA_RESTANT,
-                CAMOU, INVISIBLE, INTANGIBLE, IMMOBILE, A_TERRE, EN_COURSE);
+                CAMOU, INVISIBLE, INTANGIBLE, IMMOBILE, A_TERRE, EN_COURSE, LEVITATION);
         Map<PublicScriptProperties, String> properties = ProfileProxy.fetchProperties(context, updateRequest, requestedProperties);
 
         result.id = getTrollNumber(context);
@@ -164,6 +164,7 @@ public class ProfileProxy {
         result.immobile = "1".equals(properties.get(IMMOBILE));
         result.aTerre = "1".equals(properties.get(A_TERRE));
         result.enCourse = "1".equals(properties.get(EN_COURSE));
+        result.levitation = "1".equals(properties.get(LEVITATION));
 
         result.dureeDuTour = Integer.parseInt(properties.get(DUREE_DU_TOUR));
         result.dla = MhDlaNotifierUtils.parseDate(properties.get(DLA));
@@ -363,13 +364,6 @@ public class ProfileProxy {
     }
 
     protected static Pair<String, String> loadIdPassword(SharedPreferences preferences) throws MissingLoginPasswordException {
-
-        if (Constants.mock) {
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString(PROPERTY_TROLL_ID, "123456");
-            editor.putString(PROPERTY_TROLL_PASSWORD, "ab4f63f9ac65152575886860dde480a1");
-            editor.commit();
-        }
 
         final String trollNumber = preferences.getString(PROPERTY_TROLL_ID, null);
         String trollPassword = preferences.getString(PROPERTY_TROLL_PASSWORD, null);

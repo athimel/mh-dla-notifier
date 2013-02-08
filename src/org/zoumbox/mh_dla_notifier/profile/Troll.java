@@ -48,7 +48,7 @@ public class Troll {
     public int pv, pvMaxBase, pvVariation;
     public int fatigue;
     public int posX, posY, posN;
-    public boolean camou, invisible, intangible, immobile, aTerre, enCourse;
+    public boolean camou, invisible, intangible, immobile, aTerre, enCourse, levitation;
     public int dureeDuTour;
     public Date dla;
     public int pa;

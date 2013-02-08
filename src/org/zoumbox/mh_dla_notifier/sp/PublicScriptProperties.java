@@ -60,6 +60,7 @@ public enum PublicScriptProperties {
     IMMOBILE,
     A_TERRE,
     EN_COURSE,
+    LEVITATION,
 
     CARACT,
 

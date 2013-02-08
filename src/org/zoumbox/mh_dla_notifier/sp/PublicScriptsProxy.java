@@ -61,7 +61,7 @@ public class PublicScriptsProxy {
 
     public static PublicScriptResponse doHttpGET(String url) throws NetworkUnavailableException, PublicScriptException {
 
-        if (Constants.mock) {
+        if (url.contains("?Numero=" + Constants.MOCK_TROLL_ID)) {
             return PublicScriptsProxyMock.doMockHttpGET(url);
         }
 

@@ -26,7 +26,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="fill_parent"
-              android:layout_height="250px"
+              android:layout_height="160dp"
               android:orientation="horizontal"
               android:gravity="left">
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -84,8 +84,8 @@
     </LinearLayout>
     <ImageView android:id="@+id/blason"
                android:orientation="vertical"
-               android:layout_height="250px"
-               android:layout_width="250px"
+               android:layout_height="160dp"
+               android:layout_width="160dp"
                android:scaleType="fitXY"
                android:src="@drawable/loading"
             />
