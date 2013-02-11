@@ -42,6 +42,11 @@ public class PublicScriptException extends MhDlaException {
         super(cause);
     }
 
+    public PublicScriptException(PublicScriptException cause) {
+        super(cause);
+        this.spResult = cause.spResult;
+    }
+
     @Override
     public String getMessage() {
         String result;

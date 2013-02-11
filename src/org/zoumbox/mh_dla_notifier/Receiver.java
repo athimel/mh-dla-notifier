@@ -31,10 +31,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
-import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
@@ -72,19 +73,32 @@ public class Receiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         String intentAction = intent.getAction();
-        Log.w(TAG, getClass().getName() + "#onReceive action=" + intentAction);
+        Log.i(TAG, getClass().getName() + "#onReceive action=" + intentAction);
 
-        boolean startup = "android.intent.action.BOOT_COMPLETED".equals(intentAction);
-        if (startup) {
-            Log.i(TAG, "Device just started, doing initial update");
-        } else {
-            String type = intent.getStringExtra("type");
-            Log.i(TAG, "Wakeup received : " + type);
+        boolean connectivityChanged = ConnectivityManager.CONNECTIVITY_ACTION.equals(intentAction);
+        boolean justGotConnection = false;
+        if (connectivityChanged) {
+
+            ConnectivityManager cm =
+                    (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+            justGotConnection = activeNetwork != null && activeNetwork.isConnected();
+            Log.i(TAG, "Connectivity change. isConnected=" + justGotConnection);
+        }
+
+        String type = intent.getStringExtra("type");
+        Log.i(TAG, String.format("action=%s, type=%s", intentAction, type));
+
+        if (connectivityChanged && !justGotConnection) {
+            Log.i(TAG, "Just lost connectivity, nothing to do");
+            return;
         }
 
         Troll troll;
         try {
-            troll = ProfileProxy.refreshDLA(context, startup);
+            troll = ProfileProxy.refreshDLA(context, justGotConnection);
         } catch (MissingLoginPasswordException mde) {
             Intent registerIntent = new Intent(context, RegisterActivity.class);
             context.startActivity(registerIntent);
@@ -219,7 +233,7 @@ public class Receiver extends BroadcastReceiver {
         Date currentDla = troll.dla;
         Date nextDla = troll.getNextDla();
 
-        Log.i(TAG, String.format("Computing alarms for [DLA=%s] [NDLA=%s]", currentDla, nextDla));
+        Log.i(TAG, String.format("Computing wakeups for [DLA=%s] [NDLA=%s]", currentDla, nextDla));
 
         long millisecondsBetween = nextDla.getTime() - currentDla.getTime();
 
@@ -244,7 +258,7 @@ public class Receiver extends BroadcastReceiver {
         result.put(AlarmType.AFTER_NEXT_DLA, afterNextDla);
         result.put(AlarmType.DLA_EVEN_AFTER, MhDlaNotifierUtils.substractMinutes(dlaEvenAfter, notificationDelay));
 
-        Log.i(TAG, "Computed alarms: " + result);
+        Log.i(TAG, "Computed wakeups: " + result);
 
         return result;
     }
@@ -282,12 +296,13 @@ public class Receiver extends BroadcastReceiver {
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             alarmManager.set(AlarmManager.RTC_WAKEUP, alarmDate.getTime(), pendingIntent);
 
-            Log.i(TAG, String.format("Scheduled alarm [%s] at '%s'", type, alarmDate));
+            Log.i(TAG, String.format("Scheduled wakeup [%s] at '%s'", type, alarmDate));
             return true;
         } else {
-            Log.i(TAG, String.format("No alarm [%s] scheduled at '%s'", type, alarmDate));
+            Log.i(TAG, String.format("No wakeup [%s] scheduled at '%s'", type, alarmDate));
             return false;
         }
 
     }
+
 }

@@ -25,6 +25,7 @@ package org.zoumbox.mh_dla_notifier.profile;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.SystemClock;
 import android.util.Log;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -67,7 +68,8 @@ import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.GUILDE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.IMMOBILE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.INTANGIBLE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.INVISIBLE;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.LAST_UPDATE;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.LAST_UPDATE_RESULT;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.LAST_UPDATE_SUCCESS;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.LEVITATION;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NB_KILLS;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NB_MORTS;
@@ -132,16 +134,19 @@ public class ProfileProxy {
         return trollNumber;
     }
 
-    public static Troll fetchTroll(final Context context, UpdateRequestType updateRequest) throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException, NetworkUnavailableException {
+    public static Troll fetchTroll(final Context context, UpdateRequestType updateRequest)
+            throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException,
+            NetworkUnavailableException {
 
         Troll result = new Troll();
 
-        List<PublicScriptProperties> requestedProperties = Lists.newArrayList(NOM, RACE, NIVAL,
-                BLASON, NB_KILLS, NB_MORTS, GUILDE, CARACT,
+        List<PublicScriptProperties> requestedProperties = Lists.newArrayList(
+                NOM, RACE, NIVAL, GUILDE, CARACT, BLASON, NB_KILLS, NB_MORTS, DATE_INSCRIPTION,
                 PV, PV_MAX, FATIGUE, POS_X, POS_Y, POS_N,
                 DUREE_DU_TOUR, DLA, PA_RESTANT,
                 CAMOU, INVISIBLE, INTANGIBLE, IMMOBILE, A_TERRE, EN_COURSE, LEVITATION);
-        Map<PublicScriptProperties, String> properties = ProfileProxy.fetchProperties(context, updateRequest, requestedProperties);
+        Map<PublicScriptProperties, String> properties = fetchProperties(
+                context, updateRequest, requestedProperties);
 
         result.id = getTrollNumber(context);
 
@@ -226,8 +231,6 @@ public class ProfileProxy {
             }
         }
 
-        result.lastUpdate = MhDlaNotifierUtils.parseDate(properties.get(LAST_UPDATE));
-
         result.updateRequestType = UpdateRequestType.valueOf(properties.get(NEEDS_UPDATE));
 
         return result;
@@ -299,9 +302,6 @@ public class ProfileProxy {
         Log.i(TAG, "Background update needed ? " + backgroundUpdate);
         result.put(NEEDS_UPDATE, backgroundUpdate.name());
 
-        String lastUpdate = preferences.getString(LAST_UPDATE.name(), null);
-        result.put(LAST_UPDATE, lastUpdate);
-
         String pvVariation = preferences.getString(PV_VARIATION.name(), "0");
         result.put(PV_VARIATION, pvVariation);
 
@@ -311,6 +311,32 @@ public class ProfileProxy {
         }
 
         return result;
+    }
+
+    public static Date getLastUpdateSuccess(final Context context) {
+
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
+
+        Long lastUpdate = preferences.getLong(LAST_UPDATE_SUCCESS.name(), 0l);
+
+        Date result = null;
+        if (lastUpdate > 0l) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(lastUpdate);
+            result = calendar.getTime();
+        }
+        return result;
+
+    }
+
+    public static String getLastUpdateResult(final Context context) {
+
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
+
+        String result = preferences.getString(LAST_UPDATE_RESULT.name(), null);
+
+        return result;
+
     }
 
     protected static void saveProperties(SharedPreferences preferences, Map<String, String> propertiesFetched) {
@@ -376,28 +402,45 @@ public class ProfileProxy {
         return result;
     }
 
-    public static Troll refreshDLA(Context context, boolean onStartup) throws MissingLoginPasswordException {
+    public static Troll refreshDLA(Context context, boolean justGotConnection) throws MissingLoginPasswordException {
 
         PreferencesHolder preferences = PreferencesHolder.load(context);
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, 0);
-
         boolean performUpdate = preferences.enableAutomaticUpdates;
 
-        if (performUpdate && onStartup) {
+        // Just go the internet connection back. Update will be necessary if
+        //  - device restarted since last update and last update in more than 2 hours ago
+        //  - last update failed because of network error
+        if (performUpdate && justGotConnection) {
 
-            // Was updated in the 2 last hours ?
-            String lastUpdate = sharedPreferences.getString(LAST_UPDATE.name(), null);
-            if (!Strings.isNullOrEmpty(lastUpdate)) {
-                Date date = MhDlaNotifierUtils.parseDate(lastUpdate);
-                Log.i(TAG, "Previous update: " + date);
-                long elapsed = System.currentTimeMillis() - date.getTime();
-                performUpdate = elapsed > (1000l * 60l * 60l * 2l); // 2 hours
-                Log.i(TAG, "Will perform update: " + performUpdate);
+            boolean shouldUpdateBecauseOfRestart = false;
+            boolean shouldUpdateBecauseOfNetworkFailure = false;
+
+            // Check if the device restarted since last update
+            Date lastUpdateSuccess = getLastUpdateSuccess(context);
+            if (lastUpdateSuccess != null) {
+                Log.i(TAG, "Last update success date: " + lastUpdateSuccess);
+                long upTime = SystemClock.uptimeMillis();
+                Log.i(TAG, "Uptime: " + upTime + "ms ~= " + (upTime/60000) + "min");
+                long elapsed = System.currentTimeMillis() - lastUpdateSuccess.getTime();
+                shouldUpdateBecauseOfRestart = elapsed > upTime; // Device restarted since last update
+                Log.i(TAG, "shouldUpdateBecauseOfRestart: " + shouldUpdateBecauseOfRestart);
+                shouldUpdateBecauseOfRestart &= elapsed > (1000l * 60l * 60l * 2l); // 2 hours
+                Log.i(TAG, "shouldUpdateBecauseOfRestart (<=2hours): " + shouldUpdateBecauseOfRestart);
             }
+
+            String lastUpdateResult = getLastUpdateResult(context);
+            Log.i(TAG, "lastUpdateResult: " + lastUpdateResult);
+            shouldUpdateBecauseOfNetworkFailure = lastUpdateResult != null && lastUpdateResult.startsWith("NETWORK ERROR");
+            Log.i(TAG, "shouldUpdateBecauseOfNetworkFailure: " + shouldUpdateBecauseOfNetworkFailure);
+
+            performUpdate = shouldUpdateBecauseOfRestart || shouldUpdateBecauseOfNetworkFailure;
+            Log.i(TAG, "performUpdate: " + performUpdate);
         }
 
         if (performUpdate) {
+
+            SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, 0);
 
             Pair<String, String> idAndPassword = loadIdPassword(sharedPreferences);
 

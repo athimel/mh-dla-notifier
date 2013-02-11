@@ -36,6 +36,10 @@ public class NetworkUnavailableException extends MhDlaException {
         super(source);
     }
 
+    public NetworkUnavailableException(NetworkUnavailableException cause) {
+        super(cause);
+    }
+
     @Override
     public String getText() {
         return "Problème réseau";

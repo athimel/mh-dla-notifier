@@ -28,7 +28,9 @@ package org.zoumbox.mh_dla_notifier.sp;
  */
 public enum PublicScriptProperties {
     NEEDS_UPDATE,
-    LAST_UPDATE,
+    LAST_UPDATE_ATTEMPT,
+    LAST_UPDATE_SUCCESS,
+    LAST_UPDATE_RESULT,
 
     NOM,
     RACE,

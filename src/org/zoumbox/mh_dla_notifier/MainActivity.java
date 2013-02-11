@@ -74,15 +74,8 @@ public class MainActivity extends MhDlaNotifierUI {
 
     @Override
     protected Date getLastUpdate() {
-        Date lastUpdate = null;
-        try {
-            Troll troll = ProfileProxy.fetchTrollWithoutUpdate(this);
-            lastUpdate = troll.lastUpdate;
-        } catch (MissingLoginPasswordException mlpe) {
-            // do nothing except log
-            Log.w("Missing login/password during getLastUpdate", mlpe);
-        }
-        return lastUpdate;
+        Date result= ProfileProxy.getLastUpdateSuccess(this);
+        return result;
     }
 
     @Override

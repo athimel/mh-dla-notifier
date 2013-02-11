@@ -25,10 +25,12 @@ package org.zoumbox.mh_dla_notifier.sp;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -38,15 +40,14 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.zoumbox.mh_dla_notifier.Constants;
-import org.zoumbox.mh_dla_notifier.MhDlaNotifierUtils;
 import org.zoumbox.mh_dla_notifier.Pair;
+import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -225,9 +226,6 @@ public class PublicScriptsProxy {
                     String value = data.get(i);
                     result.put(key, value);
                 }
-                Date now = new Date();
-                SimpleDateFormat df = new SimpleDateFormat(MhDlaNotifierUtils.INTPUT_DATE_FORMAT);
-                result.put(PublicScriptProperties.LAST_UPDATE.name(), df.format(now));
                 break;
             case Caract:
                 result.put(PublicScriptProperties.CARACT.name(), raw);
@@ -261,6 +259,50 @@ public class PublicScriptsProxy {
             throws PublicScriptException, QuotaExceededException, NetworkUnavailableException {
         String trollNumber = idAndPassword.left();
         String trollPassword = idAndPassword.right();
-        return fetch(context, script, trollNumber, trollPassword);
+        Map<String, String> result;
+        long now = System.currentTimeMillis();
+        try {
+            result = fetch(context, script, trollNumber, trollPassword);
+            saveUpdateResult(context, script, now, null);
+        } catch (PublicScriptException pse) {
+            saveUpdateResult(context, script, now, pse);
+            throw new PublicScriptException(pse);
+        } catch (QuotaExceededException qee) {
+            saveUpdateResult(context, script, now, qee);
+            throw new QuotaExceededException(qee);
+        } catch (NetworkUnavailableException nue) {
+            saveUpdateResult(context, script, now, nue);
+            throw new NetworkUnavailableException(nue);
+        }
+        return result;
     }
+
+    protected static void saveUpdateResult(Context context, PublicScript script, long date, Exception exception) {
+        if (PublicScript.Profil2.equals(script)) {
+
+            SharedPreferences preferences = context.getSharedPreferences(ProfileProxy.PREFS_NAME, 0);
+
+            boolean success = false;
+            String result;
+            if (exception == null) {
+                result = "SUCCESS";
+                success = true;
+            } else {
+                result = exception.getClass().getName();
+                if (exception instanceof NetworkUnavailableException || (exception instanceof PublicScriptException && exception.getCause() != null)) {
+                    result = "NETWORK ERROR: " + result;
+                }
+            }
+
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putLong(PublicScriptProperties.LAST_UPDATE_ATTEMPT.name(), date);
+            editor.putString(PublicScriptProperties.LAST_UPDATE_RESULT.name(), result);
+            if (success) {
+                editor.putLong(PublicScriptProperties.LAST_UPDATE_SUCCESS.name(), date);
+            }
+
+            editor.commit();
+        }
+    }
+
 }

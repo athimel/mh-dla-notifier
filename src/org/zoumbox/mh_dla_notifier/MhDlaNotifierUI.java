@@ -91,8 +91,6 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
     private TextView trollInfo;
     private TextView technicalStatus;
 
-    private Date lastUpdate;
-
     ///////////////////////////////////
     //  ANDROID INTERACTION METHODS  //
     ///////////////////////////////////
@@ -124,10 +122,6 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
         trollInfo = (TextView) findViewById(R.id.troll_info);
         technicalStatus = (TextView) findViewById(R.id.technical_status);
-
-        loadTroll();
-
-        checkLegacyPassword();
 
     }
 
@@ -165,6 +159,16 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
                 dialog.show();
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        loadTroll();
+
+        checkLegacyPassword();
+
     }
 
     @Override
@@ -298,10 +302,8 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
     }
 
     protected void clearTechnicalStatus() {
-        if (lastUpdate == null) {
-            lastUpdate = getLastUpdate();
-        }
         String status = "";
+        Date lastUpdate = getLastUpdate();
         if (lastUpdate != null) {
             status = "Dernière m-à-j : ";
             if ((System.currentTimeMillis() - lastUpdate.getTime()) > (24l * 60l *60l *1000l)) {
@@ -315,8 +317,6 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
     protected void pushTrollToUI(Troll troll) {
 
         Preconditions.checkNotNull(troll, "Troll cannot be null");
-
-        this.lastUpdate = troll.lastUpdate;
 
         boolean updateToFollow = troll.updateRequestType.needUpdate();
 

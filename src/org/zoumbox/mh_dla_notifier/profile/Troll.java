@@ -60,8 +60,6 @@ public class Troll {
     public int dlaBM;
     public int poids;
 
-    public Date lastUpdate;
-
     public UpdateRequestType updateRequestType;
 
     // Computed

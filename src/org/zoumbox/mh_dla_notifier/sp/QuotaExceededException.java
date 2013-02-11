@@ -39,6 +39,12 @@ public class QuotaExceededException extends MhDlaException {
         this.category = category;
     }
 
+    public QuotaExceededException(QuotaExceededException cause) {
+        super(cause);
+        this.category = cause.category;
+        this.count = cause.count;
+    }
+
     public ScriptCategory getCategory() {
         return category;
     }
