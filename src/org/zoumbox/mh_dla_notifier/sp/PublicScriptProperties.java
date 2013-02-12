@@ -31,6 +31,7 @@ public enum PublicScriptProperties {
     LAST_UPDATE_ATTEMPT,
     LAST_UPDATE_SUCCESS,
     LAST_UPDATE_RESULT,
+    RESTART_CHECK,
 
     NOM,
     RACE,

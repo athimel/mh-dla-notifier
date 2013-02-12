@@ -326,23 +326,24 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
         this.race.setText(String.format("%s (%d)", troll.race, troll.nival));
 
+        SpannableString trollInfo = new SpannableString("");
         if (troll.pvVariation < 0) {
             String messageFormat = getText(R.string.pv_loss_title).toString();
             String message = String.format(messageFormat, Math.abs(troll.pvVariation));
-            SpannableString pvVariationSpannable = new SpannableString(message);
+            trollInfo = new SpannableString(message);
             int pvWarnColor = getResources().getColor(R.color.pv_warn);
-            colorize(pvVariationSpannable, pvWarnColor);
-            this.trollInfo.setText(pvVariationSpannable);
+            colorize(trollInfo, pvWarnColor);
         } else {
             if (troll.dateInscription != null) {
                 Calendar now = Calendar.getInstance();
                 Calendar inscription = Calendar.getInstance();
                 inscription.setTime(troll.dateInscription);
                 if (now.get(Calendar.MONTH) == inscription.get(Calendar.MONTH) && now.get(Calendar.DAY_OF_MONTH) == inscription.get(Calendar.DAY_OF_MONTH)) {
-                    this.trollInfo.setText("Joyeux anniversaire ;)");
+                    trollInfo = new SpannableString("Joyeux anniversaire ;)");
                 }
             }
         }
+        this.trollInfo.setText(trollInfo);
 
         Set<String> statuses = Sets.newLinkedHashSet();
         if (troll.aTerre) { statuses.add("[À terre]"); }

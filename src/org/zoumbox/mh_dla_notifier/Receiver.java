@@ -30,12 +30,15 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.SystemClock;
 import android.util.Log;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
@@ -45,6 +48,8 @@ import javax.annotation.Nullable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.RESTART_CHECK;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -69,11 +74,62 @@ public class Receiver extends BroadcastReceiver {
         return result;
     }
 
+    protected static final Predicate<Context> JUST_RESTARTED = new Predicate<Context>() {
+        @Override
+        public boolean apply(Context context) {
+            // Check if the device just restarted
+            long elapsedSinceLastRestartCheck = ProfileProxy.getElapsedSinceLastRestartCheck(context);
+            Log.i(TAG, "Elapsed since last restart check: " + elapsedSinceLastRestartCheck + "ms ~= " + (elapsedSinceLastRestartCheck/60000) + "min");
+
+            long uptime = SystemClock.uptimeMillis();
+            Log.i(TAG, "Uptime: " + uptime + "ms ~= " + (uptime/60000) + "min");
+
+            boolean result = elapsedSinceLastRestartCheck > uptime;
+            if (result) {
+                ProfileProxy.restartCheckDone(context);
+            }
+            Log.i(TAG, "Device restarted since last check: " + result);
+            return result;
+        }
+    };
+
+    protected static final Predicate<Context> SHOULD_UPDATE_BECAUSE_OF_RESTART = new Predicate<Context>() {
+        @Override
+        public boolean apply(Context context) {
+            boolean result = false;
+            // Check if the device restarted since last update
+            Long elapsedSinceLastSuccess = ProfileProxy.getElapsedSinceLastUpdateSuccess(context);
+            if (elapsedSinceLastSuccess != null) {
+                Log.i(TAG, "Elapsed since last update success: " + elapsedSinceLastSuccess + "ms ~= " + (elapsedSinceLastSuccess / 60000) + "min");
+
+                long upTime = SystemClock.uptimeMillis();
+                Log.i(TAG, "Uptime: " + upTime + "ms ~= " + (upTime/60000) + "min");
+
+                result = elapsedSinceLastSuccess > upTime; // Device restarted since last update
+                Log.i(TAG, "shouldUpdateBecauseOfRestart: " + result);
+                result &= elapsedSinceLastSuccess > (1000l * 60l * 60l * 2l); // 2 hours
+                Log.i(TAG, "shouldUpdateBecauseOfRestart (<=2hours): " + result);
+            }
+            return result;
+        }
+    };
+
+    protected static final Predicate<Context> SHOULD_UPDATE_BECAUSE_OF_NETWORK_FAILURE = new Predicate<Context>() {
+        @Override
+        public boolean apply(Context context) {
+            String lastUpdateResult = ProfileProxy.getLastUpdateResult(context);
+            Log.i(TAG, "lastUpdateResult: " + lastUpdateResult);
+            boolean result = lastUpdateResult != null && lastUpdateResult.startsWith("NETWORK ERROR");
+            Log.i(TAG, "shouldUpdateBecauseOfNetworkFailure: " + result);
+            return result;
+        }
+    };
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
         String intentAction = intent.getAction();
-        Log.i(TAG, getClass().getName() + "#onReceive action=" + intentAction);
+        Log.i(TAG, String.format("<<< %s#onReceive action=%s", getClass().getName(), intentAction));
 
         boolean connectivityChanged = ConnectivityManager.CONNECTIVITY_ACTION.equals(intentAction);
         boolean justGotConnection = false;
@@ -88,17 +144,40 @@ public class Receiver extends BroadcastReceiver {
             Log.i(TAG, "Connectivity change. isConnected=" + justGotConnection);
         }
 
-        String type = intent.getStringExtra("type");
-        Log.i(TAG, String.format("action=%s, type=%s", intentAction, type));
-
         if (connectivityChanged && !justGotConnection) {
             Log.i(TAG, "Just lost connectivity, nothing to do");
             return;
         }
 
-        Troll troll;
+        // If type is provided, request for an update
+        String type = intent.getStringExtra("type");
+        boolean requestUpdate = !Strings.isNullOrEmpty(type);
+
+        // If device just started, request for wakeups registration
+        boolean requestAlarmRegistering = JUST_RESTARTED.apply(context);
+
+        // Just go the internet connection back. Update will be necessary if
+        //  - device restarted since last update and last update in more than 2 hours ago
+        //  - last update failed because of network error
+        if (!requestUpdate && justGotConnection) { // !requestUpdate because no need to check if update is already requested
+
+            boolean shouldUpdateBecauseOfRestart = SHOULD_UPDATE_BECAUSE_OF_RESTART.apply(context);
+            boolean shouldUpdateBecauseOfNetworkFailure = SHOULD_UPDATE_BECAUSE_OF_NETWORK_FAILURE.apply(context);
+
+            requestUpdate = shouldUpdateBecauseOfRestart || shouldUpdateBecauseOfNetworkFailure;
+        }
+
+        Log.i(TAG, String.format("requestUpdate=%b ; requestAlarmRegistering=%b", requestUpdate, requestAlarmRegistering));
+
+        Troll troll = null;
         try {
-            troll = ProfileProxy.refreshDLA(context, justGotConnection);
+            if (requestUpdate) {
+                troll = ProfileProxy.refreshDLA(context);
+            } else if (requestAlarmRegistering) {
+                troll = ProfileProxy.fetchTrollWithoutUpdate(context);
+            } else {
+                Log.i(TAG, "Skip loading Troll");
+            }
         } catch (MissingLoginPasswordException mde) {
             Intent registerIntent = new Intent(context, RegisterActivity.class);
             context.startActivity(registerIntent);
@@ -141,7 +220,7 @@ public class Receiver extends BroadcastReceiver {
                 Log.i(TAG, String.format("No need to notify for NDLA=%s", nextDla));
             }
 
-            if (troll.pvVariation < 0 && preferences.notifyOnPvLoss) {
+            if (requestUpdate && troll.pvVariation < 0 && preferences.notifyOnPvLoss) {
                 int pvLoss = Math.abs(troll.pvVariation);
                 Log.i(TAG, String.format("Troll lost %d PV", pvLoss));
                 notifyPvLoss(context, pvLoss, troll.pv, preferences);

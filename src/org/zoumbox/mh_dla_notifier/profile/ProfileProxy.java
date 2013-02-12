@@ -84,6 +84,7 @@ import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.PV;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.PV_MAX;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.PV_VARIATION;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.RACE;
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.RESTART_CHECK;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -329,6 +330,42 @@ public class ProfileProxy {
 
     }
 
+    public static Long getElapsedSinceLastUpdateSuccess(final Context context) {
+
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
+
+        Long lastUpdate = preferences.getLong(LAST_UPDATE_SUCCESS.name(), 0l);
+
+        Long result = null;
+        if (lastUpdate > 0l) {
+            result = System.currentTimeMillis() - lastUpdate;
+        }
+        return result;
+
+    }
+
+    public static Long getElapsedSinceLastRestartCheck(final Context context) {
+
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
+
+        Long lastUpdate = preferences.getLong(RESTART_CHECK.name(), 0l);
+
+        Long result = null;
+        if (lastUpdate > 0l) {
+            result = System.currentTimeMillis() - lastUpdate;
+        }
+        return result;
+
+    }
+
+    public static void restartCheckDone(final Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putLong(RESTART_CHECK.name(), System.currentTimeMillis());
+        editor.commit();
+    }
+
     public static String getLastUpdateResult(final Context context) {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
@@ -336,7 +373,6 @@ public class ProfileProxy {
         String result = preferences.getString(LAST_UPDATE_RESULT.name(), null);
 
         return result;
-
     }
 
     protected static void saveProperties(SharedPreferences preferences, Map<String, String> propertiesFetched) {
@@ -402,41 +438,11 @@ public class ProfileProxy {
         return result;
     }
 
-    public static Troll refreshDLA(Context context, boolean justGotConnection) throws MissingLoginPasswordException {
+    public static Troll refreshDLA(Context context) throws MissingLoginPasswordException {
 
         PreferencesHolder preferences = PreferencesHolder.load(context);
 
         boolean performUpdate = preferences.enableAutomaticUpdates;
-
-        // Just go the internet connection back. Update will be necessary if
-        //  - device restarted since last update and last update in more than 2 hours ago
-        //  - last update failed because of network error
-        if (performUpdate && justGotConnection) {
-
-            boolean shouldUpdateBecauseOfRestart = false;
-            boolean shouldUpdateBecauseOfNetworkFailure = false;
-
-            // Check if the device restarted since last update
-            Date lastUpdateSuccess = getLastUpdateSuccess(context);
-            if (lastUpdateSuccess != null) {
-                Log.i(TAG, "Last update success date: " + lastUpdateSuccess);
-                long upTime = SystemClock.uptimeMillis();
-                Log.i(TAG, "Uptime: " + upTime + "ms ~= " + (upTime/60000) + "min");
-                long elapsed = System.currentTimeMillis() - lastUpdateSuccess.getTime();
-                shouldUpdateBecauseOfRestart = elapsed > upTime; // Device restarted since last update
-                Log.i(TAG, "shouldUpdateBecauseOfRestart: " + shouldUpdateBecauseOfRestart);
-                shouldUpdateBecauseOfRestart &= elapsed > (1000l * 60l * 60l * 2l); // 2 hours
-                Log.i(TAG, "shouldUpdateBecauseOfRestart (<=2hours): " + shouldUpdateBecauseOfRestart);
-            }
-
-            String lastUpdateResult = getLastUpdateResult(context);
-            Log.i(TAG, "lastUpdateResult: " + lastUpdateResult);
-            shouldUpdateBecauseOfNetworkFailure = lastUpdateResult != null && lastUpdateResult.startsWith("NETWORK ERROR");
-            Log.i(TAG, "shouldUpdateBecauseOfNetworkFailure: " + shouldUpdateBecauseOfNetworkFailure);
-
-            performUpdate = shouldUpdateBecauseOfRestart || shouldUpdateBecauseOfNetworkFailure;
-            Log.i(TAG, "performUpdate: " + performUpdate);
-        }
 
         if (performUpdate) {
 
@@ -519,5 +525,4 @@ public class ProfileProxy {
             return false;
         }
     }
-
 }
