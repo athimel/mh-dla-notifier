@@ -30,7 +30,6 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -48,8 +47,6 @@ import javax.annotation.Nullable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
-
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.RESTART_CHECK;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -149,6 +146,11 @@ public class Receiver extends BroadcastReceiver {
             return;
         }
 
+        if (ProfileProxy.areTrollIdentifiersUndefined(context)) {
+            Log.i(TAG, "TrollId not defined, exiting...");
+            return;
+        }
+
         // If type is provided, request for an update
         String type = intent.getStringExtra("type");
         boolean requestUpdate = !Strings.isNullOrEmpty(type);
@@ -179,8 +181,7 @@ public class Receiver extends BroadcastReceiver {
                 Log.i(TAG, "Skip loading Troll");
             }
         } catch (MissingLoginPasswordException mde) {
-            Intent registerIntent = new Intent(context, RegisterActivity.class);
-            context.startActivity(registerIntent);
+            Log.w(TAG, "Missing trollId and/or password, exiting...");
             return;
         }
 

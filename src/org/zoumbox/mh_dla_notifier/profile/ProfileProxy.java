@@ -25,7 +25,6 @@ package org.zoumbox.mh_dla_notifier.profile;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.SystemClock;
 import android.util.Log;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -318,7 +317,7 @@ public class ProfileProxy {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
-        Long lastUpdate = preferences.getLong(LAST_UPDATE_SUCCESS.name(), 0l);
+        long lastUpdate = preferences.getLong(LAST_UPDATE_SUCCESS.name(), 0l);
 
         Date result = null;
         if (lastUpdate > 0l) {
@@ -327,35 +326,26 @@ public class ProfileProxy {
             result = calendar.getTime();
         }
         return result;
-
     }
 
     public static Long getElapsedSinceLastUpdateSuccess(final Context context) {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
-        Long lastUpdate = preferences.getLong(LAST_UPDATE_SUCCESS.name(), 0l);
+        long lastUpdate = preferences.getLong(LAST_UPDATE_SUCCESS.name(), 0l);
 
-        Long result = null;
-        if (lastUpdate > 0l) {
-            result = System.currentTimeMillis() - lastUpdate;
-        }
+        Long result = System.currentTimeMillis() - lastUpdate;
         return result;
-
     }
 
     public static Long getElapsedSinceLastRestartCheck(final Context context) {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
-        Long lastUpdate = preferences.getLong(RESTART_CHECK.name(), 0l);
+        long lastCheck = preferences.getLong(RESTART_CHECK.name(), System.currentTimeMillis());
 
-        Long result = null;
-        if (lastUpdate > 0l) {
-            result = System.currentTimeMillis() - lastUpdate;
-        }
+        Long result = System.currentTimeMillis() - lastCheck;
         return result;
-
     }
 
     public static void restartCheckDone(final Context context) {
@@ -426,16 +416,35 @@ public class ProfileProxy {
         return true;
     }
 
-    protected static Pair<String, String> loadIdPassword(SharedPreferences preferences) throws MissingLoginPasswordException {
+    public static boolean areTrollIdentifiersUndefined(Context context) {
+
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
+        Pair<String, String> pair = loadIdPassword0(preferences);
+
+        boolean result = Strings.isNullOrEmpty(pair.left());
+        result |= Strings.isNullOrEmpty(pair.right());
+        return result;
+    }
+
+    protected static Pair<String, String> loadIdPassword0(SharedPreferences preferences) {
 
         final String trollNumber = preferences.getString(PROPERTY_TROLL_ID, null);
         String trollPassword = preferences.getString(PROPERTY_TROLL_PASSWORD, null);
-        if (Strings.isNullOrEmpty(trollNumber) || Strings.isNullOrEmpty(trollPassword)) {
-            throw new MissingLoginPasswordException();
-        }
 
         Pair<String, String> result = new Pair<String, String>(trollNumber, trollPassword);
         return result;
+    }
+
+
+    protected static Pair<String, String> loadIdPassword(SharedPreferences preferences) throws MissingLoginPasswordException {
+
+        Pair<String, String> pair = loadIdPassword0(preferences);
+
+        if (Strings.isNullOrEmpty(pair.left()) || Strings.isNullOrEmpty(pair.right())) {
+            throw new MissingLoginPasswordException();
+        }
+
+        return pair;
     }
 
     public static Troll refreshDLA(Context context) throws MissingLoginPasswordException {
@@ -525,4 +534,5 @@ public class ProfileProxy {
             return false;
         }
     }
+
 }
