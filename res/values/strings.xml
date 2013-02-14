@@ -29,8 +29,8 @@
 
     <string name="app_name">Avertisseur de DLA MountyHall</string>
 
-    <string name="version">0.11</string>
-    <string name="version_full">Version 0.11</string>
+    <string name="version">0.12</string>
+    <string name="version_full">Version 0.12</string>
 
     <string name="register">Saisie de vos identifiants</string>
     <string name="preferences">Préférences</string>
