@@ -16,7 +16,7 @@
 
     <groupId>org.zoumbox</groupId>
     <artifactId>mh-dla-notifier</artifactId>
-    <version>0.11-SNAPSHOT</version>
+    <version>0.11</version>
 
     <dependencies>
 
@@ -210,11 +210,11 @@
     </pluginRepositories>
 
     <scm>
-        <connection>scm:svn:http://dev.zoumbox.org/src/mh-dla-notifier/trunk
+        <connection>scm:svn:http://dev.zoumbox.org/src/mh-dla-notifier/tags/mh-dla-notifier-0.11
         </connection>
-        <developerConnection>scm:svn:http://dev.zoumbox.org/src/mh-dla-notifier/trunk
+        <developerConnection>scm:svn:http://dev.zoumbox.org/src/mh-dla-notifier/tags/mh-dla-notifier-0.11
         </developerConnection>
-        <url>http://dev.zoumbox.org/src/mh-dla-notifier/trunk</url>
+        <url>http://dev.zoumbox.org/src/mh-dla-notifier/tags/mh-dla-notifier-0.11</url>
     </scm>
 
     <distributionManagement>
