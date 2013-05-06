@@ -99,13 +99,9 @@
     <string name="prefs_use_smartphone_interface">Interface smartphone ?</string>
 
     <string name="legacy_password_title">Nouvelle sécurité</string>
-    <string name="legacy_password_message">Avant le 1er mars 2013, vous allez devoir utiliser un mot de passe "spécifique" fournit par MountyHall. Voulez-vous entrer ce mot de passe maintenant ?</string>
+    <string name="legacy_password_message">Depuis le 1er mars 2013, vous devez utiliser un mot de passe "spécifique" fournit par MountyHall. Voulez-vous entrer ce mot de passe maintenant ?</string>
 
     <string name="password_help_title">Bienvenue !</string>
     <string name="password_help_message">Pour connaître votre mot de passe spécifique, connectez-vous à MountyHall, allez dans Options » Options Trõll » Générer un code d\'accès spécifique.</string>
-    <string name="password_help_warning">ATTENTION: N\'entrez pas votre mot de passe MountyHall ! Si vous entrez votre mot de passe MountyHall, l\'application ne fonctionnera plus à partir du 1er mars 2013</string>
-
-    <string name="is_new_password_title">Question</string>
-    <string name="is_new_password_message">S\'agit-il d\'un mot de passe spécifique généré par MountyHall ?</string>
 
 </resources>

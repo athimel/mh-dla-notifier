@@ -517,10 +517,6 @@ public class ProfileProxy {
         }
     }
 
-    public static boolean isNewPassword(String password) {
-        return NEW_PASSWORD_PATTERN.matcher(password).matches();
-    }
-
     public static boolean isCurrentPasswordALegacyPassword(Context context) {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);

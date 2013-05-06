@@ -116,38 +116,7 @@ public class RegisterActivity extends AbstractActivity {
         String trollNumber = Strings.nullToEmpty(troll.getText().toString());
         String trollPassword = Strings.nullToEmpty(password.getText().toString());
 
-        if (ProfileProxy.isNewPassword(trollPassword)) {
-            saveIdAndPassword(trollNumber, trollPassword, false);
-        } else {
-            askIfIsNewPassword(trollNumber, trollPassword);
-        }
-
-    }
-
-    protected void askIfIsNewPassword(final String trollNumber, final String trollPassword) {
-
-        // 1. Instantiate an AlertDialog.Builder with its constructor
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        // 2. Chain together various setter methods to set the dialog characteristics
-        builder.setTitle(R.string.is_new_password_title).setMessage(R.string.is_new_password_message);
-
-        // 3. Get the AlertDialog from create()
-        AlertDialog dialog = builder.create();
-
-        dialog.setButton("Oui", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int which) {
-                saveIdAndPassword(trollNumber, trollPassword, false);
-            }
-        });
-        dialog.setButton2("Non", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int which) {
-                saveIdAndPassword(trollNumber, trollPassword, true);
-            }
-        });
-        dialog.show();
+        saveIdAndPassword(trollNumber, trollPassword, false);
     }
 
     protected void saveIdAndPassword(String trollNumber, String trollPassword, boolean needToHashPassword) {
