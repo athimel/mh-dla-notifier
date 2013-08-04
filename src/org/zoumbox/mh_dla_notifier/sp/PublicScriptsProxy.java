@@ -30,7 +30,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -39,7 +38,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.zoumbox.mh_dla_notifier.Constants;
+import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
 import org.zoumbox.mh_dla_notifier.Pair;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 
@@ -58,11 +57,11 @@ import java.util.Map;
  */
 public class PublicScriptsProxy {
 
-    private static final String TAG = Constants.LOG_PREFIX + PublicScriptsProxy.class.getSimpleName();
+    private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + PublicScriptsProxy.class.getSimpleName();
 
     public static PublicScriptResponse doHttpGET(String url) throws NetworkUnavailableException, PublicScriptException {
 
-        if (url.contains("?Numero=" + Constants.MOCK_TROLL_ID)) {
+        if (url.contains("?Numero=" + MhDlaNotifierConstants.MOCK_TROLL_ID)) {
             return PublicScriptsProxyMock.doMockHttpGET(url);
         }
 

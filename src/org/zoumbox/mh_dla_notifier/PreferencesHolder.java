@@ -61,17 +61,17 @@ public class PreferencesHolder {
         PreferencesHolder result = new PreferencesHolder();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
-        result.notificationDelay = Integer.parseInt(prefs.getString(PREFS_NOTIFICATION_DELAY, "" + Constants.DEFAULT_NOTIFICATION_DELAY));
-        result.notifyWithoutPA = prefs.getBoolean(PREFS_NOTIFY_WITHOUT_PA, Constants.DEFAULT_NOTIFY_WITHOUT_PA);
+        result.notificationDelay = Integer.parseInt(prefs.getString(PREFS_NOTIFICATION_DELAY, "" + MhDlaNotifierConstants.DEFAULT_NOTIFICATION_DELAY));
+        result.notifyWithoutPA = prefs.getBoolean(PREFS_NOTIFY_WITHOUT_PA, MhDlaNotifierConstants.DEFAULT_NOTIFY_WITHOUT_PA);
 
         String silentNotificationValue = prefs.getString(PREFS_SILENT_NOTIFICATION, SilentNotification.BY_NIGHT.name());
         result.silentNotification = SilentNotification.valueOf(silentNotificationValue);
 
-        result.useSmartphoneInterface = prefs.getBoolean(PREFS_SMARTPHONE_INTERFACE, Constants.DEFAULT_USE_SMARTPHONE_INTERFACE);
+        result.useSmartphoneInterface = prefs.getBoolean(PREFS_SMARTPHONE_INTERFACE, MhDlaNotifierConstants.DEFAULT_USE_SMARTPHONE_INTERFACE);
 
-        result.notifyOnPvLoss = prefs.getBoolean(PREFS_NOTIFY_ON_PV_LOSS, Constants.DEFAULT_NOTIFY_ON_PV_LOSS);
+        result.notifyOnPvLoss = prefs.getBoolean(PREFS_NOTIFY_ON_PV_LOSS, MhDlaNotifierConstants.DEFAULT_NOTIFY_ON_PV_LOSS);
 
-        result.enableAutomaticUpdates = prefs.getBoolean(PREFS_ALLOW_AUTOMATIC_UPDATES, Constants.DEFAULT_ALLOW_AUTOMATIC_UPDATES);
+        result.enableAutomaticUpdates = prefs.getBoolean(PREFS_ALLOW_AUTOMATIC_UPDATES, MhDlaNotifierConstants.DEFAULT_ALLOW_AUTOMATIC_UPDATES);
 
         result.skipLegacyPasswordCheckUntil = prefs.getLong(SKIP_LEGACY_PASSWORD_CHECK_UNTIL, 0l);
 

@@ -28,7 +28,7 @@ import android.net.Uri;
 /**
  * @author Arno <arno@zoumbox.org>
  */
-public class Constants {
+public class MhDlaNotifierConstants {
 
     public static final String MOCK_TROLL_ID = "123456789";
 

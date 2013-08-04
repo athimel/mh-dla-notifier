@@ -34,7 +34,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.zoumbox.mh_dla_notifier.Constants;
+import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierUtils;
 import org.zoumbox.mh_dla_notifier.Pair;
 import org.zoumbox.mh_dla_notifier.PreferencesHolder;
@@ -90,7 +90,7 @@ import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.RESTART_CHEC
  */
 public class ProfileProxy {
 
-    private static final String TAG = Constants.LOG_PREFIX + ProfileProxy.class.getSimpleName();
+    private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + ProfileProxy.class.getSimpleName();
 
     public static final String PREFS_NAME = "org.zoumbox.mh.dla.notifier.preferences";
 

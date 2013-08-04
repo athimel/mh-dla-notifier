@@ -40,7 +40,7 @@ import java.util.Map;
 
 public class MainActivity extends MhDlaNotifierUI {
 
-    private static final String TAG = Constants.LOG_PREFIX + MainActivity.class.getSimpleName();
+    private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + MainActivity.class.getSimpleName();
 
     @Override
     protected void loadTroll() {

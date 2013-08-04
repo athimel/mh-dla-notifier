@@ -62,7 +62,7 @@ import java.util.Locale;
  */
 public class MhDlaNotifierUtils {
 
-    private static final String TAG = Constants.LOG_PREFIX + MhDlaNotifierUtils.class.getSimpleName();
+    private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + MhDlaNotifierUtils.class.getSimpleName();
 
     public static final String INTPUT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String HOUR_DATE_FORMAT = "HH:mm:ss";

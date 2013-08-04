@@ -23,6 +23,19 @@
  */
 package org.zoumbox.mh_dla_notifier;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Map;
+
+import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
+import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
+import org.zoumbox.mh_dla_notifier.profile.Troll;
+
+import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
+
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -35,29 +48,17 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.SystemClock;
 import android.util.Log;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
-import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
-import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
-import org.zoumbox.mh_dla_notifier.profile.Troll;
-
-import javax.annotation.Nullable;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
 
 /**
  * @author Arno <arno@zoumbox.org>
  */
 public class Receiver extends BroadcastReceiver {
 
-    private static final String TAG = Constants.LOG_PREFIX + Receiver.class.getSimpleName();
+    private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + Receiver.class.getSimpleName();
 
     protected static final Predicate<Date> IS_IN_THE_FUTURE = new Predicate<Date>() {
         @Override
-        public boolean apply(@Nullable Date dla) {
+        public boolean apply(Date dla) {
             if (dla == null) {
                 return false;
             }

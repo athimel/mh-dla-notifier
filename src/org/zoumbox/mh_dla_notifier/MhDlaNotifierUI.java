@@ -64,7 +64,7 @@ import java.util.Set;
  */
 public abstract class MhDlaNotifierUI extends AbstractActivity {
 
-    private static final String TAG = Constants.LOG_PREFIX + MhDlaNotifierUI.class.getSimpleName();
+    private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + MhDlaNotifierUI.class.getSimpleName();
 
     public static final int REGISTER = 0;
     public static final int PREFERENCES = 1;
@@ -243,10 +243,10 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
     }
 
     public void onPlayButtonClicked(View target) {
-        Uri uri = Constants.MH_PLAY_URI;
+        Uri uri = MhDlaNotifierConstants.MH_PLAY_URI;
         PreferencesHolder preferences = PreferencesHolder.load(this);
         if (preferences.useSmartphoneInterface) {
-            uri = Constants.MH_PLAY_SMARTPHONE_URI;
+            uri = MhDlaNotifierConstants.MH_PLAY_SMARTPHONE_URI;
         }
         Intent webIntent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(webIntent);
@@ -352,7 +352,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         if (troll.intangible) { statuses.add("[Intangible]"); }
         if (troll.immobile) { statuses.add("[Englué]"); }
         if (troll.enCourse) { statuses.add("[Course]"); }
-        if (troll.levitation) { statuses.add("[Levitation]"); }
+        if (troll.levitation) { statuses.add("[Lévitation]"); }
 
         String status = Joiner.on(" ").join(statuses);
         this.trollStatus.setText(status);
@@ -385,10 +385,10 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
                 pvLength = 2;
             }
 
-            if (troll.pv < (pvMax * Constants.PV_ALARM_THRESHOLD / 100)) {
+            if (troll.pv < (pvMax * MhDlaNotifierConstants.PV_ALARM_THRESHOLD / 100)) {
                 pvSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.pv_alarm)), 0, pvLength, 0);
                 pvSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, pvLength, 0);
-            } else if (troll.pv < (pvMax * Constants.PV_WARM_THRESHOLD / 100)) {
+            } else if (troll.pv < (pvMax * MhDlaNotifierConstants.PV_WARM_THRESHOLD / 100)) {
                 pvSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.pv_warn)), 0, pvLength, 0);
                 pvSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, pvLength, 0);
             }

@@ -41,7 +41,7 @@ import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
  */
 public class RegisterActivity extends AbstractActivity {
 
-    private static final String TAG = Constants.LOG_PREFIX + RegisterActivity.class.getSimpleName();
+    private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + RegisterActivity.class.getSimpleName();
 
     protected EditText troll;
     protected EditText password;
