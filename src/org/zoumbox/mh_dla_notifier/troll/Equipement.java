@@ -21,7 +21,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.zoumbox.mh_dla_notifier.profile;
+package org.zoumbox.mh_dla_notifier.troll;
 
 /**
  * @author Arno <arno@zoumbox.org>

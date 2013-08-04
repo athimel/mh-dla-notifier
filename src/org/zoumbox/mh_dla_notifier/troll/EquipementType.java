@@ -21,14 +21,32 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.zoumbox.mh_dla_notifier.profile;
+package org.zoumbox.mh_dla_notifier.troll;
+
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
+
+import java.util.List;
 
 /**
  * @author Arno <arno@zoumbox.org>
  */
-public class Mouche {
-    public String id, nom;
-    public MoucheType type;
-    public int age;
-    public boolean presente;
+public enum EquipementType {
+    Champignon,
+    Potion,
+    Casque,
+    Composant,
+    Parchemin,
+    Talisman,
+    Armure,
+    Bouclier,
+    Arme,
+    Bottes,
+    Anneau;
+
+    public static EquipementType fromType(String type) {
+        List<String> types = Lists.newArrayList(Splitter.on(" ").trimResults().split(type));
+        String searchedType = types.get(0);
+        return valueOf(searchedType);
+    }
 }

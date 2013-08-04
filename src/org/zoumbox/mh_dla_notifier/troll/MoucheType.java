@@ -21,32 +21,18 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.zoumbox.mh_dla_notifier.profile;
-
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
-
-import java.util.List;
+package org.zoumbox.mh_dla_notifier.troll;
 
 /**
  * @author Arno <arno@zoumbox.org>
  */
-public enum EquipementType {
-    Champignon,
-    Potion,
-    Casque,
-    Composant,
-    Parchemin,
-    Talisman,
-    Armure,
-    Bouclier,
-    Arme,
-    Bottes,
-    Anneau;
-
-    public static EquipementType fromType(String type) {
-        List<String> types = Lists.newArrayList(Splitter.on(" ").trimResults().split(type));
-        String searchedType = types.get(0);
-        return valueOf(searchedType);
-    }
+public enum MoucheType {
+    Lunettes,
+    Crobate,
+    Nabolisants,
+    Telaite,
+    Rivatant,
+    Xidant,
+    Vertie,
+    Miel
 }

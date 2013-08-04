@@ -50,9 +50,10 @@ import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
-import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
-import org.zoumbox.mh_dla_notifier.profile.Race;
-import org.zoumbox.mh_dla_notifier.profile.Troll;
+import org.zoumbox.mh_dla_notifier.profile.v1.ProfileProxyV1;
+import org.zoumbox.mh_dla_notifier.troll.Race;
+import org.zoumbox.mh_dla_notifier.troll.Troll;
+import org.zoumbox.mh_dla_notifier.troll.Trolls;
 import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
 
 import java.util.Calendar;
@@ -128,7 +129,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
     protected void checkLegacyPassword() {
 
         // From 01/02/2013 to 28/02/2013, password policy has changed. This should help user to migrate.
-        if (ProfileProxy.isCurrentPasswordALegacyPassword(this)) {
+        if (ProfileProxyV1.isCurrentPasswordALegacyPassword(this)) {
 
             PreferencesHolder preferences = PreferencesHolder.load(this);
             if (System.currentTimeMillis() > preferences.skipLegacyPasswordCheckUntil) {
@@ -318,26 +319,26 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
         Preconditions.checkNotNull(troll, "Troll cannot be null");
 
-        boolean updateToFollow = troll.updateRequestType.needUpdate();
+        boolean updateToFollow = troll.getUpdateRequestType().needUpdate();
 
-        this.name.setText(troll.nom);
+        this.name.setText(troll.getNom());
 
-        this.numero.setText("N° " + troll.id);
+        this.numero.setText("N° " + troll.getId());
 
-        this.race.setText(String.format("%s (%d)", troll.race, troll.nival));
+        this.race.setText(String.format("%s (%d)", troll.getRace(), troll.getNival()));
 
         SpannableString trollInfo = new SpannableString("");
-        if (troll.pvVariation < 0) {
+        if (troll.getPvVariation() < 0) {
             String messageFormat = getText(R.string.pv_loss_title).toString();
-            String message = String.format(messageFormat, Math.abs(troll.pvVariation));
+            String message = String.format(messageFormat, Math.abs(troll.getPvVariation()));
             trollInfo = new SpannableString(message);
             int pvWarnColor = getResources().getColor(R.color.pv_warn);
             colorize(trollInfo, pvWarnColor);
         } else {
-            if (troll.dateInscription != null) {
+            if (troll.getDateInscription() != null) {
                 Calendar now = Calendar.getInstance();
                 Calendar inscription = Calendar.getInstance();
-                inscription.setTime(troll.dateInscription);
+                inscription.setTime(troll.getDateInscription());
                 if (now.get(Calendar.MONTH) == inscription.get(Calendar.MONTH) && now.get(Calendar.DAY_OF_MONTH) == inscription.get(Calendar.DAY_OF_MONTH)) {
                     trollInfo = new SpannableString("Joyeux anniversaire ;)");
                 }
@@ -346,21 +347,21 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         this.trollInfo.setText(trollInfo);
 
         Set<String> statuses = Sets.newLinkedHashSet();
-        if (troll.aTerre) { statuses.add("[À terre]"); }
-        if (troll.camou) { statuses.add("[Camou]"); }
-        if (troll.invisible) { statuses.add("[Invi]"); }
-        if (troll.intangible) { statuses.add("[Intangible]"); }
-        if (troll.immobile) { statuses.add("[Englué]"); }
-        if (troll.enCourse) { statuses.add("[Course]"); }
-        if (troll.levitation) { statuses.add("[Lévitation]"); }
+        if (troll.isaTerre()) { statuses.add("[À terre]"); }
+        if (troll.isCamou()) { statuses.add("[Camou]"); }
+        if (troll.isInvisible()) { statuses.add("[Invi]"); }
+        if (troll.isIntangible()) { statuses.add("[Intangible]"); }
+        if (troll.isImmobile()) { statuses.add("[Englué]"); }
+        if (troll.isEnCourse()) { statuses.add("[Course]"); }
+        if (troll.isLevitation()) { statuses.add("[Lévitation]"); }
 
         String status = Joiner.on(" ").join(statuses);
         this.trollStatus.setText(status);
 
-        String kdString = String.format("%d / %d", troll.nbKills, troll.nbMorts);
+        String kdString = String.format("%d / %d", troll.getNbKills(), troll.getNbMorts());
         int kdStringLength = kdString.length();
-        if (troll.nbMorts > 0) {
-            kdString += String.format(" (ratio: %.1f) ", new Integer(troll.nbKills).doubleValue() / new Integer(troll.nbMorts).doubleValue());
+        if (troll.getNbMorts()> 0) {
+            kdString += String.format(" (ratio: %.1f) ", new Integer(troll.getNbKills()).doubleValue() / new Integer(troll.getNbMorts()).doubleValue());
         }
         SpannableString kdSpannable = new SpannableString(kdString);
         if (kdString.length() > kdStringLength) {
@@ -368,27 +369,27 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         }
         kd.setText(kdSpannable);
 
-        int pvMax = troll.getPvMax();
+        int pvMax = troll.getComputedPvMax();
 
-        int additionalPvs = pvMax - troll.pvMaxBase;
-        String pvMaxString = "" + troll.pvMaxBase;
+        int additionalPvs = pvMax - troll.getPvMaxBase();
+        String pvMaxString = "" + troll.getPvMaxBase();
         if (additionalPvs > 0) {
             pvMaxString += String.format("+%d", additionalPvs);
         }
-        String pvText = String.format("%s / %s", troll.pv, pvMaxString);
+        String pvText = String.format("%s / %s", troll.getPv(), pvMaxString);
         SpannableString pvSpannable = new SpannableString(pvText);
         try {
             int pvLength = 1;
-            if (troll.pv > 100) {
+            if (troll.getPv() > 100) {
                 pvLength = 3;
-            } else if (troll.pv > 10) {
+            } else if (troll.getPv() > 10) {
                 pvLength = 2;
             }
 
-            if (troll.pv < (pvMax * MhDlaNotifierConstants.PV_ALARM_THRESHOLD / 100)) {
+            if (troll.getPv() < (pvMax * MhDlaNotifierConstants.PV_ALARM_THRESHOLD / 100)) {
                 pvSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.pv_alarm)), 0, pvLength, 0);
                 pvSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, pvLength, 0);
-            } else if (troll.pv < (pvMax * MhDlaNotifierConstants.PV_WARM_THRESHOLD / 100)) {
+            } else if (troll.getPv() < (pvMax * MhDlaNotifierConstants.PV_WARM_THRESHOLD / 100)) {
                 pvSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.pv_warn)), 0, pvLength, 0);
                 pvSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, pvLength, 0);
             }
@@ -397,11 +398,11 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         }
         pvs.setText(pvSpannable);
 
-        String fatigueString = "" + troll.fatigue;
+        String fatigueString = "" + troll.getFatigue();
         SpannableString fatigueSpannable;
-        if (Race.Kastar.equals(troll.race)) {
+        if (Race.Kastar.equals(troll.getRace())) {
             int fatigueLength = fatigueString.length();
-            fatigueString += String.format(" (AM: 1 PV = %d') ", Troll.GET_DLA_GAIN_BY_PV.apply(troll.fatigue));
+            fatigueString += String.format(" (AM: 1 PV = %d') ", Trolls.GET_DLA_GAIN_BY_PV.apply(troll.getFatigue()));
             fatigueSpannable = new SpannableString(fatigueString);
             fatigueSpannable.setSpan(new StyleSpan(Typeface.ITALIC), fatigueLength, fatigueString.length(), 0);
         } else {
@@ -411,10 +412,10 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
         position.setText(
                 String.format("X=%d | Y=%d | N=%d",
-                        troll.posX, troll.posY, troll.posN));
+                        troll.getPosX(), troll.getPosY(), troll.getPosN()));
 
-        Date currentDla = troll.dla;
-        int pa = troll.pa;
+        Date currentDla = troll.getDla();
+        int pa = troll.getPa();
 
         SpannableString dlaSpannable = new SpannableString(MhDlaNotifierUtils.formatDLA(this, currentDla));
         SpannableString paSpannable = new SpannableString("" + pa); // Leave ""+ as integer is considered as an Android id
@@ -448,10 +449,10 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         dla.setText(dlaSpannable);
         remainingPAs.setText(paSpannable);
 
-        int nextDlaDuration = Troll.GET_NEXT_DLA_DURATION.apply(troll);
+        int nextDlaDuration = Trolls.GET_NEXT_DLA_DURATION.apply(troll);
         dla_duration.setText(MhDlaNotifierUtils.prettyPrintDuration(this, nextDlaDuration));
 
-        Date nextDla = troll.getNextDla();
+        Date nextDla = troll.getComputedNextDla();
         String nextDlaText = MhDlaNotifierUtils.formatDLA(this, nextDla);
         SpannableString nextDlaSpannable = new SpannableString(nextDlaText);
 
@@ -470,9 +471,9 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
         next_dla.setText(nextDlaSpannable);
 
-        new LoadBlasonTask().execute(troll.blason);
+        new LoadBlasonTask().execute(troll.getBlason());
 
-        new LoadGuildeTask().execute(troll.guilde);
+        new LoadGuildeTask().execute(troll.getGuilde());
 
     }
 

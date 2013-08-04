@@ -21,16 +21,14 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.zoumbox.mh_dla_notifier.profile;
+package org.zoumbox.mh_dla_notifier.troll;
 
 /**
  * @author Arno <arno@zoumbox.org>
  */
-public enum Race {
-    Kastar,
-    Tomawak,
-    Durakuir,
-    Skrim,
-    Darkling,
-    Nkrwapu
+public class Mouche {
+    public String id, nom;
+    public MoucheType type;
+    public int age;
+    public boolean presente;
 }

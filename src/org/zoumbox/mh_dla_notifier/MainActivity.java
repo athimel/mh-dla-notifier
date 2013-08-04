@@ -27,8 +27,8 @@ package org.zoumbox.mh_dla_notifier;
 import android.os.AsyncTask;
 import android.util.Log;
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
-import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
-import org.zoumbox.mh_dla_notifier.profile.Troll;
+import org.zoumbox.mh_dla_notifier.profile.v1.ProfileProxyV1;
+import org.zoumbox.mh_dla_notifier.troll.Troll;
 import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
 import org.zoumbox.mh_dla_notifier.sp.NetworkUnavailableException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
@@ -49,13 +49,13 @@ public class MainActivity extends MhDlaNotifierUI {
 
         try {
             // First load the troll without update
-            Troll troll = ProfileProxy.fetchTrollWithoutUpdate(this);
+            Troll troll = ProfileProxyV1.fetchTrollWithoutUpdate(this);
 
             trollUpdated(troll);
 
             clearTechnicalStatus();
 
-            if (troll.updateRequestType.needUpdate()) {
+            if (troll.getUpdateRequestType().needUpdate()) {
 //                showToast("Mise à jour");
                 startUpdate(UpdateRequestType.ONLY_NECESSARY);
             }
@@ -67,14 +67,14 @@ public class MainActivity extends MhDlaNotifierUI {
 
     @Override
     protected void manualRefresh() {
-        int quota = ProfileProxy.GET_USABLE_QUOTA.apply(ScriptCategory.DYNAMIC) / 2; // %2 pour garder une marge de sécu vis à vis des maj auto
+        int quota = ProfileProxyV1.GET_USABLE_QUOTA.apply(ScriptCategory.DYNAMIC) / 2; // %2 pour garder une marge de sécu vis à vis des maj auto
         showToast("Attention à ne pas dépasser %d mises à jour manuelles par jour.", quota);
         startUpdate(UpdateRequestType.FULL);
     }
 
     @Override
     protected Date getLastUpdate() {
-        Date result= ProfileProxy.getLastUpdateSuccess(this);
+        Date result= ProfileProxyV1.getLastUpdateSuccess(this);
         return result;
     }
 
@@ -171,7 +171,7 @@ public class MainActivity extends MhDlaNotifierUI {
             Troll troll = null;
             MhDlaException exception = null;
             try {
-                troll = ProfileProxy.fetchTroll(MainActivity.this, params[0]);
+                troll = ProfileProxyV1.fetchTroll(MainActivity.this, params[0]);
 
             } catch (MhDlaException e) {
                 exception = e;

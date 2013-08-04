@@ -21,7 +21,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.zoumbox.mh_dla_notifier.profile;
+package org.zoumbox.mh_dla_notifier.profile.v1;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -38,6 +38,8 @@ import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierUtils;
 import org.zoumbox.mh_dla_notifier.Pair;
 import org.zoumbox.mh_dla_notifier.PreferencesHolder;
+import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
+import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
 import org.zoumbox.mh_dla_notifier.sp.NetworkUnavailableException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScript;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
@@ -45,6 +47,8 @@ import org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptsProxy;
 import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
 import org.zoumbox.mh_dla_notifier.sp.ScriptCategory;
+import org.zoumbox.mh_dla_notifier.troll.Race;
+import org.zoumbox.mh_dla_notifier.troll.Troll;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -88,9 +92,9 @@ import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.RESTART_CHEC
 /**
  * @author Arno <arno@zoumbox.org>
  */
-public class ProfileProxy {
+public class ProfileProxyV1 {
 
-    private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + ProfileProxy.class.getSimpleName();
+    private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + ProfileProxyV1.class.getSimpleName();
 
     public static final String PREFS_NAME = "org.zoumbox.mh.dla.notifier.preferences";
 
@@ -148,41 +152,41 @@ public class ProfileProxy {
         Map<PublicScriptProperties, String> properties = fetchProperties(
                 context, updateRequest, requestedProperties);
 
-        result.id = getTrollNumber(context);
+        result.setId(getTrollNumber(context));
 
-        result.nom = properties.get(NOM);
-        result.race = Race.valueOf(properties.get(RACE));
-        result.nival = Integer.parseInt(properties.get(NIVAL));
-        result.dateInscription = MhDlaNotifierUtils.parseDate(properties.get(DATE_INSCRIPTION));
+        result.setNom(properties.get(NOM));
+        result.setRace(Race.valueOf(properties.get(RACE)));
+        result.setNival(Integer.parseInt(properties.get(NIVAL)));
+        result.setDateInscription(MhDlaNotifierUtils.parseDate(properties.get(DATE_INSCRIPTION)));
 
-        result.pv = Integer.parseInt(properties.get(PV));
-        result.pvVariation = Integer.parseInt(properties.get(PV_VARIATION));
-        result.pvMaxBase = Integer.parseInt(properties.get(PV_MAX));
-        result.fatigue = Integer.parseInt(properties.get(FATIGUE));
+        result.setPv(Integer.parseInt(properties.get(PV)));
+        result.setPvVariation(Integer.parseInt(properties.get(PV_VARIATION)));
+        result.setPvMaxBase(Integer.parseInt(properties.get(PV_MAX)));
+        result.setFatigue(Integer.parseInt(properties.get(FATIGUE)));
 
-        result.posX = Integer.parseInt(properties.get(POS_X));
-        result.posY = Integer.parseInt(properties.get(POS_Y));
-        result.posN = Integer.parseInt(properties.get(POS_N));
+        result.setPosX(Integer.parseInt(properties.get(POS_X)));
+        result.setPosY(Integer.parseInt(properties.get(POS_Y)));
+        result.setPosN(Integer.parseInt(properties.get(POS_N)));
 
-        result.camou = "1".equals(properties.get(CAMOU));
-        result.invisible = "1".equals(properties.get(INVISIBLE));
-        result.intangible = "1".equals(properties.get(INTANGIBLE));
-        result.immobile = "1".equals(properties.get(IMMOBILE));
-        result.aTerre = "1".equals(properties.get(A_TERRE));
-        result.enCourse = "1".equals(properties.get(EN_COURSE));
-        result.levitation = "1".equals(properties.get(LEVITATION));
+        result.setCamou("1".equals(properties.get(CAMOU)));
+        result.setInvisible("1".equals(properties.get(INVISIBLE)));
+        result.setIntangible("1".equals(properties.get(INTANGIBLE)));
+        result.setImmobile("1".equals(properties.get(IMMOBILE)));
+        result.setaTerre("1".equals(properties.get(A_TERRE)));
+        result.setEnCourse("1".equals(properties.get(EN_COURSE)));
+        result.setLevitation("1".equals(properties.get(LEVITATION)));
 
-        result.dureeDuTour = Integer.parseInt(properties.get(DUREE_DU_TOUR));
-        result.dla = MhDlaNotifierUtils.parseDate(properties.get(DLA));
-        result.pa = Integer.parseInt(properties.get(PA_RESTANT));
+        result.setDureeDuTour(Integer.parseInt(properties.get(DUREE_DU_TOUR)));
+        result.setDla(MhDlaNotifierUtils.parseDate(properties.get(DLA)));
+        result.setPa(Integer.parseInt(properties.get(PA_RESTANT)));
 
-        result.blason = properties.get(BLASON);
+        result.setBlason(properties.get(BLASON));
         String guildeNumber = properties.get(GUILDE);
         if (!Strings.isNullOrEmpty(guildeNumber)) {
-            result.guilde = Integer.parseInt(guildeNumber);
+            result.setGuilde(Integer.parseInt(guildeNumber));
         }
-        result.nbKills = Integer.parseInt(properties.get(NB_KILLS));
-        result.nbMorts = Integer.parseInt(properties.get(NB_MORTS));
+        result.setNbKills(Integer.parseInt(properties.get(NB_KILLS)));
+        result.setNbMorts(Integer.parseInt(properties.get(NB_MORTS)));
 
 //        result.mouches = Lists.newArrayList();
 //        List<String> moucheLines = Lists.newArrayList(Splitter.on("\n").omitEmptyStrings().trimResults().split(properties.get(MOUCHES)));
@@ -216,22 +220,26 @@ public class ProfileProxy {
 //        }
 
         List<String> caractLines = Lists.newArrayList(Splitter.on("\n").omitEmptyStrings().trimResults().split(properties.get(CARACT)));
-        result.pvBM = 0;
-        result.dlaBM = 0;
-        result.poids = 0;
+        result.setPvBM(0);
+        result.setDlaBM(0);
+        result.setPoids(0);
+        int pvBm = 0, dlaBm = 0, poids = 0;
         for (String line : caractLines) {
             List<String> fields = Lists.newArrayList(Splitter.on(";").trimResults().split(line));
             String type = fields.get(0);
             if ("BMM".equals(type) || "BMP".equals(type)) {
-                result.pvBM += Integer.parseInt(fields.get(5));
-                Double dlaBM = Math.floor(Double.parseDouble(fields.get(11)));
-                result.dlaBM += dlaBM.intValue();
-                Double poids = Math.floor(Double.parseDouble(fields.get(12)));
-                result.poids += poids.intValue();
+                pvBm += Integer.parseInt(fields.get(5));
+                Double dlaBMDouble = Math.floor(Double.parseDouble(fields.get(11)));
+                dlaBm += dlaBMDouble.intValue();
+                Double poidsDouble = Math.floor(Double.parseDouble(fields.get(12)));
+                poids += poidsDouble.intValue();
             }
         }
+        result.setPvBM(pvBm);
+        result.setDlaBM(dlaBm);
+        result.setPoids(poids);
 
-        result.updateRequestType = UpdateRequestType.valueOf(properties.get(NEEDS_UPDATE));
+        result.setUpdateRequestType(UpdateRequestType.valueOf(properties.get(NEEDS_UPDATE)));
 
         return result;
     }

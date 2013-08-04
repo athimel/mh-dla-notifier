@@ -36,4 +36,5 @@ public class MissingLoginPasswordException extends MhDlaException {
     public String getText() {
         return "Authentification";
     }
+
 }

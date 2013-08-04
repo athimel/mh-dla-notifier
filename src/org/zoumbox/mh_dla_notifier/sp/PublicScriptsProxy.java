@@ -40,7 +40,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
 import org.zoumbox.mh_dla_notifier.Pair;
-import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
+import org.zoumbox.mh_dla_notifier.profile.v1.ProfileProxyV1;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -279,7 +279,7 @@ public class PublicScriptsProxy {
     protected static void saveUpdateResult(Context context, PublicScript script, long date, Exception exception) {
         if (PublicScript.Profil2.equals(script)) {
 
-            SharedPreferences preferences = context.getSharedPreferences(ProfileProxy.PREFS_NAME, 0);
+            SharedPreferences preferences = context.getSharedPreferences(ProfileProxyV1.PREFS_NAME, 0);
 
             boolean success = false;
             String result;

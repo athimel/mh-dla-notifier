@@ -1,3 +1,5 @@
+package org.zoumbox.mh_dla_notifier.troll;
+
 /*
  * #%L
  * MountyHall DLA Notifier
@@ -21,65 +23,16 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.zoumbox.mh_dla_notifier.profile;
-
-import com.google.common.base.Function;
 
 import java.util.Calendar;
 import java.util.Date;
 
+import com.google.common.base.Function;
+
 /**
- * @author Arno <arno@zoumbox.org>
+ * @author Arnaud Thimel <thimel@codelutin.com>
  */
-public class Troll {
-
-//    public static final Function<Mouche,MoucheType> GET_MOUCHE_TYPE = new Function<Mouche, MoucheType>() {
-//        @Override
-//        public MoucheType apply(Mouche mouche) {
-//            return mouche.type;
-//        }
-//    };
-
-    public String id, nom;
-    public Race race;
-    public int nival;
-    public Date dateInscription;
-
-    public int pv, pvMaxBase, pvVariation;
-    public int fatigue;
-    public int posX, posY, posN;
-    public boolean camou, invisible, intangible, immobile, aTerre, enCourse, levitation;
-    public int dureeDuTour;
-    public Date dla;
-    public int pa;
-    public String blason;
-    public int nbKills, nbMorts;
-    public int guilde;
-
-    public int pvBM;
-    public int dlaBM;
-    public int poids;
-
-    public UpdateRequestType updateRequestType;
-
-    // Computed
-    int pvMax = -1;
-    Date nextDla = null;
-
-
-    public int getPvMax() {
-        if (pvMax == -1) {
-            pvMax = pvMaxBase + pvBM;
-        }
-        return pvMax;
-    }
-
-    public Date getNextDla() {
-        if (nextDla == null) {
-            nextDla = GET_NEXT_DLA.apply(this);
-        }
-        return nextDla;
-    }
+public class Trolls {
 
     // Gain en minutes par PV sacrifié = 120 / ( Fatigue * (1 + Arrondi.Inférieur(Fatigue / 10) ) ) minutes. (arrondi inférieur)
     public static final Function<Integer, Integer> GET_DLA_GAIN_BY_PV = new Function<Integer, Integer>() {
@@ -97,10 +50,10 @@ public class Troll {
     public static final Function<Integer, Integer> GET_NEXT_FATIGUE = new Function<Integer, Integer>() {
         @Override
         public Integer apply(Integer fatigue) {
-            double result = fatigue.doubleValue() / 1.25;
-            Double resultRounded = Math.floor(result);
-            int resultRoundedToInt = resultRounded.intValue();
-            return resultRoundedToInt;
+            double nextFatigue = fatigue.doubleValue() / 1.25;
+            Double resultRounded = Math.floor(nextFatigue);
+            int result = resultRounded.intValue();
+            return result;
         }
     };
 
@@ -108,7 +61,7 @@ public class Troll {
     public static final Function<Troll, Integer> GET_PV_DLA_MALUS = new Function<Troll, Integer>() {
         @Override
         public Integer apply(Troll troll) {
-            int pvMax = troll.getPvMax();
+            int pvMax = troll.getComputedPvMax();
             int result = 0;
             if (pvMax > 0) {
                 result = (250 * (pvMax - troll.pv) / pvMax);
@@ -129,7 +82,7 @@ public class Troll {
         }
     };
 
-    private static final Function<Troll, Date> GET_NEXT_DLA = new Function<Troll, Date>() {
+    public static final Function<Troll, Date> GET_NEXT_DLA = new Function<Troll, Date>() {
         @Override
         public Date apply(Troll troll) {
 
@@ -142,5 +95,20 @@ public class Troll {
             return result;
         }
     };
+
+    public static final Function<Troll, Integer> GET_MAX_PV = new Function<Troll, Integer>() {
+        @Override
+        public Integer apply(Troll troll) {
+            int result = troll.pvMaxBase + troll.pvBM;
+            return result;
+        }
+    };
+
+//    public static final Function<Mouche,MoucheType> GET_MOUCHE_TYPE = new Function<Mouche, MoucheType>() {
+//        @Override
+//        public MoucheType apply(Mouche mouche) {
+//            return mouche.type;
+//        }
+//    };
 
 }

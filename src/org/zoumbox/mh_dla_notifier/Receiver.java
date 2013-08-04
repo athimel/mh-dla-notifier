@@ -28,8 +28,8 @@ import java.util.Date;
 import java.util.Map;
 
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
-import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
-import org.zoumbox.mh_dla_notifier.profile.Troll;
+import org.zoumbox.mh_dla_notifier.profile.v1.ProfileProxyV1;
+import org.zoumbox.mh_dla_notifier.troll.Troll;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
@@ -76,7 +76,7 @@ public class Receiver extends BroadcastReceiver {
         @Override
         public boolean apply(Context context) {
             // Check if the device just restarted
-            long elapsedSinceLastRestartCheck = ProfileProxy.getElapsedSinceLastRestartCheck(context);
+            long elapsedSinceLastRestartCheck = ProfileProxyV1.getElapsedSinceLastRestartCheck(context);
             Log.i(TAG, "Elapsed since last restart check: " + elapsedSinceLastRestartCheck + "ms ~= " + (elapsedSinceLastRestartCheck/60000) + "min");
 
             long uptime = SystemClock.uptimeMillis();
@@ -84,7 +84,7 @@ public class Receiver extends BroadcastReceiver {
 
             boolean result = elapsedSinceLastRestartCheck > uptime;
             if (result) {
-                ProfileProxy.restartCheckDone(context);
+                ProfileProxyV1.restartCheckDone(context);
             }
             Log.i(TAG, "Device restarted since last check: " + result);
             return result;
@@ -96,7 +96,7 @@ public class Receiver extends BroadcastReceiver {
         public boolean apply(Context context) {
             boolean result = false;
             // Check if the device restarted since last update
-            Long elapsedSinceLastSuccess = ProfileProxy.getElapsedSinceLastUpdateSuccess(context);
+            Long elapsedSinceLastSuccess = ProfileProxyV1.getElapsedSinceLastUpdateSuccess(context);
             if (elapsedSinceLastSuccess != null) {
                 Log.i(TAG, "Elapsed since last update success: " + elapsedSinceLastSuccess + "ms ~= " + (elapsedSinceLastSuccess / 60000) + "min");
 
@@ -115,7 +115,7 @@ public class Receiver extends BroadcastReceiver {
     protected static final Predicate<Context> SHOULD_UPDATE_BECAUSE_OF_NETWORK_FAILURE = new Predicate<Context>() {
         @Override
         public boolean apply(Context context) {
-            String lastUpdateResult = ProfileProxy.getLastUpdateResult(context);
+            String lastUpdateResult = ProfileProxyV1.getLastUpdateResult(context);
             Log.i(TAG, "lastUpdateResult: " + lastUpdateResult);
             boolean result = lastUpdateResult != null && lastUpdateResult.startsWith("NETWORK ERROR");
             Log.i(TAG, "shouldUpdateBecauseOfNetworkFailure: " + result);
@@ -147,7 +147,7 @@ public class Receiver extends BroadcastReceiver {
             return;
         }
 
-        if (ProfileProxy.areTrollIdentifiersUndefined(context)) {
+        if (ProfileProxyV1.areTrollIdentifiersUndefined(context)) {
             Log.i(TAG, "TrollId not defined, exiting...");
             return;
         }
@@ -175,9 +175,9 @@ public class Receiver extends BroadcastReceiver {
         Troll troll = null;
         try {
             if (requestUpdate) {
-                troll = ProfileProxy.refreshDLA(context);
+                troll = ProfileProxyV1.refreshDLA(context);
             } else if (requestAlarmRegistering) {
-                troll = ProfileProxy.fetchTrollWithoutUpdate(context);
+                troll = ProfileProxyV1.fetchTrollWithoutUpdate(context);
             } else {
                 Log.i(TAG, "Skip loading Troll");
             }
@@ -199,13 +199,13 @@ public class Receiver extends BroadcastReceiver {
             Date now = new Date();
 
             Date beforeCurrentDla = alarms.get(AlarmType.CURRENT_DLA);
-            Date currentDla = troll.dla;
+            Date currentDla = troll.getDla();
             Date beforeNextDla = alarms.get(AlarmType.NEXT_DLA);
-            Date nextDla = troll.getNextDla();
+            Date nextDla = troll.getComputedNextDla();
 
             if (now.after(beforeCurrentDla) && now.before(currentDla)) {
                 Log.i(TAG, String.format("Need to notify DLA='%s' about to expire", currentDla));
-                int pa = troll.pa;
+                int pa = troll.getPa();
                 boolean willNotify = needsNotificationAccordingToPA(preferences, pa);
                 Log.i(TAG, String.format("PA=%d. Will notify? %b", pa, willNotify));
                 if (willNotify) {
@@ -222,10 +222,10 @@ public class Receiver extends BroadcastReceiver {
                 Log.i(TAG, String.format("No need to notify for NDLA=%s", nextDla));
             }
 
-            if (requestUpdate && troll.pvVariation < 0 && preferences.notifyOnPvLoss) {
-                int pvLoss = Math.abs(troll.pvVariation);
+            if (requestUpdate && troll.getPvVariation() < 0 && preferences.notifyOnPvLoss) {
+                int pvLoss = Math.abs(troll.getPvVariation());
                 Log.i(TAG, String.format("Troll lost %d PV", pvLoss));
-                notifyPvLoss(context, pvLoss, troll.pv, preferences);
+                notifyPvLoss(context, pvLoss, troll.getPv(), preferences);
             }
         }
     }
@@ -311,8 +311,8 @@ public class Receiver extends BroadcastReceiver {
     protected static Map<AlarmType, Date> getAlarms(Troll troll, int notificationDelay) {
         Preconditions.checkNotNull(troll);
 
-        Date currentDla = troll.dla;
-        Date nextDla = troll.getNextDla();
+        Date currentDla = troll.getDla();
+        Date nextDla = troll.getComputedNextDla();
 
         Log.i(TAG, String.format("Computing wakeups for [DLA=%s] [NDLA=%s]", currentDla, nextDla));
 
@@ -346,7 +346,7 @@ public class Receiver extends BroadcastReceiver {
 
     public static Map<AlarmType, Date> scheduleAlarms(Context context) throws MissingLoginPasswordException {
         PreferencesHolder preferences = PreferencesHolder.load(context);
-        Troll troll = ProfileProxy.fetchTrollWithoutUpdate(context);
+        Troll troll = ProfileProxyV1.fetchTrollWithoutUpdate(context);
 
         Map<AlarmType, Date> alarms = getAlarms(troll, preferences.notificationDelay);
         Map<AlarmType, Date> scheduledAlarms = scheduleAlarms(context, alarms);

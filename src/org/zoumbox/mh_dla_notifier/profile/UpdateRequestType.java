@@ -27,6 +27,7 @@ package org.zoumbox.mh_dla_notifier.profile;
  * @author Arno <arno@zoumbox.org>
  */
 public enum UpdateRequestType {
+
     NONE,
     FULL,
     ONLY_NECESSARY;
@@ -35,4 +36,5 @@ public enum UpdateRequestType {
         boolean result = FULL.equals(this) || ONLY_NECESSARY.equals(this);
         return result;
     }
+
 }

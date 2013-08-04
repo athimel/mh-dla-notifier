@@ -34,7 +34,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import com.google.common.base.Strings;
-import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
+import org.zoumbox.mh_dla_notifier.profile.v1.ProfileProxyV1;
 
 /**
  * Activité principale
@@ -60,7 +60,7 @@ public class RegisterActivity extends AbstractActivity {
         troll.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         password = (EditText) findViewById(R.id.password);
 
-        String trollNumber = ProfileProxy.loadLogin(this);
+        String trollNumber = ProfileProxyV1.loadLogin(this);
         if (!Strings.isNullOrEmpty(trollNumber)) {
             troll.setText(trollNumber);
         }
@@ -122,7 +122,7 @@ public class RegisterActivity extends AbstractActivity {
     protected void saveIdAndPassword(String trollNumber, String trollPassword, boolean needToHashPassword) {
         showToast("Enregistrement. Merci de patienter...");
 
-        boolean result = ProfileProxy.saveIdPassword(this, trollNumber, trollPassword, needToHashPassword);
+        boolean result = ProfileProxyV1.saveIdPassword(this, trollNumber, trollPassword, needToHashPassword);
 
         if (result) {
             setResult(RESULT_OK);
