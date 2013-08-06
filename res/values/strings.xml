@@ -25,83 +25,87 @@
 
 <resources>
 
-    <string name="error">Erreur: %s</string>
+  <string name="error">Erreur: %s</string>
 
-    <string name="app_name">Avertisseur de DLA MountyHall</string>
+  <string name="app_name">Avertisseur de DLA MountyHall</string>
 
-    <string name="version">0.12</string>
-    <string name="version_full">Version 0.12</string>
+  <string name="version">0.12</string>
+  <string name="version_full">Version 0.12</string>
 
-    <string name="register">Saisie de vos identifiants</string>
-    <string name="preferences">Préférences</string>
-    <string name="refresh">Mise à jour</string>
-    <string name="qr_code_market">QR code (Market)</string>
-    <string name="credits">Crédits</string>
+  <string name="register">Saisie de vos identifiants</string>
+  <string name="preferences">Préférences</string>
+  <string name="refresh">Mise à jour</string>
+  <string name="qr_code_market">QR code (Market)</string>
+  <string name="credits">Crédits</string>
 
-    <string name="credits_leader">Project Leader</string>
-    <string name="credits_testers">Testeurs</string>
-    <string name="credits_illustrator">Illustrateur</string>
+  <string name="credits_leader">Project Leader</string>
+  <string name="credits_testers">Testeurs</string>
+  <string name="credits_illustrator">Illustrateur</string>
 
-    <string name="close">Fermer</string>
-    <string name="save">Enregistrer</string>
+  <string name="close">Fermer</string>
+  <string name="save">Enregistrer</string>
 
-    <string name="boolean_true">Oui</string>
-    <string name="boolean_false">Non</string>
+  <string name="boolean_true">Oui</string>
+  <string name="boolean_false">Non</string>
 
-    <string name="play">Jouer votre Trõll</string>
+  <string name="play">Jouer votre Trõll</string>
 
-    <string name="troll">Trõll</string>
-    <string name="troll_number">Numéro de Trõll</string>
-    <string name="password">Mot de passe spécifique à 8 caractères</string>
+  <string name="troll">Trõll</string>
+  <string name="troll_number">Numéro de Trõll</string>
+  <string name="password">Mot de passe spécifique à 8 caractères</string>
 
-    <string name="dla">DLA</string>
-    <string name="remaining_pas">PAs restants</string>
-    <string name="dla_duration">Durée du tour</string>
-    <string name="next_dla">DLA suivante (estim.)</string>
-    <string name="position">Position</string>
-    <string name="pvs">Points de vie</string>
-    <string name="fatigue">Fatigue</string>
-    <string name="kd">Kills / Morts</string>
+  <string name="dla">DLA</string>
+  <string name="remaining_pas">PAs restants</string>
+  <string name="dla_duration">Durée du tour</string>
+  <string name="next_dla">DLA suivante (estim.)</string>
+  <string name="position">Position</string>
+  <string name="pvs">Points de vie</string>
+  <string name="fatigue">Fatigue</string>
+  <string name="kd">Kills / Morts</string>
 
-    <string name="next_alarm" formatted="false">Notification programmée le %s à %s</string>
+  <string name="next_alarm" formatted="false">Notification programmée le %s à %s</string>
 
-    <string name="current_dla_expiring_title">Attention à votre DLA !</string>
-    <string name="current_dla_expiring_title_noPA">Votre DLA va bientôt expirer</string>
-    <string name="current_dla_expiring_text" formatted="false">DLA : %s - %d PA restant(s)</string>
-    <string name="current_dla_expired_title">Vous pouvez réactiver votre DLA !</string>
+  <string name="current_dla_expiring_title">Attention à votre DLA !</string>
+  <string name="current_dla_expiring_title_noPA">Votre DLA va bientôt expirer</string>
+  <string name="current_dla_expiring_text" formatted="false">DLA : %s - %d PA restant(s)</string>
+  <string name="current_dla_expired_title">Vous pouvez réactiver votre DLA !</string>
 
-    <string name="next_dla_expiring_title">Attention à votre prochaine DLA !</string>
-    <string name="next_dla_expiring_text" formatted="false">Prochaine DLA : %s</string>
-    <string name="next_dla_expired_title">Votre DLA suivante a également expiré !</string>
+  <string name="next_dla_expiring_title">Attention à votre prochaine DLA !</string>
+  <string name="next_dla_expiring_text" formatted="false">Prochaine DLA : %s</string>
+  <string name="next_dla_expired_title">Votre DLA suivante a également expiré !</string>
 
-    <string name="pv_loss_title" formatted="false">Votre avez perdu %d PV</string>
-    <string name="pv_loss_text" formatted="false">Il vous reste %d PV</string>
+  <string name="pv_loss_title" formatted="false">Votre avez perdu %d PV</string>
+  <string name="pv_loss_text" formatted="false">Il vous reste %d PV</string>
 
-    <string name="dla_format">dd MMM - HH:mm:ss</string>
-    <string name="dla_duration_format" formatted="false">%d heures et %d minutes</string>
+  <string name="dla_format">dd MMM - HH:mm:ss</string>
+  <string name="dla_duration_format" formatted="false">%d heures et %d minutes</string>
 
-    <!-- Preferences -->
-    <string name="prefs_notify_without_pa">Notification si plus de PA</string>
-    <string name="prefs_notify_without_pa_true">Vous serez notifié même si vous n\'avez plus de PA</string>
-    <string name="prefs_notify_without_pa_false">Vous ne serez pas notifié si vous n\'avez plus de PA</string>
+  <!-- Preferences -->
+  <string name="prefs_notify_without_pa">Notification si plus de PA</string>
+  <string name="prefs_notify_without_pa_true">Vous serez notifié même si vous n\'avez plus de PA</string>
+  <string name="prefs_notify_without_pa_false">Vous ne serez pas notifié si vous n\'avez plus de PA</string>
 
-    <string name="prefs_notify_on_pv_loss">Notifier les pertes de PV ?</string>
+  <string name="prefs_notify_on_pv_loss">Notifier les pertes de PV ?</string>
 
-    <string name="prefs_silent_notification">Notification silencieuse</string>
-    <string name="prefs_silent_notification_always">Toujours silencieux</string>
-    <string name="prefs_silent_notification_when_silent">Uniquement sur vibreur</string>
-    <string name="prefs_silent_notification_by_night">Ni son ni vibration la nuit</string>
-    <string name="prefs_silent_notification_never">Jamais silencieux</string>
+  <string name="prefs_silent_notification">Notification silencieuse</string>
+  <string name="prefs_silent_notification_always">Toujours silencieux</string>
+  <string name="prefs_silent_notification_when_silent">Uniquement sur vibreur</string>
+  <string name="prefs_silent_notification_by_night">Ni son ni vibration la nuit</string>
+  <string name="prefs_silent_notification_never">Jamais silencieux</string>
 
-    <string name="prefs_notification_delay">Délai de notification</string>
-    <string name="prefs_notification_delay_summary" formatted="false">%d minutes avant la DLA</string>
+  <string name="prefs_notification_delay">Délai de notification</string>
+  <string name="prefs_notification_delay_summary" formatted="false">%d minutes avant la DLA</string>
 
-    <string name="prefs_use_smartphone_interface">Interface smartphone ?</string>
+  <string name="prefs_use_smartphone_interface">Interface smartphone ?</string>
 
-    <string name="legacy_password_title">Nouvelle sécurité</string>
-    <string name="legacy_password_message">Depuis le 1er mars 2013, vous devez utiliser un mot de passe "spécifique" fournit par MountyHall. Voulez-vous entrer ce mot de passe maintenant ?</string>
+  <string name="legacy_password_title">Nouvelle sécurité</string>
+  <string name="legacy_password_message">Depuis le 1er mars 2013, vous devez utiliser un mot de passe "spécifique"
+    fournit par MountyHall. Voulez-vous entrer ce mot de passe maintenant ?
+  </string>
 
-    <string name="password_help_title">Bienvenue !</string>
-    <string name="password_help_message">Pour connaître votre mot de passe spécifique, connectez-vous à MountyHall, allez dans Options » Options Trõll » Générer un code d\'accès spécifique.</string>
+  <string name="password_help_title">Bienvenue !</string>
+  <string name="password_help_message">Pour connaître votre mot de passe spécifique, connectez-vous à MountyHall, allez
+    dans Options » Options Trõll » Générer un code d\'accès spécifique.
+  </string>
 
 </resources>

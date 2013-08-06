@@ -27,31 +27,31 @@
               android:layout_height="fill_parent"
               android:orientation="vertical">
 
-    <TextView android:text="@string/troll_number"
-              android:layout_height="wrap_content"
-              android:layout_width="fill_parent"/>
-    <EditText android:id="@+id/troll"
-              android:layout_height="wrap_content"
-              android:layout_width="fill_parent"/>
-
-    <TextView android:text="@string/password"
-              android:layout_height="wrap_content"
-              android:layout_width="fill_parent"/>
-    <EditText android:id="@+id/password"
-              android:layout_height="wrap_content"
-              android:layout_width="fill_parent"
-              android:password="true"
-            />
-    <TextView android:text="@string/password_help_message"
-              android:layout_height="wrap_content"
-              android:layout_width="fill_parent"
-              android:textStyle="italic"/>
-
-    <Button android:id="@+id/save"
-            android:layout_width="fill_parent"
+  <TextView android:text="@string/troll_number"
             android:layout_height="wrap_content"
-            style="@style/Buttons"
-            android:text="@string/save"
-            android:onClick="onSaveButtonClicked"/>
+            android:layout_width="fill_parent"/>
+  <EditText android:id="@+id/troll"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"/>
+
+  <TextView android:text="@string/password"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"/>
+  <EditText android:id="@+id/password"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:password="true"
+          />
+  <TextView android:text="@string/password_help_message"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:textStyle="italic"/>
+
+  <Button android:id="@+id/save"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          style="@style/Buttons"
+          android:text="@string/save"
+          android:onClick="onSaveButtonClicked"/>
 
 </LinearLayout>

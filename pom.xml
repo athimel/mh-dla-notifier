@@ -1,331 +1,337 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <!-- ************************************************************* -->
-    <!-- *** POM Relationships *************************************** -->
-    <!-- ************************************************************* -->
+  <!-- ************************************************************* -->
+  <!-- *** POM Relationships *************************************** -->
+  <!-- ************************************************************* -->
 
-    <!-- Use the Zoumbox parent pom -->
-    <parent>
-        <groupId>org.zoumbox</groupId>
-        <artifactId>mavenpom</artifactId>
-        <version>0.8-SNAPSHOT</version>
-    </parent>
-
+  <!-- Use the Zoumbox parent pom -->
+  <parent>
     <groupId>org.zoumbox</groupId>
-    <artifactId>mh-dla-notifier</artifactId>
-    <version>0.12-SNAPSHOT</version>
+    <artifactId>mavenpom</artifactId>
+    <version>0.8-SNAPSHOT</version>
+  </parent>
 
-    <dependencies>
+  <groupId>org.zoumbox</groupId>
+  <artifactId>mh-dla-notifier</artifactId>
+  <version>0.12-SNAPSHOT</version>
 
-        <dependency>
-            <groupId>com.google.android</groupId>
-            <artifactId>android</artifactId>
-            <version>2.1.2</version> <!-- Don't upgrade higher than 2.1.x because of external storage API -->
-            <scope>provided</scope>
-        </dependency>
+  <dependencies>
 
-        <dependency>
-            <groupId>com.google.android</groupId>
-            <artifactId>android-test</artifactId>
-            <version>2.1.2</version> <!-- Don't upgrade higher than 2.1.x because of external storage API -->
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>com.google.android</groupId>
+      <artifactId>android</artifactId>
+      <version>2.1.2</version>
+      <!-- Don't upgrade higher than 2.1.x because of external storage API -->
+      <scope>provided</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guavaVersion}</version>
-        </dependency>
+    <dependency>
+      <groupId>com.google.android</groupId>
+      <artifactId>android-test</artifactId>
+      <version>2.1.2</version>
+      <!-- Don't upgrade higher than 2.1.x because of external storage API -->
+      <scope>test</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.3</version> <!-- Don't upgrade higher than 1.3 because of external storage API -->
-            <scope>provided</scope>
-        </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guavaVersion}</version>
+    </dependency>
 
-    </dependencies>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.3</version>
+      <!-- Don't upgrade higher than 1.3 because of external storage API -->
+      <scope>provided</scope>
+    </dependency>
 
-    <!-- ************************************************************* -->
-    <!-- *** Project Information ************************************* -->
-    <!-- ************************************************************* -->
+  </dependencies>
 
-    <name>MountyHall DLA Notifier</name>
-    <description>MountyHall - Avertisseur de DLA</description>
-    <inceptionYear>2012</inceptionYear>
-    <url>http://dev.zoumbox.org/maven-sites/mh-dla-notifier</url>
+  <!-- ************************************************************* -->
+  <!-- *** Project Information ************************************* -->
+  <!-- ************************************************************* -->
 
-    <licenses>
-        <license>
-            <name>GPL</name>
-            <url>http://www.gnu.org/copyleft/gpl.html</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+  <name>MountyHall DLA Notifier</name>
+  <description>MountyHall - Avertisseur de DLA</description>
+  <inceptionYear>2012</inceptionYear>
+  <url>http://dev.zoumbox.org/maven-sites/mh-dla-notifier</url>
 
-    <developers>
+  <licenses>
+    <license>
+      <name>GPL</name>
+      <url>http://www.gnu.org/copyleft/gpl.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
-        <developer>
-            <id>arno</id>
-            <name>Arnaud Thimel</name>
-            <email>arno@zoumbox.org</email>
-            <organization>Zoumbox.org</organization>
-            <url>http://dev.zoumbox.org/users/3</url>
-            <timezone>+2</timezone>
-            <roles>
-                <role>Project Leader</role>
-            </roles>
-        </developer>
+  <developers>
 
-        <developer>
-            <id>bouloche61</id>
-            <name>Maxime Belloche</name>
-            <url>http://bouloche61.blogspot.fr/</url>
-            <roles>
-                <role>Illustrator</role>
-            </roles>
-        </developer>
+    <developer>
+      <id>arno</id>
+      <name>Arnaud Thimel</name>
+      <email>arno@zoumbox.org</email>
+      <organization>Zoumbox.org</organization>
+      <url>http://dev.zoumbox.org/users/3</url>
+      <timezone>+2</timezone>
+      <roles>
+        <role>Project Leader</role>
+      </roles>
+    </developer>
 
-        <developer>
-            <id>testers</id>
-            <name>Heb, omnipotente, Verjus, 100, moljnir</name>
-            <roles>
-                <role>Testers</role>
-            </roles>
-        </developer>
+    <developer>
+      <id>bouloche61</id>
+      <name>Maxime Belloche</name>
+      <url>http://bouloche61.blogspot.fr/</url>
+      <roles>
+        <role>Illustrator</role>
+      </roles>
+    </developer>
 
-    </developers>
+    <developer>
+      <id>testers</id>
+      <name>Heb, omnipotente, Verjus, 100, moljnir</name>
+      <roles>
+        <role>Testers</role>
+      </roles>
+    </developer>
 
-    <organization>
-        <name>Zoumbox.org</name>
-        <url>dev.zoumbox.org</url>
-    </organization>
+  </developers>
 
-    <issueManagement>
-        <system>Redmine</system>
-        <url>http://dev.zoumbox.org/projects/mh-dla-notifier/issues/</url>
-    </issueManagement>
+  <organization>
+    <name>Zoumbox.org</name>
+    <url>dev.zoumbox.org</url>
+  </organization>
 
-    <!-- ************************************************************* -->
-    <!-- *** Build Settings ****************************************** -->
-    <!-- ************************************************************* -->
+  <issueManagement>
+    <system>Redmine</system>
+    <url>http://dev.zoumbox.org/projects/mh-dla-notifier/issues/</url>
+  </issueManagement>
 
-    <packaging>apk</packaging>
+  <!-- ************************************************************* -->
+  <!-- *** Build Settings ****************************************** -->
+  <!-- ************************************************************* -->
 
-    <properties>
-        <maven.test.skip>true</maven.test.skip>
-      <guavaVersion>14.0.1</guavaVersion>
-    </properties>
+  <packaging>apk</packaging>
 
-    <prerequisites>
-        <maven>3.0</maven>
-    </prerequisites>
+  <properties>
+    <maven.test.skip>true</maven.test.skip>
+    <guavaVersion>14.0.1</guavaVersion>
+  </properties>
 
-    <build>
-        <sourceDirectory>src</sourceDirectory>
-        <resources>
-            <resource>
-                <directory>res</directory>
-                <filtering>false</filtering>
-            </resource>
-        </resources>
+  <prerequisites>
+    <maven>3.0</maven>
+  </prerequisites>
 
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>res</directory>
+        <filtering>false</filtering>
+      </resource>
+    </resources>
+
+    <plugins>
+
+      <plugin>
+        <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+        <artifactId>android-maven-plugin</artifactId>
+        <version>3.6.1</version>
+        <executions>
+          <execution>
+            <id>alignApk</id>
+            <phase>install</phase>
+            <goals>
+              <goal>zipalign</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <sdk>
+            <path>${env.ANDROID_HOME}</path>
+            <platform>2.1</platform>
+          </sdk>
+          <deleteConflictingFiles>true</deleteConflictingFiles>
+          <!--device>emulator</device-->
+          <device>usb</device>
+          <zipalign>
+            <verbose>true</verbose>
+            <skip>false</skip>
+            <inputApk>
+              ${project.build.directory}/${project.artifactId}-${project.version}.apk
+            </inputApk>
+            <outputApk>
+              ${project.build.directory}/${project.artifactId}-${project.version}-aligned.apk
+            </outputApk>
+          </zipalign>
+        </configuration>
+        <extensions>true</extensions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <version>${licensePluginVersion}</version>
+        <configuration>
+          <roots>
+            <root>res</root>
+            <root>src</root>
+          </roots>
+          <licenseName>gpl_v3</licenseName>
+          <addSvnKeyWords>true</addSvnKeyWords>
+        </configuration>
+      </plugin>
+
+    </plugins>
+
+  </build>
+
+  <!-- ************************************************************* -->
+  <!-- *** Maven Environment *************************************** -->
+  <!-- ************************************************************* -->
+
+  <repositories>
+
+    <repository>
+      <id>zoumbox-repository</id>
+      <name>Zoumbox releases repository</name>
+      <url>http://dev.zoumbox.org/repo/releases/</url>
+    </repository>
+
+    <repository>
+      <id>zoumbox-snapshots-repository</id>
+      <name>Zoumbox snapshots repository</name>
+      <url>http://dev.zoumbox.org/repo/snapshots/</url>
+    </repository>
+
+  </repositories>
+
+  <pluginRepositories>
+  </pluginRepositories>
+
+  <scm>
+    <connection>scm:svn:http://dev.zoumbox.org/src/mh-dla-notifier/trunk
+    </connection>
+    <developerConnection>scm:svn:http://dev.zoumbox.org/src/mh-dla-notifier/trunk
+    </developerConnection>
+    <url>http://dev.zoumbox.org/src/mh-dla-notifier/trunk</url>
+  </scm>
+
+  <distributionManagement>
+
+    <site>
+      <id>zoumbox-sites</id>
+      <url>scp://zoumbox.org:2203/var/www/dev/maven-sites/mh-dla-notifier</url>
+    </site>
+
+  </distributionManagement>
+
+  <profiles>
+
+    <profile>
+      <id>sign</id>
+      <activation>
+        <file>
+          <exists>${zoumbox.keystore}</exists>
+        </file>
+      </activation>
+      <build>
         <plugins>
-
-            <plugin>
-                <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-                <artifactId>android-maven-plugin</artifactId>
-                <version>3.6.1</version>
-                <executions>
-                    <execution>
-                        <id>alignApk</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>zipalign</goal>
-                        </goals>
-                    </execution>
-                </executions>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jarsigner-plugin</artifactId>
+            <version>1.2</version>
+            <executions>
+              <execution>
+                <id>signing</id>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+                <phase>package</phase>
+                <inherited>true</inherited>
                 <configuration>
-                    <sdk>
-                        <path>${env.ANDROID_HOME}</path>
-                        <platform>2.1</platform>
-                    </sdk>
-                    <deleteConflictingFiles>true</deleteConflictingFiles>
-                    <!--device>emulator</device-->
-                    <device>usb</device>
-                    <zipalign>
-                        <verbose>true</verbose>
-                        <skip>false</skip>
-                        <inputApk>
-                            ${project.build.directory}/${project.artifactId}-${project.version}.apk
-                        </inputApk>
-                        <outputApk>
-                            ${project.build.directory}/${project.artifactId}-${project.version}-aligned.apk
-                        </outputApk>
-                    </zipalign>
+                  <includes>
+                    <include>target/*.apk</include>
+                  </includes>
+                  <keystore>${zoumbox.keystore}</keystore>
+                  <storepass>${zoumbox.keystore.storepass}
+                  </storepass>
+                  <alias>zoumbox.org</alias>
+                  <keypass>${zoumbox.keystore.keypass}</keypass>
+                  <arguments>
+                    <argument>-sigalg</argument>
+                    <argument>MD5withRSA</argument>
+                    <argument>-digestalg</argument>
+                    <argument>SHA1</argument>
+                  </arguments>
                 </configuration>
-                <extensions>true</extensions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <version>${licensePluginVersion}</version>
-                <configuration>
-                    <roots>
-                        <root>res</root>
-                        <root>src</root>
-                    </roots>
-                    <licenseName>gpl_v3</licenseName>
-                    <addSvnKeyWords>true</addSvnKeyWords>
-                </configuration>
-            </plugin>
-
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+            <artifactId>android-maven-plugin</artifactId>
+            <version>3.6.1</version>
+            <inherited>true</inherited>
+            <configuration>
+              <sign>
+                <debug>false</debug>
+              </sign>
+            </configuration>
+          </plugin>
         </plugins>
+      </build>
+    </profile>
 
-    </build>
+    <!-- This profile update license stuff with new goal update-file-header -->
+    <profile>
+      <id>update-file-header</id>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
 
-    <!-- ************************************************************* -->
-    <!-- *** Maven Environment *************************************** -->
-    <!-- ************************************************************* -->
+      <properties>
+        <license.descriptor>src/license/project.xml</license.descriptor>
+      </properties>
+      <build>
+        <defaultGoal>process-resources</defaultGoal>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>license-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>update-file-header</id>
+                <goals>
+                  <goal>update-file-header</goal>
+                </goals>
+                <configuration>
+                  <addSvnKeyWords>true</addSvnKeyWords>
+                  <excludes>
+                    <exclude>**/i18n/*.properties</exclude>
+                    <exclude>**/THIRD-PARTY.properties</exclude>
+                    <!-- since sh scripts must begins by the line #!/bin/sh,
+            can not use the mojo for the mojo -->
+                    <exclude>**/*.sh</exclude>
+                  </excludes>
+                </configuration>
+                <phase>process-resources</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
 
-    <repositories>
-
-        <repository>
-            <id>zoumbox-repository</id>
-            <name>Zoumbox releases repository</name>
-            <url>http://dev.zoumbox.org/repo/releases/</url>
-        </repository>
-
-        <repository>
-            <id>zoumbox-snapshots-repository</id>
-            <name>Zoumbox snapshots repository</name>
-            <url>http://dev.zoumbox.org/repo/snapshots/</url>
-        </repository>
-
-    </repositories>
-
-    <pluginRepositories>
-    </pluginRepositories>
-
-    <scm>
-        <connection>scm:svn:http://dev.zoumbox.org/src/mh-dla-notifier/trunk
-        </connection>
-        <developerConnection>scm:svn:http://dev.zoumbox.org/src/mh-dla-notifier/trunk
-        </developerConnection>
-        <url>http://dev.zoumbox.org/src/mh-dla-notifier/trunk</url>
-    </scm>
-
-    <distributionManagement>
-
-        <site>
-            <id>zoumbox-sites</id>
-            <url>scp://zoumbox.org:2203/var/www/dev/maven-sites/mh-dla-notifier</url>
-        </site>
-
-    </distributionManagement>
-
-    <profiles>
-
-        <profile>
-            <id>sign</id>
-            <activation>
-                <file>
-                    <exists>${zoumbox.keystore}</exists>
-                </file>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-jarsigner-plugin</artifactId>
-                        <version>1.2</version>
-                        <executions>
-                            <execution>
-                                <id>signing</id>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                                <phase>package</phase>
-                                <inherited>true</inherited>
-                                <configuration>
-                                    <includes>
-                                        <include>target/*.apk</include>
-                                    </includes>
-                                    <keystore>${zoumbox.keystore}</keystore>
-                                    <storepass>${zoumbox.keystore.storepass}
-                                    </storepass>
-                                    <alias>zoumbox.org</alias>
-                                    <keypass>${zoumbox.keystore.keypass}</keypass>
-                                    <arguments>
-                                        <argument>-sigalg</argument><argument>MD5withRSA</argument>
-                                        <argument>-digestalg</argument><argument>SHA1</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-                        <artifactId>android-maven-plugin</artifactId>
-                        <version>3.6.1</version>
-                        <inherited>true</inherited>
-                        <configuration>
-                            <sign>
-                                <debug>false</debug>
-                            </sign>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- This profile update license stuff with new goal update-file-header -->
-        <profile>
-            <id>update-file-header</id>
-            <activation>
-                <property>
-                    <name>performRelease</name>
-                    <value>true</value>
-                </property>
-            </activation>
-
-            <properties>
-                <license.descriptor>src/license/project.xml</license.descriptor>
-            </properties>
-            <build>
-                <defaultGoal>process-resources</defaultGoal>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>license-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>update-file-header</id>
-                                <goals>
-                                    <goal>update-file-header</goal>
-                                </goals>
-                                <configuration>
-                                    <addSvnKeyWords>true</addSvnKeyWords>
-                                    <excludes>
-                                        <exclude>**/i18n/*.properties</exclude>
-                                        <exclude>**/THIRD-PARTY.properties</exclude>
-                                        <!-- since sh scripts must begins by the line #!/bin/sh,
-                                can not use the mojo for the mojo -->
-                                        <exclude>**/*.sh</exclude>
-                                    </excludes>
-                                </configuration>
-                                <phase>process-resources</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-    </profiles>
+  </profiles>
 
 </project>
