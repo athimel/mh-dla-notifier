@@ -31,9 +31,14 @@ public class Pair<L, R> {
     protected L left;
     protected R right;
 
-    public Pair(L left, R right) {
+    protected Pair(L left, R right) {
         this.left = left;
         this.right = right;
+    }
+
+    public static <Left, Right> Pair<Left, Right> of(Left left, Right right) {
+        Pair<Left, Right> result = new Pair<Left, Right>(left, right);
+        return result;
     }
 
     public L left() {

@@ -37,7 +37,7 @@ public enum PublicScriptProperties {
     RACE,
     NIVAL,
     DATE_INSCRIPTION, // 2011-01-21 14:07:48
-//    properties.put("email", PublicScript.ProfilPublic2);
+    //    properties.put("email", PublicScript.ProfilPublic2);
     BLASON,
     //    properties.put("nbMouches", PublicScript.ProfilPublic2);
     NB_KILLS,

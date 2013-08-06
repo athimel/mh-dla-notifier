@@ -23,25 +23,6 @@
  */
 package org.zoumbox.mh_dla_notifier.sp;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
-import org.zoumbox.mh_dla_notifier.Pair;
-import org.zoumbox.mh_dla_notifier.profile.v1.ProfileProxyV1;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,6 +32,27 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
+import org.zoumbox.mh_dla_notifier.Pair;
+import org.zoumbox.mh_dla_notifier.profile.v1.ProfileProxyV1;
+
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -175,7 +177,6 @@ public class PublicScriptsProxy {
 
         return result;
     }
-
 
 
     public static Map<String, String> fetch(Context context, PublicScript script,

@@ -23,9 +23,21 @@
  */
 package org.zoumbox.mh_dla_notifier;
 
+import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
+import org.zoumbox.mh_dla_notifier.profile.v1.ProfileProxyV1;
+
 import android.app.Activity;
 
 public abstract class AbstractActivity extends Activity {
+
+    private ProfileProxy profileProxy;
+
+    public ProfileProxy getProfileProxy() {
+        if (profileProxy == null) {
+            profileProxy = new ProfileProxyV1();
+        }
+        return profileProxy;
+    }
 
     protected void showToast(CharSequence message, Object... args) {
         MhDlaNotifierUtils.toast(getApplicationContext(), message, args);

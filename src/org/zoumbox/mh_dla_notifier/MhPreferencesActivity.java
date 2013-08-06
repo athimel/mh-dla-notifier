@@ -23,16 +23,17 @@
  */
 package org.zoumbox.mh_dla_notifier;
 
+import java.util.Map;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import com.google.common.base.Function;
-import com.google.common.collect.Maps;
-
-import java.util.Map;
 
 /**
  * @author Arno <arno@zoumbox.org>

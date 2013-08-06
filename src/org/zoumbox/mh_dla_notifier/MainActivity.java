@@ -24,19 +24,20 @@ package org.zoumbox.mh_dla_notifier;
  * #L%
  */
 
-import android.os.AsyncTask;
-import android.util.Log;
+import java.util.Date;
+import java.util.Map;
+
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
-import org.zoumbox.mh_dla_notifier.profile.v1.ProfileProxyV1;
-import org.zoumbox.mh_dla_notifier.troll.Troll;
+import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
 import org.zoumbox.mh_dla_notifier.sp.NetworkUnavailableException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
 import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
 import org.zoumbox.mh_dla_notifier.sp.ScriptCategory;
+import org.zoumbox.mh_dla_notifier.troll.Troll;
 
-import java.util.Date;
-import java.util.Map;
+import android.os.AsyncTask;
+import android.util.Log;
 
 public class MainActivity extends MhDlaNotifierUI {
 
@@ -49,7 +50,7 @@ public class MainActivity extends MhDlaNotifierUI {
 
         try {
             // First load the troll without update
-            Troll troll = ProfileProxyV1.fetchTrollWithoutUpdate(this);
+            Troll troll = getProfileProxy().fetchTrollWithoutUpdate(this, null);
 
             trollUpdated(troll);
 
@@ -67,14 +68,14 @@ public class MainActivity extends MhDlaNotifierUI {
 
     @Override
     protected void manualRefresh() {
-        int quota = ProfileProxyV1.GET_USABLE_QUOTA.apply(ScriptCategory.DYNAMIC) / 2; // %2 pour garder une marge de sécu vis à vis des maj auto
+        int quota = ProfileProxy.GET_USABLE_QUOTA.apply(ScriptCategory.DYNAMIC) / 2; // %2 pour garder une marge de sécu vis à vis des maj auto
         showToast("Attention à ne pas dépasser %d mises à jour manuelles par jour.", quota);
         startUpdate(UpdateRequestType.FULL);
     }
 
     @Override
     protected Date getLastUpdate() {
-        Date result= ProfileProxyV1.getLastUpdateSuccess(this);
+        Date result = getProfileProxy().getLastUpdateSuccess(this, null);
         return result;
     }
 
@@ -171,13 +172,12 @@ public class MainActivity extends MhDlaNotifierUI {
             Troll troll = null;
             MhDlaException exception = null;
             try {
-                troll = ProfileProxyV1.fetchTroll(MainActivity.this, params[0]);
-
+                troll = getProfileProxy().fetchTroll(MainActivity.this, null, params[0]);
             } catch (MhDlaException e) {
                 exception = e;
                 e.printStackTrace();
             }
-            Pair<Troll, MhDlaException> result = new Pair<Troll, MhDlaException>(troll, exception);
+            Pair<Troll, MhDlaException> result = Pair.of(troll, exception);
             return result;
         }
 

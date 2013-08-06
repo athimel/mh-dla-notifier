@@ -23,9 +23,9 @@
  */
 package org.zoumbox.mh_dla_notifier.sp;
 
-import com.google.common.collect.Lists;
-
 import java.util.List;
+
+import com.google.common.collect.Lists;
 
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.A_TERRE;
 import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.BLASON;
@@ -94,7 +94,9 @@ public enum PublicScript {
                     IMMOBILE.name(),
                     A_TERRE.name(),
                     EN_COURSE.name(),
-                    LEVITATION.name())),
+                    LEVITATION.name()
+            )
+    ),
 
 //    Profil3(
 //            ScriptCategory.DYNAMIC,
@@ -114,7 +116,22 @@ public enum PublicScript {
     ProfilPublic2(
             ScriptCategory.STATIC,
             "http://sp.mountyhall.com/SP_ProfilPublic2.php?Numero=%s&Motdepasse=%s",
-            Lists.newArrayList("numero", NOM.name(), RACE.name(), NIVAL.name(), DATE_INSCRIPTION.name(), "email", BLASON.name(), "nbMouches", NB_KILLS.name(), NB_MORTS.name(), GUILDE.name(), "niveauDeRang", "pnj")),
+            Lists.newArrayList(
+                    "numero",
+                    NOM.name(),
+                    RACE.name(),
+                    NIVAL.name(),
+                    DATE_INSCRIPTION.name(),
+                    "email",
+                    BLASON.name(),
+                    "nbMouches",
+                    NB_KILLS.name(),
+                    NB_MORTS.name(),
+                    GUILDE.name(),
+                    "niveauDeRang",
+                    "pnj"
+            )
+    ),
 
 //    Equipement(
 //            ScriptCategory.STATIC,
@@ -129,15 +146,22 @@ public enum PublicScript {
     Caract(
             ScriptCategory.DYNAMIC,
             "http://sp.mountyhall.com/SP_Caract.php?Numero=%s&Motdepasse=%s",
-            Lists.newArrayList(CARACT.name())),
+            Lists.newArrayList(
+                    CARACT.name()
+            )
+    ),
 
     Vue(
             ScriptCategory.DYNAMIC,
             "http://sp.mountyhall.com/SP_Vue2.php?Numero=%s&Motdepasse=%s",
-            Lists.newArrayList(TROLLS.name(), MONSTRES.name()));
+            Lists.newArrayList(
+                    TROLLS.name(),
+                    MONSTRES.name()
+            )
+    );
 
 
-    public ScriptCategory category;
+    protected ScriptCategory category;
     protected String url;
     protected List<String> properties;
 
@@ -154,5 +178,9 @@ public enum PublicScript {
             }
         }
         throw new IllegalStateException("Unmapped property: " + property);
+    }
+
+    public ScriptCategory getCategory() {
+        return category;
     }
 }

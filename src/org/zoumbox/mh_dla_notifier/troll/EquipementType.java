@@ -23,10 +23,10 @@
  */
 package org.zoumbox.mh_dla_notifier.troll;
 
+import java.util.List;
+
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
-
-import java.util.List;
 
 /**
  * @author Arno <arno@zoumbox.org>

@@ -23,6 +23,8 @@
  */
 package org.zoumbox.mh_dla_notifier;
 
+import com.google.common.base.Strings;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -33,8 +35,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import com.google.common.base.Strings;
-import org.zoumbox.mh_dla_notifier.profile.v1.ProfileProxyV1;
 
 /**
  * Activité principale
@@ -60,12 +60,12 @@ public class RegisterActivity extends AbstractActivity {
         troll.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         password = (EditText) findViewById(R.id.password);
 
-        String trollNumber = ProfileProxyV1.loadLogin(this);
-        if (!Strings.isNullOrEmpty(trollNumber)) {
-            troll.setText(trollNumber);
+        String trollId = getProfileProxy().getTrollIds(this).iterator().next();
+        if (!Strings.isNullOrEmpty(trollId)) {
+            troll.setText(trollId);
         }
 
-        saveButton = (Button)findViewById(R.id.save);
+        saveButton = (Button) findViewById(R.id.save);
         saveButton.setEnabled(false);
 
         password.addTextChangedListener(new TextWatcher() {
@@ -116,13 +116,13 @@ public class RegisterActivity extends AbstractActivity {
         String trollNumber = Strings.nullToEmpty(troll.getText().toString());
         String trollPassword = Strings.nullToEmpty(password.getText().toString());
 
-        saveIdAndPassword(trollNumber, trollPassword, false);
+        saveIdAndPassword(trollNumber, trollPassword);
     }
 
-    protected void saveIdAndPassword(String trollNumber, String trollPassword, boolean needToHashPassword) {
+    protected void saveIdAndPassword(String trollNumber, String trollPassword) {
         showToast("Enregistrement. Merci de patienter...");
 
-        boolean result = ProfileProxyV1.saveIdPassword(this, trollNumber, trollPassword, needToHashPassword);
+        boolean result = getProfileProxy().saveIdPassword(this, trollNumber, trollPassword);
 
         if (result) {
             setResult(RESULT_OK);

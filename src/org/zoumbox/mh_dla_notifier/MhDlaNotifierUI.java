@@ -23,11 +23,24 @@
  */
 package org.zoumbox.mh_dla_notifier;
 
-import android.app.AlertDialog;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Set;
+
+import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
+import org.zoumbox.mh_dla_notifier.troll.Race;
+import org.zoumbox.mh_dla_notifier.troll.Troll;
+import org.zoumbox.mh_dla_notifier.troll.Trolls;
+
+import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
+
 import android.app.Dialog;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -45,20 +58,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-import com.google.common.collect.Sets;
-import org.zoumbox.mh_dla_notifier.profile.v1.ProfileProxyV1;
-import org.zoumbox.mh_dla_notifier.troll.Race;
-import org.zoumbox.mh_dla_notifier.troll.Troll;
-import org.zoumbox.mh_dla_notifier.troll.Trolls;
-import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Set;
 
 /**
  * Activité principale
@@ -126,41 +125,41 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
     }
 
-    protected void checkLegacyPassword() {
-
-        // From 01/02/2013 to 28/02/2013, password policy has changed. This should help user to migrate.
-        if (ProfileProxyV1.isCurrentPasswordALegacyPassword(this)) {
-
-            PreferencesHolder preferences = PreferencesHolder.load(this);
-            if (System.currentTimeMillis() > preferences.skipLegacyPasswordCheckUntil) {
-
-                // 1. Instantiate an AlertDialog.Builder with its constructor
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-                // 2. Chain together various setter methods to set the dialog characteristics
-                builder.setMessage(R.string.legacy_password_message)
-                        .setTitle(R.string.legacy_password_title);
-
-                // 3. Get the AlertDialog from create()
-                AlertDialog dialog = builder.create();
-
-                dialog.setButton("Oui", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int which) {
-                        // Explain how, and go register
-                        startRegister("Veuillez saisir le mot de passe \"spécifique\"");
-                    }
-                });
-                dialog.setButton2("Non", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int which) {
-                        PreferencesHolder.skipLegacyPasswordCheckForToday(MhDlaNotifierUI.this);
-                    }
-                });
-                dialog.show();
-            }
-        }
-    }
+//    protected void checkLegacyPassword() {
+//
+//        // From 01/02/2013 to 28/02/2013, password policy has changed. This should help user to migrate.
+//        if (getProfileProxy().isCurrentPasswordALegacyPassword(this)) {
+//
+//            PreferencesHolder preferences = PreferencesHolder.load(this);
+//            if (System.currentTimeMillis() > preferences.skipLegacyPasswordCheckUntil) {
+//
+//                // 1. Instantiate an AlertDialog.Builder with its constructor
+//                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//
+//                // 2. Chain together various setter methods to set the dialog characteristics
+//                builder.setMessage(R.string.legacy_password_message)
+//                        .setTitle(R.string.legacy_password_title);
+//
+//                // 3. Get the AlertDialog from create()
+//                AlertDialog dialog = builder.create();
+//
+//                dialog.setButton("Oui", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int which) {
+//                        // Explain how, and go register
+//                        startRegister("Veuillez saisir le mot de passe \"spécifique\"");
+//                    }
+//                });
+//                dialog.setButton2("Non", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int which) {
+//                        PreferencesHolder.skipLegacyPasswordCheckForToday(MhDlaNotifierUI.this);
+//                    }
+//                });
+//                dialog.show();
+//            }
+//        }
+//    }
 
     @Override
     protected void onResume() {
@@ -168,7 +167,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
         loadTroll();
 
-        checkLegacyPassword();
+//        checkLegacyPassword();
 
     }
 
@@ -307,7 +306,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         Date lastUpdate = getLastUpdate();
         if (lastUpdate != null) {
             status = "Dernière m-à-j : ";
-            if ((System.currentTimeMillis() - lastUpdate.getTime()) > (24l * 60l *60l *1000l)) {
+            if ((System.currentTimeMillis() - lastUpdate.getTime()) > (24l * 60l * 60l * 1000l)) {
                 status += MhDlaNotifierUtils.formatDay(lastUpdate) + " - ";
             }
             status += MhDlaNotifierUtils.formatHour(lastUpdate);
@@ -347,20 +346,34 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         this.trollInfo.setText(trollInfo);
 
         Set<String> statuses = Sets.newLinkedHashSet();
-        if (troll.isaTerre()) { statuses.add("[À terre]"); }
-        if (troll.isCamou()) { statuses.add("[Camou]"); }
-        if (troll.isInvisible()) { statuses.add("[Invi]"); }
-        if (troll.isIntangible()) { statuses.add("[Intangible]"); }
-        if (troll.isImmobile()) { statuses.add("[Englué]"); }
-        if (troll.isEnCourse()) { statuses.add("[Course]"); }
-        if (troll.isLevitation()) { statuses.add("[Lévitation]"); }
+        if (troll.isaTerre()) {
+            statuses.add("[À terre]");
+        }
+        if (troll.isCamou()) {
+            statuses.add("[Camou]");
+        }
+        if (troll.isInvisible()) {
+            statuses.add("[Invi]");
+        }
+        if (troll.isIntangible()) {
+            statuses.add("[Intangible]");
+        }
+        if (troll.isImmobile()) {
+            statuses.add("[Englué]");
+        }
+        if (troll.isEnCourse()) {
+            statuses.add("[Course]");
+        }
+        if (troll.isLevitation()) {
+            statuses.add("[Lévitation]");
+        }
 
         String status = Joiner.on(" ").join(statuses);
         this.trollStatus.setText(status);
 
         String kdString = String.format("%d / %d", troll.getNbKills(), troll.getNbMorts());
         int kdStringLength = kdString.length();
-        if (troll.getNbMorts()> 0) {
+        if (troll.getNbMorts() > 0) {
             kdString += String.format(" (ratio: %.1f) ", new Integer(troll.getNbKills()).doubleValue() / new Integer(troll.getNbMorts()).doubleValue());
         }
         SpannableString kdSpannable = new SpannableString(kdString);

@@ -23,22 +23,19 @@
  */
 package org.zoumbox.mh_dla_notifier.profile.v1;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierUtils;
 import org.zoumbox.mh_dla_notifier.Pair;
 import org.zoumbox.mh_dla_notifier.PreferencesHolder;
+import org.zoumbox.mh_dla_notifier.profile.AbstractProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
+import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
 import org.zoumbox.mh_dla_notifier.sp.NetworkUnavailableException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScript;
@@ -46,82 +43,37 @@ import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptsProxy;
 import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
-import org.zoumbox.mh_dla_notifier.sp.ScriptCategory;
 import org.zoumbox.mh_dla_notifier.troll.Race;
 import org.zoumbox.mh_dla_notifier.troll.Troll;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.google.common.base.Predicate;
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.A_TERRE;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.BLASON;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.CAMOU;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.CARACT;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.DATE_INSCRIPTION;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.DLA;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.DUREE_DU_TOUR;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.EN_COURSE;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.FATIGUE;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.GUILDE;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.IMMOBILE;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.INTANGIBLE;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.INVISIBLE;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.LAST_UPDATE_RESULT;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.LAST_UPDATE_SUCCESS;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.LEVITATION;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NB_KILLS;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NB_MORTS;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NEEDS_UPDATE;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NIVAL;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.NOM;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.PA_RESTANT;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.POS_N;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.POS_X;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.POS_Y;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.PV;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.PV_MAX;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.PV_VARIATION;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.RACE;
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.RESTART_CHECK;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
+
+import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.*;
 
 /**
  * @author Arno <arno@zoumbox.org>
  */
-public class ProfileProxyV1 {
+public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy {
 
     private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + ProfileProxyV1.class.getSimpleName();
-
-    public static final String PREFS_NAME = "org.zoumbox.mh.dla.notifier.preferences";
-
-    protected static final String PROPERTY_TROLL_ID = "trollId";
-    protected static final String PROPERTY_TROLL_PASSWORD = "trollPassword";
-
-    protected static final Pattern NEW_PASSWORD_PATTERN = Pattern.compile("[0-9A-Z]{8}");
-    protected static final Pattern LEGACY_PASSWORD_PATTERN = Pattern.compile("[0-9a-fA-F]{32}");
-
-    public static final Function<ScriptCategory, Integer> GET_USABLE_QUOTA = new Function<ScriptCategory, Integer>() {
-        @Override
-        public Integer apply(ScriptCategory input) {
-            if (input == null) {
-                return 1;
-            }
-            int dailyQuota = input.getQuota();
-            int result = dailyQuota / 3; //FIXME AThimel 29/03/2012 divide by 3 for the moment to avoid mistakes
-            return result;
-        }
-    };
 
     public static boolean shouldUpdate(Context context, PublicScript script, String trollNumber) {
         Date lastUpdate = PublicScriptsProxy.geLastUpdate(context, script, trollNumber);
         if (lastUpdate == null) {
             return true;
         } else {
-            int dailyQuota = GET_USABLE_QUOTA.apply(script.category);
+            int dailyQuota = GET_USABLE_QUOTA.apply(script.getCategory());
             int minutesDelay = 24 * 60 / dailyQuota;
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.MINUTE, -minutesDelay);
@@ -131,16 +83,78 @@ public class ProfileProxyV1 {
         }
     }
 
-    public static String getTrollNumber(Context context) {
+    protected String getTrollNumber(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
         String trollNumber = preferences.getString(PROPERTY_TROLL_ID, null);
         return trollNumber;
     }
 
-    public static Troll fetchTroll(final Context context, UpdateRequestType updateRequest)
+    public static final String PREFS_NAME = "org.zoumbox.mh.dla.notifier.preferences";
+
+    protected static final String PROPERTY_TROLL_ID = "trollId";
+    protected static final String PROPERTY_TROLL_PASSWORD = "trollPassword";
+
+    public Set<String> getTrollIds(Context context) {
+
+        String trollId = getTrollNumber(context);
+        Set<String> result = Sets.newLinkedHashSet();
+        if (!Strings.isNullOrEmpty(trollId)) {
+            result.add(trollId); // TODO AThimel 06/08/13 manage several trolls
+        }
+        return ImmutableSet.copyOf(result);
+    }
+
+    public boolean saveIdPassword(Context context, String trollId, String trollPassword) {
+        if (Strings.isNullOrEmpty(trollId) || Strings.isNullOrEmpty(trollPassword)) {
+            return false;
+        }
+
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(PROPERTY_TROLL_ID, trollId);
+        editor.putString(PROPERTY_TROLL_PASSWORD, trollPassword);
+        editor.commit();
+
+        return true;
+    }
+
+    public boolean areTrollIdentifiersUndefined(Context context) {
+
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
+        Pair<String, String> pair = loadIdPassword0(preferences);
+
+        boolean result = Strings.isNullOrEmpty(pair.left());
+        result |= Strings.isNullOrEmpty(pair.right());
+        return result;
+    }
+
+    protected static Pair<String, String> loadIdPassword0(SharedPreferences preferences) {
+
+        final String trollNumber = preferences.getString(PROPERTY_TROLL_ID, null);
+        String trollPassword = preferences.getString(PROPERTY_TROLL_PASSWORD, null);
+
+        Pair<String, String> result = Pair.of(trollNumber, trollPassword);
+        return result;
+    }
+
+
+    protected Pair<String, String> loadIdPassword(SharedPreferences preferences) throws MissingLoginPasswordException {
+
+        Pair<String, String> pair = loadIdPassword0(preferences);
+
+        if (Strings.isNullOrEmpty(pair.left()) || Strings.isNullOrEmpty(pair.right())) {
+            throw new MissingLoginPasswordException();
+        }
+
+        return pair;
+    }
+
+    public Troll fetchTroll(final Context context, String trollId, UpdateRequestType updateRequest)
             throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException,
             NetworkUnavailableException {
+
+        // TODO AThimel 06/08/13 use trollId
 
         Troll result = new Troll();
 
@@ -253,7 +267,7 @@ public class ProfileProxyV1 {
         };
     }
 
-    public static Map<PublicScriptProperties, String> fetchProperties(
+    public Map<PublicScriptProperties, String> fetchProperties(
             final Context context, UpdateRequestType updateRequest, List<PublicScriptProperties> requestedProperties)
             throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException, NetworkUnavailableException {
 
@@ -321,7 +335,7 @@ public class ProfileProxyV1 {
         return result;
     }
 
-    public static Date getLastUpdateSuccess(final Context context) {
+    public Date getLastUpdateSuccess(final Context context, String trollId) {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
@@ -336,7 +350,7 @@ public class ProfileProxyV1 {
         return result;
     }
 
-    public static Long getElapsedSinceLastUpdateSuccess(final Context context) {
+    public Long getElapsedSinceLastUpdateSuccess(final Context context) {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
@@ -346,7 +360,7 @@ public class ProfileProxyV1 {
         return result;
     }
 
-    public static Long getElapsedSinceLastRestartCheck(final Context context) {
+    public Long getElapsedSinceLastRestartCheck(final Context context) {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
@@ -356,7 +370,7 @@ public class ProfileProxyV1 {
         return result;
     }
 
-    public static void restartCheckDone(final Context context) {
+    public void restartCheckDone(final Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
         SharedPreferences.Editor editor = preferences.edit();
@@ -364,7 +378,7 @@ public class ProfileProxyV1 {
         editor.commit();
     }
 
-    public static String getLastUpdateResult(final Context context) {
+    public String getLastUpdateResult(final Context context) {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
@@ -394,68 +408,7 @@ public class ProfileProxyV1 {
         }
     }
 
-    public static String loadLogin(Context context) {
-
-        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
-
-        String result = preferences.getString(PROPERTY_TROLL_ID, null);
-        return result;
-    }
-
-    public static boolean saveIdPassword(Context context, String trollNumber, String trollPassword, boolean needToHashPassword) {
-        if (Strings.isNullOrEmpty(trollNumber) || Strings.isNullOrEmpty(trollPassword)) {
-            return false;
-        }
-
-        String finalTrollPassword = trollPassword;
-        if (needToHashPassword) {
-            boolean alreadyHashed = LEGACY_PASSWORD_PATTERN.matcher(trollPassword).matches();
-            if (!alreadyHashed) {
-                finalTrollPassword = MhDlaNotifierUtils.md5(trollPassword);
-            }
-        }
-
-        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(PROPERTY_TROLL_ID, trollNumber);
-        editor.putString(PROPERTY_TROLL_PASSWORD, finalTrollPassword);
-        editor.commit();
-
-        return true;
-    }
-
-    public static boolean areTrollIdentifiersUndefined(Context context) {
-
-        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
-        Pair<String, String> pair = loadIdPassword0(preferences);
-
-        boolean result = Strings.isNullOrEmpty(pair.left());
-        result |= Strings.isNullOrEmpty(pair.right());
-        return result;
-    }
-
-    protected static Pair<String, String> loadIdPassword0(SharedPreferences preferences) {
-
-        final String trollNumber = preferences.getString(PROPERTY_TROLL_ID, null);
-        String trollPassword = preferences.getString(PROPERTY_TROLL_PASSWORD, null);
-
-        Pair<String, String> result = new Pair<String, String>(trollNumber, trollPassword);
-        return result;
-    }
-
-
-    protected static Pair<String, String> loadIdPassword(SharedPreferences preferences) throws MissingLoginPasswordException {
-
-        Pair<String, String> pair = loadIdPassword0(preferences);
-
-        if (Strings.isNullOrEmpty(pair.left()) || Strings.isNullOrEmpty(pair.right())) {
-            throw new MissingLoginPasswordException();
-        }
-
-        return pair;
-    }
-
-    public static Troll refreshDLA(Context context) throws MissingLoginPasswordException {
+    public Troll refreshDLA(Context context, String trollId) throws MissingLoginPasswordException {
 
         PreferencesHolder preferences = PreferencesHolder.load(context);
 
@@ -482,7 +435,7 @@ public class ProfileProxyV1 {
         }
 
         // Get updated (by the previous fetch) troll info
-        Troll troll = fetchTrollWithoutUpdate(context);
+        Troll troll = fetchTrollWithoutUpdate(context, trollId);
         return troll;
     }
 
@@ -508,35 +461,5 @@ public class ProfileProxyV1 {
 //        }
 //        return result;
 //    }
-
-    public static Troll fetchTrollWithoutUpdate(Context context) throws MissingLoginPasswordException {
-        try {
-            Troll result = fetchTroll(context, UpdateRequestType.NONE);
-            return result;
-        } catch (QuotaExceededException e) {
-            Log.e(TAG, "Should never happen", e);
-            throw new RuntimeException("Should never happen", e);
-        } catch (PublicScriptException e) {
-            Log.e(TAG, "Should never happen", e);
-            throw new RuntimeException("Should never happen", e);
-        } catch (NetworkUnavailableException e) {
-            Log.e(TAG, "Should never happen", e);
-            throw new RuntimeException("Should never happen", e);
-        }
-    }
-
-    public static boolean isCurrentPasswordALegacyPassword(Context context) {
-
-        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
-        try {
-            Pair<String, String> idAndPassword = loadIdPassword(preferences);
-            String savedPassword = idAndPassword.right();
-            Matcher matcher = LEGACY_PASSWORD_PATTERN.matcher(savedPassword);
-            return matcher.matches();
-        } catch (MissingLoginPasswordException mlpe) {
-            Log.w(TAG, "Unable to get id+password", mlpe);
-            return false;
-        }
-    }
 
 }

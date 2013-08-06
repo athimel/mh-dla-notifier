@@ -23,11 +23,11 @@
  */
 package org.zoumbox.mh_dla_notifier;
 
+import java.util.Calendar;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-
-import java.util.Calendar;
 
 /**
  * @author Arno <arno@zoumbox.org>

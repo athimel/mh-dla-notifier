@@ -23,9 +23,9 @@
  */
 package org.zoumbox.mh_dla_notifier.sp;
 
-import com.google.common.collect.Maps;
-
 import java.util.Map;
+
+import com.google.common.collect.Maps;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -61,7 +61,7 @@ public class PublicScriptsProxyMock {
     public static final String DEVEL_PROFIL2 =
 //            "104259;95;-77;-61;86;90;0;2013-02-11 15:55:25;12;4;21;4;4;6;1288;986;0;4;0;0;0;0;0;585;-75;1;0;1;0;1;0";
 //            "104259;7;72;-59;56;90;2;2013-04-10 04:14:25;13;4;21;5;4;10;1439;1095;0;12;0;0;0;0;0;585;-75;2;0;0;0;1;0";
-              "104259;8;-29;-5;73;90;5;2013-08-05 11:17:25;13;4;23;5;4;14;1545;1305;0;0;0;0;0;0;0;585;-60;2;0;0;0;0;0";
+            "104259;8;-29;-5;73;90;5;2013-08-05 11:17:25;13;4;23;5;4;14;1545;1305;0;0;0;0;0;0;0;585;-60;2;0;0;0;0;0";
     public static final String DEVEL_PROFIL_PUBLIC2 =
 //            "123456;Mon Trõll;Kastar;19;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;122;9;1900;20;0";
             "104259;DevelZimZoum;Kastar;30;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;30;317;10;1900;20;0\n";
@@ -144,8 +144,8 @@ public class PublicScriptsProxyMock {
 //                    "BMP;1;2; 4;-4; 0; 0;-1;  0;  0;6;   0;144.5;9\n" +
 //                    "CAR;9;4;16; 4;80;85; 4;518;531;1; 585;    0;0\n";
             "BMM; 8;4; 6; 4;10; 0; 2;1022; 546; 4;-150;    0;0\n" +
-            "BMP; 1;2; 4;-4; 0; 0;-1;   0;   0;10;   0;193.5;0\n" +
-            "CAR;13;4;21; 5;90;56; 4;1095;1439; 2; 585;    0;0\n";
+                    "BMP; 1;2; 4;-4; 0; 0;-1;   0;   0;10;   0;193.5;0\n" +
+                    "CAR;13;4;21; 5;90;56; 4;1095;1439; 2; 585;    0;0\n";
     public static final String DEVEL_VUE =
             "#DEBUT TROLLS\n" +
                     "12517;83;-106;-78\n" +

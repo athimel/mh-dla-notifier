@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
+import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.v1.ProfileProxyV1;
 import org.zoumbox.mh_dla_notifier.troll.Troll;
 
@@ -76,15 +77,16 @@ public class Receiver extends BroadcastReceiver {
         @Override
         public boolean apply(Context context) {
             // Check if the device just restarted
-            long elapsedSinceLastRestartCheck = ProfileProxyV1.getElapsedSinceLastRestartCheck(context);
-            Log.i(TAG, "Elapsed since last restart check: " + elapsedSinceLastRestartCheck + "ms ~= " + (elapsedSinceLastRestartCheck/60000) + "min");
+            ProfileProxy profileProxy = new ProfileProxyV1();
+            long elapsedSinceLastRestartCheck = profileProxy.getElapsedSinceLastRestartCheck(context);
+            Log.i(TAG, "Elapsed since last restart check: " + elapsedSinceLastRestartCheck + "ms ~= " + (elapsedSinceLastRestartCheck / 60000) + "min");
 
             long uptime = SystemClock.uptimeMillis();
-            Log.i(TAG, "Uptime: " + uptime + "ms ~= " + (uptime/60000) + "min");
+            Log.i(TAG, "Uptime: " + uptime + "ms ~= " + (uptime / 60000) + "min");
 
             boolean result = elapsedSinceLastRestartCheck > uptime;
             if (result) {
-                ProfileProxyV1.restartCheckDone(context);
+                profileProxy.restartCheckDone(context);
             }
             Log.i(TAG, "Device restarted since last check: " + result);
             return result;
@@ -96,12 +98,13 @@ public class Receiver extends BroadcastReceiver {
         public boolean apply(Context context) {
             boolean result = false;
             // Check if the device restarted since last update
-            Long elapsedSinceLastSuccess = ProfileProxyV1.getElapsedSinceLastUpdateSuccess(context);
+            ProfileProxy profileProxy = new ProfileProxyV1();
+            Long elapsedSinceLastSuccess = profileProxy.getElapsedSinceLastUpdateSuccess(context);
             if (elapsedSinceLastSuccess != null) {
                 Log.i(TAG, "Elapsed since last update success: " + elapsedSinceLastSuccess + "ms ~= " + (elapsedSinceLastSuccess / 60000) + "min");
 
                 long upTime = SystemClock.uptimeMillis();
-                Log.i(TAG, "Uptime: " + upTime + "ms ~= " + (upTime/60000) + "min");
+                Log.i(TAG, "Uptime: " + upTime + "ms ~= " + (upTime / 60000) + "min");
 
                 result = elapsedSinceLastSuccess > upTime; // Device restarted since last update
                 Log.i(TAG, "shouldUpdateBecauseOfRestart: " + result);
@@ -115,13 +118,23 @@ public class Receiver extends BroadcastReceiver {
     protected static final Predicate<Context> SHOULD_UPDATE_BECAUSE_OF_NETWORK_FAILURE = new Predicate<Context>() {
         @Override
         public boolean apply(Context context) {
-            String lastUpdateResult = ProfileProxyV1.getLastUpdateResult(context);
+            ProfileProxy profileProxy = new ProfileProxyV1();
+            String lastUpdateResult = profileProxy.getLastUpdateResult(context);
             Log.i(TAG, "lastUpdateResult: " + lastUpdateResult);
             boolean result = lastUpdateResult != null && lastUpdateResult.startsWith("NETWORK ERROR");
             Log.i(TAG, "shouldUpdateBecauseOfNetworkFailure: " + result);
             return result;
         }
     };
+
+    private ProfileProxy profileProxy;
+
+    public ProfileProxy getProfileProxy() {
+        if (profileProxy == null) {
+            profileProxy = new ProfileProxyV1();
+        }
+        return profileProxy;
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -134,7 +147,7 @@ public class Receiver extends BroadcastReceiver {
         if (connectivityChanged) {
 
             ConnectivityManager cm =
-                    (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                    (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
             NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 
@@ -147,7 +160,7 @@ public class Receiver extends BroadcastReceiver {
             return;
         }
 
-        if (ProfileProxyV1.areTrollIdentifiersUndefined(context)) {
+        if (getProfileProxy().areTrollIdentifiersUndefined(context)) {
             Log.i(TAG, "TrollId not defined, exiting...");
             return;
         }
@@ -175,9 +188,9 @@ public class Receiver extends BroadcastReceiver {
         Troll troll = null;
         try {
             if (requestUpdate) {
-                troll = ProfileProxyV1.refreshDLA(context);
+                troll = getProfileProxy().refreshDLA(context, null);
             } else if (requestAlarmRegistering) {
-                troll = ProfileProxyV1.fetchTrollWithoutUpdate(context);
+                troll = getProfileProxy().fetchTrollWithoutUpdate(context, null);
             } else {
                 Log.i(TAG, "Skip loading Troll");
             }
@@ -346,7 +359,8 @@ public class Receiver extends BroadcastReceiver {
 
     public static Map<AlarmType, Date> scheduleAlarms(Context context) throws MissingLoginPasswordException {
         PreferencesHolder preferences = PreferencesHolder.load(context);
-        Troll troll = ProfileProxyV1.fetchTrollWithoutUpdate(context);
+        ProfileProxy profileProxy = new ProfileProxyV1();
+        Troll troll = profileProxy.fetchTrollWithoutUpdate(context, null);
 
         Map<AlarmType, Date> alarms = getAlarms(troll, preferences.notificationDelay);
         Map<AlarmType, Date> scheduledAlarms = scheduleAlarms(context, alarms);
