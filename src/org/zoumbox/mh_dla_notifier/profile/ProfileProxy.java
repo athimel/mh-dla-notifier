@@ -56,7 +56,7 @@ public interface ProfileProxy {
 
     Set<String> getTrollIds(Context context);
 
-    boolean saveIdPassword(Context context, String trollId, String trollPassword);
+    void saveIdPassword(Context context, String trollId, String trollPassword);
 
     boolean areTrollIdentifiersUndefined(Context context);
 
@@ -77,4 +77,5 @@ public interface ProfileProxy {
     Long getElapsedSinceLastUpdateSuccess(final Context context);
 
     void restartCheckDone(final Context context);
+
 }

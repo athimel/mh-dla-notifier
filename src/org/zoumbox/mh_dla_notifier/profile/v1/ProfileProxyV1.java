@@ -105,18 +105,13 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
         return ImmutableSet.copyOf(result);
     }
 
-    public boolean saveIdPassword(Context context, String trollId, String trollPassword) {
-        if (Strings.isNullOrEmpty(trollId) || Strings.isNullOrEmpty(trollPassword)) {
-            return false;
-        }
+    public void saveIdPassword(Context context, String trollId, String trollPassword) {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(PROPERTY_TROLL_ID, trollId);
         editor.putString(PROPERTY_TROLL_PASSWORD, trollPassword);
         editor.commit();
-
-        return true;
     }
 
     public boolean areTrollIdentifiersUndefined(Context context) {

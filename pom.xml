@@ -51,6 +51,13 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>${gsonVersion}</version>
+      <scope>compile</scope>
+    </dependency>
+
   </dependencies>
 
   <!-- ************************************************************* -->
@@ -122,6 +129,7 @@
   <properties>
     <maven.test.skip>true</maven.test.skip>
     <guavaVersion>14.0.1</guavaVersion>
+    <gsonVersion>2.2.4</gsonVersion>
   </properties>
 
   <prerequisites>

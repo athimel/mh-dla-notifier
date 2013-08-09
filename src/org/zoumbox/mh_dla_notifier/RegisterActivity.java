@@ -122,14 +122,10 @@ public class RegisterActivity extends AbstractActivity {
     protected void saveIdAndPassword(String trollNumber, String trollPassword) {
         showToast("Enregistrement. Merci de patienter...");
 
-        boolean result = getProfileProxy().saveIdPassword(this, trollNumber, trollPassword);
+        getProfileProxy().saveIdPassword(this, trollNumber, trollPassword);
 
-        if (result) {
-            setResult(RESULT_OK);
-            finish();
-        } else {
-            Log.i(TAG, "Impossible d'enregistrer les identifiants");
-        }
+        setResult(RESULT_OK);
+        finish();
     }
 
 }
