@@ -1,0 +1,147 @@
+package org.zoumbox.mh_dla_notifier.sp;
+
+/*
+ * #%L
+ * MountyHall DLA Notifier
+ * $Id$
+ * $HeadURL$
+ * %%
+ * Copyright (C) 2012 - 2013 Zoumbox.org
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * #L%
+ */
+
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.beanutils.PropertyUtils;
+import org.zoumbox.mh_dla_notifier.MhDlaNotifierUtils;
+import org.zoumbox.mh_dla_notifier.troll.Race;
+import org.zoumbox.mh_dla_notifier.troll.Troll;
+
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicates;
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
+/**
+ * @author Arnaud Thimel <thimel@codelutin.com>
+ */
+public class PublicScripts {
+
+    protected static final Function<PublicScriptResult, Map<String, String>> SCRIPT_RESULT_TO_MAP = new Function<PublicScriptResult, Map<String, String>>() {
+        @Override
+        public Map<String, String> apply(PublicScriptResult input) {
+            PublicScript script = input.getScript();
+            List<String> lines = Lists.newArrayList(Splitter.on("\n").trimResults().omitEmptyStrings().split(input.getRaw()));
+            Map<String, String> result = Maps.newLinkedHashMap();
+            Set<String> types = script.getTypes();
+
+            for (String line : lines) {
+                Iterable<String> iterable = Splitter.on(";").trimResults().split(line); // Do not omit empty strings
+                List<String> data = Lists.newArrayList(iterable);
+                String suffix = "";
+
+                if (types != null && !types.isEmpty()) {
+                    final String typeToFind = data.get(0);
+                    Optional<String> optional = Iterables.tryFind(types, Predicates.equalTo(typeToFind));
+                    if (optional.isPresent()) {
+                        suffix = typeToFind;
+                    }
+                }
+
+                for (int i = 0; i < data.size() && i < script.properties.size(); i++) {
+                    String key = script.properties.get(i);
+                    if (!Strings.isNullOrEmpty(suffix)) {
+                        key = key + suffix.substring(0, 1).toUpperCase() + suffix.substring(1).toLowerCase();
+                    }
+                    String value = data.get(i);
+                    result.put(key, value);
+                }
+            }
+//            case Vue:
+//                int monstresStart = lines.indexOf("#DEBUT MONSTRES");
+//                int monstresEnd = lines.indexOf("#FIN MONSTRES");
+//                List<String> monstresList = lines.subList(monstresStart + 1, monstresEnd);
+//                String monstres = Joiner.on("\n").join(monstresList);
+//                result.put(PublicScriptProperties.MONSTRES.name(), monstres);
+//
+//                int trollsStart = lines.indexOf("#DEBUT TROLLS");
+//                int trollsEnd = lines.indexOf("#FIN TROLLS");
+//                List<String> trollsList = lines.subList(trollsStart + 1, trollsEnd);
+//                String trolls = Joiner.on("\n").join(trollsList);
+//                result.put(PublicScriptProperties.TROLLS.name(), trolls);
+//                break;
+            return result;
+        }
+    };
+
+
+    public static void pushToTroll(Troll troll, Map<String, String> propertiesFetched) {
+        for (Map.Entry<String, String> entry : propertiesFetched.entrySet()) {
+            try {
+                String name = entry.getKey();
+                if (PropertyUtils.isWriteable(troll, name)) {
+                    PropertyDescriptor propertyDescriptor = PropertyUtils.getPropertyDescriptor(troll, name);
+                    Class<?> type = propertyDescriptor.getPropertyType();
+                    String stringValue = entry.getValue();
+                    Object value = stringValue;
+                    if (int.class.equals(type)) {
+                        value = Integer.parseInt(stringValue);
+                    } else if (boolean.class.equals(type)) {
+                        value = "1".equals(stringValue);
+                    } else if (double.class.equals(type)) {
+                        value = Double.parseDouble(stringValue);
+                    } else if (Race.class.equals(type)) {
+                        value = Race.valueOf(stringValue);
+                    } else if (Date.class.equals(type)) {
+                        value = MhDlaNotifierUtils.parseDate(stringValue);
+                    }
+
+                    PropertyUtils.setSimpleProperty(troll, name, value);
+                } else {
+                    System.out.println("Ignored property (unwritable): " + name);
+//                    Log.w(TAG, "Unwritable property: " + name);
+                }
+            } catch (IllegalAccessException e) {
+                System.out.println("Un exception occured" + e);
+//                Log.e(TAG, "Un exception occured", e);
+            } catch (InvocationTargetException e) {
+                System.out.println("Un exception occured" + e);
+//                Log.e(TAG, "Un exception occured", e);
+            } catch (NoSuchMethodException e) {
+                System.out.println("Un exception occured" + e);
+//                Log.e(TAG, "Un exception occured", e);
+            }
+        }
+
+    }
+
+    public static void pushToTroll(Troll troll, PublicScriptResult publicScriptResult) {
+        Map<String, String> map = PublicScripts.SCRIPT_RESULT_TO_MAP.apply(publicScriptResult);
+        System.out.println(String.format("%s: %s", publicScriptResult.getScript().name(), map));
+        PublicScripts.pushToTroll(troll, map);
+    }
+
+}

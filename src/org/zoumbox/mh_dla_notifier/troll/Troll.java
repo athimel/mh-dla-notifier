@@ -25,22 +25,18 @@ package org.zoumbox.mh_dla_notifier.troll;
 
 import java.util.Date;
 
-import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
-
 /**
  * @author Arno <arno@zoumbox.org>
  */
 public class Troll {
 
-    protected String id;
+    protected String numero;
     protected String nom;
     protected Race race;
     protected int nival;
     protected Date dateInscription;
 
     protected int pv;
-    protected int pvMaxBase;
-    protected int pvVariation;
     protected int fatigue;
     protected int posX;
     protected int posY;
@@ -52,45 +48,135 @@ public class Troll {
     protected boolean aTerre;
     protected boolean enCourse;
     protected boolean levitation;
-    protected int dureeDuTour;
     protected Date dla;
     protected int pa;
     protected String blason;
-    protected int nbKills, nbMorts;
+    protected int nbKills;
+    protected int nbMorts;
     protected int guilde;
+    protected int nbMouches;
 
-    protected int pvBM;
-    protected int dlaBM;
-    protected int poids;
+    protected int rmCar;
+    protected int mmCar;
+    protected int attaqueCar;
+    protected int esquiveCar;
+    protected int degatsCar;
+    protected int regenerationCar;
+    protected int vueCar;
+    protected int armureCar;
+    protected double dureeDuTourCar;
+    protected int pvMaxCar;
+    protected int pvActuelsCar;
+    protected double poidsCar;
+    protected int concentrationCar;
 
-    protected UpdateRequestType updateRequestType;
+    protected int rmBmm;
+    protected int mmBmm;
+    protected int attaqueBmm;
+    protected int esquiveBmm;
+    protected int degatsBmm;
+    protected int regenerationBmm;
+    protected int vueBmm;
+    protected int armureBmm;
+    protected double dureeDuTourBmm;
+    protected int pvMaxBmm;
+    protected int pvActuelsBmm;
+    protected double poidsBmm;
+    protected int concentrationBmm;
+
+    protected int rmBmp;
+    protected int mmBmp;
+    protected int attaqueBmp;
+    protected int esquiveBmp;
+    protected int degatsBmp;
+    protected int regenerationBmp;
+    protected int vueBmp;
+    protected int armureBmp;
+    protected double dureeDuTourBmp;
+    protected int pvMaxBmp;
+    protected int pvActuelsBmp;
+    protected double poidsBmp;
+    protected int concentrationBmp;
 
     // Computed
-    protected int computedPvMax = -1;
-    protected Date computedNextDla = null;
+    protected int pvVariation;
 
-
-    public int getComputedPvMax() {
-        if (computedPvMax == -1) {
-            computedPvMax = Trolls.GET_MAX_PV.apply(this);
-        }
-        return computedPvMax;
+    @Override
+    public String toString() {
+        return "Troll{" +
+                "numero='" + numero + '\'' +
+                ", nom='" + nom + '\'' +
+                ", race=" + race +
+                ", nival=" + nival +
+                ", dateInscription=" + dateInscription +
+                ", pv=" + pv +
+                ", pvVariation=" + pvVariation +
+                ", fatigue=" + fatigue +
+                ", posX=" + posX +
+                ", posY=" + posY +
+                ", posN=" + posN +
+                ", camou=" + camou +
+                ", invisible=" + invisible +
+                ", intangible=" + intangible +
+                ", immobile=" + immobile +
+                ", aTerre=" + aTerre +
+                ", enCourse=" + enCourse +
+                ", levitation=" + levitation +
+                ", dla=" + dla +
+                ", pa=" + pa +
+                ", blason='" + blason + '\'' +
+                ", nbKills=" + nbKills +
+                ", nbMorts=" + nbMorts +
+                ", guilde=" + guilde +
+                ", nbMouches=" + nbMouches +
+                ", rmCar=" + rmCar +
+                ", rmBmm=" + rmBmm +
+                ", rmBmp=" + rmBmp +
+                ", mmCar=" + mmCar +
+                ", mmBmm=" + mmBmm +
+                ", mmBmp=" + mmBmp +
+                ", attaqueCar=" + attaqueCar +
+                ", attaqueBmm=" + attaqueBmm +
+                ", attaqueBmp=" + attaqueBmp +
+                ", esquiveCar=" + esquiveCar +
+                ", esquiveBmm=" + esquiveBmm +
+                ", esquiveBmp=" + esquiveBmp +
+                ", degatsCar=" + degatsCar +
+                ", degatsBmm=" + degatsBmm +
+                ", degatsBmp=" + degatsBmp +
+                ", regenerationCar=" + regenerationCar +
+                ", regenerationBmm=" + regenerationBmm +
+                ", regenerationBmp=" + regenerationBmp +
+                ", vueCar=" + vueCar +
+                ", vueBmm=" + vueBmm +
+                ", vueBmp=" + vueBmp +
+                ", armureCar=" + armureCar +
+                ", armureBmm=" + armureBmm +
+                ", armureBmp=" + armureBmp +
+                ", dureeDuTourCar=" + dureeDuTourCar +
+                ", dureeDuTourBmm=" + dureeDuTourBmm +
+                ", dureeDuTourBmp=" + dureeDuTourBmp +
+                ", pvMaxCar=" + pvMaxCar +
+                ", pvMaxBmm=" + pvMaxBmm +
+                ", pvMaxBmp=" + pvMaxBmp +
+                ", pvActuelsCar=" + pvActuelsCar +
+                ", pvActuelsBmm=" + pvActuelsBmm +
+                ", pvActuelsBmp=" + pvActuelsBmp +
+                ", poidsCar=" + poidsCar +
+                ", poidsBmm=" + poidsBmm +
+                ", poidsBmp=" + poidsBmp +
+                ", concentrationCar=" + concentrationCar +
+                ", concentrationBmm=" + concentrationBmm +
+                ", concentrationBmp=" + concentrationBmp +
+                '}';
     }
 
-    public Date getComputedNextDla() {
-        if (computedNextDla == null) {
-            computedNextDla = Trolls.GET_NEXT_DLA.apply(this);
-        }
-        return computedNextDla;
+    public String getNumero() {
+        return numero;
     }
 
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    public void setNumero(String numero) {
+        this.numero = numero;
     }
 
     public String getNom() {
@@ -117,6 +203,14 @@ public class Troll {
         this.nival = nival;
     }
 
+    public int getNbMouches() {
+        return nbMouches;
+    }
+
+    public void setNbMouches(int nbMouches) {
+        this.nbMouches = nbMouches;
+    }
+
     public Date getDateInscription() {
         return dateInscription;
     }
@@ -131,14 +225,6 @@ public class Troll {
 
     public void setPv(int pv) {
         this.pv = pv;
-    }
-
-    public int getPvMaxBase() {
-        return pvMaxBase;
-    }
-
-    public void setPvMaxBase(int pvMaxBase) {
-        this.pvMaxBase = pvMaxBase;
     }
 
     public int getPvVariation() {
@@ -237,14 +323,6 @@ public class Troll {
         this.levitation = levitation;
     }
 
-    public int getDureeDuTour() {
-        return dureeDuTour;
-    }
-
-    public void setDureeDuTour(int dureeDuTour) {
-        this.dureeDuTour = dureeDuTour;
-    }
-
     public Date getDla() {
         return dla;
     }
@@ -293,43 +371,355 @@ public class Troll {
         this.guilde = guilde;
     }
 
-    public int getPvBM() {
-        return pvBM;
+//    public int getPvBM() {
+//        return pvBM;
+//    }
+//
+//    public void setPvBM(int pvBM) {
+//        this.pvBM = pvBM;
+//    }
+//
+//    public int getDlaBM() {
+//        return dlaBM;
+//    }
+//
+//    public void setDlaBM(int dlaBM) {
+//        this.dlaBM = dlaBM;
+//    }
+//
+//    public int getPoids() {
+//        return poids;
+//    }
+//
+//    public void setPoids(int poids) {
+//        this.poids = poids;
+//    }
+//
+//    public UpdateRequestType getUpdateRequestType() {
+//        return updateRequestType;
+//    }
+//
+//    public void setUpdateRequestType(UpdateRequestType updateRequestType) {
+//        this.updateRequestType = updateRequestType;
+//    }
+//
+//    public void setComputedPvMax(int computedPvMax) {
+//        this.computedPvMax = computedPvMax;
+//    }
+//
+//    public void setComputedNextDla(Date computedNextDla) {
+//        this.computedNextDla = computedNextDla;
+//    }
+
+    public int getRmCar() {
+        return rmCar;
     }
 
-    public void setPvBM(int pvBM) {
-        this.pvBM = pvBM;
+    public void setRmCar(int rmCar) {
+        this.rmCar = rmCar;
     }
 
-    public int getDlaBM() {
-        return dlaBM;
+    public int getMmCar() {
+        return mmCar;
     }
 
-    public void setDlaBM(int dlaBM) {
-        this.dlaBM = dlaBM;
+    public void setMmCar(int mmCar) {
+        this.mmCar = mmCar;
     }
 
-    public int getPoids() {
-        return poids;
+    public int getAttaqueCar() {
+        return attaqueCar;
     }
 
-    public void setPoids(int poids) {
-        this.poids = poids;
+    public void setAttaqueCar(int attaqueCar) {
+        this.attaqueCar = attaqueCar;
     }
 
-    public UpdateRequestType getUpdateRequestType() {
-        return updateRequestType;
+    public int getEsquiveCar() {
+        return esquiveCar;
     }
 
-    public void setUpdateRequestType(UpdateRequestType updateRequestType) {
-        this.updateRequestType = updateRequestType;
+    public void setEsquiveCar(int esquiveCar) {
+        this.esquiveCar = esquiveCar;
     }
 
-    public void setComputedPvMax(int computedPvMax) {
-        this.computedPvMax = computedPvMax;
+    public int getDegatsCar() {
+        return degatsCar;
     }
 
-    public void setComputedNextDla(Date computedNextDla) {
-        this.computedNextDla = computedNextDla;
+    public void setDegatsCar(int degatsCar) {
+        this.degatsCar = degatsCar;
+    }
+
+    public int getRegenerationCar() {
+        return regenerationCar;
+    }
+
+    public void setRegenerationCar(int regenerationCar) {
+        this.regenerationCar = regenerationCar;
+    }
+
+    public int getVueCar() {
+        return vueCar;
+    }
+
+    public void setVueCar(int vueCar) {
+        this.vueCar = vueCar;
+    }
+
+    public int getArmureCar() {
+        return armureCar;
+    }
+
+    public void setArmureCar(int armureCar) {
+        this.armureCar = armureCar;
+    }
+
+    public double getDureeDuTourCar() {
+        return dureeDuTourCar;
+    }
+
+    public void setDureeDuTourCar(double dureeDuTourCar) {
+        this.dureeDuTourCar = dureeDuTourCar;
+    }
+
+    public int getPvMaxCar() {
+        return pvMaxCar;
+    }
+
+    public void setPvMaxCar(int pvMaxCar) {
+        this.pvMaxCar = pvMaxCar;
+    }
+
+    public int getPvActuelsCar() {
+        return pvActuelsCar;
+    }
+
+    public void setPvActuelsCar(int pvActuelsCar) {
+        this.pvActuelsCar = pvActuelsCar;
+    }
+
+    public double getPoidsCar() {
+        return poidsCar;
+    }
+
+    public void setPoidsCar(double poidsCar) {
+        this.poidsCar = poidsCar;
+    }
+
+    public int getConcentrationCar() {
+        return concentrationCar;
+    }
+
+    public void setConcentrationCar(int concentrationCar) {
+        this.concentrationCar = concentrationCar;
+    }
+
+    public int getRmBmm() {
+        return rmBmm;
+    }
+
+    public void setRmBmm(int rmBmm) {
+        this.rmBmm = rmBmm;
+    }
+
+    public int getMmBmm() {
+        return mmBmm;
+    }
+
+    public void setMmBmm(int mmBmm) {
+        this.mmBmm = mmBmm;
+    }
+
+    public int getAttaqueBmm() {
+        return attaqueBmm;
+    }
+
+    public void setAttaqueBmm(int attaqueBmm) {
+        this.attaqueBmm = attaqueBmm;
+    }
+
+    public int getEsquiveBmm() {
+        return esquiveBmm;
+    }
+
+    public void setEsquiveBmm(int esquiveBmm) {
+        this.esquiveBmm = esquiveBmm;
+    }
+
+    public int getDegatsBmm() {
+        return degatsBmm;
+    }
+
+    public void setDegatsBmm(int degatsBmm) {
+        this.degatsBmm = degatsBmm;
+    }
+
+    public int getRegenerationBmm() {
+        return regenerationBmm;
+    }
+
+    public void setRegenerationBmm(int regenerationBmm) {
+        this.regenerationBmm = regenerationBmm;
+    }
+
+    public int getVueBmm() {
+        return vueBmm;
+    }
+
+    public void setVueBmm(int vueBmm) {
+        this.vueBmm = vueBmm;
+    }
+
+    public int getArmureBmm() {
+        return armureBmm;
+    }
+
+    public void setArmureBmm(int armureBmm) {
+        this.armureBmm = armureBmm;
+    }
+
+    public double getDureeDuTourBmm() {
+        return dureeDuTourBmm;
+    }
+
+    public void setDureeDuTourBmm(double dureeDuTourBmm) {
+        this.dureeDuTourBmm = dureeDuTourBmm;
+    }
+
+    public int getPvMaxBmm() {
+        return pvMaxBmm;
+    }
+
+    public void setPvMaxBmm(int pvMaxBmm) {
+        this.pvMaxBmm = pvMaxBmm;
+    }
+
+    public int getPvActuelsBmm() {
+        return pvActuelsBmm;
+    }
+
+    public void setPvActuelsBmm(int pvActuelsBmm) {
+        this.pvActuelsBmm = pvActuelsBmm;
+    }
+
+    public double getPoidsBmm() {
+        return poidsBmm;
+    }
+
+    public void setPoidsBmm(double poidsBmm) {
+        this.poidsBmm = poidsBmm;
+    }
+
+    public int getConcentrationBmm() {
+        return concentrationBmm;
+    }
+
+    public void setConcentrationBmm(int concentrationBmm) {
+        this.concentrationBmm = concentrationBmm;
+    }
+
+    public int getRmBmp() {
+        return rmBmp;
+    }
+
+    public void setRmBmp(int rmBmp) {
+        this.rmBmp = rmBmp;
+    }
+
+    public int getMmBmp() {
+        return mmBmp;
+    }
+
+    public void setMmBmp(int mmBmp) {
+        this.mmBmp = mmBmp;
+    }
+
+    public int getAttaqueBmp() {
+        return attaqueBmp;
+    }
+
+    public void setAttaqueBmp(int attaqueBmp) {
+        this.attaqueBmp = attaqueBmp;
+    }
+
+    public int getEsquiveBmp() {
+        return esquiveBmp;
+    }
+
+    public void setEsquiveBmp(int esquiveBmp) {
+        this.esquiveBmp = esquiveBmp;
+    }
+
+    public int getDegatsBmp() {
+        return degatsBmp;
+    }
+
+    public void setDegatsBmp(int degatsBmp) {
+        this.degatsBmp = degatsBmp;
+    }
+
+    public int getRegenerationBmp() {
+        return regenerationBmp;
+    }
+
+    public void setRegenerationBmp(int regenerationBmp) {
+        this.regenerationBmp = regenerationBmp;
+    }
+
+    public int getVueBmp() {
+        return vueBmp;
+    }
+
+    public void setVueBmp(int vueBmp) {
+        this.vueBmp = vueBmp;
+    }
+
+    public int getArmureBmp() {
+        return armureBmp;
+    }
+
+    public void setArmureBmp(int armureBmp) {
+        this.armureBmp = armureBmp;
+    }
+
+    public double getDureeDuTourBmp() {
+        return dureeDuTourBmp;
+    }
+
+    public void setDureeDuTourBmp(double dureeDuTourBmp) {
+        this.dureeDuTourBmp = dureeDuTourBmp;
+    }
+
+    public int getPvMaxBmp() {
+        return pvMaxBmp;
+    }
+
+    public void setPvMaxBmp(int pvMaxBmp) {
+        this.pvMaxBmp = pvMaxBmp;
+    }
+
+    public int getPvActuelsBmp() {
+        return pvActuelsBmp;
+    }
+
+    public void setPvActuelsBmp(int pvActuelsBmp) {
+        this.pvActuelsBmp = pvActuelsBmp;
+    }
+
+    public double getPoidsBmp() {
+        return poidsBmp;
+    }
+
+    public void setPoidsBmp(double poidsBmp) {
+        this.poidsBmp = poidsBmp;
+    }
+
+    public int getConcentrationBmp() {
+        return concentrationBmp;
+    }
+
+    public void setConcentrationBmp(int concentrationBmp) {
+        this.concentrationBmp = concentrationBmp;
     }
 }

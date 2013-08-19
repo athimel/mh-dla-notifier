@@ -26,6 +26,7 @@ package org.zoumbox.mh_dla_notifier.sp;
 /**
  * @author Arno <arno@zoumbox.org>
  */
+@Deprecated
 public enum PublicScriptProperties {
     NEEDS_UPDATE,
     LAST_UPDATE_ATTEMPT,

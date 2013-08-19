@@ -25,12 +25,14 @@ package org.zoumbox.mh_dla_notifier.profile;
  */
 
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
+import org.zoumbox.mh_dla_notifier.Pair;
 import org.zoumbox.mh_dla_notifier.sp.NetworkUnavailableException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
 import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
 import org.zoumbox.mh_dla_notifier.troll.Troll;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 /**
@@ -39,10 +41,13 @@ import android.util.Log;
 public abstract class AbstractProfileProxy implements ProfileProxy {
 
     private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + AbstractProfileProxy.class.getSimpleName();
+    protected static final String PROPERTY_RESTART_CHECK = "RESTART_CHECK";
 
-    public Troll fetchTrollWithoutUpdate(Context context, String trollId) throws MissingLoginPasswordException {
+    protected abstract SharedPreferences getPreferences(final Context context);
+
+    public Pair<Troll, Boolean> fetchTrollWithoutUpdate(Context context, String trollId) throws MissingLoginPasswordException {
         try {
-            Troll result = fetchTroll(context, trollId, UpdateRequestType.NONE);
+            Pair<Troll, Boolean> result = fetchTroll(context, trollId, UpdateRequestType.NONE);
             return result;
         } catch (QuotaExceededException e) {
             Log.e(TAG, "Should never happen", e);
@@ -54,6 +59,18 @@ public abstract class AbstractProfileProxy implements ProfileProxy {
             Log.e(TAG, "Should never happen", e);
             throw new RuntimeException("Should never happen", e);
         }
+    }
+
+    public Long getElapsedSinceLastRestartCheck(final Context context) {
+        long lastCheck = getPreferences(context).getLong(PROPERTY_RESTART_CHECK, System.currentTimeMillis());
+        Long result = System.currentTimeMillis() - lastCheck;
+        return result;
+    }
+
+    public void restartCheckDone(final Context context) {
+        SharedPreferences.Editor editor = getPreferences(context).edit();
+        editor.putLong(PROPERTY_RESTART_CHECK, System.currentTimeMillis());
+        editor.commit();
     }
 
 }

@@ -27,6 +27,7 @@ package org.zoumbox.mh_dla_notifier.profile;
 import java.util.Date;
 import java.util.Set;
 
+import org.zoumbox.mh_dla_notifier.Pair;
 import org.zoumbox.mh_dla_notifier.sp.NetworkUnavailableException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
 import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
@@ -60,22 +61,22 @@ public interface ProfileProxy {
 
     boolean areTrollIdentifiersUndefined(Context context);
 
-    Troll fetchTrollWithoutUpdate(Context context, String trollId) throws MissingLoginPasswordException;
+    Pair<Troll, Boolean> fetchTrollWithoutUpdate(Context context, String trollId) throws MissingLoginPasswordException;
 
-    Troll fetchTroll(Context context, String trollId, UpdateRequestType updateRequestType)
+    Pair<Troll, Boolean> fetchTroll(Context context, String trollId, UpdateRequestType updateRequestType)
             throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException,
             NetworkUnavailableException;
 
-    String getLastUpdateResult(final Context context);
+    String getLastUpdateResult(Context context, String trollId);
 
     Date getLastUpdateSuccess(Context context, String trollId);
 
     Troll refreshDLA(Context context, String trollId) throws MissingLoginPasswordException;
 
-    Long getElapsedSinceLastRestartCheck(final Context context);
+    Long getElapsedSinceLastRestartCheck(Context context);
 
-    Long getElapsedSinceLastUpdateSuccess(final Context context);
+    Long getElapsedSinceLastUpdateSuccess(Context context, String trollId);
 
-    void restartCheckDone(final Context context);
+    void restartCheckDone(Context context);
 
 }

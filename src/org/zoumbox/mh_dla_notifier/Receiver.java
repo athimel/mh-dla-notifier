@@ -31,6 +31,7 @@ import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.v1.ProfileProxyV1;
 import org.zoumbox.mh_dla_notifier.troll.Troll;
+import org.zoumbox.mh_dla_notifier.troll.Trolls;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
@@ -190,7 +191,7 @@ public class Receiver extends BroadcastReceiver {
             if (requestUpdate) {
                 troll = getProfileProxy().refreshDLA(context, null);
             } else if (requestAlarmRegistering) {
-                troll = getProfileProxy().fetchTrollWithoutUpdate(context, null);
+                troll = getProfileProxy().fetchTrollWithoutUpdate(context, null).left();
             } else {
                 Log.i(TAG, "Skip loading Troll");
             }
@@ -214,7 +215,7 @@ public class Receiver extends BroadcastReceiver {
             Date beforeCurrentDla = alarms.get(AlarmType.CURRENT_DLA);
             Date currentDla = troll.getDla();
             Date beforeNextDla = alarms.get(AlarmType.NEXT_DLA);
-            Date nextDla = troll.getComputedNextDla();
+            Date nextDla = Trolls.GET_NEXT_DLA.apply(troll);
 
             if (now.after(beforeCurrentDla) && now.before(currentDla)) {
                 Log.i(TAG, String.format("Need to notify DLA='%s' about to expire", currentDla));
@@ -325,7 +326,7 @@ public class Receiver extends BroadcastReceiver {
         Preconditions.checkNotNull(troll);
 
         Date currentDla = troll.getDla();
-        Date nextDla = troll.getComputedNextDla();
+        Date nextDla = Trolls.GET_NEXT_DLA.apply(troll);
 
         Log.i(TAG, String.format("Computing wakeups for [DLA=%s] [NDLA=%s]", currentDla, nextDla));
 
@@ -360,7 +361,7 @@ public class Receiver extends BroadcastReceiver {
     public static Map<AlarmType, Date> scheduleAlarms(Context context) throws MissingLoginPasswordException {
         PreferencesHolder preferences = PreferencesHolder.load(context);
         ProfileProxy profileProxy = new ProfileProxyV1();
-        Troll troll = profileProxy.fetchTrollWithoutUpdate(context, null);
+        Troll troll = profileProxy.fetchTrollWithoutUpdate(context, null).left();
 
         Map<AlarmType, Date> alarms = getAlarms(troll, preferences.notificationDelay);
         Map<AlarmType, Date> scheduledAlarms = scheduleAlarms(context, alarms);

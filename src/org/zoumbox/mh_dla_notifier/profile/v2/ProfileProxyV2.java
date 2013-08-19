@@ -24,11 +24,14 @@ package org.zoumbox.mh_dla_notifier.profile.v2;
  * #L%
  */
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
+import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
 import org.zoumbox.mh_dla_notifier.Pair;
+import org.zoumbox.mh_dla_notifier.PreferencesHolder;
 import org.zoumbox.mh_dla_notifier.profile.AbstractProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
@@ -36,24 +39,27 @@ import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
 import org.zoumbox.mh_dla_notifier.sp.NetworkUnavailableException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScript;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
+import org.zoumbox.mh_dla_notifier.sp.PublicScriptResult;
+import org.zoumbox.mh_dla_notifier.sp.PublicScripts;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptsProxy;
 import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
 import org.zoumbox.mh_dla_notifier.troll.Troll;
 
-import com.google.common.base.Function;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 /**
  * @author Arnaud Thimel <thimel@codelutin.com>
  */
 public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy {
+
+    private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + ProfileProxyV2.class.getSimpleName();
 
     protected static final String PREFS_NAME_V2 = "org.zoumbox.mh.dla.notifier.preferences.v2";
 
@@ -61,6 +67,9 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
 
     protected static final String PROPERTY_PASSWORD = "password";
     protected static final String PROPERTY_PROFILE = "profile";
+    protected static final String PROPERTY_LAST_UPDATE_ATTEMPT = "lastUpdateAttempt";
+    protected static final String PROPERTY_LAST_UPDATE_RESULT = "lastUpdateResult";
+    protected static final String PROPERTY_LAST_UPDATE_SUCCESS = "lastUpdateSuccess";
 
     protected SharedPreferences getPreferences(final Context context) {
         SharedPreferences result = context.getSharedPreferences(PREFS_NAME_V2, 0);
@@ -107,52 +116,163 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
     }
 
     @Override
-    public Troll fetchTroll(Context context, String trollId, UpdateRequestType updateRequestType)
+    public Pair<Troll, Boolean> fetchTroll(Context context, String trollId, UpdateRequestType updateRequestType)
             throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException, NetworkUnavailableException {
-        String propertyProfile = getProperty(trollId, PROPERTY_PROFILE);
-        String profileString = getPreferences(context).getString(propertyProfile, "{}");
-
-        Troll result = new Gson().fromJson(profileString, Troll.class);
+        Troll troll = readTroll(context, trollId);
 
         boolean needUpdate = updateRequestType.needUpdate();
-        needUpdate |= Strings.isNullOrEmpty(result.getNom());
-        needUpdate |= result.getDla() == null;
+        needUpdate |= Strings.isNullOrEmpty(troll.getNom());
+        needUpdate |= troll.getDla() == null;
         // TODO AThimel 07/08/13
 
         if (needUpdate) {
             Pair<String, String> idAndPassword = getTrollPassword(context, trollId);
-            Map<String, String> propertiesFetched = PublicScriptsProxy.fetch(context, PublicScript.Profil2, idAndPassword);
+
+            PublicScriptResult pp2Result = fetchScript(context, PublicScript.ProfilPublic2, idAndPassword);
+            PublicScripts.pushToTroll(troll, pp2Result);
+
+            PublicScriptResult p2Result = fetchScript(context, PublicScript.Profil2, idAndPassword);
+            PublicScripts.pushToTroll(troll, p2Result);
+
+            PublicScriptResult p2Caract = fetchScript(context, PublicScript.Caract, idAndPassword);
+            PublicScripts.pushToTroll(troll, p2Caract);
+
+            saveTroll(context, trollId, troll);
+        }
+
+        return Pair.of(troll, false); // TODO AThimel 19/08/13 implement needsUpdate
+    }
+
+    protected Troll readTroll(Context context, String trollId) {
+        String propertyProfile = getProperty(trollId, PROPERTY_PROFILE);
+        String profileString = getPreferences(context).getString(propertyProfile, "{}");
+
+        Troll result = new Gson().fromJson(profileString, Troll.class);
+        return result;
+    }
+
+    protected void saveTroll(Context context, String trollId, Troll troll) {
+        String propertyProfile = getProperty(trollId, PROPERTY_PROFILE);
+        SharedPreferences.Editor editor = getPreferences(context).edit();
+        String profileString = new Gson().toJson(troll);
+        editor.putString(propertyProfile, profileString);
+        editor.commit();
+    }
+
+    protected PublicScriptResult fetchScript(Context context, PublicScript script, Pair<String, String> idAndPassword)
+            throws QuotaExceededException, PublicScriptException, NetworkUnavailableException {
+        String trollNumber = idAndPassword.left();
+        String trollPassword = idAndPassword.right();
+        PublicScriptResult result;
+        long now = System.currentTimeMillis();
+        try {
+            result = PublicScriptsProxy.fetchScript(context, script, trollNumber, trollPassword);
+            saveUpdateResult(context, trollNumber, script, now, null);
+        } catch (PublicScriptException pse) {
+            saveUpdateResult(context, trollNumber, script, now, pse);
+            throw new PublicScriptException(pse);
+        } catch (QuotaExceededException qee) {
+            saveUpdateResult(context, trollNumber, script, now, qee);
+            throw new QuotaExceededException(qee);
+        } catch (NetworkUnavailableException nue) {
+            saveUpdateResult(context, trollNumber, script, now, nue);
+            throw new NetworkUnavailableException(nue);
         }
 
         return result;
     }
 
+    protected void saveUpdateResult(Context context, String trollId, PublicScript script, long date, Exception exception) {
+        if (PublicScript.Profil2.equals(script)) {
+
+            boolean success = false;
+            String result;
+            if (exception == null) {
+                result = "SUCCESS";
+                success = true;
+            } else {
+                result = exception.getClass().getName();
+                if (exception instanceof NetworkUnavailableException || (exception instanceof PublicScriptException && exception.getCause() != null)) {
+                    result = "NETWORK ERROR: " + result;
+                }
+            }
+
+            SharedPreferences.Editor editor = getPreferences(context).edit();
+            editor.putLong(getProperty(trollId, PROPERTY_LAST_UPDATE_ATTEMPT), date);
+            editor.putString(getProperty(trollId, PROPERTY_LAST_UPDATE_RESULT), result);
+            if (success) {
+                editor.putLong(getProperty(trollId, PROPERTY_LAST_UPDATE_SUCCESS), date);
+            }
+
+            editor.commit();
+        }
+    }
+
     @Override
-    public String getLastUpdateResult(Context context) {
-        return null;
+    public String getLastUpdateResult(Context context, String trollId) {
+
+        String result = getPreferences(context).getString(getProperty(trollId, PROPERTY_LAST_UPDATE_RESULT), null);
+
+        return result;
     }
 
     @Override
     public Date getLastUpdateSuccess(Context context, String trollId) {
-        return null;
+
+        long lastUpdate = getPreferences(context).getLong(getProperty(trollId, PROPERTY_LAST_UPDATE_SUCCESS), 0l);
+
+        Date result = null;
+        if (lastUpdate > 0l) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(lastUpdate);
+            result = calendar.getTime();
+        }
+        return result;
+
     }
 
     @Override
     public Troll refreshDLA(Context context, String trollId) throws MissingLoginPasswordException {
-        return null;
+
+        PreferencesHolder preferences = PreferencesHolder.load(context);
+
+        boolean performUpdate = preferences.enableAutomaticUpdates;
+
+        if (performUpdate) {
+
+            Pair<String, String> idAndPassword = getTrollPassword(context, trollId);
+
+
+            Log.i(TAG, "Request for Profil2 fetch for refreshDLA()");
+            // Force Profil2 fetch
+            try {
+                Troll troll = readTroll(context, trollId);
+
+                PublicScriptResult p2Result = fetchScript(context, PublicScript.Profil2, idAndPassword);
+                PublicScripts.pushToTroll(troll, p2Result);
+
+                saveTroll(context, trollId, troll);
+            } catch (QuotaExceededException qee) {
+                Log.w(TAG, "Quota exceeded, ignoring update", qee);
+            } catch (NetworkUnavailableException qee) {
+                Log.w(TAG, "Network failure, ignoring update", qee);
+            } catch (PublicScriptException pse) {
+                Log.w(TAG, "Script exception, ignoring update", pse);
+            }
+        }
+
+        // Get updated (by the previous fetch) troll info
+        Troll troll = fetchTrollWithoutUpdate(context, trollId).left();
+        return troll;
     }
 
     @Override
-    public Long getElapsedSinceLastRestartCheck(Context context) {
-        return null;
+    public Long getElapsedSinceLastUpdateSuccess(Context context, String trollId) {
+        long lastUpdate = getPreferences(context).getLong(getProperty(trollId, PROPERTY_LAST_UPDATE_SUCCESS), 0l);
+
+        Long result = System.currentTimeMillis() - lastUpdate;
+        return result;
+
     }
 
-    @Override
-    public Long getElapsedSinceLastUpdateSuccess(Context context) {
-        return null;
-    }
-
-    @Override
-    public void restartCheckDone(Context context) {
-    }
 }

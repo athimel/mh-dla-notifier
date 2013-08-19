@@ -314,15 +314,13 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         internalSetTechnicalStatus(status);
     }
 
-    protected void pushTrollToUI(Troll troll) {
+    protected void pushTrollToUI(Troll troll, boolean updateToFollow) {
 
         Preconditions.checkNotNull(troll, "Troll cannot be null");
 
-        boolean updateToFollow = troll.getUpdateRequestType().needUpdate();
-
         this.name.setText(troll.getNom());
 
-        this.numero.setText("N° " + troll.getId());
+        this.numero.setText("N° " + troll.getNumero());
 
         this.race.setText(String.format("%s (%d)", troll.getRace(), troll.getNival()));
 
@@ -382,10 +380,10 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         }
         kd.setText(kdSpannable);
 
-        int pvMax = troll.getComputedPvMax();
+        int pvMax = Trolls.GET_MAX_PV.apply(troll);
 
-        int additionalPvs = pvMax - troll.getPvMaxBase();
-        String pvMaxString = "" + troll.getPvMaxBase();
+        int additionalPvs = pvMax - troll.getPvMaxCar();
+        String pvMaxString = "" + troll.getPvMaxCar();
         if (additionalPvs > 0) {
             pvMaxString += String.format("+%d", additionalPvs);
         }
@@ -465,7 +463,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         int nextDlaDuration = Trolls.GET_NEXT_DLA_DURATION.apply(troll);
         dla_duration.setText(MhDlaNotifierUtils.prettyPrintDuration(this, nextDlaDuration));
 
-        Date nextDla = troll.getComputedNextDla();
+        Date nextDla = Trolls.GET_NEXT_DLA.apply(troll);
         String nextDlaText = MhDlaNotifierUtils.formatDLA(this, nextDla);
         SpannableString nextDlaSpannable = new SpannableString(nextDlaText);
 

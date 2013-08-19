@@ -57,11 +57,35 @@ public class Trolls {
         }
     };
 
+    public static final Function<Troll, Integer> GET_MAX_PV = new Function<Troll, Integer>() {
+        @Override
+        public Integer apply(Troll troll) {
+            int result = troll.pvMaxCar + troll.pvMaxBmm + troll.pvMaxBmp;
+            return result;
+        }
+    };
+
+    public static final Function<Troll, Double> GET_POIDS = new Function<Troll, Double>() {
+        @Override
+        public Double apply(Troll troll) {
+            double result = troll.poidsCar + troll.poidsBmm + troll.poidsBmp;
+            return result;
+        }
+    };
+
+    public static final Function<Troll, Double> GET_DUREE_DU_TOUR = new Function<Troll, Double>() {
+        @Override
+        public Double apply(Troll troll) {
+            double result = troll.dureeDuTourCar + troll.dureeDuTourBmm + troll.dureeDuTourBmp;
+            return result;
+        }
+    };
+
     // Lorsque vous êtes blessé, chaque point de vie en moins vous donnera un malus de DLA de (250 / PV max) minutes.
     public static final Function<Troll, Integer> GET_PV_DLA_MALUS = new Function<Troll, Integer>() {
         @Override
         public Integer apply(Troll troll) {
-            int pvMax = troll.getComputedPvMax();
+            int pvMax = GET_MAX_PV.apply(troll);
             int result = 0;
             if (pvMax > 0) {
                 result = (250 * (pvMax - troll.pv) / pvMax);
@@ -75,8 +99,10 @@ public class Trolls {
         public Integer apply(Troll troll) {
             // Duree de base du tour (585) + poids (125) + bonus magique (-130) + malus blessure (~120)
             int dlaPVMalus = GET_PV_DLA_MALUS.apply(troll);
-            int computed = troll.dureeDuTour + troll.poids + troll.dlaBM + dlaPVMalus;
-            int result = Math.max(computed, troll.dureeDuTour);
+            Double dureeDuTour = GET_DUREE_DU_TOUR.apply(troll);
+            Double poids = GET_POIDS.apply(troll);
+            int computed = dureeDuTour.intValue() + poids.intValue() + dlaPVMalus;
+            int result = Math.max(computed, Double.valueOf(troll.dureeDuTourCar).intValue());
             return result;
 //            return 8;
         }
@@ -92,14 +118,6 @@ public class Trolls {
             nextDla.setTime(troll.dla);
             nextDla.add(Calendar.MINUTE, nextDlaDuration);
             Date result = nextDla.getTime();
-            return result;
-        }
-    };
-
-    public static final Function<Troll, Integer> GET_MAX_PV = new Function<Troll, Integer>() {
-        @Override
-        public Integer apply(Troll troll) {
-            int result = troll.pvMaxBase + troll.pvBM;
             return result;
         }
     };

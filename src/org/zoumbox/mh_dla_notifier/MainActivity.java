@@ -50,13 +50,15 @@ public class MainActivity extends MhDlaNotifierUI {
 
         try {
             // First load the troll without update
-            Troll troll = getProfileProxy().fetchTrollWithoutUpdate(this, null);
+            Pair<Troll, Boolean> trollAndUpdate = getProfileProxy().fetchTrollWithoutUpdate(this, null);
+            Troll troll = trollAndUpdate.left();
+            boolean needsUpdate = trollAndUpdate.right();
 
-            trollUpdated(troll);
+            trollUpdated(troll, needsUpdate);
 
             clearTechnicalStatus();
 
-            if (troll.getUpdateRequestType().needUpdate()) {
+            if (needsUpdate) {
 //                showToast("Mise à jour");
                 startUpdate(UpdateRequestType.ONLY_NECESSARY);
             }
@@ -125,8 +127,8 @@ public class MainActivity extends MhDlaNotifierUI {
         setTechnicalStatusError(error);
     }
 
-    protected void trollUpdated(Troll troll) {
-        pushTrollToUI(troll);
+    protected void trollUpdated(Troll troll, boolean updateToFollow) {
+        pushTrollToUI(troll, updateToFollow);
 
         scheduleAlarms();
     }
@@ -172,7 +174,8 @@ public class MainActivity extends MhDlaNotifierUI {
             Troll troll = null;
             MhDlaException exception = null;
             try {
-                troll = getProfileProxy().fetchTroll(MainActivity.this, null, params[0]);
+                Pair<Troll, Boolean> trollAndUpdate = getProfileProxy().fetchTroll(MainActivity.this, null, params[0]);
+                troll = trollAndUpdate.left();
             } catch (MhDlaException e) {
                 exception = e;
                 e.printStackTrace();
@@ -188,7 +191,7 @@ public class MainActivity extends MhDlaNotifierUI {
                 updateFailure(exception);
             } else {
                 Troll troll = result.left();
-                trollUpdated(troll);
+                trollUpdated(troll, false);
                 updateSuccess();
             }
         }

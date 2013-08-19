@@ -25,7 +25,9 @@ package org.zoumbox.mh_dla_notifier.sp;
 
 import java.util.Map;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -61,10 +63,29 @@ public class PublicScriptsProxyMock {
     public static final String DEVEL_PROFIL2 =
 //            "104259;95;-77;-61;86;90;0;2013-02-11 15:55:25;12;4;21;4;4;6;1288;986;0;4;0;0;0;0;0;585;-75;1;0;1;0;1;0";
 //            "104259;7;72;-59;56;90;2;2013-04-10 04:14:25;13;4;21;5;4;10;1439;1095;0;12;0;0;0;0;0;585;-75;2;0;0;0;1;0";
-            "104259;8;-29;-5;73;90;5;2013-08-05 11:17:25;13;4;23;5;4;14;1545;1305;0;0;0;0;0;0;0;585;-60;2;0;0;0;0;0";
+//            "104259;8;-29;-5;73;90;5;2013-08-05 11:17:25;13;4;23;5;4;14;1545;1305;0;0;0;0;0;0;0;585;-60;2;0;0;0;0;0";
+            "104259;20;-52;-31;105;90;6;2013-08-19 21:47:25;13;4;24;5;4;14;1555;1314;0;0;0;0;0;0;0;585;-60;2;0;0;0;0;0";
     public static final String DEVEL_PROFIL_PUBLIC2 =
 //            "123456;Mon Trõll;Kastar;19;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;122;9;1900;20;0";
-            "104259;DevelZimZoum;Kastar;30;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;30;317;10;1900;20;0\n";
+//            "104259;DevelZimZoum;Kastar;30;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;30;317;10;1900;20;0\n";
+            "104259;DevelZimZoum;Kastar;33;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;34;341;10;1900;20;0";
+    public static final String DEVEL_CARACT =
+            // Type; Attaque; Esquive; Dégats; Régénération; PVMax; PVActuels; Portée deVue; RM; MM; Armure; Duree du Tour; Poids; Concentration
+            "BMM; 6;5; 9; 3;15;  0; 2;1103; 590; 4;-120;    0;0\n" +
+            "BMP; 3;1; 6;-4; 0;  0;-1;   0;   0;14;   0;105.5;0\n" +
+            "CAR;13;4;24; 5;90;105; 4;1314;1555; 2; 585;    0;0\n";
+//            "BMM;6;3;5; 4; 5; 0; 1;262;193;3;-130;  0; 0\n" +
+//            "BMP;1;2;4;-4; 0; 0;-1;  0;  0;6;   0;125;13\n" +
+//            "CAR;9;4;16;4;80;85; 4;486;510;1; 585;  0; 0\n";
+//            "BMM;14;3; 9; 4; 5; 0;-3;275;201;3;-130;  0;0\n" +
+//            "BMP; 1;2; 4;-4; 0; 0;-1;  0;  0;6;   0;149;0\n" +
+//            "CAR; 9;4;16; 4;80;75; 4;511;530;1; 585;  0;0\n";
+//                    "BMM;6;3; 5; 4; 5; 0; 1;279;201;3;-130;    0;0\n" +
+//                    "BMP;1;2; 4;-4; 0; 0;-1;  0;  0;6;   0;144.5;9\n" +
+//                    "CAR;9;4;16; 4;80;85; 4;518;531;1; 585;    0;0\n";
+//            "BMM; 8;4; 6; 4;10; 0; 2;1022; 546; 4;-150;    0;0\n" +
+//                    "BMP; 1;2; 4;-4; 0; 0;-1;   0;   0;10;   0;193.5;0\n" +
+//                    "CAR;13;4;21; 5;90;56; 4;1095;1439; 2; 585;    0;0\n";
     public static final String DEVEL_MOUCHES =
             "567856;ers;Lunettes;404;LA\n" +
                     "563814;ToMars;Crobate;453;LA\n" +
@@ -132,20 +153,6 @@ public class PublicScriptsProxyMock {
                     "4911535;16;Arme (1 main);1;Lame en os;du Temps;DEG : +2 | TOUR : -30 min;7.5\n" +
                     "5403228;32;Bottes;1;Bottes;des Cyclopes;ATT : +1 | ESQ : +2 | DEG : +1 | Vue : -1;5\n" +
                     "8138607;64;Anneau;1;Anneau de Protection;;Protection;11\n";
-    public static final String DEVEL_CARACT =
-            // Type; Attaque; Esquive; Dégats; Régénération; PVMax; PVActuels; Portée deVue; RM; MM; Armure; Duree du Tour; Poids; Concentration
-//            "BMM;6;3;5; 4; 5; 0; 1;262;193;3;-130;  0; 0\n" +
-//            "BMP;1;2;4;-4; 0; 0;-1;  0;  0;6;   0;125;13\n" +
-//            "CAR;9;4;16;4;80;85; 4;486;510;1; 585;  0; 0\n";
-//            "BMM;14;3; 9; 4; 5; 0;-3;275;201;3;-130;  0;0\n" +
-//            "BMP; 1;2; 4;-4; 0; 0;-1;  0;  0;6;   0;149;0\n" +
-//            "CAR; 9;4;16; 4;80;75; 4;511;530;1; 585;  0;0\n";
-//                    "BMM;6;3; 5; 4; 5; 0; 1;279;201;3;-130;    0;0\n" +
-//                    "BMP;1;2; 4;-4; 0; 0;-1;  0;  0;6;   0;144.5;9\n" +
-//                    "CAR;9;4;16; 4;80;85; 4;518;531;1; 585;    0;0\n";
-            "BMM; 8;4; 6; 4;10; 0; 2;1022; 546; 4;-150;    0;0\n" +
-                    "BMP; 1;2; 4;-4; 0; 0;-1;   0;   0;10;   0;193.5;0\n" +
-                    "CAR;13;4;21; 5;90;56; 4;1095;1439; 2; 585;    0;0\n";
     public static final String DEVEL_VUE =
             "#DEBUT TROLLS\n" +
                     "12517;83;-106;-78\n" +
@@ -232,8 +239,8 @@ public class PublicScriptsProxyMock {
                     "2841600;64;Anneau;1;Anneau de Protection;;Protection;7\n";
     public static final String OMNI_CARACT =
             "BMM; 5;3; 9; 0;15; 0;-1;257; 292;3;-20;    0;0\n" +
-                    "BMP;-1;1; 5;-4; 0; 0; 0;  0;   0;4;  0;192.5;0\n" +
-                    "CAR; 5;6;12; 3;70;85; 5;373;1129;3;639;    0;0\n";
+            "BMP;-1;1; 5;-4; 0; 0; 0;  0;   0;4;  0;192.5;0\n" +
+            "CAR; 5;6;12; 3;70;85; 5;373;1129;3;639;    0;0\n";
 
     public static final String SNORF_PROFIL2 = "86133;-31;-71;-55;161;190;0;2012-06-06 05:30:46;16;15;19;9;12;23;10311;2211;2;0;0;0;0;0;0;585;0;5;1";
     public static final String SNORF_PROFIL_PUBLIC2 = "86133;Snorf le jeune;Skrim;44;2007-02-06 23:09:17;;http://blason.mountyhall.com/Blason_PJ/86133;44;338;7;1900;160;0";
@@ -245,15 +252,15 @@ public class PublicScriptsProxyMock {
     public static final String SNORF_CARACT =
             // Type; Attaque; Esquive; Dégats; Régénération; PVMax; PVActuels; Portée deVue; RM; MM; Armure; Duree du Tour; Poids; Concentration
             "BMM; 5;13;11; 6;  5;  0;11;5544; 4122;10;-160;  0;0\n" +
-                    "BMP;-1;-5;-5;-8;  0;  0;-2;   0;    0;23;   0;114;0\n" +
-                    "CAR;16;15;19; 9;190;161;12;2211;10311; 5; 585;  0;0\n";
+            "BMP;-1;-5;-5;-8;  0;  0;-2;   0;    0;23;   0;114;0\n" +
+            "CAR;16;15;19; 9;190;161;12;2211;10311; 5; 585;  0;0\n";
 
     public static final String PYDFMYDR_PROFIL_PUBLIC2 =
             "104259;plusilyadefoumoinilyaderi;Darkling;5;2010-04-26 17:22:39;plusilyadefoumoinilyaderi@hotmail.fr;http://blason.mountyhall.com/Blason_PJ/102611;9;75;11;1;00;0";
 
     public static final String UCH_PROFIL2 = "88222;81;-100;-76;100;100;0;2012-06-29 18:23:12;3;11;3;7;28;11;4336;1139;0;0;0;0;0;0;0;618;-50;1;0;0;0;0";
 
-    private static Map<PublicScript, Map<MockTroll, String>> scripts = Maps.newHashMap();
+    public static final Map<PublicScript, Map<MockTroll, String>> scripts = Maps.newHashMap();
 
     static {
         for (PublicScript ps : PublicScript.values()) {
@@ -289,4 +296,11 @@ public class PublicScriptsProxyMock {
 
     }
 
+    public static Multimap<PublicScript, String> getMockScripts() {
+        Multimap<PublicScript, String> result = HashMultimap.create();
+        for (Map.Entry<PublicScript, Map<MockTroll, String>> entry : scripts.entrySet()) {
+            result.putAll(entry.getKey(), entry.getValue().values());
+        }
+        return result;
+    }
 }

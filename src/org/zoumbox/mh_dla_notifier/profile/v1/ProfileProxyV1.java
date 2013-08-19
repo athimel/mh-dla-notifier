@@ -40,14 +40,12 @@ import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
 import org.zoumbox.mh_dla_notifier.sp.NetworkUnavailableException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScript;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
-import org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptsProxy;
 import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
 import org.zoumbox.mh_dla_notifier.troll.Race;
 import org.zoumbox.mh_dla_notifier.troll.Troll;
 
 import com.google.common.base.Predicate;
-import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -58,8 +56,6 @@ import com.google.common.collect.Sets;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
-
-import static org.zoumbox.mh_dla_notifier.sp.PublicScriptProperties.*;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -145,7 +141,7 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
         return pair;
     }
 
-    public Troll fetchTroll(final Context context, String trollId, UpdateRequestType updateRequest)
+    public Pair<Troll, Boolean> fetchTroll(final Context context, String trollId, UpdateRequestType updateRequest)
             throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException,
             NetworkUnavailableException {
 
@@ -153,49 +149,49 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
 
         Troll result = new Troll();
 
-        List<PublicScriptProperties> requestedProperties = Lists.newArrayList(
-                NOM, RACE, NIVAL, GUILDE, CARACT, BLASON, NB_KILLS, NB_MORTS, DATE_INSCRIPTION,
-                PV, PV_MAX, FATIGUE, POS_X, POS_Y, POS_N,
-                DUREE_DU_TOUR, DLA, PA_RESTANT,
-                CAMOU, INVISIBLE, INTANGIBLE, IMMOBILE, A_TERRE, EN_COURSE, LEVITATION);
-        Map<PublicScriptProperties, String> properties = fetchProperties(
+        List<String> requestedProperties = Lists.newArrayList(
+                "NOM", "RACE", "NIVAL", "GUILDE", "CARACT", "BLASON", "NB_KILLS", "NB_MORTS", "DATE_INSCRIPTION",
+                "PV", "PV_MAX", "FATIGUE", "POS_X", "POS_Y", "POS_N",
+                "DUREE_DU_TOUR", "DLA", "PA_RESTANT",
+                "CAMOU", "INVISIBLE", "INTANGIBLE", "IMMOBILE", "A_TERRE", "EN_COURSE", "LEVITATION");
+        Map<String, String> properties = fetchProperties(
                 context, updateRequest, requestedProperties);
 
-        result.setId(getTrollNumber(context));
+        result.setNumero(getTrollNumber(context));
 
-        result.setNom(properties.get(NOM));
-        result.setRace(Race.valueOf(properties.get(RACE)));
-        result.setNival(Integer.parseInt(properties.get(NIVAL)));
-        result.setDateInscription(MhDlaNotifierUtils.parseDate(properties.get(DATE_INSCRIPTION)));
+        result.setNom(properties.get("NOM"));
+        result.setRace(Race.valueOf(properties.get("RACE")));
+        result.setNival(Integer.parseInt(properties.get("NIVAL")));
+        result.setDateInscription(MhDlaNotifierUtils.parseDate(properties.get("DATE_INSCRIPTION")));
 
-        result.setPv(Integer.parseInt(properties.get(PV)));
-        result.setPvVariation(Integer.parseInt(properties.get(PV_VARIATION)));
-        result.setPvMaxBase(Integer.parseInt(properties.get(PV_MAX)));
-        result.setFatigue(Integer.parseInt(properties.get(FATIGUE)));
+        result.setPv(Integer.parseInt(properties.get("PV")));
+        result.setPvVariation(Integer.parseInt(properties.get("PV_VARIATION")));
+        result.setPvMaxCar(Integer.parseInt(properties.get("PV_MAX")));
+        result.setFatigue(Integer.parseInt(properties.get("FATIGUE")));
 
-        result.setPosX(Integer.parseInt(properties.get(POS_X)));
-        result.setPosY(Integer.parseInt(properties.get(POS_Y)));
-        result.setPosN(Integer.parseInt(properties.get(POS_N)));
+        result.setPosX(Integer.parseInt(properties.get("POS_X")));
+        result.setPosY(Integer.parseInt(properties.get("POS_Y")));
+        result.setPosN(Integer.parseInt(properties.get("POS_N")));
 
-        result.setCamou("1".equals(properties.get(CAMOU)));
-        result.setInvisible("1".equals(properties.get(INVISIBLE)));
-        result.setIntangible("1".equals(properties.get(INTANGIBLE)));
-        result.setImmobile("1".equals(properties.get(IMMOBILE)));
-        result.setaTerre("1".equals(properties.get(A_TERRE)));
-        result.setEnCourse("1".equals(properties.get(EN_COURSE)));
-        result.setLevitation("1".equals(properties.get(LEVITATION)));
+        result.setCamou("1".equals(properties.get("CAMOU")));
+        result.setInvisible("1".equals(properties.get("INVISIBLE")));
+        result.setIntangible("1".equals(properties.get("INTANGIBLE")));
+        result.setImmobile("1".equals(properties.get("IMMOBILE")));
+        result.setaTerre("1".equals(properties.get("A_TERRE")));
+        result.setEnCourse("1".equals(properties.get("EN_COURSE")));
+        result.setLevitation("1".equals(properties.get("LEVITATION")));
 
-        result.setDureeDuTour(Integer.parseInt(properties.get(DUREE_DU_TOUR)));
-        result.setDla(MhDlaNotifierUtils.parseDate(properties.get(DLA)));
-        result.setPa(Integer.parseInt(properties.get(PA_RESTANT)));
+        result.setDureeDuTourCar(Integer.parseInt(properties.get("DUREE_DU_TOUR")));
+        result.setDla(MhDlaNotifierUtils.parseDate(properties.get("DLA")));
+        result.setPa(Integer.parseInt(properties.get("PA_RESTANT")));
 
-        result.setBlason(properties.get(BLASON));
-        String guildeNumber = properties.get(GUILDE);
+        result.setBlason(properties.get("BLASON"));
+        String guildeNumber = properties.get("GUILDE");
         if (!Strings.isNullOrEmpty(guildeNumber)) {
             result.setGuilde(Integer.parseInt(guildeNumber));
         }
-        result.setNbKills(Integer.parseInt(properties.get(NB_KILLS)));
-        result.setNbMorts(Integer.parseInt(properties.get(NB_MORTS)));
+        result.setNbKills(Integer.parseInt(properties.get("NB_KILLS")));
+        result.setNbMorts(Integer.parseInt(properties.get("NB_MORTS")));
 
 //        result.mouches = Lists.newArrayList();
 //        List<String> moucheLines = Lists.newArrayList(Splitter.on("\n").omitEmptyStrings().trimResults().split(properties.get(MOUCHES)));
@@ -228,29 +224,30 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
 //            result.equipements.add(equipement);
 //        }
 
-        List<String> caractLines = Lists.newArrayList(Splitter.on("\n").omitEmptyStrings().trimResults().split(properties.get(CARACT)));
-        result.setPvBM(0);
-        result.setDlaBM(0);
-        result.setPoids(0);
-        int pvBm = 0, dlaBm = 0, poids = 0;
-        for (String line : caractLines) {
-            List<String> fields = Lists.newArrayList(Splitter.on(";").trimResults().split(line));
-            String type = fields.get(0);
-            if ("BMM".equals(type) || "BMP".equals(type)) {
-                pvBm += Integer.parseInt(fields.get(5));
-                Double dlaBMDouble = Math.floor(Double.parseDouble(fields.get(11)));
-                dlaBm += dlaBMDouble.intValue();
-                Double poidsDouble = Math.floor(Double.parseDouble(fields.get(12)));
-                poids += poidsDouble.intValue();
-            }
-        }
-        result.setPvBM(pvBm);
-        result.setDlaBM(dlaBm);
-        result.setPoids(poids);
+//        List<String> caractLines = Lists.newArrayList(Splitter.on("\n").omitEmptyStrings().trimResults().split(properties.get("CARACT")));
+//        result.setPvBM(0);
+//        result.setDlaBM(0);
+//        result.setPoids(0);
+//        int pvBm = 0, dlaBm = 0, poids = 0;
+//        for (String line : caractLines) {
+//            List<String> fields = Lists.newArrayList(Splitter.on(";").trimResults().split(line));
+//            String type = fields.get(0);
+//            if ("BMM".equals(type) || "BMP".equals(type)) {
+//                pvBm += Integer.parseInt(fields.get(5));
+//                Double dlaBMDouble = Math.floor(Double.parseDouble(fields.get(11)));
+//                dlaBm += dlaBMDouble.intValue();
+//                Double poidsDouble = Math.floor(Double.parseDouble(fields.get(12)));
+//                poids += poidsDouble.intValue();
+//            }
+//        }
+//        result.setPvBM(pvBm);
+//        result.setDlaBM(dlaBm);
+//        result.setPoids(poids);
 
-        result.setUpdateRequestType(UpdateRequestType.valueOf(properties.get(NEEDS_UPDATE)));
+        boolean needsUpdate = UpdateRequestType.valueOf(properties.get("NEEDS_UPDATE")).needUpdate();
+        Pair<Troll, Boolean> resultPair = Pair.of(result, needsUpdate);
 
-        return result;
+        return resultPair;
     }
 
     protected static Predicate<PublicScript> noNeedToUpdate(final Context context, final String trollNumber) {
@@ -262,8 +259,8 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
         };
     }
 
-    public Map<PublicScriptProperties, String> fetchProperties(
-            final Context context, UpdateRequestType updateRequest, List<PublicScriptProperties> requestedProperties)
+    public Map<String, String> fetchProperties(
+            final Context context, UpdateRequestType updateRequest, List<String> requestedProperties)
             throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException, NetworkUnavailableException {
 
         Log.i(TAG, "Fetching properties with updateRequest: " + updateRequest);
@@ -275,7 +272,7 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
         // Iterate over requested properties to know which SP are concerned
         Set<PublicScript> scripts = Sets.newLinkedHashSet();
         Log.i(TAG, "Requesting properties: " + requestedProperties);
-        for (PublicScriptProperties property : requestedProperties) {
+        for (String property : requestedProperties) {
             PublicScript script = PublicScript.forProperty(property);
             scripts.add(script);
         }
@@ -283,8 +280,8 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
         // Maybe no update is requested, but needed because of missing property
         UpdateRequestType updateRequestType = updateRequest;
         if (!updateRequestType.needUpdate()) {
-            for (PublicScriptProperties property : requestedProperties) {
-                String value = preferences.getString(property.name(), null);
+            for (String property : requestedProperties) {
+                String value = preferences.getString(property, null);
                 if (value == null) {
                     updateRequestType = UpdateRequestType.FULL;
                     Log.i(TAG, "updateRequestType changed from " + updateRequest + " to " + updateRequestType);
@@ -302,7 +299,7 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
             }
 
             for (PublicScript script : scripts) {
-                Map<String, String> propertiesFetched = PublicScriptsProxy.fetch(context, script, idAndPassword);
+                Map<String, String> propertiesFetched = PublicScriptsProxy.fetchProperties(context, script, idAndPassword);
                 saveProperties(preferences, propertiesFetched);
             }
         } else {
@@ -315,15 +312,15 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
             }
         }
 
-        Map<PublicScriptProperties, String> result = Maps.newLinkedHashMap();
+        Map<String, String> result = Maps.newLinkedHashMap();
         Log.i(TAG, "Background update needed ? " + backgroundUpdate);
-        result.put(NEEDS_UPDATE, backgroundUpdate.name());
+        result.put("NEEDS_UPDATE", backgroundUpdate.name());
 
-        String pvVariation = preferences.getString(PV_VARIATION.name(), "0");
-        result.put(PV_VARIATION, pvVariation);
+        String pvVariation = preferences.getString("PV_VARIATION", "0");
+        result.put("PV_VARIATION", pvVariation);
 
-        for (PublicScriptProperties property : requestedProperties) {
-            String value = preferences.getString(property.name(), null);
+        for (String property : requestedProperties) {
+            String value = preferences.getString(property, null);
             result.put(property, value);
         }
 
@@ -334,7 +331,7 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
-        long lastUpdate = preferences.getLong(LAST_UPDATE_SUCCESS.name(), 0l);
+        long lastUpdate = preferences.getLong("LAST_UPDATE_SUCCESS", 0l);
 
         Date result = null;
         if (lastUpdate > 0l) {
@@ -345,39 +342,21 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
         return result;
     }
 
-    public Long getElapsedSinceLastUpdateSuccess(final Context context) {
+    public Long getElapsedSinceLastUpdateSuccess(final Context context, String trollId) {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
-        long lastUpdate = preferences.getLong(LAST_UPDATE_SUCCESS.name(), 0l);
+        long lastUpdate = preferences.getLong("LAST_UPDATE_SUCCESS", 0l);
 
         Long result = System.currentTimeMillis() - lastUpdate;
         return result;
     }
 
-    public Long getElapsedSinceLastRestartCheck(final Context context) {
+    public String getLastUpdateResult(final Context context, String trollId) {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
 
-        long lastCheck = preferences.getLong(RESTART_CHECK.name(), System.currentTimeMillis());
-
-        Long result = System.currentTimeMillis() - lastCheck;
-        return result;
-    }
-
-    public void restartCheckDone(final Context context) {
-        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
-
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putLong(RESTART_CHECK.name(), System.currentTimeMillis());
-        editor.commit();
-    }
-
-    public String getLastUpdateResult(final Context context) {
-
-        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
-
-        String result = preferences.getString(LAST_UPDATE_RESULT.name(), null);
+        String result = preferences.getString("LAST_UPDATE_RESULT", null);
 
         return result;
     }
@@ -396,10 +375,10 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
     }
 
     protected static void checkForPvLoss(SharedPreferences preferences, SharedPreferences.Editor editor, String key, String value) {
-        if (key.equals(PublicScriptProperties.PV.name())) {
-            int actualPV = Integer.parseInt(preferences.getString(PublicScriptProperties.PV.name(), "-1"));
+        if (key.equals("PV")) {
+            int actualPV = Integer.parseInt(preferences.getString("PV", "-1"));
             int newPV = Integer.parseInt(value);
-            editor.putString(PublicScriptProperties.PV_VARIATION.name(), Integer.toString(newPV - actualPV));
+            editor.putString("PV_VARIATION", Integer.toString(newPV - actualPV));
         }
     }
 
@@ -418,7 +397,7 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
             Log.i(TAG, "Request for Profil2 fetch for refreshDLA()");
             // Force Profil2 fetch
             try {
-                Map<String, String> propertiesFetched = PublicScriptsProxy.fetch(context, PublicScript.Profil2, idAndPassword);
+                Map<String, String> propertiesFetched = PublicScriptsProxy.fetchProperties(context, PublicScript.Profil2, idAndPassword);
                 saveProperties(sharedPreferences, propertiesFetched);
             } catch (QuotaExceededException qee) {
                 Log.w(TAG, "Quota exceeded, ignoring update", qee);
@@ -430,8 +409,14 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
         }
 
         // Get updated (by the previous fetch) troll info
-        Troll troll = fetchTrollWithoutUpdate(context, trollId);
+        Troll troll = fetchTrollWithoutUpdate(context, trollId).left();
         return troll;
+    }
+
+    @Override
+    protected SharedPreferences getPreferences(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
+        return preferences;
     }
 
 //    private static Date getDLA(SharedPreferences preferences) {
