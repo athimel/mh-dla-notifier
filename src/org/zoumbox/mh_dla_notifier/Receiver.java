@@ -100,7 +100,7 @@ public class Receiver extends BroadcastReceiver {
             boolean result = false;
             // Check if the device restarted since last update
             ProfileProxy profileProxy = new ProfileProxyV1();
-            Long elapsedSinceLastSuccess = profileProxy.getElapsedSinceLastUpdateSuccess(context);
+            Long elapsedSinceLastSuccess = profileProxy.getElapsedSinceLastUpdateSuccess(context, null); // FIXME AThimel 20/08/13 null is not good
             if (elapsedSinceLastSuccess != null) {
                 Log.i(TAG, "Elapsed since last update success: " + elapsedSinceLastSuccess + "ms ~= " + (elapsedSinceLastSuccess / 60000) + "min");
 
@@ -120,7 +120,7 @@ public class Receiver extends BroadcastReceiver {
         @Override
         public boolean apply(Context context) {
             ProfileProxy profileProxy = new ProfileProxyV1();
-            String lastUpdateResult = profileProxy.getLastUpdateResult(context);
+            String lastUpdateResult = profileProxy.getLastUpdateResult(context, null); // FIXME AThimel 20/08/13 null is not good
             Log.i(TAG, "lastUpdateResult: " + lastUpdateResult);
             boolean result = lastUpdateResult != null && lastUpdateResult.startsWith("NETWORK ERROR");
             Log.i(TAG, "shouldUpdateBecauseOfNetworkFailure: " + result);

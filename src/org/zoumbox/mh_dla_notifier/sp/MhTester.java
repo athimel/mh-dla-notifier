@@ -61,7 +61,7 @@ public class MhTester {
         for (Map.Entry<PublicScript, String> entry : PublicScriptsProxyMock.getMockScripts().entries()) {
             Troll troll = new Troll();
             PublicScriptResult result = new PublicScriptResult(entry.getKey(), entry.getValue());
-            pushPropertiesToTroll(troll, result);
+            PublicScripts.pushToTroll(troll, result);
             System.out.println(troll);
         }
     }
