@@ -45,6 +45,7 @@ import org.zoumbox.mh_dla_notifier.sp.PublicScripts;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptsProxy;
 import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
 import org.zoumbox.mh_dla_notifier.troll.Troll;
+import org.zoumbox.mh_dla_notifier.utils.AndroidLogCallback;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -188,14 +189,16 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
         if (needUpdate) {
             Pair<String, String> idAndPassword = getTrollPassword(context, trollId);
 
+            AndroidLogCallback logCallback = new AndroidLogCallback();
+
             PublicScriptResult pp2Result = fetchScript(context, PublicScript.ProfilPublic2, idAndPassword);
-            PublicScripts.pushToTroll(troll, pp2Result);
+            PublicScripts.pushToTroll(troll, pp2Result, logCallback);
 
             PublicScriptResult p2Result = fetchScript(context, PublicScript.Profil2, idAndPassword);
-            PublicScripts.pushToTroll(troll, p2Result);
+            PublicScripts.pushToTroll(troll, p2Result, logCallback);
 
             PublicScriptResult p2Caract = fetchScript(context, PublicScript.Caract, idAndPassword);
-            PublicScripts.pushToTroll(troll, p2Caract);
+            PublicScripts.pushToTroll(troll, p2Caract, logCallback);
 
             saveTroll(context, trollId, troll);
         }
@@ -310,7 +313,7 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
                 Troll troll = readTroll(context, trollId);
 
                 PublicScriptResult p2Result = fetchScript(context, PublicScript.Profil2, idAndPassword);
-                PublicScripts.pushToTroll(troll, p2Result);
+                PublicScripts.pushToTroll(troll, p2Result, new AndroidLogCallback());
 
                 saveTroll(context, trollId, troll);
             } catch (QuotaExceededException qee) {

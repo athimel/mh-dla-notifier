@@ -36,6 +36,7 @@ import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierUtils;
 import org.zoumbox.mh_dla_notifier.troll.Race;
 import org.zoumbox.mh_dla_notifier.troll.Troll;
+import org.zoumbox.mh_dla_notifier.utils.LogCallback;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -47,8 +48,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
-import android.util.Log;
 
 /**
  * @author Arnaud Thimel <thimel@codelutin.com>
@@ -105,7 +104,7 @@ public class PublicScripts {
     };
 
 
-    public static void pushToTroll(Troll troll, Map<String, String> propertiesFetched) {
+    public static void pushToTroll(Troll troll, Map<String, String> propertiesFetched, LogCallback log) {
         List<Method> methods = Arrays.asList(Troll.class.getMethods());
         for (Map.Entry<String, String> entry : propertiesFetched.entrySet()) {
             try {
@@ -140,51 +139,27 @@ public class PublicScripts {
 
                     method.invoke(troll, value);
 
-//                }
-//                if (PropertyUtils.isWriteable(troll, name)) {
-//                    PropertyDescriptor propertyDescriptor = PropertyUtils.getPropertyDescriptor(troll, name);
-//                    Class<?> type = propertyDescriptor.getPropertyType();
-//                    String stringValue = entry.getValue();
-//                    Object value = stringValue;
-//                    if (int.class.equals(type)) {
-//                        value = Integer.parseInt(stringValue);
-//                    } else if (boolean.class.equals(type)) {
-//                        value = "1".equals(stringValue);
-//                    } else if (double.class.equals(type)) {
-//                        value = Double.parseDouble(stringValue);
-//                    } else if (Race.class.equals(type)) {
-//                        value = Race.valueOf(stringValue);
-//                    } else if (Date.class.equals(type)) {
-//                        value = MhDlaNotifierUtils.parseDate(stringValue);
-//                    }
-//
-//                    PropertyUtils.setSimpleProperty(troll, name, value);
                 } else {
-//                    System.out.println("Ignored property (unwritable): " + name);
-                    Log.w(TAG, "Ignored property (unwritable): " + name);
+                    log.w(TAG, "Ignored property (unwritable): " + name);
                 }
             } catch (IllegalStateException ise) {
-//            System.out.println("An exception occured" + ise);
-                Log.e(TAG, "An exception occured", ise);
+                log.e(TAG, "An exception occured", ise);
             } catch (IllegalAccessException iae) {
-//                System.out.println("An exception occured" + e);
-                Log.e(TAG, "An exception occured", iae);
+                log.e(TAG, "An exception occured", iae);
             } catch (InvocationTargetException ite) {
-//                System.out.println("An exception occured" + e);
-                Log.e(TAG, "An exception occured", ite);
-//            } catch (NoSuchMethodException e) {
-//                System.out.println("An exception occured" + e);
-////                Log.e(TAG, "An exception occured", e);
+                log.e(TAG, "An exception occured", ite);
             }
         }
 
     }
 
-    public static void pushToTroll(Troll troll, PublicScriptResult publicScriptResult) {
+    public static void pushToTroll(Troll troll, PublicScriptResult publicScriptResult, LogCallback log) {
+        String scriptName = publicScriptResult.getScript().name();
+        log.i(TAG, String.format("%s result [raw=%s]", scriptName, publicScriptResult.getRaw()));
         Map<String, String> map = PublicScripts.SCRIPT_RESULT_TO_MAP.apply(publicScriptResult);
-//        System.out.println(String.format("%s: %s", publicScriptResult.getScript().name(), map));
-        Log.i(TAG, String.format("%s: %s", publicScriptResult.getScript().name(), map));
-        PublicScripts.pushToTroll(troll, map);
+        log.i(TAG, String.format("%s result [map=%s]", scriptName, map));
+        PublicScripts.pushToTroll(troll, map, log);
+        log.i(TAG, String.format("%s result [troll=%s]", scriptName, troll));
     }
 
 }

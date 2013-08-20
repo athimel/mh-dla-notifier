@@ -30,17 +30,21 @@ import java.io.InputStreamReader;
 import java.net.UnknownHostException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.zoumbox.mh_dla_notifier.MainActivity;
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
 import org.zoumbox.mh_dla_notifier.Pair;
 import org.zoumbox.mh_dla_notifier.profile.v1.ProfileProxyV1;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -104,7 +108,10 @@ public class PublicScriptsProxy {
     protected static final String SQL_LAST_UPDATE = String.format("SELECT MAX(%s) FROM %s WHERE %s=? AND %s=?",
             MhDlaSQLHelper.SCRIPTS_DATE_COLUMN, MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_SCRIPT_COLUMN);
 
-    protected static int computeRequestCount(Context context, PublicScript script, String trollNumber) {
+    protected static final String SQL_LIST_REQUESTS = String.format("SELECT %s, %s FROM %s WHERE %s=? ORDER BY %s DESC LIMIT %s",
+            MhDlaSQLHelper.SCRIPTS_DATE_COLUMN,  MhDlaSQLHelper.SCRIPTS_SCRIPT_COLUMN, MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_DATE_COLUMN, "%d");
+
+    protected static int computeRequestCount(Context context, ScriptCategory category, String trollNumber) {
 
         MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
         SQLiteDatabase database = helper.getReadableDatabase();
@@ -113,7 +120,7 @@ public class PublicScriptsProxy {
         instance.add(Calendar.HOUR_OF_DAY, -24);
         Date sinceDate = instance.getTime();
 
-        Cursor cursor = database.rawQuery(SQL_COUNT, new String[]{trollNumber, script.category.name(), "" + sinceDate.getTime()});
+        Cursor cursor = database.rawQuery(SQL_COUNT, new String[]{trollNumber, category.name(), "" + sinceDate.getTime()});
         int result = 0;
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
@@ -123,8 +130,8 @@ public class PublicScriptsProxy {
         cursor.close();
         database.close();
 
-        String format = "Quota for category %s (script=%s) and troll=%s since '%s' is: %d";
-        String message = String.format(format, script.category, script, trollNumber, sinceDate, result);
+        String format = "Quota for category %s and troll=%s since '%s' is: %d";
+        String message = String.format(format, category, trollNumber, sinceDate, result);
         Log.i(TAG, message);
 
         return result;
@@ -180,7 +187,7 @@ public class PublicScriptsProxy {
 
         Log.i(TAG, String.format("Fetching in script=%s and troll=%s ", script, trollNumber));
         ScriptCategory category = script.category;
-        int requestCount = computeRequestCount(context, script, trollNumber);
+        int requestCount = computeRequestCount(context, script.category, trollNumber);
 //        if (requestCount >= category.quota) {
         if (requestCount >= (category.quota / 2)) {
             String format = "Quota is exceeded for category %s (script=%s) and troll=%s: %d§%d";
@@ -256,6 +263,45 @@ public class PublicScriptsProxy {
 
             editor.commit();
         }
+    }
+
+    public static List<MhSpRequest> listLatestRequests(Context context, String trollId) {
+        List<MhSpRequest> result = Lists.newArrayList();
+
+        String query = String.format(SQL_LIST_REQUESTS, 50);
+
+
+        MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
+        SQLiteDatabase database = helper.getReadableDatabase();
+
+        Calendar calendar = Calendar.getInstance();
+
+        Cursor cursor = database.rawQuery(query, new String[]{trollId});
+        while (cursor.moveToNext()) {
+            Long timeMillis = cursor.getLong(0);
+            String scriptName = cursor.getString(1);
+
+            calendar.setTimeInMillis(timeMillis);
+            Date date = calendar.getTime();
+            PublicScript script = PublicScript.valueOf(scriptName);
+
+            MhSpRequest request = new MhSpRequest(date, script);
+            result.add(request);
+        }
+
+        cursor.close();
+        database.close();
+
+        return result;
+    }
+
+    public static Map<ScriptCategory, Integer> listQuotas(Context context, String trollId) {
+        Map<ScriptCategory, Integer> result = Maps.newLinkedHashMap();
+        for (ScriptCategory scriptCategory : ScriptCategory.values()) {
+            int count = computeRequestCount(context, scriptCategory, trollId);
+            result.put(scriptCategory, count);
+        }
+        return result;
     }
 
 }

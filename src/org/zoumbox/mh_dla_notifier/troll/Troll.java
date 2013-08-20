@@ -299,11 +299,11 @@ public class Troll {
         this.immobile = immobile;
     }
 
-    public boolean isaTerre() {
+    public boolean isATerre() {
         return aTerre;
     }
 
-    public void setaTerre(boolean aTerre) {
+    public void setATerre(boolean aTerre) {
         this.aTerre = aTerre;
     }
 

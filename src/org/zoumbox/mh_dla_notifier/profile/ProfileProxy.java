@@ -25,6 +25,7 @@ package org.zoumbox.mh_dla_notifier.profile;
  */
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import org.zoumbox.mh_dla_notifier.Pair;

@@ -168,4 +168,12 @@ public enum PublicScript {
     public Set<String> getTypes() {
         return types;
     }
+
+    @Override
+    public String toString() {
+        return "PublicScript{" +
+                "name=" + name() +
+                ", category=" + category +
+                '}';
+    }
 }

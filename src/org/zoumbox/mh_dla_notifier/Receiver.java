@@ -191,9 +191,9 @@ public class Receiver extends BroadcastReceiver {
         Troll troll = null;
         try {
             if (requestUpdate) {
-                troll = getProfileProxy().refreshDLA(context, null);
+                troll = getProfileProxy().refreshDLA(context, trollId);
             } else if (requestAlarmRegistering) {
-                troll = getProfileProxy().fetchTrollWithoutUpdate(context, null).left();
+                troll = getProfileProxy().fetchTrollWithoutUpdate(context, trollId).left();
             } else {
                 Log.i(TAG, "Skip loading Troll");
             }

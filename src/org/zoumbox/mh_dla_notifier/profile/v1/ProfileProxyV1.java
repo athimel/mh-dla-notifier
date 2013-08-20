@@ -191,7 +191,7 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
         result.setInvisible("1".equals(properties.get("INVISIBLE")));
         result.setIntangible("1".equals(properties.get("INTANGIBLE")));
         result.setImmobile("1".equals(properties.get("IMMOBILE")));
-        result.setaTerre("1".equals(properties.get("A_TERRE")));
+        result.setATerre("1".equals(properties.get("A_TERRE")));
         result.setEnCourse("1".equals(properties.get("EN_COURSE")));
         result.setLevitation("1".equals(properties.get("LEVITATION")));
 

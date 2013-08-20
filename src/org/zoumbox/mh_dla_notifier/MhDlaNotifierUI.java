@@ -318,6 +318,8 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
         Preconditions.checkNotNull(troll, "Troll cannot be null");
 
+        Log.i(TAG, "Now rendering troll: " + troll);
+
         this.name.setText(troll.getNom());
 
         this.numero.setText("N° " + troll.getNumero());
@@ -344,7 +346,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         this.trollInfo.setText(trollInfo);
 
         Set<String> statuses = Sets.newLinkedHashSet();
-        if (troll.isaTerre()) {
+        if (troll.isATerre()) {
             statuses.add("[À terre]");
         }
         if (troll.isCamou()) {

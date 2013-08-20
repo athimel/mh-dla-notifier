@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
 import org.zoumbox.mh_dla_notifier.troll.Troll;
+import org.zoumbox.mh_dla_notifier.utils.SystemLogCallback;
 
 /**
  * @author Arnaud Thimel <thimel@codelutin.com>
@@ -36,32 +37,33 @@ public class MhTester {
 
 
     public static void main(String[] args) {
-//        {
-//            Troll troll = new Troll();
-//
-//            {
-//                PublicScriptResult publicScriptResult = new PublicScriptResult(PublicScript.ProfilPublic2, PublicScriptsProxyMock.DEVEL_PROFIL_PUBLIC2);
-//                pushPropertiesToTroll(troll, publicScriptResult);
-//                System.out.println(troll);
-//            }
-//
-//            {
-//                PublicScriptResult publicScriptResult = new PublicScriptResult(PublicScript.Profil2, PublicScriptsProxyMock.DEVEL_PROFIL2);
-//                pushPropertiesToTroll(troll, publicScriptResult);
-//                System.out.println(troll);
-//            }
-//
-//            {
-//                PublicScriptResult publicScriptResult = new PublicScriptResult(PublicScript.Caract, PublicScriptsProxyMock.DEVEL_CARACT);
-//                pushPropertiesToTroll(troll, publicScriptResult);
-//                System.out.println(troll);
-//            }
-//        }
+        SystemLogCallback logCallback = new SystemLogCallback();
+        {
+            Troll troll = new Troll();
+
+            {
+                PublicScriptResult publicScriptResult = new PublicScriptResult(PublicScript.ProfilPublic2, PublicScriptsProxyMock.DEVEL_PROFIL_PUBLIC2);
+                PublicScripts.pushToTroll(troll, publicScriptResult, logCallback);
+                System.out.println(troll);
+            }
+
+            {
+                PublicScriptResult publicScriptResult = new PublicScriptResult(PublicScript.Profil2, PublicScriptsProxyMock.DEVEL_PROFIL2);
+                PublicScripts.pushToTroll(troll, publicScriptResult, logCallback);
+                System.out.println(troll);
+            }
+
+            {
+                PublicScriptResult publicScriptResult = new PublicScriptResult(PublicScript.Caract, PublicScriptsProxyMock.DEVEL_CARACT);
+                PublicScripts.pushToTroll(troll, publicScriptResult, logCallback);
+                System.out.println(troll);
+            }
+        }
 
         for (Map.Entry<PublicScript, String> entry : PublicScriptsProxyMock.getMockScripts().entries()) {
             Troll troll = new Troll();
             PublicScriptResult result = new PublicScriptResult(entry.getKey(), entry.getValue());
-            PublicScripts.pushToTroll(troll, result);
+            PublicScripts.pushToTroll(troll, result, logCallback);
             System.out.println(troll);
         }
     }

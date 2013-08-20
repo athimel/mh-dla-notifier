@@ -25,17 +25,23 @@ package org.zoumbox.mh_dla_notifier;
  */
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
+import org.zoumbox.mh_dla_notifier.sp.MhSpRequest;
 import org.zoumbox.mh_dla_notifier.sp.NetworkUnavailableException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
+import org.zoumbox.mh_dla_notifier.sp.PublicScriptsProxy;
 import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
 import org.zoumbox.mh_dla_notifier.sp.ScriptCategory;
 import org.zoumbox.mh_dla_notifier.troll.Troll;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -43,6 +49,15 @@ import android.util.Log;
 public class MainActivity extends MhDlaNotifierUI {
 
     private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + MainActivity.class.getSimpleName();
+
+    protected static final Function<Map.Entry<ScriptCategory, Integer>, String> QUOTA_ENTRY_TO_STRING = new Function<Map.Entry<ScriptCategory, Integer>, String>() {
+        @Override
+        public String apply(Map.Entry<ScriptCategory, Integer> input) {
+            ScriptCategory category = input.getKey();
+            String result = String.format("%s=%d/%d", category.name(), input.getValue(), category.getQuota());
+            return result;
+        }
+    };
 
     protected String getCurrentTrollId() {
         // TODO AThimel 20/08/13 Manage several trolls
@@ -136,6 +151,18 @@ public class MainActivity extends MhDlaNotifierUI {
     }
 
     protected void trollUpdated(Troll troll, boolean updateToFollow) {
+        try {
+            Map<ScriptCategory, Integer> quotas = PublicScriptsProxy.listQuotas(this, troll.getNumero());
+            Log.i(TAG, String.format("24H quotas are: %s", Iterables.transform(quotas.entrySet(), QUOTA_ENTRY_TO_STRING)));
+            List<MhSpRequest> requests = PublicScriptsProxy.listLatestRequests(this, troll.getNumero());
+            Log.i(TAG, String.format("Here comes the %d latest requests:", requests.size()));
+            for (MhSpRequest request : requests) {
+                Log.i(TAG, " -> " + request);
+            }
+        } catch (Exception eee) {
+            Log.w(TAG, "Exception", eee);
+        }
+
         pushTrollToUI(troll, updateToFollow);
 
         scheduleAlarms();
