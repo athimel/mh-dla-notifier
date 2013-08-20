@@ -108,6 +108,12 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
         editor.putString(PROPERTY_TROLL_ID, trollId);
         editor.putString(PROPERTY_TROLL_PASSWORD, trollPassword);
         editor.commit();
+
+
+        SharedPreferences preferences2 = context.getSharedPreferences("org.zoumbox.mh.dla.notifier.preferences.v2", 0);
+        SharedPreferences.Editor edit = preferences2.edit();
+        edit.clear();
+        edit.commit();
     }
 
     public boolean areTrollIdentifiersUndefined(Context context) {
@@ -137,6 +143,14 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
         if (Strings.isNullOrEmpty(pair.left()) || Strings.isNullOrEmpty(pair.right())) {
             throw new MissingLoginPasswordException();
         }
+
+        return pair;
+    }
+
+    public Pair<String, String> loadIdPassword(Context context) {
+
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
+        Pair<String, String> pair = loadIdPassword0(preferences);
 
         return pair;
     }
@@ -272,10 +286,13 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
         // Iterate over requested properties to know which SP are concerned
         Set<PublicScript> scripts = Sets.newLinkedHashSet();
         Log.i(TAG, "Requesting properties: " + requestedProperties);
-        for (String property : requestedProperties) {
-            PublicScript script = PublicScript.forProperty(property);
-            scripts.add(script);
-        }
+//        for (String property : requestedProperties) {
+//            PublicScript script = PublicScript.forProperty(property);
+//            scripts.add(script);
+//        }
+//        scripts.add(PublicScript.ProfilPublic2);
+//        scripts.add(PublicScript.Profil2);
+//        scripts.add(PublicScript.Caract);
 
         // Maybe no update is requested, but needed because of missing property
         UpdateRequestType updateRequestType = updateRequest;

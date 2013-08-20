@@ -24,20 +24,23 @@ package org.zoumbox.mh_dla_notifier.sp;
  * #L%
  */
 
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.beanutils.PropertyUtils;
+import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierUtils;
 import org.zoumbox.mh_dla_notifier.troll.Race;
 import org.zoumbox.mh_dla_notifier.troll.Troll;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -45,10 +48,14 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import android.util.Log;
+
 /**
  * @author Arnaud Thimel <thimel@codelutin.com>
  */
 public class PublicScripts {
+
+    private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + PublicScripts.class.getSimpleName();
 
     protected static final Function<PublicScriptResult, Map<String, String>> SCRIPT_RESULT_TO_MAP = new Function<PublicScriptResult, Map<String, String>>() {
         @Override
@@ -99,12 +106,24 @@ public class PublicScripts {
 
 
     public static void pushToTroll(Troll troll, Map<String, String> propertiesFetched) {
+        List<Method> methods = Arrays.asList(Troll.class.getMethods());
         for (Map.Entry<String, String> entry : propertiesFetched.entrySet()) {
             try {
                 String name = entry.getKey();
-                if (PropertyUtils.isWriteable(troll, name)) {
-                    PropertyDescriptor propertyDescriptor = PropertyUtils.getPropertyDescriptor(troll, name);
-                    Class<?> type = propertyDescriptor.getPropertyType();
+                final String expectedMethodName = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
+                Optional<Method> optional = Iterables.tryFind(methods, new Predicate<Method>() {
+                    @Override
+                    public boolean apply(Method input) {
+                        return expectedMethodName.equals(input.getName());
+                    }
+                });
+                if (optional.isPresent()) {
+//
+                    Method method = optional.get();
+                    Class<?>[] parameterTypes = method.getParameterTypes();
+                    Preconditions.checkState(parameterTypes.length == 1, "Unexpected parameters length for method: " + expectedMethodName);
+
+                    Class<?> type = parameterTypes[0];
                     String stringValue = entry.getValue();
                     Object value = stringValue;
                     if (int.class.equals(type)) {
@@ -119,20 +138,43 @@ public class PublicScripts {
                         value = MhDlaNotifierUtils.parseDate(stringValue);
                     }
 
-                    PropertyUtils.setSimpleProperty(troll, name, value);
+                    method.invoke(troll, value);
+
+//                }
+//                if (PropertyUtils.isWriteable(troll, name)) {
+//                    PropertyDescriptor propertyDescriptor = PropertyUtils.getPropertyDescriptor(troll, name);
+//                    Class<?> type = propertyDescriptor.getPropertyType();
+//                    String stringValue = entry.getValue();
+//                    Object value = stringValue;
+//                    if (int.class.equals(type)) {
+//                        value = Integer.parseInt(stringValue);
+//                    } else if (boolean.class.equals(type)) {
+//                        value = "1".equals(stringValue);
+//                    } else if (double.class.equals(type)) {
+//                        value = Double.parseDouble(stringValue);
+//                    } else if (Race.class.equals(type)) {
+//                        value = Race.valueOf(stringValue);
+//                    } else if (Date.class.equals(type)) {
+//                        value = MhDlaNotifierUtils.parseDate(stringValue);
+//                    }
+//
+//                    PropertyUtils.setSimpleProperty(troll, name, value);
                 } else {
-                    System.out.println("Ignored property (unwritable): " + name);
-//                    Log.w(TAG, "Unwritable property: " + name);
+//                    System.out.println("Ignored property (unwritable): " + name);
+                    Log.w(TAG, "Ignored property (unwritable): " + name);
                 }
-            } catch (IllegalAccessException e) {
-                System.out.println("Un exception occured" + e);
-//                Log.e(TAG, "Un exception occured", e);
-            } catch (InvocationTargetException e) {
-                System.out.println("Un exception occured" + e);
-//                Log.e(TAG, "Un exception occured", e);
-            } catch (NoSuchMethodException e) {
-                System.out.println("Un exception occured" + e);
-//                Log.e(TAG, "Un exception occured", e);
+            } catch (IllegalStateException ise) {
+//            System.out.println("An exception occured" + ise);
+                Log.e(TAG, "An exception occured", ise);
+            } catch (IllegalAccessException iae) {
+//                System.out.println("An exception occured" + e);
+                Log.e(TAG, "An exception occured", iae);
+            } catch (InvocationTargetException ite) {
+//                System.out.println("An exception occured" + e);
+                Log.e(TAG, "An exception occured", ite);
+//            } catch (NoSuchMethodException e) {
+//                System.out.println("An exception occured" + e);
+////                Log.e(TAG, "An exception occured", e);
             }
         }
 
@@ -140,7 +182,8 @@ public class PublicScripts {
 
     public static void pushToTroll(Troll troll, PublicScriptResult publicScriptResult) {
         Map<String, String> map = PublicScripts.SCRIPT_RESULT_TO_MAP.apply(publicScriptResult);
-        System.out.println(String.format("%s: %s", publicScriptResult.getScript().name(), map));
+//        System.out.println(String.format("%s: %s", publicScriptResult.getScript().name(), map));
+        Log.i(TAG, String.format("%s: %s", publicScriptResult.getScript().name(), map));
         PublicScripts.pushToTroll(troll, map);
     }
 

@@ -58,12 +58,6 @@
       <scope>compile</scope>
     </dependency>
 
-    <dependency>
-      <groupId>commons-beanutils</groupId>
-      <artifactId>commons-beanutils</artifactId>
-      <version>${commonsBeanutilsVersion}</version>
-    </dependency>
-
   </dependencies>
 
   <!-- ************************************************************* -->
@@ -136,7 +130,6 @@
     <maven.test.skip>true</maven.test.skip>
     <guavaVersion>14.0.1</guavaVersion>
     <gsonVersion>2.2.4</gsonVersion>
-    <commonsBeanutilsVersion>1.8.3</commonsBeanutilsVersion>
   </properties>
 
   <prerequisites>

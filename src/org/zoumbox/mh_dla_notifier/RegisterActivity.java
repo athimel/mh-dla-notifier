@@ -31,7 +31,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -60,6 +59,7 @@ public class RegisterActivity extends AbstractActivity {
         troll.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         password = (EditText) findViewById(R.id.password);
 
+        // TODO AThimel 20/08/13 Manage several trolls
         String trollId = getProfileProxy().getTrollIds(this).iterator().next();
         if (!Strings.isNullOrEmpty(trollId)) {
             troll.setText(trollId);

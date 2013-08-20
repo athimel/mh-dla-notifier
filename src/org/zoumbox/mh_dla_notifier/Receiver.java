@@ -30,15 +30,14 @@ import java.util.Map;
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.v1.ProfileProxyV1;
+import org.zoumbox.mh_dla_notifier.profile.v2.ProfileProxyV2;
 import org.zoumbox.mh_dla_notifier.troll.Troll;
 import org.zoumbox.mh_dla_notifier.troll.Trolls;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
 
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -52,89 +51,87 @@ import android.os.SystemClock;
 import android.util.Log;
 
 /**
+ * Classe appelée lorsqu'un réveil de l'application survient (approche d'une DLA ou vérification intermédiaire)
+ *
  * @author Arno <arno@zoumbox.org>
  */
 public class Receiver extends BroadcastReceiver {
 
     private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + Receiver.class.getSimpleName();
 
-    protected static final Predicate<Date> IS_IN_THE_FUTURE = new Predicate<Date>() {
-        @Override
-        public boolean apply(Date dla) {
-            if (dla == null) {
-                return false;
-            }
-            boolean result = dla.after(new Date());
-            return result;
+    private ProfileProxy profileProxy;
+
+    public ProfileProxy getProfileProxy() {
+        if (profileProxy == null) {
+//            profileProxy = new ProfileProxyV1();
+            profileProxy = new ProfileProxyV2();
         }
-    };
+        return profileProxy;
+    }
 
     protected boolean needsNotificationAccordingToPA(PreferencesHolder preferences, int pa) {
         boolean result = pa > 0 || preferences.notifyWithoutPA;
         return result;
     }
 
-    protected static final Predicate<Context> JUST_RESTARTED = new Predicate<Context>() {
-        @Override
-        public boolean apply(Context context) {
-            // Check if the device just restarted
-            ProfileProxy profileProxy = new ProfileProxyV1();
-            long elapsedSinceLastRestartCheck = profileProxy.getElapsedSinceLastRestartCheck(context);
-            Log.i(TAG, "Elapsed since last restart check: " + elapsedSinceLastRestartCheck + "ms ~= " + (elapsedSinceLastRestartCheck / 60000) + "min");
+    protected Predicate<Context> justRestarted() {
+        Predicate<Context> result = new Predicate<Context>() {
+            @Override
+            public boolean apply(Context context) {
+                // Check if the device just restarted
+                long elapsedSinceLastRestartCheck = getProfileProxy().getElapsedSinceLastRestartCheck(context);
+                Log.i(TAG, "Elapsed since last restart check: " + elapsedSinceLastRestartCheck + "ms ~= " + (elapsedSinceLastRestartCheck / 60000) + "min");
 
-            long uptime = SystemClock.uptimeMillis();
-            Log.i(TAG, "Uptime: " + uptime + "ms ~= " + (uptime / 60000) + "min");
+                long uptime = SystemClock.uptimeMillis();
+                Log.i(TAG, "Uptime: " + uptime + "ms ~= " + (uptime / 60000) + "min");
 
-            boolean result = elapsedSinceLastRestartCheck > uptime;
-            if (result) {
-                profileProxy.restartCheckDone(context);
+                boolean result = elapsedSinceLastRestartCheck > uptime;
+                if (result) {
+                    getProfileProxy().restartCheckDone(context);
+                }
+                Log.i(TAG, "Device restarted since last check: " + result);
+                return result;
             }
-            Log.i(TAG, "Device restarted since last check: " + result);
-            return result;
-        }
-    };
+        };
+        return result;
+    }
 
-    protected static final Predicate<Context> SHOULD_UPDATE_BECAUSE_OF_RESTART = new Predicate<Context>() {
-        @Override
-        public boolean apply(Context context) {
-            boolean result = false;
-            // Check if the device restarted since last update
-            ProfileProxy profileProxy = new ProfileProxyV1();
-            Long elapsedSinceLastSuccess = profileProxy.getElapsedSinceLastUpdateSuccess(context, null); // FIXME AThimel 20/08/13 null is not good
-            if (elapsedSinceLastSuccess != null) {
-                Log.i(TAG, "Elapsed since last update success: " + elapsedSinceLastSuccess + "ms ~= " + (elapsedSinceLastSuccess / 60000) + "min");
+    protected Predicate<Context> shouldUpdateBecauseOfRestart(final String trollId) {
+        Predicate<Context> predicate = new Predicate<Context>() {
+            @Override
+            public boolean apply(Context context) {
+                boolean result = false;
+                // Check if the device restarted since last update
+                Long elapsedSinceLastSuccess = getProfileProxy().getElapsedSinceLastUpdateSuccess(context, trollId);
+                if (elapsedSinceLastSuccess != null) {
+                    Log.i(TAG, "Elapsed since last update success: " + elapsedSinceLastSuccess + "ms ~= " + (elapsedSinceLastSuccess / 60000) + "min");
 
-                long upTime = SystemClock.uptimeMillis();
-                Log.i(TAG, "Uptime: " + upTime + "ms ~= " + (upTime / 60000) + "min");
+                    long upTime = SystemClock.uptimeMillis();
+                    Log.i(TAG, "Uptime: " + upTime + "ms ~= " + (upTime / 60000) + "min");
 
-                result = elapsedSinceLastSuccess > upTime; // Device restarted since last update
-                Log.i(TAG, "shouldUpdateBecauseOfRestart: " + result);
-                result &= elapsedSinceLastSuccess > (1000l * 60l * 60l * 2l); // 2 hours
-                Log.i(TAG, "shouldUpdateBecauseOfRestart (<=2hours): " + result);
+                    result = elapsedSinceLastSuccess > upTime; // Device restarted since last update
+                    Log.i(TAG, "shouldUpdateBecauseOfRestart: " + result);
+                    result &= elapsedSinceLastSuccess > (1000l * 60l * 60l * 2l); // 2 hours
+                    Log.i(TAG, "shouldUpdateBecauseOfRestart (<=2hours): " + result);
+                }
+                return result;
             }
-            return result;
-        }
-    };
+        };
+        return predicate;
+    }
 
-    protected static final Predicate<Context> SHOULD_UPDATE_BECAUSE_OF_NETWORK_FAILURE = new Predicate<Context>() {
-        @Override
-        public boolean apply(Context context) {
-            ProfileProxy profileProxy = new ProfileProxyV1();
-            String lastUpdateResult = profileProxy.getLastUpdateResult(context, null); // FIXME AThimel 20/08/13 null is not good
-            Log.i(TAG, "lastUpdateResult: " + lastUpdateResult);
-            boolean result = lastUpdateResult != null && lastUpdateResult.startsWith("NETWORK ERROR");
-            Log.i(TAG, "shouldUpdateBecauseOfNetworkFailure: " + result);
-            return result;
-        }
-    };
-
-    private ProfileProxy profileProxy;
-
-    public ProfileProxy getProfileProxy() {
-        if (profileProxy == null) {
-            profileProxy = new ProfileProxyV1();
-        }
-        return profileProxy;
+    protected Predicate<Context> shouldUpdateBecauseOfNetworkFailure(final String trollId) {
+        Predicate<Context> predicate = new Predicate<Context>() {
+            @Override
+            public boolean apply(Context context) {
+                String lastUpdateResult = getProfileProxy().getLastUpdateResult(context, trollId);
+                Log.i(TAG, "lastUpdateResult: " + lastUpdateResult);
+                boolean result = lastUpdateResult != null && lastUpdateResult.startsWith("NETWORK ERROR");
+                Log.i(TAG, "shouldUpdateBecauseOfNetworkFailure: " + result);
+                return result;
+            }
+        };
+        return predicate;
     }
 
     @Override
@@ -162,26 +159,31 @@ public class Receiver extends BroadcastReceiver {
         }
 
         if (getProfileProxy().areTrollIdentifiersUndefined(context)) {
+            Log.i(TAG, "No troll registered, exiting...");
+            return;
+        }
+
+        String trollId = intent.getStringExtra(Alarms.EXTRA_TROLL_ID);
+        if (Strings.isNullOrEmpty(trollId)) {
             Log.i(TAG, "TrollId not defined, exiting...");
             return;
         }
 
         // If type is provided, request for an update
-        String type = intent.getStringExtra("type");
+        String type = intent.getStringExtra(Alarms.EXTRA_TYPE);
         boolean requestUpdate = !Strings.isNullOrEmpty(type);
 
         // If device just started, request for wakeups registration
-        boolean requestAlarmRegistering = JUST_RESTARTED.apply(context);
+        boolean requestAlarmRegistering = justRestarted().apply(context);
 
         // Just go the internet connection back. Update will be necessary if
         //  - device restarted since last update and last update in more than 2 hours ago
         //  - last update failed because of network error
         if (!requestUpdate && justGotConnection) { // !requestUpdate because no need to check if update is already requested
-
-            boolean shouldUpdateBecauseOfRestart = SHOULD_UPDATE_BECAUSE_OF_RESTART.apply(context);
-            boolean shouldUpdateBecauseOfNetworkFailure = SHOULD_UPDATE_BECAUSE_OF_NETWORK_FAILURE.apply(context);
-
-            requestUpdate = shouldUpdateBecauseOfRestart || shouldUpdateBecauseOfNetworkFailure;
+            requestUpdate = Predicates.or(
+                    shouldUpdateBecauseOfRestart(trollId),
+                    shouldUpdateBecauseOfNetworkFailure(trollId)
+            ).apply(context);
         }
 
         Log.i(TAG, String.format("requestUpdate=%b ; requestAlarmRegistering=%b", requestUpdate, requestAlarmRegistering));
@@ -204,11 +206,14 @@ public class Receiver extends BroadcastReceiver {
 
             PreferencesHolder preferences = PreferencesHolder.load(context);
 
-            // Compute alarms
-            Map<AlarmType, Date> alarms = getAlarms(troll, preferences.notificationDelay);
-
             // Re-schedule them (in case it changed)
-            scheduleAlarms(context, alarms);
+            Map<AlarmType, Date> alarms;
+            try {
+                alarms = Alarms.scheduleAlarms(context, getProfileProxy(), trollId);
+            } catch (MissingLoginPasswordException e) {
+                Log.w(TAG, "Missing trollId and/or password, exiting...");
+                return;
+            }
 
             Date now = new Date();
 
@@ -320,85 +325,6 @@ public class Receiver extends BroadcastReceiver {
         notification.setLatestEventInfo(context, title, text, contentIntent);
 
         notificationManager.notify(type.name().hashCode(), notification);
-    }
-
-    protected static Map<AlarmType, Date> getAlarms(Troll troll, int notificationDelay) {
-        Preconditions.checkNotNull(troll);
-
-        Date currentDla = troll.getDla();
-        Date nextDla = Trolls.GET_NEXT_DLA.apply(troll);
-
-        Log.i(TAG, String.format("Computing wakeups for [DLA=%s] [NDLA=%s]", currentDla, nextDla));
-
-        long millisecondsBetween = nextDla.getTime() - currentDla.getTime();
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(currentDla.getTime());
-        calendar.add(Calendar.MILLISECOND, new Long(millisecondsBetween / 2).intValue());
-        Date afterCurrentDla = calendar.getTime();
-
-        calendar.setTimeInMillis(nextDla.getTime());
-        calendar.add(Calendar.MILLISECOND, new Long(millisecondsBetween / 2).intValue());
-        Date afterNextDla = calendar.getTime();
-
-        calendar.setTimeInMillis(nextDla.getTime());
-        calendar.add(Calendar.MILLISECOND, new Long(millisecondsBetween * 9 / 10).intValue());
-        Date dlaEvenAfter = calendar.getTime();
-
-        Map<AlarmType, Date> result = Maps.newLinkedHashMap();
-
-        result.put(AlarmType.CURRENT_DLA, MhDlaNotifierUtils.substractMinutes(currentDla, notificationDelay));
-        result.put(AlarmType.AFTER_CURRENT_DLA, afterCurrentDla);
-        result.put(AlarmType.NEXT_DLA, MhDlaNotifierUtils.substractMinutes(nextDla, notificationDelay));
-        result.put(AlarmType.AFTER_NEXT_DLA, afterNextDla);
-        result.put(AlarmType.DLA_EVEN_AFTER, MhDlaNotifierUtils.substractMinutes(dlaEvenAfter, notificationDelay));
-
-        Log.i(TAG, "Computed wakeups: " + result);
-
-        return result;
-    }
-
-    public static Map<AlarmType, Date> scheduleAlarms(Context context) throws MissingLoginPasswordException {
-        PreferencesHolder preferences = PreferencesHolder.load(context);
-        ProfileProxy profileProxy = new ProfileProxyV1();
-        Troll troll = profileProxy.fetchTrollWithoutUpdate(context, null).left();
-
-        Map<AlarmType, Date> alarms = getAlarms(troll, preferences.notificationDelay);
-        Map<AlarmType, Date> scheduledAlarms = scheduleAlarms(context, alarms);
-        return scheduledAlarms;
-    }
-
-    protected static Map<AlarmType, Date> scheduleAlarms(Context context, Map<AlarmType, Date> alarms) {
-
-        Map<AlarmType, Date> result = Maps.newLinkedHashMap();
-        for (Map.Entry<AlarmType, Date> entry : alarms.entrySet()) {
-            AlarmType alarmType = entry.getKey();
-            Date alarmDate = entry.getValue();
-            boolean isScheduled = scheduleAlarm(context, alarmDate, alarmType);
-            if (isScheduled) {
-                result.put(alarmType, alarmDate);
-            }
-        }
-
-        return result;
-    }
-
-    private static boolean scheduleAlarm(Context context, Date alarmDate, AlarmType type) {
-        if (alarmDate != null && IS_IN_THE_FUTURE.apply(alarmDate)) {
-            Intent intent = new Intent(context, Receiver.class);
-            intent.putExtra("type", type.name());
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                    context, type.getIdentifier(), intent, PendingIntent.FLAG_ONE_SHOT);
-            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            alarmManager.set(AlarmManager.RTC_WAKEUP, alarmDate.getTime(), pendingIntent);
-
-            Log.i(TAG, String.format("Scheduled wakeup [%s] at '%s'", type, alarmDate));
-            return true;
-        } else {
-            Log.i(TAG, String.format("No wakeup [%s] scheduled at '%s'", type, alarmDate));
-            return false;
-        }
-
     }
 
 }

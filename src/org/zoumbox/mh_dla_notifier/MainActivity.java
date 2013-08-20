@@ -26,6 +26,7 @@ package org.zoumbox.mh_dla_notifier;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
@@ -43,6 +44,13 @@ public class MainActivity extends MhDlaNotifierUI {
 
     private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + MainActivity.class.getSimpleName();
 
+    protected String getCurrentTrollId() {
+        // TODO AThimel 20/08/13 Manage several trolls
+        Set<String> trollIds = getProfileProxy().getTrollIds(this);
+        String trollId = trollIds.iterator().next();
+        return trollId;
+    }
+
     @Override
     protected void loadTroll() {
 
@@ -50,7 +58,7 @@ public class MainActivity extends MhDlaNotifierUI {
 
         try {
             // First load the troll without update
-            Pair<Troll, Boolean> trollAndUpdate = getProfileProxy().fetchTrollWithoutUpdate(this, null);
+            Pair<Troll, Boolean> trollAndUpdate = getProfileProxy().fetchTrollWithoutUpdate(this, getCurrentTrollId());
             Troll troll = trollAndUpdate.left();
             boolean needsUpdate = trollAndUpdate.right();
 
@@ -77,7 +85,7 @@ public class MainActivity extends MhDlaNotifierUI {
 
     @Override
     protected Date getLastUpdate() {
-        Date result = getProfileProxy().getLastUpdateSuccess(this, null);
+        Date result = getProfileProxy().getLastUpdateSuccess(this, getCurrentTrollId());
         return result;
     }
 
@@ -133,6 +141,16 @@ public class MainActivity extends MhDlaNotifierUI {
         scheduleAlarms();
     }
 
+    protected void showAlarmToast(Date dla) {
+        if (dla != null) {
+            String text = getText(R.string.next_alarm).toString();
+            String day = MhDlaNotifierUtils.formatDay(dla);
+            String hour = MhDlaNotifierUtils.formatHour(dla);
+            String message = String.format(text, day, hour);
+            showToast(message);
+        }
+    }
+
     @Override
     protected void scheduleAlarms() {
 
@@ -141,23 +159,13 @@ public class MainActivity extends MhDlaNotifierUI {
 
         if (!fromNotification) {
             try {
-                Map<AlarmType, Date> scheduledAlarms = Receiver.scheduleAlarms(this);
+                Map<AlarmType, Date> scheduledAlarms = Alarms.scheduleAlarms(this, getProfileProxy(), getCurrentTrollId());
                 if (scheduledAlarms != null) {
                     Date currentDlaAlarm = scheduledAlarms.get(AlarmType.CURRENT_DLA);
                     Date nextDlaAlarm = scheduledAlarms.get(AlarmType.NEXT_DLA);
 
-                    if (currentDlaAlarm != null) {
-                        String text = getText(R.string.next_alarm).toString();
-                        String message = String.format(text, MhDlaNotifierUtils.formatDay(currentDlaAlarm), MhDlaNotifierUtils.formatHour(currentDlaAlarm));
-                        showToast(message);
-                    }
-
-                    if (nextDlaAlarm != null) {
-                        String text = getText(R.string.next_alarm).toString();
-                        String message = String.format(text, MhDlaNotifierUtils.formatDay(nextDlaAlarm), MhDlaNotifierUtils.formatHour(nextDlaAlarm));
-                        showToast(message);
-                    }
-
+                    showAlarmToast(currentDlaAlarm);
+                    showAlarmToast(nextDlaAlarm);
 
                 }
             } catch (MissingLoginPasswordException e) {
@@ -174,7 +182,11 @@ public class MainActivity extends MhDlaNotifierUI {
             Troll troll = null;
             MhDlaException exception = null;
             try {
-                Pair<Troll, Boolean> trollAndUpdate = getProfileProxy().fetchTroll(MainActivity.this, null, params[0]);
+                UpdateRequestType updateRequestType = params[0];
+                Pair<Troll, Boolean> trollAndUpdate = getProfileProxy().fetchTroll(
+                        MainActivity.this,
+                        MainActivity.this.getCurrentTrollId(),
+                        updateRequestType);
                 troll = trollAndUpdate.left();
             } catch (MhDlaException e) {
                 exception = e;

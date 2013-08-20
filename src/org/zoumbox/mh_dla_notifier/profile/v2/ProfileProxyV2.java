@@ -26,7 +26,7 @@ package org.zoumbox.mh_dla_notifier.profile.v2;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
@@ -36,6 +36,7 @@ import org.zoumbox.mh_dla_notifier.profile.AbstractProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
+import org.zoumbox.mh_dla_notifier.profile.v1.ProfileProxyV1;
 import org.zoumbox.mh_dla_notifier.sp.NetworkUnavailableException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScript;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
@@ -45,9 +46,11 @@ import org.zoumbox.mh_dla_notifier.sp.PublicScriptsProxy;
 import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
 import org.zoumbox.mh_dla_notifier.troll.Troll;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 
 import android.content.Context;
@@ -63,15 +66,17 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
 
     protected static final String PREFS_NAME_V2 = "org.zoumbox.mh.dla.notifier.preferences.v2";
 
+    // General properties
     protected static final String PROPERTY_TROLL_IDS = "trollIds";
 
+    // Per troll properties
     protected static final String PROPERTY_PASSWORD = "password";
     protected static final String PROPERTY_PROFILE = "profile";
     protected static final String PROPERTY_LAST_UPDATE_ATTEMPT = "lastUpdateAttempt";
     protected static final String PROPERTY_LAST_UPDATE_RESULT = "lastUpdateResult";
     protected static final String PROPERTY_LAST_UPDATE_SUCCESS = "lastUpdateSuccess";
 
-    protected SharedPreferences getPreferences(final Context context) {
+    protected SharedPreferences getPreferences(Context context) {
         SharedPreferences result = context.getSharedPreferences(PREFS_NAME_V2, 0);
         return result;
     }
@@ -83,17 +88,72 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
 
     @Override
     public Set<String> getTrollIds(Context context) {
+        Set<String> result = Sets.newLinkedHashSet(getTrollIds0(context));
+        if (result == null || result.isEmpty()) {
+            boolean migrationResult = tryMigration(context);
+            if (migrationResult) {
+                result = Sets.newLinkedHashSet(getTrollIds0(context));
+            }
+        }
+        return result;
+    }
+
+    protected boolean tryMigration(Context context) {
+        Log.i(TAG, "Try migration from ProfileProxyV1");
+        ProfileProxyV1 profileProxyV1 = new ProfileProxyV1();
+        Set<String> trollIds = profileProxyV1.getTrollIds(context);
+        boolean successful = false;
+        if (trollIds != null && !trollIds.isEmpty()) {
+            for (String trollId : trollIds) {
+                Log.i(TAG, "Try migration from ProfileProxyV1 for troll: " + trollId);
+                Pair<String, String> stringPair = profileProxyV1.loadIdPassword(context);
+                if (stringPair != null && !Strings.isNullOrEmpty(stringPair.left()) && !Strings.isNullOrEmpty(stringPair.right())) {
+                    try {
+                        Pair<Troll, Boolean> trollAndUpdatePair = profileProxyV1.fetchTrollWithoutUpdate(context, trollId);
+                        if (trollAndUpdatePair != null && trollAndUpdatePair.left() != null) {
+                            Troll troll = trollAndUpdatePair.left();
+                            Log.i(TAG, "Troll read from ProfileProxyV1: " + troll);
+                            saveTroll(context, trollId, troll);
+                            saveIdPassword(context, trollId, stringPair.right());
+                            successful = true;
+                        }
+                    } catch (Exception eee) {
+                        Log.w(TAG, "Unable to migrate troll: " + trollId, eee);
+
+                        Log.i(TAG, "Try to save id and password", eee);
+                        try {
+                            saveIdPassword(context, trollId, stringPair.right());
+                            successful = true;
+                        } catch (Exception eee2) {
+                            Log.w(TAG, "Unable to save id and password for troll: " + trollId, eee2);
+                        }
+                    }
+                }
+            }
+        }
+        return successful;
+    }
+
+    protected List<String> getTrollIds0(Context context) {
         String trollIdsString = getPreferences(context).getString(PROPERTY_TROLL_IDS, "");
-        Iterable<String> trollIds = Splitter.on(",").split(trollIdsString);
-        ImmutableSet<String> result = ImmutableSet.copyOf(trollIds);
+        Iterable<String> trollIds = Splitter.on(",").omitEmptyStrings().split(trollIdsString);
+        List<String> result = Lists.newArrayList(trollIds);
+        Log.i(TAG, "Managed trolls: " + result);
         return result;
     }
 
     @Override
     public void saveIdPassword(Context context, String trollId, String trollPassword) {
+        List<String> trollIds = getTrollIds0(context);
+        if (!trollIds.contains(trollId)) {
+            Log.i(TAG, String.format("Adding troll %s to managed trolls: %s", trollId, trollIds));
+            trollIds.add(0, trollId);
+        }
+
         SharedPreferences.Editor editor = getPreferences(context).edit();
         String propertyName = getProperty(trollId, PROPERTY_PASSWORD);
         editor.putString(propertyName, trollPassword);
+        editor.putString(PROPERTY_TROLL_IDS, Joiner.on(",").join(trollIds));
         editor.commit();
     }
 
@@ -140,7 +200,8 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
             saveTroll(context, trollId, troll);
         }
 
-        return Pair.of(troll, false); // TODO AThimel 19/08/13 implement needsUpdate
+        Pair<Troll, Boolean> result = Pair.of(troll, false);
+        return result; // TODO AThimel 19/08/13 implement needsUpdate
     }
 
     protected Troll readTroll(Context context, String trollId) {

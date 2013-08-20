@@ -25,6 +25,7 @@ package org.zoumbox.mh_dla_notifier;
 
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.v1.ProfileProxyV1;
+import org.zoumbox.mh_dla_notifier.profile.v2.ProfileProxyV2;
 
 import android.app.Activity;
 
@@ -34,7 +35,8 @@ public abstract class AbstractActivity extends Activity {
 
     public ProfileProxy getProfileProxy() {
         if (profileProxy == null) {
-            profileProxy = new ProfileProxyV1();
+//            profileProxy = new ProfileProxyV1();
+            profileProxy = new ProfileProxyV2();
         }
         return profileProxy;
     }
