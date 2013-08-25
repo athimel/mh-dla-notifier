@@ -166,14 +166,10 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
     }
 
     @Override
-    public boolean areTrollIdentifiersUndefined(Context context) {
-        Set<String> trollIds = getTrollIds(context);
-        for (String trollId : trollIds) {
-            if (getTrollPassword(context, trollId).right() == null) {
-                return true;
-            }
-        }
-        return false;
+    public boolean isPasswordDefined(Context context, String trollId) {
+        String password = getTrollPassword(context, trollId).right();
+        boolean result = !Strings.isNullOrEmpty(password);
+        return result;
     }
 
     @Override
@@ -184,7 +180,6 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
         boolean needUpdate = updateRequestType.needUpdate();
         needUpdate |= Strings.isNullOrEmpty(troll.getNom());
         needUpdate |= troll.getDla() == null;
-        // TODO AThimel 07/08/13
 
         if (needUpdate) {
             Pair<String, String> idAndPassword = getTrollPassword(context, trollId);
@@ -307,7 +302,7 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
             Pair<String, String> idAndPassword = getTrollPassword(context, trollId);
 
 
-            Log.i(TAG, "Request for Profil2 fetch for refreshDLA()");
+            Log.i(TAG, "Request for Profil2 fetch for #refreshDLA()");
             // Force Profil2 fetch
             try {
                 Troll troll = readTroll(context, trollId);

@@ -60,7 +60,7 @@ public interface ProfileProxy {
 
     void saveIdPassword(Context context, String trollId, String trollPassword);
 
-    boolean areTrollIdentifiersUndefined(Context context);
+    boolean isPasswordDefined(Context context, String trollId);
 
     Pair<Troll, Boolean> fetchTrollWithoutUpdate(Context context, String trollId) throws MissingLoginPasswordException;
 

@@ -31,6 +31,8 @@ import java.util.Date;
  */
 public class MhSpRequest {
 
+    protected static final long M_24_HOURS = 24L * 60L * 60L * 1000L;
+
     protected PublicScript script;
     protected Date date;
 
@@ -57,8 +59,9 @@ public class MhSpRequest {
 
     @Override
     public String toString() {
-        String result = String.format("MhSpRequest{ date=%s, script=%8s %s }",
-                date, script.getCategory().name(), script.name());
+        boolean lessThan24Hours = System.currentTimeMillis() - date.getTime() < M_24_HOURS;
+        String result = String.format("MhSpRequest{ date=%s%s, script=%8s %s }",
+                date, lessThan24Hours ? " (*)":"", script.getCategory().name(), script.name());
         return result;
     }
 }

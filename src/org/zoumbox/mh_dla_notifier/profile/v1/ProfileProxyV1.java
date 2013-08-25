@@ -116,7 +116,7 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
         edit.commit();
     }
 
-    public boolean areTrollIdentifiersUndefined(Context context) {
+    public boolean isPasswordDefined(Context context, String trollId) {
 
         SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
         Pair<String, String> pair = loadIdPassword0(preferences);

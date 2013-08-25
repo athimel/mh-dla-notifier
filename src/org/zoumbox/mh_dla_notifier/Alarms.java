@@ -141,4 +141,11 @@ public class Alarms {
         return scheduledAlarms;
     }
 
+    public static Map<AlarmType, Date> getAlarms(Context context, ProfileProxy profileProxy, String trollId) throws MissingLoginPasswordException {
+        PreferencesHolder preferences = PreferencesHolder.load(context);
+        Troll troll = profileProxy.fetchTrollWithoutUpdate(context, trollId).left();
+
+        Map<AlarmType, Date> alarms = getAlarms(troll, preferences.notificationDelay);
+        return alarms;
+    }
 }
