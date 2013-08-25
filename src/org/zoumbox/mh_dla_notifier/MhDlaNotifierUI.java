@@ -408,7 +408,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
             if (troll.getPv() <= (pvMax * MhDlaNotifierConstants.PV_ALARM_THRESHOLD / 100)) {
                 pvSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.pv_alarm)), 0, pvLength, 0);
                 pvSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, pvLength, 0);
-            } else if (troll.getPv() < pvMax) {
+            } else if (troll.getPv() < pvMax) { // At least 1 PV missing
                 pvSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.pv_warn)), 0, pvLength, 0);
                 if (troll.getPv() <= (pvMax * MhDlaNotifierConstants.PV_WARM_THRESHOLD / 100)) {
                     pvSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, pvLength, 0);
