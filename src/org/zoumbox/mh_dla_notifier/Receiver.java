@@ -305,7 +305,7 @@ public class Receiver extends BroadcastReceiver {
     protected void notifyPvLoss(Context context, int pvLoss, int pv, PreferencesHolder preferences) {
         String titleFormat = context.getText(R.string.pv_loss_title).toString();
         CharSequence notifTitle = String.format(titleFormat, pvLoss);
-        String messageFormat = context.getText(R.string.pv_loss_text).toString();
+        String messageFormat = context.getText(R.string.pv_remaining_text).toString();
         CharSequence notifText = String.format(messageFormat, pv);
 
         boolean vibrate = shouldVibrate(context, preferences);

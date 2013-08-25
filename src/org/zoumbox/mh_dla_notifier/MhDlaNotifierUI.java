@@ -333,6 +333,12 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
             trollInfo = new SpannableString(message);
             int pvWarnColor = getResources().getColor(R.color.pv_warn);
             colorize(trollInfo, pvWarnColor);
+        } else if (troll.getPvVariation() > 0) {
+                String messageFormat = getText(R.string.pv_gain_title).toString();
+                String message = String.format(messageFormat, troll.getPvVariation());
+                trollInfo = new SpannableString(message);
+                int pvWarnColor = getResources().getColor(R.color.pv_gain);
+                colorize(trollInfo, pvWarnColor);
         } else {
             if (troll.getDateInscription() != null) {
                 Calendar now = Calendar.getInstance();

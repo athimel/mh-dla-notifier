@@ -75,7 +75,8 @@
   <string name="next_dla_expired_title">Votre DLA suivante a également expiré !</string>
 
   <string name="pv_loss_title" formatted="false">Votre avez perdu %d PV</string>
-  <string name="pv_loss_text" formatted="false">Il vous reste %d PV</string>
+  <string name="pv_gain_title" formatted="false">Votre avez régénéré de %d PV</string>
+  <string name="pv_remaining_text" formatted="false">Il vous reste %d PV</string>
 
   <string name="dla_format">dd MMM - HH:mm:ss</string>
   <string name="dla_duration_format" formatted="false">%d heures et %d minutes</string>

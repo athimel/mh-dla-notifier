@@ -88,7 +88,7 @@ public class Trolls {
             int pvMax = GET_MAX_PV.apply(troll);
             int result = 0;
             if (pvMax > 0) {
-                result = (250 * (pvMax - troll.pv) / pvMax);
+                result = (250 * (pvMax - troll.pvActuelsCar) / pvMax);
             }
             return result;
         }

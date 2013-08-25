@@ -36,7 +36,6 @@ public class Troll {
     protected int nival;
     protected Date dateInscription;
 
-    protected int pv;
     protected int fatigue;
     protected int posX;
     protected int posY;
@@ -101,6 +100,11 @@ public class Troll {
     // Computed
     protected int pvVariation;
 
+    public int getPv() {
+        int result = getPvActuelsCar();
+        return result;
+    }
+
     @Override
     public String toString() {
         return "Troll{" +
@@ -109,7 +113,6 @@ public class Troll {
                 ", race=" + race +
                 ", nival=" + nival +
                 ", dateInscription=" + dateInscription +
-                ", pv=" + pv +
                 ", pvVariation=" + pvVariation +
                 ", fatigue=" + fatigue +
                 ", posX=" + posX +
@@ -217,14 +220,6 @@ public class Troll {
 
     public void setDateInscription(Date dateInscription) {
         this.dateInscription = dateInscription;
-    }
-
-    public int getPv() {
-        return pv;
-    }
-
-    public void setPv(int pv) {
-        this.pv = pv;
     }
 
     public int getPvVariation() {

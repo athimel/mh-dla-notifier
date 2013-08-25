@@ -63,7 +63,7 @@ public enum PublicScript {
                     "posX",
                     "posY",
                     "posN",
-                    "pv",
+                    "pvActuelsCar",
                     "pvMaxCar",
                     "pa",
                     "dla",

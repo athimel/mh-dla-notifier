@@ -48,6 +48,7 @@ import org.zoumbox.mh_dla_notifier.troll.Troll;
 import org.zoumbox.mh_dla_notifier.utils.AndroidLogCallback;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -184,16 +185,7 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
         if (needUpdate) {
             Pair<String, String> idAndPassword = getTrollPassword(context, trollId);
 
-            AndroidLogCallback logCallback = new AndroidLogCallback();
-
-            PublicScriptResult pp2Result = fetchScript(context, PublicScript.ProfilPublic2, idAndPassword);
-            PublicScripts.pushToTroll(troll, pp2Result, logCallback);
-
-            PublicScriptResult p2Result = fetchScript(context, PublicScript.Profil2, idAndPassword);
-            PublicScripts.pushToTroll(troll, p2Result, logCallback);
-
-            PublicScriptResult p2Caract = fetchScript(context, PublicScript.Caract, idAndPassword);
-            PublicScripts.pushToTroll(troll, p2Caract, logCallback);
+            fetchScripts(context, idAndPassword, troll, PublicScript.ProfilPublic2, PublicScript.Profil2, PublicScript.Caract);
 
             saveTroll(context, trollId, troll);
         }
@@ -239,6 +231,26 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
         }
 
         return result;
+    }
+
+    protected void fetchScripts(Context context, Pair<String, String> idAndPassword, Troll troll, PublicScript ... scripts)
+            throws QuotaExceededException, PublicScriptException, NetworkUnavailableException {
+
+        Preconditions.checkNotNull(troll);
+
+        int pvBeforeUpdate = troll.getPvActuelsCar();
+
+        AndroidLogCallback logCallback = new AndroidLogCallback();
+        for (PublicScript publicScript : scripts) {
+            PublicScriptResult publicScriptResult = fetchScript(context, publicScript, idAndPassword);
+            PublicScripts.pushToTroll(troll, publicScriptResult, logCallback);
+        }
+
+        int pvAfterUpdate = troll.getPvActuelsCar();
+
+        int variation = pvAfterUpdate - pvBeforeUpdate;
+        troll.setPvVariation(variation);
+
     }
 
     protected void saveUpdateResult(Context context, String trollId, PublicScript script, long date, Exception exception) {
@@ -307,8 +319,7 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
             try {
                 Troll troll = readTroll(context, trollId);
 
-                PublicScriptResult p2Result = fetchScript(context, PublicScript.Profil2, idAndPassword);
-                PublicScripts.pushToTroll(troll, p2Result, new AndroidLogCallback());
+                fetchScripts(context, idAndPassword, troll, PublicScript.Profil2);
 
                 saveTroll(context, trollId, troll);
             } catch (QuotaExceededException qee) {

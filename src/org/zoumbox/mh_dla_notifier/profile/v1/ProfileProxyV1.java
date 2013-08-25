@@ -178,7 +178,7 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
         result.setNival(Integer.parseInt(properties.get("NIVAL")));
         result.setDateInscription(MhDlaNotifierUtils.parseDate(properties.get("DATE_INSCRIPTION")));
 
-        result.setPv(Integer.parseInt(properties.get("PV")));
+        result.setPvActuelsCar(Integer.parseInt(properties.get("PV")));
         result.setPvVariation(Integer.parseInt(properties.get("PV_VARIATION")));
         result.setPvMaxCar(Integer.parseInt(properties.get("PV_MAX")));
         result.setFatigue(Integer.parseInt(properties.get("FATIGUE")));
