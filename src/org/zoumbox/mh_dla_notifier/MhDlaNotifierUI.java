@@ -337,8 +337,8 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
                 String messageFormat = getText(R.string.pv_gain_title).toString();
                 String message = String.format(messageFormat, troll.getPvVariation());
                 trollInfo = new SpannableString(message);
-                int pvWarnColor = getResources().getColor(R.color.pv_gain);
-                colorize(trollInfo, pvWarnColor);
+                int pvGainColor = getResources().getColor(R.color.pv_gain);
+                colorize(trollInfo, pvGainColor);
         } else {
             if (troll.getDateInscription() != null) {
                 Calendar now = Calendar.getInstance();
@@ -405,12 +405,14 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
                 pvLength = 2;
             }
 
-            if (troll.getPv() < (pvMax * MhDlaNotifierConstants.PV_ALARM_THRESHOLD / 100)) {
+            if (troll.getPv() <= (pvMax * MhDlaNotifierConstants.PV_ALARM_THRESHOLD / 100)) {
                 pvSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.pv_alarm)), 0, pvLength, 0);
                 pvSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, pvLength, 0);
-            } else if (troll.getPv() < (pvMax * MhDlaNotifierConstants.PV_WARM_THRESHOLD / 100)) {
+            } else if (troll.getPv() < pvMax) {
                 pvSpannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.pv_warn)), 0, pvLength, 0);
-                pvSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, pvLength, 0);
+                if (troll.getPv() <= (pvMax * MhDlaNotifierConstants.PV_WARM_THRESHOLD / 100)) {
+                    pvSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, pvLength, 0);
+                }
             }
         } catch (NumberFormatException nfe) {
             // Nothing to do, ignore it
