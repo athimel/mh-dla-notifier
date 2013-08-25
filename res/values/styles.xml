@@ -112,8 +112,8 @@
   </style>
 
 
-  <color name="dla_expired">#009400</color>
-  <color name="dla_to_expire">#FF0000</color>
+  <color name="dla_expired">#FF0000</color>
+  <color name="dla_to_expire">#fff9790d</color>
   <color name="pv_warn">#fff9790d</color>
   <color name="pv_alarm">#FF0000</color>
   <color name="error">#FF0000</color>
