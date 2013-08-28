@@ -27,8 +27,13 @@ package org.zoumbox.mh_dla_notifier.profile.v2;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.Iterables;
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
 import org.zoumbox.mh_dla_notifier.Pair;
 import org.zoumbox.mh_dla_notifier.PreferencesHolder;
@@ -178,20 +183,55 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
             throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException, NetworkUnavailableException {
         Troll troll = readTroll(context, trollId);
 
-        boolean needUpdate = updateRequestType.needUpdate();
-        needUpdate |= Strings.isNullOrEmpty(troll.getNom());
-        needUpdate |= troll.getDla() == null;
+        Set<PublicScript> scriptsToUpdate = Sets.newLinkedHashSet();
+        if (Strings.isNullOrEmpty(troll.getNom())) {
+            scriptsToUpdate.add(PublicScript.ProfilPublic2);
+        }
+        if (troll.getDla() == null) {
+            scriptsToUpdate.add(PublicScript.Profil2);
+        }
+        Set<PublicScript> scriptsThatRequiresAnUpdate = getScriptsThatRequiresAnUpdate(context, trollId);
+        if (updateRequestType.needUpdate()) {
+            scriptsToUpdate.addAll(scriptsThatRequiresAnUpdate);
+        }
 
-        if (needUpdate) {
+        if (!scriptsToUpdate.isEmpty()) {
             Pair<String, String> idAndPassword = getTrollPassword(context, trollId);
 
-            fetchScripts(context, idAndPassword, troll, PublicScript.ProfilPublic2, PublicScript.Profil2, PublicScript.Caract);
+            fetchScripts(context, idAndPassword, troll, scriptsToUpdate);
+            scriptsThatRequiresAnUpdate.removeAll(scriptsToUpdate);
 
             saveTroll(context, trollId, troll);
         }
 
-        Pair<Troll, Boolean> result = Pair.of(troll, false);
-        return result; // TODO AThimel 19/08/13 implement needsUpdate
+        Pair<Troll, Boolean> result = Pair.of(troll, !scriptsThatRequiresAnUpdate.isEmpty());
+        return result;
+    }
+
+    protected static final Set<PublicScript> WATCHED_SCRIPTS = ImmutableSortedSet.of(PublicScript.ProfilPublic2, PublicScript.Profil2, PublicScript.Caract);
+
+    protected Set<PublicScript> getScriptsThatRequiresAnUpdate(Context context, String trollId) {
+        final Map<PublicScript, Date> lastUpdates = PublicScriptsProxy.geLastUpdates(context, trollId, WATCHED_SCRIPTS);
+        Set<PublicScript> result = Sets.newHashSet(Iterables.filter(WATCHED_SCRIPTS, new Predicate<PublicScript>() {
+            @Override
+            public boolean apply(PublicScript input) {
+                Date lastUpdate = lastUpdates.get(input);
+                if (lastUpdate == null) {
+                    return true;
+                }
+
+                // TODO AThimel 28/08/13 Improve update policy
+
+                int dailyQuota = GET_USABLE_QUOTA.apply(input.getCategory());
+                int minutesDelay = 24 * 60 / dailyQuota;
+                Calendar calendar = Calendar.getInstance();
+                calendar.add(Calendar.MINUTE, -minutesDelay);
+                Date delay = calendar.getTime();
+                boolean result = lastUpdate.before(delay);
+                return result;
+            }
+        }));
+        return result;
     }
 
     protected Troll readTroll(Context context, String trollId) {
@@ -212,28 +252,28 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
 
     protected PublicScriptResult fetchScript(Context context, PublicScript script, Pair<String, String> idAndPassword)
             throws QuotaExceededException, PublicScriptException, NetworkUnavailableException {
-        String trollNumber = idAndPassword.left();
+        String trollId = idAndPassword.left();
         String trollPassword = idAndPassword.right();
         PublicScriptResult result;
         long now = System.currentTimeMillis();
         try {
-            result = PublicScriptsProxy.fetchScript(context, script, trollNumber, trollPassword);
-            saveUpdateResult(context, trollNumber, script, now, null);
+            result = PublicScriptsProxy.fetchScript(context, script, trollId, trollPassword);
+            saveUpdateResult(context, trollId, script, now, null);
         } catch (PublicScriptException pse) {
-            saveUpdateResult(context, trollNumber, script, now, pse);
+            saveUpdateResult(context, trollId, script, now, pse);
             throw new PublicScriptException(pse);
         } catch (QuotaExceededException qee) {
-            saveUpdateResult(context, trollNumber, script, now, qee);
+            saveUpdateResult(context, trollId, script, now, qee);
             throw new QuotaExceededException(qee);
         } catch (NetworkUnavailableException nue) {
-            saveUpdateResult(context, trollNumber, script, now, nue);
+            saveUpdateResult(context, trollId, script, now, nue);
             throw new NetworkUnavailableException(nue);
         }
 
         return result;
     }
 
-    protected void fetchScripts(Context context, Pair<String, String> idAndPassword, Troll troll, PublicScript ... scripts)
+    protected void fetchScripts(Context context, Pair<String, String> idAndPassword, Troll troll, Set<PublicScript> scripts)
             throws QuotaExceededException, PublicScriptException, NetworkUnavailableException {
 
         Preconditions.checkNotNull(troll);
@@ -250,7 +290,6 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
 
         int variation = pvAfterUpdate - pvBeforeUpdate;
         troll.setPvVariation(variation);
-
     }
 
     protected void saveUpdateResult(Context context, String trollId, PublicScript script, long date, Exception exception) {
@@ -299,7 +338,6 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
             result = calendar.getTime();
         }
         return result;
-
     }
 
     @Override
@@ -319,7 +357,7 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
             try {
                 Troll troll = readTroll(context, trollId);
 
-                fetchScripts(context, idAndPassword, troll, PublicScript.Profil2);
+                fetchScripts(context, idAndPassword, troll, ImmutableSet.of(PublicScript.Profil2));
 
                 saveTroll(context, trollId, troll);
             } catch (QuotaExceededException qee) {
@@ -342,7 +380,6 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
 
         Long result = System.currentTimeMillis() - lastUpdate;
         return result;
-
     }
 
 }

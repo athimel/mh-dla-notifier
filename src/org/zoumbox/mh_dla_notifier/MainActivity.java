@@ -185,8 +185,34 @@ public class MainActivity extends MhDlaNotifierUI {
         Log.i(TAG, "From notification: " + fromNotification);
 
         if (!fromNotification) {
+            String trollId = getCurrentTrollId();
+            new ScheduleAlarmsTask().execute(trollId);
+        }
+    }
+
+    private class ScheduleAlarmsTask extends AsyncTask<String, Void, Pair<Map<AlarmType, Date>, MhDlaException>> {
+
+        @Override
+        protected Pair<Map<AlarmType, Date>, MhDlaException> doInBackground(String ... params) {
+
+            MhDlaException exception = null;
+            Map<AlarmType, Date> scheduledAlarms = null;
             try {
-                Map<AlarmType, Date> scheduledAlarms = Alarms.scheduleAlarms(this, getProfileProxy(), getCurrentTrollId());
+                String trollId = params[0];
+                scheduledAlarms = Alarms.scheduleAlarms(MainActivity.this, getProfileProxy(), trollId);
+            } catch (MissingLoginPasswordException e) {
+                exception = e;
+            }
+            return Pair.of(scheduledAlarms, exception);
+        }
+
+        @Override
+        protected void onPostExecute(Pair<Map<AlarmType, Date>, MhDlaException> result) {
+            MhDlaException exception = result.right();
+            if (exception != null) {
+                startRegister(null);
+            } else {
+                Map<AlarmType, Date> scheduledAlarms = result.left();
                 if (scheduledAlarms != null) {
                     Date currentDlaAlarm = scheduledAlarms.get(AlarmType.CURRENT_DLA);
                     Date nextDlaAlarm = scheduledAlarms.get(AlarmType.NEXT_DLA);
@@ -195,10 +221,7 @@ public class MainActivity extends MhDlaNotifierUI {
                     showAlarmToast(nextDlaAlarm);
 
                 }
-            } catch (MissingLoginPasswordException e) {
-                startRegister(null);
             }
-
         }
     }
 

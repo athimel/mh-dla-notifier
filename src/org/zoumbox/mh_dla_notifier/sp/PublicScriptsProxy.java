@@ -23,6 +23,23 @@
  */
 package org.zoumbox.mh_dla_notifier.sp;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
+import org.zoumbox.mh_dla_notifier.Pair;
+import org.zoumbox.mh_dla_notifier.profile.v1.ProfileProxyV1;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,26 +49,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.zoumbox.mh_dla_notifier.MainActivity;
-import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
-import org.zoumbox.mh_dla_notifier.Pair;
-import org.zoumbox.mh_dla_notifier.profile.v1.ProfileProxyV1;
-
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
+import java.util.Set;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -111,7 +109,7 @@ public class PublicScriptsProxy {
     protected static final String SQL_LIST_REQUESTS = String.format("SELECT %s, %s FROM %s WHERE %s=? ORDER BY %s DESC LIMIT %s",
             MhDlaSQLHelper.SCRIPTS_DATE_COLUMN,  MhDlaSQLHelper.SCRIPTS_SCRIPT_COLUMN, MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_DATE_COLUMN, "%d");
 
-    protected static int computeRequestCount(Context context, ScriptCategory category, String trollNumber) {
+    protected static int computeRequestCount(Context context, ScriptCategory category, String trollId) {
 
         MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
         SQLiteDatabase database = helper.getReadableDatabase();
@@ -120,7 +118,7 @@ public class PublicScriptsProxy {
         instance.add(Calendar.HOUR_OF_DAY, -24);
         Date sinceDate = instance.getTime();
 
-        Cursor cursor = database.rawQuery(SQL_COUNT, new String[]{trollNumber, category.name(), "" + sinceDate.getTime()});
+        Cursor cursor = database.rawQuery(SQL_COUNT, new String[]{trollId, category.name(), "" + sinceDate.getTime()});
         int result = 0;
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
@@ -131,16 +129,16 @@ public class PublicScriptsProxy {
         database.close();
 
         String format = "Quota for category %s and troll=%s since '%s' is: %d";
-        String message = String.format(format, category, trollNumber, sinceDate, result);
+        String message = String.format(format, category, trollId, sinceDate, result);
         Log.i(TAG, message);
 
         return result;
     }
 
-    protected static void saveFetch(Context context, PublicScript script, String trollNumber) {
+    protected static void saveFetch(Context context, PublicScript script, String trollId) {
 
         String format = "Saving fetch for category %s (script=%s) and troll=%s";
-        String message = String.format(format, script.category, script, trollNumber);
+        String message = String.format(format, script.category, script, trollId);
         Log.i(TAG, message);
 
         MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
@@ -150,19 +148,19 @@ public class PublicScriptsProxy {
         values.put(MhDlaSQLHelper.SCRIPTS_DATE_COLUMN, System.currentTimeMillis());
         values.put(MhDlaSQLHelper.SCRIPTS_SCRIPT_COLUMN, script.name());
         values.put(MhDlaSQLHelper.SCRIPTS_CATEGORY_COLUMN, script.category.name());
-        values.put(MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, trollNumber);
+        values.put(MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, trollId);
 
         database.insert(MhDlaSQLHelper.SCRIPTS_TABLE, null, values);
 
         database.close();
     }
 
-    public static Date geLastUpdate(Context context, PublicScript script, String trollNumber) {
+    public static Date geLastUpdate(Context context, PublicScript script, String trollId) {
 
         MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
         SQLiteDatabase database = helper.getReadableDatabase();
 
-        Cursor cursor = database.rawQuery(SQL_LAST_UPDATE, new String[]{trollNumber, script.name()});
+        Cursor cursor = database.rawQuery(SQL_LAST_UPDATE, new String[]{trollId, script.name()});
         Date result = null;
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
@@ -174,7 +172,36 @@ public class PublicScriptsProxy {
         database.close();
 
         String format = "Last update for category %s (script=%s) and troll=%s is: '%s'";
-        String message = String.format(format, script.category, script, trollNumber, result);
+        String message = String.format(format, script.category, script, trollId, result);
+        Log.i(TAG, message);
+
+        return result;
+    }
+
+    public static Map<PublicScript, Date> geLastUpdates(Context context, String trollId, Set<PublicScript> scripts) {
+
+        MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
+        SQLiteDatabase database = helper.getReadableDatabase();
+
+        Map<PublicScript, Date> result = Maps.newHashMap();
+
+        for (PublicScript script : scripts) {
+
+            Cursor cursor = database.rawQuery(SQL_LAST_UPDATE, new String[]{trollId, script.name()});
+            Date lastUpdate = null;
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                long resultTimestamp = cursor.getLong(0);
+                lastUpdate = new Date(resultTimestamp);
+            }
+
+            result.put(script, lastUpdate);
+            cursor.close();
+        }
+        database.close();
+
+        String format = "Last updates for troll=%s are: '%s'";
+        String message = String.format(format, trollId, result);
         Log.i(TAG, message);
 
         return result;
@@ -182,21 +209,21 @@ public class PublicScriptsProxy {
 
 
     public static PublicScriptResult fetchScript(Context context, PublicScript script,
-                                                 String trollNumber, String trollPassword)
+                                                 String trollId, String trollPassword)
             throws QuotaExceededException, PublicScriptException, NetworkUnavailableException {
 
-        Log.i(TAG, String.format("Fetching in script=%s and troll=%s ", script, trollNumber));
+        Log.i(TAG, String.format("Fetching in script=%s and troll=%s ", script, trollId));
         ScriptCategory category = script.category;
-        int requestCount = computeRequestCount(context, script.category, trollNumber);
+        int requestCount = computeRequestCount(context, script.category, trollId);
 //        if (requestCount >= category.quota) {
         if (requestCount >= (category.quota / 2)) {
             String format = "Quota is exceeded for category %s (script=%s) and troll=%s: %d§%d";
-            String message = String.format(format, category, script, trollNumber, requestCount, category.quota);
+            String message = String.format(format, category, script, trollId, requestCount, category.quota);
             Log.w(TAG, message);
             throw new QuotaExceededException(category, requestCount);
         }
 
-        String url = String.format(script.url, trollNumber, trollPassword);
+        String url = String.format(script.url, trollId, trollPassword);
         PublicScriptResponse spResult = doHttpGET(url);
         Log.i(TAG, "Public Script response: '" + spResult + "'");
 
@@ -204,7 +231,7 @@ public class PublicScriptsProxy {
             throw new PublicScriptException(spResult);
         } else {
 
-            saveFetch(context, script, trollNumber);
+            saveFetch(context, script, trollId);
 
             String raw = spResult.getRaw();
             PublicScriptResult result = new PublicScriptResult(script, raw);
