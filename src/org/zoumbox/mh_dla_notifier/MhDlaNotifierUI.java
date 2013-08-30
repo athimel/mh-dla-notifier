@@ -56,6 +56,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -72,6 +73,9 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
     protected static final int CREDIT_DIALOG = 0;
 
     public static final String EXTRA_FROM_NOTIFICATION = "from-notification";
+
+    private ImageView selectedTrollBlason;
+    private TextView selectedTrollName;
 
     private ImageView blason;
     private TextView name;
@@ -91,6 +95,13 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
     private TextView trollInfo;
     private TextView technicalStatus;
 
+    private View details;
+    private ImageView toggleDetailedButton;
+    private boolean showDetails = false;
+
+    private ImageView refreshButton;
+    private boolean runningRefresh = false;
+
     ///////////////////////////////////
     //  ANDROID INTERACTION METHODS  //
     ///////////////////////////////////
@@ -103,6 +114,9 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        selectedTrollBlason = (ImageView) findViewById(R.id.selectedTrollBlason);
+        selectedTrollName = (TextView) findViewById(R.id.selectedTrollName);
 
         blason = (ImageView) findViewById(R.id.blason);
         name = (TextView) findViewById(R.id.name);
@@ -123,52 +137,51 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         trollInfo = (TextView) findViewById(R.id.troll_info);
         technicalStatus = (TextView) findViewById(R.id.technical_status);
 
+        ((TextView)findViewById(R.id.ATT)).setText("Youhouuuuuuu");
+        ((TextView)findViewById(R.id.ESQ)).setText("Éric");
+        ((TextView)findViewById(R.id.DEG)).setText("Manteau");
+
+        details = findViewById(R.id.details);
+        toggleDetailedButton = (ImageView)findViewById(R.id.toggleDetailedButton);
+        toggleDetailedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleDetails();
+            }
+        });
+//        toggleDetailedButton.set
+
+        refreshButton = (ImageView)findViewById(R.id.refreshButton);
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!runningRefresh) {
+                    manualRefresh();
+                } else {
+                    showToast("Une mise à jour est déjà en cours");
+                }
+            }
+        });
+
+        toggleDetails();
     }
 
-//    protected void checkLegacyPassword() {
-//
-//        // From 01/02/2013 to 28/02/2013, password policy has changed. This should help user to migrate.
-//        if (getProfileProxy().isCurrentPasswordALegacyPassword(this)) {
-//
-//            PreferencesHolder preferences = PreferencesHolder.load(this);
-//            if (System.currentTimeMillis() > preferences.skipLegacyPasswordCheckUntil) {
-//
-//                // 1. Instantiate an AlertDialog.Builder with its constructor
-//                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//
-//                // 2. Chain together various setter methods to set the dialog characteristics
-//                builder.setMessage(R.string.legacy_password_message)
-//                        .setTitle(R.string.legacy_password_title);
-//
-//                // 3. Get the AlertDialog from create()
-//                AlertDialog dialog = builder.create();
-//
-//                dialog.setButton("Oui", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int which) {
-//                        // Explain how, and go register
-//                        startRegister("Veuillez saisir le mot de passe \"spécifique\"");
-//                    }
-//                });
-//                dialog.setButton2("Non", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int which) {
-//                        PreferencesHolder.skipLegacyPasswordCheckForToday(MhDlaNotifierUI.this);
-//                    }
-//                });
-//                dialog.show();
-//            }
-//        }
-//    }
+    protected void toggleDetails() {
+        showDetails = !showDetails;
+        if (showDetails) {
+            details.setVisibility(View.VISIBLE);
+            toggleDetailedButton.setImageResource(R.drawable.arno);
+        } else {
+            details.setVisibility(View.INVISIBLE);
+            toggleDetailedButton.setImageResource(R.drawable.bouloche61);
+        }
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
 
         loadTroll();
-
-//        checkLegacyPassword();
-
     }
 
     @Override
@@ -200,9 +213,6 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
                 return true;
             case R.id.register:
                 startRegister(null);
-                return true;
-            case R.id.refresh:
-                manualRefresh();
                 return true;
             case R.id.preferences:
                 Intent intent_preferences = new Intent(this, MhPreferencesActivity.class);
@@ -271,6 +281,18 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
     //  UI METHODS  //
     //////////////////
 
+    protected void updateStarted() {
+        refreshButton.setEnabled(false);
+        refreshButton.setClickable(false);
+        runningRefresh = true;
+    }
+
+    protected void updateFinished() {
+        refreshButton.setEnabled(true);
+        refreshButton.setClickable(true);
+        runningRefresh = false;
+    }
+
     protected void startRegister(String toast) {
         if (!Strings.isNullOrEmpty(toast)) {
             showToast(toast);
@@ -321,6 +343,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         Log.i(TAG, "Now rendering troll: " + troll);
 
         this.name.setText(troll.getNom());
+        this.selectedTrollName.setText(troll.getNom());
 
         this.numero.setText("N° " + troll.getNumero());
 
@@ -509,8 +532,10 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
     protected void updateBlason(Bitmap blason) {
         if (blason == null) {
             this.blason.setImageResource(R.drawable.pas_de_blason);
+            this.selectedTrollBlason.setVisibility(View.INVISIBLE);
         } else {
             this.blason.setImageBitmap(blason);
+            this.selectedTrollBlason.setImageBitmap(blason);
         }
     }
 

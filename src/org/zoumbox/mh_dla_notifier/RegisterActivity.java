@@ -23,6 +23,8 @@
  */
 package org.zoumbox.mh_dla_notifier;
 
+import java.util.Iterator;
+
 import com.google.common.base.Strings;
 
 import android.app.AlertDialog;
@@ -60,7 +62,11 @@ public class RegisterActivity extends AbstractActivity {
         password = (EditText) findViewById(R.id.password);
 
         // TODO AThimel 20/08/13 Manage several trolls
-        String trollId = getProfileProxy().getTrollIds(this).iterator().next();
+        Iterator<String> iterator = getProfileProxy().getTrollIds(this).iterator();
+        String trollId = null;
+        if (iterator.hasNext()) {
+            trollId = iterator.next();
+        }
         if (!Strings.isNullOrEmpty(trollId)) {
             troll.setText(trollId);
         }

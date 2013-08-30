@@ -97,6 +97,10 @@
     <item name="android:layout_marginRight">10dp</item>
   </style>
 
+  <style name="ActionBar">
+    <item name="android:background">@color/actionbar</item>
+    <item name="android:cacheColorHint">@color/actionbar</item>
+  </style>
 
   <!-- Small styles -->
 
@@ -112,6 +116,7 @@
   </style>
 
 
+  <color name="actionbar">#DDDDDD</color>
   <color name="dla_expired">#FF0000</color>
   <color name="dla_to_expire">#FFF9790D</color>
   <color name="pv_gain">#009400</color>

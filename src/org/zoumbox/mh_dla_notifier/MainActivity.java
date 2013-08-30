@@ -25,6 +25,7 @@ package org.zoumbox.mh_dla_notifier;
  */
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +42,7 @@ import org.zoumbox.mh_dla_notifier.sp.ScriptCategory;
 import org.zoumbox.mh_dla_notifier.troll.Troll;
 
 import com.google.common.base.Function;
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 
 import android.os.AsyncTask;
@@ -62,7 +64,11 @@ public class MainActivity extends MhDlaNotifierUI {
     protected String getCurrentTrollId() {
         // TODO AThimel 20/08/13 Manage several trolls
         Set<String> trollIds = getProfileProxy().getTrollIds(this);
-        String trollId = trollIds.iterator().next();
+        Iterator<String> iterator = trollIds.iterator();
+        String trollId = null;
+        if (iterator.hasNext()) {
+            trollId = iterator.next();
+        }
         return trollId;
     }
 
@@ -73,17 +79,23 @@ public class MainActivity extends MhDlaNotifierUI {
 
         try {
             // First load the troll without update
-            Pair<Troll, Boolean> trollAndUpdate = getProfileProxy().fetchTrollWithoutUpdate(this, getCurrentTrollId());
-            Troll troll = trollAndUpdate.left();
-            boolean needsUpdate = trollAndUpdate.right();
+            String trollId = getCurrentTrollId();
 
-            trollUpdated(troll, needsUpdate);
+            if (Strings.isNullOrEmpty(trollId)) {
+                startRegister("Vous devez saisir vos identifiants");
+            } else {
+                Pair<Troll, Boolean> trollAndUpdate = getProfileProxy().fetchTrollWithoutUpdate(this, trollId);
+                Troll troll = trollAndUpdate.left();
+                boolean needsUpdate = trollAndUpdate.right();
 
-            clearTechnicalStatus();
+                trollUpdated(troll, needsUpdate);
 
-            if (needsUpdate) {
-//                showToast("Mise à jour");
-                startUpdate(UpdateRequestType.ONLY_NECESSARY);
+                clearTechnicalStatus();
+
+                if (needsUpdate) {
+    //                showToast("Mise à jour");
+                    startUpdate(UpdateRequestType.ONLY_NECESSARY);
+                }
             }
 
         } catch (MissingLoginPasswordException mlpe) {
@@ -107,6 +119,7 @@ public class MainActivity extends MhDlaNotifierUI {
     @Override
     protected void startUpdate(UpdateRequestType updateType, String message) {
         setTechnicalStatus(message);
+        updateStarted();
         new UpdateTrollTask().execute(updateType);
     }
 
@@ -256,6 +269,7 @@ public class MainActivity extends MhDlaNotifierUI {
                 trollUpdated(troll, false);
                 updateSuccess();
             }
+            updateFinished();
         }
     }
 

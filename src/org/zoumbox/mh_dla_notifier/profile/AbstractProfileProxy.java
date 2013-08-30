@@ -31,6 +31,8 @@ import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
 import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
 import org.zoumbox.mh_dla_notifier.troll.Troll;
 
+import com.google.common.base.Preconditions;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -46,6 +48,7 @@ public abstract class AbstractProfileProxy implements ProfileProxy {
     protected abstract SharedPreferences getPreferences(final Context context);
 
     public Pair<Troll, Boolean> fetchTrollWithoutUpdate(Context context, String trollId) throws MissingLoginPasswordException {
+        Preconditions.checkArgument(trollId != null);
         try {
             Pair<Troll, Boolean> result = fetchTroll(context, trollId, UpdateRequestType.NONE);
             return result;

@@ -31,6 +31,8 @@
                 android:orientation="vertical"
                 style="@style/Main">
 
+    <include layout="@layout/actionbar"/>
+
     <include layout="@layout/header"/>
 
     <!-- HR -->
@@ -177,6 +179,7 @@
 
     </LinearLayout>
 
+    <include layout="@layout/details"/>
 
     <Button android:id="@+id/play"
             android:layout_width="fill_parent"

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  #%L
+  MountyHall DLA Notifier
+  $Id$
+  $HeadURL$
+  %%
+  Copyright (C) 2012 - 2013 Zoumbox.org
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as
+  published by the Free Software Foundation, either version 3 of the 
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public 
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/gpl-3.0.html>.
+  #L%
+  -->
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="35dp"
+              android:orientation="horizontal"
+              android:gravity="left"
+              style="@style/ActionBar"
+        >
+
+  <!-- Name -->
+  <ImageView android:id="@+id/selectedTrollBlason"
+             android:orientation="vertical"
+             android:layout_height="35dp"
+             android:layout_width="35dp"
+             android:scaleType="fitXY"
+             android:src="@drawable/loading"
+          />
+
+  <TextView android:id="@+id/selectedTrollName"
+            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            style="@style/Info" android:layout_weight="1" android:layout_gravity="center_vertical"
+            android:text="toto" android:gravity="left"/>
+
+
+  <ImageView android:id="@+id/toggleDetailedButton"
+               android:layout_height="35dp"
+               android:layout_width="35dp"
+               android:scaleType="fitXY"
+               android:src="@android:drawable/ic_input_add"
+          />
+  <ImageView android:id="@+id/refreshButton"
+               android:layout_height="35dp"
+               android:layout_width="35dp"
+               android:scaleType="fitXY"
+               android:src="@android:drawable/ic_menu_info_details"
+          />
+  <ImageView android:id="@+id/menuButton"
+               android:layout_height="35dp"
+               android:layout_width="35dp"
+               android:scaleType="fitXY"
+               android:src="@android:drawable/ic_menu_more"
+          />
+
+</LinearLayout>
