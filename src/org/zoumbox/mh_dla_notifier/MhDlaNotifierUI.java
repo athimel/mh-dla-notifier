@@ -56,7 +56,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -178,6 +177,13 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         });
 
         toggleDetails();
+
+        selectedTrollName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onPlayButtonClicked(v);
+            }
+        });
     }
 
     protected void toggleDetails() {
@@ -357,7 +363,11 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         Log.i(TAG, "Now rendering troll: " + troll);
 
         this.name.setText(troll.getNom());
-        this.selectedTrollName.setText(troll.getNom());
+        String prefix = "Accès à ";
+        String playTrollText = prefix + troll.getNom();
+        SpannableString playTrollButton = new SpannableString(playTrollText);
+        playTrollButton.setSpan(new StyleSpan(Typeface.ITALIC), prefix.length(), playTrollText.length(), 0);
+        this.selectedTrollName.setText(playTrollButton);
 
         this.numero.setText("N° " + troll.getNumero());
 

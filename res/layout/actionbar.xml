@@ -38,7 +38,7 @@
              android:layout_height="40dp"
              android:layout_width="40dp"
              android:scaleType="fitXY"
-             android:src="@drawable/loading"
+             android:src="@drawable/trarnoll_256"
           />
 
   <TextView android:id="@+id/selectedTrollName"
@@ -47,7 +47,7 @@
             style="@style/Info"
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
-            android:text="toto"
+            android:text="Jouer votre Trõll"
             android:gravity="left"/>
 
 
