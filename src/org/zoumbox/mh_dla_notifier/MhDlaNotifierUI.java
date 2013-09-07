@@ -102,6 +102,15 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
     private ImageView refreshButton;
     private boolean runningRefresh = false;
 
+    private TextView carReg;
+    private TextView carAtt;
+    private TextView carEsq;
+    private TextView carDeg;
+    private TextView carArm;
+
+    private TextView rm;
+    private TextView mm;
+
     ///////////////////////////////////
     //  ANDROID INTERACTION METHODS  //
     ///////////////////////////////////
@@ -137,9 +146,14 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         trollInfo = (TextView) findViewById(R.id.troll_info);
         technicalStatus = (TextView) findViewById(R.id.technical_status);
 
-        ((TextView)findViewById(R.id.ATT)).setText("Youhouuuuuuu");
-        ((TextView)findViewById(R.id.ESQ)).setText("Éric");
-        ((TextView)findViewById(R.id.DEG)).setText("Manteau");
+        carAtt = (TextView) findViewById(R.id.ATT);
+        carEsq = (TextView) findViewById(R.id.ESQ);
+        carDeg = (TextView) findViewById(R.id.DEG);
+        carReg = (TextView) findViewById(R.id.REG);
+        carArm = (TextView) findViewById(R.id.ARM);
+
+        rm = (TextView) findViewById(R.id.RM);
+        mm = (TextView) findViewById(R.id.MM);
 
         details = findViewById(R.id.details);
         toggleDetailedButton = (ImageView)findViewById(R.id.toggleDetailedButton);
@@ -170,10 +184,10 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         showDetails = !showDetails;
         if (showDetails) {
             details.setVisibility(View.VISIBLE);
-            toggleDetailedButton.setImageResource(R.drawable.arno);
+            toggleDetailedButton.setImageResource(R.drawable.action_less_details);
         } else {
             details.setVisibility(View.INVISIBLE);
-            toggleDetailedButton.setImageResource(R.drawable.bouloche61);
+            toggleDetailedButton.setImageResource(R.drawable.action_more_details);
         }
     }
 
@@ -515,10 +529,41 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
         next_dla.setText(nextDlaSpannable);
 
+
+        carReg.setText(getCarString(3, troll.getRegenerationCar(), troll.getRegenerationBmp(), troll.getRegenerationBmm()));
+        carAtt.setText(getCarString(6, troll.getAttaqueCar(),      troll.getAttaqueBmp(),      troll.getAttaqueBmm()));
+        carEsq.setText(getCarString(6, troll.getEsquiveCar(),      troll.getEsquiveBmp(),      troll.getEsquiveBmm()));
+        carDeg.setText(getCarString(3, troll.getDegatsCar(),       troll.getDegatsBmp(),       troll.getDegatsBmm()));
+        carArm.setText(getCarString(3, troll.getArmureCar(),       troll.getArmureBmp(),       troll.getArmureBmm()));
+
+        rm.setText(getMString(troll.getRmCar(), troll.getRmBmm()));
+        mm.setText(getMString(troll.getMmCar(), troll.getMmBmm()));
+
         new LoadBlasonTask().execute(troll.getBlason());
 
         new LoadGuildeTask().execute(troll.getGuilde());
 
+    }
+
+    protected double d(int nb) {
+        return new Integer(nb).doubleValue();
+    }
+
+    protected SpannableString getCarString(int dSize, int car, int bmp, int bmm) {
+        double avg = d(car) * d(dSize + 1) / 2d + d(bmp) + d(bmm);
+        String text = String.format("%dD%d %d %d %.1f", car, dSize, bmp, bmm, avg);
+        if (text.endsWith(".0") || text.endsWith(",0")) {
+            text = text.substring(0, text.length() - 2);
+        }
+        SpannableString result = new SpannableString(text);
+        result.setSpan(new StyleSpan(Typeface.BOLD), text.lastIndexOf(" "), text.length(), 0);
+        return result;
+    }
+    protected SpannableString getMString(int car, int bmm) {
+        String text = String.format("%d %s%d %d", car, bmm > 0 ? "+" : "", bmm, car + bmm);
+        SpannableString result = new SpannableString(text);
+        result.setSpan(new StyleSpan(Typeface.BOLD), text.lastIndexOf(" "), text.length(), 0);
+        return result;
     }
 
     private void colorize(SpannableString spannable, int color) {

@@ -26,7 +26,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="fill_parent"
-              android:layout_height="35dp"
+              android:layout_height="40dp"
               android:orientation="horizontal"
               android:gravity="left"
               style="@style/ActionBar"
@@ -35,8 +35,8 @@
   <!-- Name -->
   <ImageView android:id="@+id/selectedTrollBlason"
              android:orientation="vertical"
-             android:layout_height="35dp"
-             android:layout_width="35dp"
+             android:layout_height="40dp"
+             android:layout_width="40dp"
              android:scaleType="fitXY"
              android:src="@drawable/loading"
           />
@@ -44,27 +44,30 @@
   <TextView android:id="@+id/selectedTrollName"
             android:layout_height="wrap_content"
             android:layout_width="50dp"
-            style="@style/Info" android:layout_weight="1" android:layout_gravity="center_vertical"
-            android:text="toto" android:gravity="left"/>
+            style="@style/Info"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:text="toto"
+            android:gravity="left"/>
 
 
   <ImageView android:id="@+id/toggleDetailedButton"
-               android:layout_height="35dp"
-               android:layout_width="35dp"
+               android:layout_height="40dp"
+               android:layout_width="40dp"
                android:scaleType="fitXY"
-               android:src="@android:drawable/ic_input_add"
+               android:src="@drawable/action_more_details"
           />
   <ImageView android:id="@+id/refreshButton"
-               android:layout_height="35dp"
-               android:layout_width="35dp"
+               android:layout_height="40dp"
+               android:layout_width="40dp"
                android:scaleType="fitXY"
-               android:src="@android:drawable/ic_menu_info_details"
+               android:src="@drawable/action_refresh"
           />
   <ImageView android:id="@+id/menuButton"
-               android:layout_height="35dp"
-               android:layout_width="35dp"
+               android:layout_height="40dp"
+               android:layout_width="40dp"
                android:scaleType="fitXY"
-               android:src="@android:drawable/ic_menu_more"
+               android:src="@drawable/action_menu"
           />
 
 </LinearLayout>

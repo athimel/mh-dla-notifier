@@ -24,10 +24,27 @@
   -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
+              android:layout_height="wrap_content"
               android:orientation="vertical"
               style="@style/Main" android:id="@+id/details">
 
+
+  <!-- REG -->
+  <LinearLayout android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/DL">
+
+    <TextView android:text="@string/REG"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              style="@style/DT"/>
+    <TextView android:id="@+id/REG"
+              android:layout_height="wrap_content"
+              android:layout_width="wrap_content"
+              android:layout_weight="1"
+              style="@style/DD"/>
+
+  </LinearLayout>
 
   <!-- ATT -->
   <LinearLayout android:layout_width="fill_parent"
@@ -73,6 +90,57 @@
               android:layout_height="wrap_content"
               style="@style/DT"/>
     <TextView android:id="@+id/DEG"
+              android:layout_height="wrap_content"
+              android:layout_width="wrap_content"
+              android:layout_weight="1"
+              style="@style/DD"/>
+
+  </LinearLayout>
+
+  <!-- ARM -->
+  <LinearLayout android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/DL">
+
+    <TextView android:text="@string/ARM"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              style="@style/DT"/>
+    <TextView android:id="@+id/ARM"
+              android:layout_height="wrap_content"
+              android:layout_width="wrap_content"
+              android:layout_weight="1"
+              style="@style/DD"/>
+
+  </LinearLayout>
+
+  <!-- RM -->
+  <LinearLayout android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/DL">
+
+    <TextView android:text="@string/RM"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              style="@style/DT"/>
+    <TextView android:id="@+id/RM"
+              android:layout_height="wrap_content"
+              android:layout_width="wrap_content"
+              android:layout_weight="1"
+              style="@style/DD"/>
+
+  </LinearLayout>
+
+  <!-- MM -->
+  <LinearLayout android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/DL">
+
+    <TextView android:text="@string/MM"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              style="@style/DT"/>
+    <TextView android:id="@+id/MM"
               android:layout_height="wrap_content"
               android:layout_width="wrap_content"
               android:layout_weight="1"

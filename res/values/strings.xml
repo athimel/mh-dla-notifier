@@ -63,9 +63,14 @@
   <string name="fatigue">Fatigue</string>
   <string name="kd">Kills / Morts</string>
 
-  <string name="ATT">ATT</string>
-  <string name="ESQ">ESQ</string>
-  <string name="DEG">DEG</string>
+  <string name="REG">Régénération</string>
+  <string name="ATT">Attaque</string>
+  <string name="ESQ">Esquive</string>
+  <string name="DEG">Dégâts</string>
+  <string name="ARM">Armure</string>
+
+  <string name="RM">Résistance à la Magie</string>
+  <string name="MM">Maîtrise de la Magie</string>
 
   <string name="next_alarm" formatted="false">Notification programmée le %s à %s</string>
 
