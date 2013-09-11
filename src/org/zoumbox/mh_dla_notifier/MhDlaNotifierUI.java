@@ -99,6 +99,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
     private boolean showDetails = false;
 
     private ImageView refreshButton;
+    private ImageView menuButton;
     private boolean runningRefresh = false;
 
     private TextView carReg;
@@ -122,9 +123,6 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
-        selectedTrollBlason = (ImageView) findViewById(R.id.selectedTrollBlason);
-        selectedTrollName = (TextView) findViewById(R.id.selectedTrollName);
 
         blason = (ImageView) findViewById(R.id.blason);
         name = (TextView) findViewById(R.id.name);
@@ -154,7 +152,20 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         rm = (TextView) findViewById(R.id.RM);
         mm = (TextView) findViewById(R.id.MM);
 
+
         details = findViewById(R.id.details);
+
+        // Action bar
+        selectedTrollBlason = (ImageView) findViewById(R.id.selectedTrollBlason);
+
+        selectedTrollName = (TextView) findViewById(R.id.selectedTrollName);
+        selectedTrollName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onPlayButtonClicked(v);
+            }
+        });
+
         toggleDetailedButton = (ImageView)findViewById(R.id.toggleDetailedButton);
         toggleDetailedButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,14 +187,17 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
             }
         });
 
-        toggleDetails();
-
-        selectedTrollName.setOnClickListener(new View.OnClickListener() {
+        menuButton = (ImageView)findViewById(R.id.menuButton);
+        menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onPlayButtonClicked(v);
+                Intent preferencesIntent = new Intent(MhDlaNotifierUI.this, MhPreferencesActivity.class);
+                startActivityForResult(preferencesIntent, PREFERENCES);
             }
         });
+
+        toggleDetails();
+
     }
 
     protected void toggleDetails() {
@@ -233,10 +247,6 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
                 return true;
             case R.id.register:
                 startRegister(null);
-                return true;
-            case R.id.preferences:
-                Intent intent_preferences = new Intent(this, MhPreferencesActivity.class);
-                startActivityForResult(intent_preferences, PREFERENCES);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -363,11 +373,12 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         Log.i(TAG, "Now rendering troll: " + troll);
 
         this.name.setText(troll.getNom());
-        String prefix = "Accès à ";
-        String playTrollText = prefix + troll.getNom();
-        SpannableString playTrollButton = new SpannableString(playTrollText);
-        playTrollButton.setSpan(new StyleSpan(Typeface.ITALIC), prefix.length(), playTrollText.length(), 0);
-        this.selectedTrollName.setText(playTrollButton);
+
+//        String prefix = "Accès à ";
+//        String playTrollText = prefix + troll.getNom();
+//        SpannableString playTrollButton = new SpannableString(playTrollText);
+//        playTrollButton.setSpan(new StyleSpan(Typeface.ITALIC), prefix.length(), playTrollText.length(), 0);
+//        this.selectedTrollName.setText(playTrollButton);
 
         this.numero.setText("N° " + troll.getNumero());
 

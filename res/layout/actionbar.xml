@@ -44,7 +44,7 @@
   <TextView android:id="@+id/selectedTrollName"
             android:layout_height="wrap_content"
             android:layout_width="50dp"
-            style="@style/Info"
+            style="@style/Link"
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
             android:text="Jouer votre Trõll"

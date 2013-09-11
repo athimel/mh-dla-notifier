@@ -46,6 +46,10 @@
     <item name="android:textStyle">bold</item>
   </style>
 
+  <style name="Link" parent="Info">
+    <item name="android:textStyle">italic</item>
+  </style>
+
   <style name="TrollStatus" parent="Info">
     <item name="android:gravity">center_horizontal</item>
     <item name="android:layout_marginBottom">8dp</item>
