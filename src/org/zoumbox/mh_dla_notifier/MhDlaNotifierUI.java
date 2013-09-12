@@ -163,7 +163,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         selectedTrollName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onPlayButtonClicked(v);
+                onPlayButtonClicked();
             }
         });
 
@@ -283,7 +283,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         }
     }
 
-    public void onPlayButtonClicked(View target) {
+    public void onPlayButtonClicked() {
         Uri uri = MhDlaNotifierConstants.MH_PLAY_URI;
         PreferencesHolder preferences = PreferencesHolder.load(this);
         if (preferences.useSmartphoneInterface) {
@@ -587,8 +587,6 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         if (avgText.endsWith(".0") || avgText.endsWith(",0")) {
             avgText = avgText.substring(0, avgText.length() - 2);
         }
-//        SpannableString avgTextSpan = new SpannableString(avgText);
-//        stylize(avgTextSpan, Typeface.BOLD);
         avgTV.setText(avgText);
     }
 
@@ -601,16 +599,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
         TextView totalTV = (TextView)linearLayout.getChildAt(2);
         String totalText = String.format("%d", car + bmm);
-//        SpannableString totalTextSpan = new SpannableString(totalText);
-//        stylize(totalTextSpan, Typeface.BOLD);
         totalTV.setText(totalText);
-    }
-
-    protected SpannableString getMString(int car, int bmm) {
-        String text = String.format("%d %s%d %d", car, bmm > 0 ? "+" : "", bmm, car + bmm);
-        SpannableString result = new SpannableString(text);
-        result.setSpan(new StyleSpan(Typeface.BOLD), text.lastIndexOf(" "), text.length(), 0);
-        return result;
     }
 
     private void colorize(SpannableString spannable, int color) {
