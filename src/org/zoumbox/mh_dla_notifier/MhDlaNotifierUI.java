@@ -57,6 +57,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -102,14 +103,14 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
     private ImageView menuButton;
     private boolean runningRefresh = false;
 
-    private TextView carReg;
-    private TextView carAtt;
-    private TextView carEsq;
-    private TextView carDeg;
-    private TextView carArm;
+    private LinearLayout carReg;
+    private LinearLayout carAtt;
+    private LinearLayout carEsq;
+    private LinearLayout carDeg;
+    private LinearLayout carArm;
 
-    private TextView rm;
-    private TextView mm;
+    private LinearLayout rm;
+    private LinearLayout mm;
 
     ///////////////////////////////////
     //  ANDROID INTERACTION METHODS  //
@@ -143,14 +144,14 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         trollInfo = (TextView) findViewById(R.id.troll_info);
         technicalStatus = (TextView) findViewById(R.id.technical_status);
 
-        carAtt = (TextView) findViewById(R.id.ATT);
-        carEsq = (TextView) findViewById(R.id.ESQ);
-        carDeg = (TextView) findViewById(R.id.DEG);
-        carReg = (TextView) findViewById(R.id.REG);
-        carArm = (TextView) findViewById(R.id.ARM);
+        carReg = (LinearLayout) findViewById(R.id.REG);
+        carAtt = (LinearLayout) findViewById(R.id.ATT);
+        carEsq = (LinearLayout) findViewById(R.id.ESQ);
+        carDeg = (LinearLayout) findViewById(R.id.DEG);
+        carArm = (LinearLayout) findViewById(R.id.ARM);
 
-        rm = (TextView) findViewById(R.id.RM);
-        mm = (TextView) findViewById(R.id.MM);
+        rm = (LinearLayout) findViewById(R.id.RM);
+        mm = (LinearLayout) findViewById(R.id.MM);
 
 
         details = findViewById(R.id.details);
@@ -550,15 +551,14 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
         next_dla.setText(nextDlaSpannable);
 
+        pushCar(carReg, 3, troll.getRegenerationCar(), troll.getRegenerationBmp(), troll.getRegenerationBmm());
+        pushCar(carAtt, 6, troll.getAttaqueCar(),      troll.getAttaqueBmp(),      troll.getAttaqueBmm());
+        pushCar(carEsq, 6, troll.getEsquiveCar(),      troll.getEsquiveBmp(),      troll.getEsquiveBmm());
+        pushCar(carDeg, 3, troll.getDegatsCar(),       troll.getDegatsBmp(),       troll.getDegatsBmm());
+        pushCar(carArm, 3, troll.getArmureCar(),       troll.getArmureBmp(),       troll.getArmureBmm());
 
-        carReg.setText(getCarString(3, troll.getRegenerationCar(), troll.getRegenerationBmp(), troll.getRegenerationBmm()));
-        carAtt.setText(getCarString(6, troll.getAttaqueCar(),      troll.getAttaqueBmp(),      troll.getAttaqueBmm()));
-        carEsq.setText(getCarString(6, troll.getEsquiveCar(),      troll.getEsquiveBmp(),      troll.getEsquiveBmm()));
-        carDeg.setText(getCarString(3, troll.getDegatsCar(),       troll.getDegatsBmp(),       troll.getDegatsBmm()));
-        carArm.setText(getCarString(3, troll.getArmureCar(),       troll.getArmureBmp(),       troll.getArmureBmm()));
-
-        rm.setText(getMString(troll.getRmCar(), troll.getRmBmm()));
-        mm.setText(getMString(troll.getMmCar(), troll.getMmBmm()));
+        pushM(rm, troll.getRmCar(), troll.getRmBmm());
+        pushM(mm, troll.getMmCar(), troll.getMmBmm());
 
         new LoadBlasonTask().execute(troll.getBlason());
 
@@ -570,16 +570,42 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         return new Integer(nb).doubleValue();
     }
 
-    protected SpannableString getCarString(int dSize, int car, int bmp, int bmm) {
+    protected void pushCar(LinearLayout linearLayout, int dSize, int car, int bmp, int bmm) {
         double avg = d(car) * d(dSize + 1) / 2d + d(bmp) + d(bmm);
-        String text = String.format("%dD%d %d %d %.1f", car, dSize, bmp, bmm, avg);
-        if (text.endsWith(".0") || text.endsWith(",0")) {
-            text = text.substring(0, text.length() - 2);
+
+        TextView carTV = (TextView)linearLayout.getChildAt(0);
+        carTV.setText(String.format("%dD%d", car, dSize));
+
+        TextView bmpTV = (TextView)linearLayout.getChildAt(1);
+        bmpTV.setText(String.format("%d", bmp));
+
+        TextView bmmTV = (TextView)linearLayout.getChildAt(2);
+        bmmTV.setText(String.format("%d", bmm));
+
+        TextView avgTV = (TextView)linearLayout.getChildAt(3);
+        String avgText = String.format("%.1f", avg);
+        if (avgText.endsWith(".0") || avgText.endsWith(",0")) {
+            avgText = avgText.substring(0, avgText.length() - 2);
         }
-        SpannableString result = new SpannableString(text);
-        result.setSpan(new StyleSpan(Typeface.BOLD), text.lastIndexOf(" "), text.length(), 0);
-        return result;
+//        SpannableString avgTextSpan = new SpannableString(avgText);
+//        stylize(avgTextSpan, Typeface.BOLD);
+        avgTV.setText(avgText);
     }
+
+    protected void pushM(LinearLayout linearLayout, int car, int bmm) {
+        TextView carTV = (TextView)linearLayout.getChildAt(0);
+        carTV.setText(String.format("%d", car));
+
+        TextView bmmTV = (TextView)linearLayout.getChildAt(1);
+        bmmTV.setText(String.format("%s%d", bmm > 0 ? "+" : "", bmm));
+
+        TextView totalTV = (TextView)linearLayout.getChildAt(2);
+        String totalText = String.format("%d", car + bmm);
+//        SpannableString totalTextSpan = new SpannableString(totalText);
+//        stylize(totalTextSpan, Typeface.BOLD);
+        totalTV.setText(totalText);
+    }
+
     protected SpannableString getMString(int car, int bmm) {
         String text = String.format("%d %s%d %d", car, bmm > 0 ? "+" : "", bmm, car + bmm);
         SpannableString result = new SpannableString(text);

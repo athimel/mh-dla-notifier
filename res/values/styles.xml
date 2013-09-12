@@ -89,6 +89,44 @@
     <item name="android:gravity">right</item>
   </style>
 
+  <style name="caractDL" parent="Info">
+    <item name="android:layout_marginTop">2dp</item>
+    <item name="android:layout_marginBottom">0dp</item>
+  </style>
+
+  <style name="caractDT" parent="Info">
+    <item name="android:gravity">left</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:paddingRight">0dp</item>
+  </style>
+
+  <style name="caract" parent="Info">
+    <item name="android:paddingLeft">0dp</item>
+    <item name="android:paddingRight">0dp</item>
+    <item name="android:gravity">right</item>
+  </style>
+
+  <style name="caractCar" parent="caract">
+    <item name="android:width">42dp</item>
+  </style>
+
+  <style name="caractBm" parent="caract">
+    <item name="android:width">28dp</item>
+  </style>
+
+  <style name="caractAvg" parent="caract">
+    <item name="android:width">50dp</item>
+    <item name="android:textStyle">bold</item>
+  </style>
+
+  <style name="caractM" parent="caract">
+    <item name="android:width">42dp</item>
+  </style>
+
+  <style name="caractMAvg" parent="caractM">
+    <item name="android:textStyle">bold</item>
+  </style>
+
   <style name="Buttons" parent="TextCommons">
     <item name="android:ellipsize">end</item>
     <item name="android:textSize">16dp</item>

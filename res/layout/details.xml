@@ -28,123 +28,245 @@
               android:orientation="vertical"
               style="@style/Main" android:id="@+id/details">
 
+  <!-- HR -->
+  <LinearLayout android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                style="@style/hr"/>
 
   <!-- REG -->
   <LinearLayout android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                style="@style/DL">
+                style="@style/caractDL">
 
     <TextView android:text="@string/REG"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              style="@style/DT"/>
-    <TextView android:id="@+id/REG"
+              style="@style/caractDT"/>
+    <LinearLayout android:id="@+id/REG"
               android:layout_height="wrap_content"
-              android:layout_width="wrap_content"
+              android:layout_width="fill_parent"
               android:layout_weight="1"
-              style="@style/DD"/>
+              style="@style/DD"
+              android:orientation="horizontal">
+      <!-- CAR -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractCar" />
+      <!-- BMP -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractBm" />
+      <!-- BMM -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractBm" />
+      <!-- AVG -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractAvg" />
+    </LinearLayout>
 
   </LinearLayout>
 
   <!-- ATT -->
   <LinearLayout android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                style="@style/DL">
+                style="@style/caractDL">
 
     <TextView android:text="@string/ATT"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              style="@style/DT"/>
-    <TextView android:id="@+id/ATT"
-              android:layout_height="wrap_content"
-              android:layout_width="wrap_content"
-              android:layout_weight="1"
-              style="@style/DD"/>
+              style="@style/caractDT"/>
+    <LinearLayout android:id="@+id/ATT"
+                  android:layout_height="wrap_content"
+                  android:layout_width="fill_parent"
+                  android:layout_weight="1"
+                  style="@style/DD"
+                  android:orientation="horizontal">
+      <!-- CAR -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractCar" />
+      <!-- BMP -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractBm" />
+      <!-- BMM -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractBm" />
+      <!-- AVG -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractAvg" />
+    </LinearLayout>
 
   </LinearLayout>
 
   <!-- ESQ -->
   <LinearLayout android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                style="@style/DL">
+                style="@style/caractDL">
 
     <TextView android:text="@string/ESQ"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              style="@style/DT"/>
-    <TextView android:id="@+id/ESQ"
-              android:layout_height="wrap_content"
-              android:layout_width="wrap_content"
-              android:layout_weight="1"
-              style="@style/DD"/>
+              style="@style/caractDT"/>
+    <LinearLayout android:id="@+id/ESQ"
+                  android:layout_height="wrap_content"
+                  android:layout_width="fill_parent"
+                  android:layout_weight="1"
+                  style="@style/DD"
+                  android:orientation="horizontal">
+      <!-- CAR -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractCar" />
+      <!-- BMP -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractBm" />
+      <!-- BMM -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractBm" />
+      <!-- AVG -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractAvg" />
+    </LinearLayout>
 
   </LinearLayout>
 
   <!-- DEG -->
   <LinearLayout android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                style="@style/DL">
+                style="@style/caractDL">
 
     <TextView android:text="@string/DEG"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              style="@style/DT"/>
-    <TextView android:id="@+id/DEG"
-              android:layout_height="wrap_content"
-              android:layout_width="wrap_content"
-              android:layout_weight="1"
-              style="@style/DD"/>
+              style="@style/caractDT"/>
+    <LinearLayout android:id="@+id/DEG"
+                  android:layout_height="wrap_content"
+                  android:layout_width="fill_parent"
+                  android:layout_weight="1"
+                  style="@style/DD"
+                  android:orientation="horizontal">
+      <!-- CAR -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractCar" />
+      <!-- BMP -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractBm" />
+      <!-- BMM -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractBm" />
+      <!-- AVG -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractAvg" />
+    </LinearLayout>
 
   </LinearLayout>
 
   <!-- ARM -->
   <LinearLayout android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                style="@style/DL">
+                style="@style/caractDL">
 
     <TextView android:text="@string/ARM"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              style="@style/DT"/>
-    <TextView android:id="@+id/ARM"
-              android:layout_height="wrap_content"
-              android:layout_width="wrap_content"
-              android:layout_weight="1"
-              style="@style/DD"/>
+              style="@style/caractDT"/>
+    <LinearLayout android:id="@+id/ARM"
+                  android:layout_height="wrap_content"
+                  android:layout_width="fill_parent"
+                  android:layout_weight="1"
+                  style="@style/DD"
+                  android:orientation="horizontal">
+      <!-- CAR -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractCar" />
+      <!-- BMP -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractBm" />
+      <!-- BMM -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractBm" />
+      <!-- AVG -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractAvg" />
+    </LinearLayout>
 
   </LinearLayout>
 
   <!-- RM -->
   <LinearLayout android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                style="@style/DL">
+                style="@style/caractDL">
 
     <TextView android:text="@string/RM"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              style="@style/DT"/>
-    <TextView android:id="@+id/RM"
-              android:layout_height="wrap_content"
-              android:layout_width="wrap_content"
-              android:layout_weight="1"
-              style="@style/DD"/>
+              style="@style/caractDT"/>
+    <LinearLayout android:id="@+id/RM"
+                  android:layout_height="wrap_content"
+                  android:layout_width="fill_parent"
+                  android:layout_weight="1"
+                  style="@style/DD"
+                  android:orientation="horizontal">
+      <!-- CAR -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractM" />
+      <!-- BMM -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractM" />
+      <!-- Total -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractMAvg" />
+    </LinearLayout>
 
   </LinearLayout>
 
   <!-- MM -->
   <LinearLayout android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                style="@style/DL">
+                style="@style/caractDL">
 
     <TextView android:text="@string/MM"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              style="@style/DT"/>
-    <TextView android:id="@+id/MM"
-              android:layout_height="wrap_content"
-              android:layout_width="wrap_content"
-              android:layout_weight="1"
-              style="@style/DD"/>
+              style="@style/caractDT"/>
+    <LinearLayout android:id="@+id/MM"
+                  android:layout_height="wrap_content"
+                  android:layout_width="fill_parent"
+                  android:layout_weight="1"
+                  style="@style/DD"
+                  android:orientation="horizontal">
+      <!-- CAR -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractM" />
+      <!-- BMM -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractM" />
+      <!-- Total -->
+      <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/caractMAvg" />
+    </LinearLayout>
 
   </LinearLayout>
 
