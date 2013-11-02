@@ -47,6 +47,14 @@
       </intent-filter>
     </receiver>
 
+    <receiver android:name="HomeScreenWidget" >
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+      </intent-filter>
+      <meta-data android:name="android.appwidget.provider"
+                 android:resource="@xml/home_screen_widget_info" />
+    </receiver>
+
   </application>
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.VIBRATE"/>

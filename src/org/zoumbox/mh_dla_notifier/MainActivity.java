@@ -57,6 +57,7 @@ public class MainActivity extends MhDlaNotifierUI {
         public String apply(Map.Entry<ScriptCategory, Integer> input) {
             ScriptCategory category = input.getKey();
             String result = String.format("%s=%d/%d", category.name(), input.getValue(), category.getQuota());
+            System.out.println();
             return result;
         }
     };
