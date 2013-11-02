@@ -74,7 +74,7 @@ public class PublicScriptsProxyMock {
             // Type; Attaque; Esquive; Dégats; Régénération; PVMax; PVActuels; Portée deVue; RM; MM; Armure; Duree du Tour; Poids; Concentration
             "BMM; 6;5; 9; 3;15;  0; 2;1103; 590; 4;-120;    0;0\n" +
             "BMP; 3;1; 6;-4; 0;  0;-1;   0;   0;14;   0;105.5;0\n" +
-            "CAR;13;4;24; 5;90;105; 4;1314;1555; 2; 585;    0;0\n";
+            "CAR;13;4;24; 5;90;100; 4;1314;1555; 2; 585;    0;0\n";
 //            "BMM;6;3;5; 4; 5; 0; 1;262;193;3;-130;  0; 0\n" +
 //            "BMP;1;2;4;-4; 0; 0;-1;  0;  0;6;   0;125;13\n" +
 //            "CAR;9;4;16;4;80;85; 4;486;510;1; 585;  0; 0\n";

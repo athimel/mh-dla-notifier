@@ -84,7 +84,7 @@ public class MainActivity extends MhDlaNotifierUI {
             if (Strings.isNullOrEmpty(trollId)) {
                 startRegister("Vous devez saisir vos identifiants");
             } else {
-                Pair<Troll, Boolean> trollAndUpdate = getProfileProxy().fetchTrollWithoutUpdate(this, trollId);
+                Pair<Troll, Boolean> trollAndUpdate = getProfileProxy().fetchTroll(this, trollId, UpdateRequestType.NONE);
                 Troll troll = trollAndUpdate.left();
                 boolean needsUpdate = trollAndUpdate.right();
 
@@ -98,8 +98,8 @@ public class MainActivity extends MhDlaNotifierUI {
                 }
             }
 
-        } catch (MissingLoginPasswordException mlpe) {
-            startRegister("Vous devez saisir vos identifiants");
+        } catch (MhDlaException mde) {
+            updateFailure(mde);
         }
     }
 
@@ -124,7 +124,8 @@ public class MainActivity extends MhDlaNotifierUI {
     }
 
     protected void startUpdate(UpdateRequestType updateType) {
-        startUpdate(updateType, "Mise à jour...");
+        String message = UpdateRequestType.FULL.equals(updateType) ? "Mise à jour..." : "Mise à jour partielle...";
+        startUpdate(updateType, message);
     }
 
     protected void updateSuccess() {
@@ -134,7 +135,7 @@ public class MainActivity extends MhDlaNotifierUI {
     protected void updateFailure(MhDlaException exception) {
         String error = null;
         if (exception instanceof QuotaExceededException) {
-            String message = "Rafraîchissement impossible pour le moment, quota atteint";
+            String message = "Mise à jour bloquée pour le moment, quota atteint";
             showToast(message);
             Log.e(TAG, message, exception);
 

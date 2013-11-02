@@ -392,7 +392,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
             trollInfo = new SpannableString(message);
             int pvWarnColor = getResources().getColor(R.color.pv_warn);
             colorize(trollInfo, pvWarnColor);
-        } else if (troll.getPvVariation() > 0) {
+        } else if (troll.getPvVariation() > 0 && troll.getPvVariation() < troll.getPv()) {
                 String messageFormat = getText(R.string.pv_gain_title).toString();
                 String message = String.format(messageFormat, troll.getPvVariation());
                 trollInfo = new SpannableString(message);
@@ -458,9 +458,9 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         SpannableString pvSpannable = new SpannableString(pvText);
         try {
             int pvLength = 1;
-            if (troll.getPv() > 100) {
+            if (troll.getPv() >= 100) {
                 pvLength = 3;
-            } else if (troll.getPv() > 10) {
+            } else if (troll.getPv() >= 10) {
                 pvLength = 2;
             }
 
