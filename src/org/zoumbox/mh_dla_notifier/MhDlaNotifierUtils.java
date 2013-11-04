@@ -68,8 +68,11 @@ public class MhDlaNotifierUtils {
 
     public static final String INTPUT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String HOUR_DATE_FORMAT = "HH:mm:ss";
+    public static final String HOUR_NO_SEC_DATE_FORMAT = "HH:mm";
     public static final String DAY_DATE_FORMAT = "dd MMM";
     public static final String DISPLAY_DATE_FORMAT = DAY_DATE_FORMAT + " - " + HOUR_DATE_FORMAT;
+
+    protected static final String N_C = "n/c";
 
     /**
      * Encodes a raw byte[] to an hexadecimal String
@@ -123,7 +126,7 @@ public class MhDlaNotifierUtils {
 //    }
 
     public static String formatDLA(Context context, Date input) {
-        String result = "n/c";
+        String result = N_C;
         if (input != null) {
             CharSequence format = context.getText(R.string.dla_format);
             DateFormat outputDF = new SimpleDateFormat(format.toString(), Locale.FRENCH);
@@ -133,7 +136,7 @@ public class MhDlaNotifierUtils {
     }
 
     public static String formatDate(Date input) {
-        String result = "n/c";
+        String result = N_C;
         if (input != null) {
             DateFormat outputDF = new SimpleDateFormat(DISPLAY_DATE_FORMAT, Locale.FRENCH);
             result = outputDF.format(input);
@@ -142,7 +145,7 @@ public class MhDlaNotifierUtils {
     }
 
     public static String formatDay(Date input) {
-        String result = "n/c";
+        String result = N_C;
         if (input != null) {
             DateFormat outputDF = new SimpleDateFormat(DAY_DATE_FORMAT, Locale.FRENCH);
             result = outputDF.format(input);
@@ -151,9 +154,18 @@ public class MhDlaNotifierUtils {
     }
 
     public static String formatHour(Date input) {
-        String result = "n/c";
+        String result = N_C;
         if (input != null) {
             DateFormat outputDF = new SimpleDateFormat(HOUR_DATE_FORMAT, Locale.FRENCH);
+            result = outputDF.format(input);
+        }
+        return result;
+    }
+
+    public static String formatHourNoSeconds(Date input) {
+        String result = N_C;
+        if (input != null) {
+            DateFormat outputDF = new SimpleDateFormat(HOUR_NO_SEC_DATE_FORMAT, Locale.FRENCH);
             result = outputDF.format(input);
         }
         return result;

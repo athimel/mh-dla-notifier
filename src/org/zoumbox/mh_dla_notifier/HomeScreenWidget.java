@@ -27,10 +27,18 @@ package org.zoumbox.mh_dla_notifier;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
+import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
+import org.zoumbox.mh_dla_notifier.profile.v2.ProfileProxyV2;
+import org.zoumbox.mh_dla_notifier.troll.Troll;
+
+import java.util.Date;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * @author Arnaud Thimel <thimel@codelutin.com>
@@ -54,8 +62,38 @@ public class HomeScreenWidget extends AppWidgetProvider {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.home_screen_widget);
             views.setOnClickPendingIntent(R.id.widgetImage, pendingIntent);
 
+            ProfileProxyV2 profileProxy = new ProfileProxyV2();
+            Set<String> trollIds = profileProxy.getTrollIds(context);
+            String message = context.getString(R.string.app_name);
+            if (trollIds != null && !trollIds.isEmpty()) {
+                String firstTrollId = trollIds.iterator().next();
+                try {
+                    Log.w(TAG, "Fetch Troll with id=" + firstTrollId);
+                    Pair<Troll, Boolean> pair = profileProxy.fetchTrollWithoutUpdate(context, firstTrollId);
+                    Troll troll = pair.left();
+                    Date dla = troll.getDla();
+                    message = MhDlaNotifierUtils.formatHourNoSeconds(dla);
+                } catch (MissingLoginPasswordException e) {
+                    Log.w(TAG, "Unable to get troll's DLA", e);
+                }
+            }
+            views.setTextViewText(R.id.widgetDla, message);
+
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
+        Log.i(TAG, "onReceive widget");
+
+    }
+
+    @Override
+    public void onEnabled(Context context) {
+        super.onEnabled(context);
+        Log.i(TAG, "onEnabled widget");
     }
 }

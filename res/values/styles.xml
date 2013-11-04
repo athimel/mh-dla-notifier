@@ -159,7 +159,7 @@
 
   <style name="widgetText">
     <item name="android:textColor">@android:color/white</item>
-    <item name="android:background">#99000000</item>
+    <item name="android:background">#66000000</item>
     <item name="android:bottomLeftRadius">2dp</item>
     <item name="android:bottomRightRadius">2dp</item>
     <item name="android:topLeftRadius">2dp</item>

@@ -43,7 +43,7 @@
              android:layout_width="wrap_content"
              android:contentDescription="@string/app_name"
              android:gravity="center_horizontal|bottom"
-             android:text="23h59"
+             android:text="@string/app_name"
              style="@style/widgetText"
           />
 
