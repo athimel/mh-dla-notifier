@@ -33,8 +33,10 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
+import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.v2.ProfileProxyV2;
 import org.zoumbox.mh_dla_notifier.troll.Troll;
+import org.zoumbox.mh_dla_notifier.troll.Trolls;
 
 import java.util.Date;
 import java.util.Random;
@@ -63,37 +65,36 @@ public class HomeScreenWidget extends AppWidgetProvider {
             views.setOnClickPendingIntent(R.id.widgetImage, pendingIntent);
 
             ProfileProxyV2 profileProxy = new ProfileProxyV2();
-            Set<String> trollIds = profileProxy.getTrollIds(context);
-            String message = context.getString(R.string.app_name);
-            if (trollIds != null && !trollIds.isEmpty()) {
-                String firstTrollId = trollIds.iterator().next();
-                try {
-                    Log.w(TAG, "Fetch Troll with id=" + firstTrollId);
-                    Pair<Troll, Boolean> pair = profileProxy.fetchTrollWithoutUpdate(context, firstTrollId);
-                    Troll troll = pair.left();
-                    Date dla = troll.getDla();
-                    message = MhDlaNotifierUtils.formatHourNoSeconds(dla);
-                } catch (MissingLoginPasswordException e) {
-                    Log.w(TAG, "Unable to get troll's DLA", e);
-                }
-            }
-            views.setTextViewText(R.id.widgetDla, message);
+            String dlaText = getDlaText(context, profileProxy);
+            views.setTextViewText(R.id.widgetDla, dlaText);
 
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
     }
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        super.onReceive(context, intent);
-        Log.i(TAG, "onReceive widget");
+    protected String getDlaText(Context context, ProfileProxy profileProxy) {
 
+        Set<String> trollIds = profileProxy.getTrollIds(context);
+        String result = context.getString(R.string.app_name);
+        if (trollIds != null && !trollIds.isEmpty()) {
+            String firstTrollId = trollIds.iterator().next();
+            try {
+                Log.w(TAG, "Fetch Troll with id=" + firstTrollId);
+                Pair<Troll, Boolean> pair = profileProxy.fetchTrollWithoutUpdate(context, firstTrollId);
+                Troll troll = pair.left();
+                Date dla = troll.getDla();
+                if (MhDlaNotifierUtils.IS_IN_THE_FUTURE.apply(dla)) {
+                    result = MhDlaNotifierUtils.formatHourNoSeconds(dla);
+                } else {
+                    Date nextDla = Trolls.GET_NEXT_DLA.apply(troll);
+                    result = String.format("(%s)", MhDlaNotifierUtils.formatHourNoSeconds(nextDla));
+                }
+            } catch (MissingLoginPasswordException e) {
+                Log.w(TAG, "Unable to get troll's DLA", e);
+            }
+        }
+        return result;
     }
 
-    @Override
-    public void onEnabled(Context context) {
-        super.onEnabled(context);
-        Log.i(TAG, "onEnabled widget");
-    }
 }

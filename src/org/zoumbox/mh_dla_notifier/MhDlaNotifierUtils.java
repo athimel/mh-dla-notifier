@@ -46,6 +46,7 @@ import java.util.Locale;
 
 import org.apache.commons.codec.binary.Hex;
 
+import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -73,6 +74,17 @@ public class MhDlaNotifierUtils {
     public static final String DISPLAY_DATE_FORMAT = DAY_DATE_FORMAT + " - " + HOUR_DATE_FORMAT;
 
     protected static final String N_C = "n/c";
+
+    public static final Predicate<Date> IS_IN_THE_FUTURE = new Predicate<Date>() {
+        @Override
+        public boolean apply(Date date) {
+            if (date == null) {
+                return false;
+            }
+            boolean result = date.after(new Date());
+            return result;
+        }
+    };
 
     /**
      * Encodes a raw byte[] to an hexadecimal String

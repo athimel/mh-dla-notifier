@@ -50,16 +50,6 @@ public class Alarms {
 
     private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + Alarms.class.getSimpleName();
 
-    protected static final Predicate<Date> IS_IN_THE_FUTURE = new Predicate<Date>() {
-        @Override
-        public boolean apply(Date date) {
-            if (date == null) {
-                return false;
-            }
-            boolean result = date.after(new Date());
-            return result;
-        }
-    };
     protected static final String EXTRA_TYPE = "type";
     protected static final String EXTRA_TROLL_ID = "trollId";
 
@@ -115,7 +105,7 @@ public class Alarms {
     }
 
     private static boolean scheduleAlarm(Context context, Date alarmDate, AlarmType type, String trollId) {
-        if (alarmDate != null && IS_IN_THE_FUTURE.apply(alarmDate)) {
+        if (alarmDate != null && MhDlaNotifierUtils.IS_IN_THE_FUTURE.apply(alarmDate)) {
             Intent intent = new Intent(context, Receiver.class);
             intent.putExtra(EXTRA_TYPE, type.name());
             intent.putExtra(EXTRA_TROLL_ID, trollId);
