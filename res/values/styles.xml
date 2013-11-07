@@ -170,6 +170,7 @@
     <item name="android:paddingBottom">1dp</item>
     <item name="android:paddingLeft">3dp</item>
     <item name="android:paddingRight">3dp</item>
+    <item name="android:ellipsize">end</item>
   </style>
 
   <color name="actionbar">#DDDDDD</color>

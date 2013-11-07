@@ -24,23 +24,21 @@ package org.zoumbox.mh_dla_notifier;
  * #L%
  */
 
-import android.app.PendingIntent;
-import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProvider;
-import android.appwidget.AppWidgetProviderInfo;
-import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
-import android.widget.RemoteViews;
+import java.util.Set;
+
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.v2.ProfileProxyV2;
 import org.zoumbox.mh_dla_notifier.troll.Troll;
 import org.zoumbox.mh_dla_notifier.troll.Trolls;
 
-import java.util.Date;
-import java.util.Random;
-import java.util.Set;
+import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProvider;
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
+import android.widget.RemoteViews;
 
 /**
  * @author Arnaud Thimel <thimel@codelutin.com>
@@ -57,15 +55,16 @@ public class HomeScreenWidget extends AppWidgetProvider {
 
             // Create an Intent to launch ExampleActivity
             Intent intent = new Intent(context, MainActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            PendingIntent startActivityIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
+            // Compute DLA
+            ProfileProxyV2 profileProxy = new ProfileProxyV2();
+            String dlaText = getDlaText(context, profileProxy);
 
             // Get the layout for the App Widget and attach an on-click listener
             // to the button
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.home_screen_widget);
-            views.setOnClickPendingIntent(R.id.widgetImage, pendingIntent);
-
-            ProfileProxyV2 profileProxy = new ProfileProxyV2();
-            String dlaText = getDlaText(context, profileProxy);
+            views.setOnClickPendingIntent(R.id.widgetLayout, startActivityIntent);
             views.setTextViewText(R.id.widgetDla, dlaText);
 
             // Tell the AppWidgetManager to perform an update on the current app widget
@@ -83,13 +82,8 @@ public class HomeScreenWidget extends AppWidgetProvider {
                 Log.w(TAG, "Fetch Troll with id=" + firstTrollId);
                 Pair<Troll, Boolean> pair = profileProxy.fetchTrollWithoutUpdate(context, firstTrollId);
                 Troll troll = pair.left();
-                Date dla = troll.getDla();
-                if (MhDlaNotifierUtils.IS_IN_THE_FUTURE.apply(dla)) {
-                    result = MhDlaNotifierUtils.formatHourNoSeconds(dla);
-                } else {
-                    Date nextDla = Trolls.GET_NEXT_DLA.apply(troll);
-                    result = String.format("(%s)", MhDlaNotifierUtils.formatHourNoSeconds(nextDla));
-                }
+
+                result = Trolls.GET_WIDGET_DLA_TEXT.apply(troll);
             } catch (MissingLoginPasswordException e) {
                 Log.w(TAG, "Unable to get troll's DLA", e);
             }

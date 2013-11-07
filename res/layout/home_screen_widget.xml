@@ -25,6 +25,7 @@
 
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/widgetLayout"
               android:orientation="vertical"
               android:layout_width="70dp"
               android:layout_height="70dp"
@@ -44,7 +45,7 @@
              android:contentDescription="@string/app_name"
              android:gravity="center_horizontal|bottom"
              android:text="@string/app_name"
-             style="@style/widgetText"
-          />
+             android:maxLines="1"
+             style="@style/widgetText"/>
 
 </LinearLayout>

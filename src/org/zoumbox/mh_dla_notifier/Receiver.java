@@ -41,7 +41,9 @@ import com.google.common.base.Strings;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -49,6 +51,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.SystemClock;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 /**
  * Classe appelée lorsqu'un réveil de l'application survient (approche d'une DLA ou vérification intermédiaire)
@@ -241,6 +244,7 @@ public class Receiver extends BroadcastReceiver {
                     notifyPvLoss(context, pvLoss, troll.getPv(), preferences);
                 }
 
+                checkForWidgetsUpdate(context, troll);
             }
         } catch (MissingLoginPasswordException mde) {
             Log.w(TAG, "Missing trollId and/or password, exiting...");
@@ -254,6 +258,33 @@ public class Receiver extends BroadcastReceiver {
             }
 
         }
+    }
+
+    protected void checkForWidgetsUpdate(Context context, Troll troll) {
+
+        try {
+            AppWidgetManager widgetManager = AppWidgetManager.getInstance(context);
+
+            ComponentName componentName = new ComponentName(context, HomeScreenWidget.class);
+            int[] appWidgetIds = widgetManager.getAppWidgetIds(componentName);
+
+            if (appWidgetIds != null && appWidgetIds.length > 0) {
+                String dlaText = Trolls.GET_WIDGET_DLA_TEXT.apply(troll);
+
+                for (int appWidgetId : appWidgetIds) {
+
+                    RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.home_screen_widget);
+                    views.setTextViewText(R.id.widgetDla, "R" + dlaText); // TODO AThimel 07/11/13 Remove "R"
+
+                    // Tell the AppWidgetManager to perform an update on the current app widget
+                    widgetManager.updateAppWidget(appWidgetId, views);
+                }
+            }
+
+        } catch (Exception eee) {
+            Log.e(TAG, "Unable to update widget(s)", eee);
+        }
+
     }
 
     protected boolean shouldVibrate(Context context, PreferencesHolder preferences) {

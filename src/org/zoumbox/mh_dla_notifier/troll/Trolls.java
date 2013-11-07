@@ -27,6 +27,8 @@ package org.zoumbox.mh_dla_notifier.troll;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.zoumbox.mh_dla_notifier.MhDlaNotifierUtils;
+
 import com.google.common.base.Function;
 
 /**
@@ -118,6 +120,22 @@ public class Trolls {
             nextDla.setTime(troll.dla);
             nextDla.add(Calendar.MINUTE, nextDlaDuration);
             Date result = nextDla.getTime();
+            return result;
+        }
+    };
+
+    public static final Function<Troll, String> GET_WIDGET_DLA_TEXT = new Function<Troll, String>() {
+        @Override
+        public String apply(Troll troll) {
+
+            String result;
+            Date dla = troll.getDla();
+            if (MhDlaNotifierUtils.IS_IN_THE_FUTURE.apply(dla)) {
+                result = MhDlaNotifierUtils.formatHourNoSeconds(dla);
+            } else {
+                Date nextDla = GET_NEXT_DLA.apply(troll);
+                result = String.format("(%s)", MhDlaNotifierUtils.formatHourNoSeconds(nextDla));
+            }
             return result;
         }
     };

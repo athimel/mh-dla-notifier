@@ -40,6 +40,8 @@ import com.google.common.collect.Sets;
 
 import android.app.Dialog;
 import android.app.NotificationManager;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -58,6 +60,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 
 /**
@@ -564,6 +567,33 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
         new LoadGuildeTask().execute(troll.getGuilde());
 
+        checkWidgetDla(troll);
+    }
+
+    protected void checkWidgetDla(Troll troll) {
+
+        try {
+            AppWidgetManager widgetManager = AppWidgetManager.getInstance(this);
+
+            ComponentName componentName = new ComponentName(this, HomeScreenWidget.class);
+            int[] appWidgetIds = widgetManager.getAppWidgetIds(componentName);
+
+            if (appWidgetIds != null && appWidgetIds.length > 0) {
+                String dlaText = Trolls.GET_WIDGET_DLA_TEXT.apply(troll);
+
+                for (int appWidgetId : appWidgetIds) {
+
+                    RemoteViews views = new RemoteViews(getPackageName(), R.layout.home_screen_widget);
+                    views.setTextViewText(R.id.widgetDla, "A " + dlaText); // TODO AThimel 07/11/13 Remove "A"
+
+                    // Tell the AppWidgetManager to perform an update on the current app widget
+                    widgetManager.updateAppWidget(appWidgetId, views);
+                }
+            }
+
+        } catch (Exception eee) {
+            Log.e(TAG, "Unable to update widget(s)", eee);
+        }
     }
 
     protected double d(int nb) {
