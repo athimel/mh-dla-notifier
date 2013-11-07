@@ -567,33 +567,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
         new LoadGuildeTask().execute(troll.getGuilde());
 
-        checkWidgetDla(troll);
-    }
-
-    protected void checkWidgetDla(Troll troll) {
-
-        try {
-            AppWidgetManager widgetManager = AppWidgetManager.getInstance(this);
-
-            ComponentName componentName = new ComponentName(this, HomeScreenWidget.class);
-            int[] appWidgetIds = widgetManager.getAppWidgetIds(componentName);
-
-            if (appWidgetIds != null && appWidgetIds.length > 0) {
-                String dlaText = Trolls.GET_WIDGET_DLA_TEXT.apply(troll);
-
-                for (int appWidgetId : appWidgetIds) {
-
-                    RemoteViews views = new RemoteViews(getPackageName(), R.layout.home_screen_widget);
-                    views.setTextViewText(R.id.widgetDla, "A " + dlaText); // TODO AThimel 07/11/13 Remove "A"
-
-                    // Tell the AppWidgetManager to perform an update on the current app widget
-                    widgetManager.updateAppWidget(appWidgetId, views);
-                }
-            }
-
-        } catch (Exception eee) {
-            Log.e(TAG, "Unable to update widget(s)", eee);
-        }
+        new UpdateWidgetsTask().execute(troll);
     }
 
     protected double d(int nb) {
@@ -705,6 +679,39 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         protected void onPostExecute(String guilde) {
             updateGuilde(guilde);
         }
+    }
+
+    private class UpdateWidgetsTask extends AsyncTask<Troll, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Troll... params) {
+
+            try {
+                AppWidgetManager widgetManager = AppWidgetManager.getInstance(MhDlaNotifierUI.this);
+
+                ComponentName componentName = new ComponentName(MhDlaNotifierUI.this, HomeScreenWidget.class);
+                int[] appWidgetIds = widgetManager.getAppWidgetIds(componentName);
+
+                if (appWidgetIds != null && appWidgetIds.length > 0) {
+                    Troll troll = params[0];
+                    String dlaText = Trolls.GET_WIDGET_DLA_TEXT.apply(troll);
+
+                    for (int appWidgetId : appWidgetIds) {
+
+                        RemoteViews views = new RemoteViews(getPackageName(), R.layout.home_screen_widget);
+                        views.setTextViewText(R.id.widgetDla, "A " + dlaText); // TODO AThimel 07/11/13 Remove "A"
+
+                        // Tell the AppWidgetManager to perform an update on the current app widget
+                        widgetManager.updateAppWidget(appWidgetId, views);
+                    }
+                }
+
+            } catch (Exception eee) {
+                Log.e(TAG, "Unable to update widget(s)", eee);
+            }
+            return null;
+        }
+
     }
 
 }
