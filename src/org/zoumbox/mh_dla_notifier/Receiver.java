@@ -274,7 +274,7 @@ public class Receiver extends BroadcastReceiver {
                 for (int appWidgetId : appWidgetIds) {
 
                     RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.home_screen_widget);
-                    views.setTextViewText(R.id.widgetDla, "R" + dlaText); // TODO AThimel 07/11/13 Remove "R"
+                    views.setTextViewText(R.id.widgetDla, dlaText);
 
                     // Tell the AppWidgetManager to perform an update on the current app widget
                     widgetManager.updateAppWidget(appWidgetId, views);

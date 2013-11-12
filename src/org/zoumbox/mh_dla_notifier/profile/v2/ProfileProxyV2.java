@@ -184,11 +184,23 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
         Troll troll = readTroll(context, trollId);
 
         Set<PublicScript> scriptsToUpdate = Sets.newLinkedHashSet();
+
+        // Pas de nom -> Besoin des informations statiques
         if (Strings.isNullOrEmpty(troll.getNom())) {
             scriptsToUpdate.add(PublicScript.ProfilPublic2);
         }
+        // Pas de DLA -> Besoin des informations dynamiques (DLA, PV, PA, ...)
         if (troll.getDla() == null) {
             scriptsToUpdate.add(PublicScript.Profil2);
+        }
+        // Pas de poids d'équipement -> Besoin des caracts
+        if (troll.getPoidsBmp() == 0d) {
+            scriptsToUpdate.add(PublicScript.Caract);
+        }
+        if (UpdateRequestType.FULL.equals(updateRequestType)) {
+            // XXX AThimel 12/11/13 Do not include static profile to avoid too much requests
+            scriptsToUpdate.add(PublicScript.Profil2);
+            scriptsToUpdate.add(PublicScript.Caract);
         }
         Set<PublicScript> scriptsThatRequiresAnUpdate = getScriptsThatRequiresAnUpdate(context, trollId);
         if (updateRequestType.needUpdate()) {
@@ -204,7 +216,8 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
             saveTroll(context, trollId, troll);
         }
 
-        Pair<Troll, Boolean> result = Pair.of(troll, !scriptsThatRequiresAnUpdate.isEmpty());
+        boolean needsABackgroundUpdate = !scriptsThatRequiresAnUpdate.isEmpty();
+        Pair<Troll, Boolean> result = Pair.of(troll, needsABackgroundUpdate);
         return result;
     }
 

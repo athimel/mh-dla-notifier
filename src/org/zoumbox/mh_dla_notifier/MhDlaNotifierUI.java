@@ -699,7 +699,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
                     for (int appWidgetId : appWidgetIds) {
 
                         RemoteViews views = new RemoteViews(getPackageName(), R.layout.home_screen_widget);
-                        views.setTextViewText(R.id.widgetDla, "A " + dlaText); // TODO AThimel 07/11/13 Remove "A"
+                        views.setTextViewText(R.id.widgetDla, dlaText);
 
                         // Tell the AppWidgetManager to perform an update on the current app widget
                         widgetManager.updateAppWidget(appWidgetId, views);
