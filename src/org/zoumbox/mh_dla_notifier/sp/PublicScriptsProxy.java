@@ -28,10 +28,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.util.Log;
+
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -223,7 +226,7 @@ public class PublicScriptsProxy {
             throw new QuotaExceededException(category, requestCount);
         }
 
-        String url = String.format(script.url, trollId, trollPassword);
+        String url = String.format(script.url, Uri.encode(trollId), Uri.encode(trollPassword));
         PublicScriptResponse spResult = doHttpGET(url);
         Log.i(TAG, "Public Script response: '" + spResult + "'");
 

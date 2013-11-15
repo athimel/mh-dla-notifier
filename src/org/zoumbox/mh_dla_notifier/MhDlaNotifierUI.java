@@ -23,21 +23,6 @@
  */
 package org.zoumbox.mh_dla_notifier;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Set;
-
-import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
-import org.zoumbox.mh_dla_notifier.troll.Race;
-import org.zoumbox.mh_dla_notifier.troll.Troll;
-import org.zoumbox.mh_dla_notifier.troll.Trolls;
-
-import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-import com.google.common.collect.Sets;
-
 import android.app.Dialog;
 import android.app.NotificationManager;
 import android.appwidget.AppWidgetManager;
@@ -62,6 +47,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 import android.widget.TextView;
+
+import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
+
+import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
+import org.zoumbox.mh_dla_notifier.troll.Race;
+import org.zoumbox.mh_dla_notifier.troll.Troll;
+import org.zoumbox.mh_dla_notifier.troll.Trolls;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Set;
 
 /**
  * Activité principale
@@ -337,6 +337,9 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
     }
 
     private void internalSetTechnicalStatus(CharSequence message) {
+        if (this.technicalStatus == null) {
+            this.technicalStatus = (TextView) findViewById(R.id.technical_status);
+        }
         this.technicalStatus.setText(message);
     }
 

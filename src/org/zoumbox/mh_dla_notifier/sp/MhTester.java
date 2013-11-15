@@ -24,11 +24,10 @@ package org.zoumbox.mh_dla_notifier.sp;
  * #L%
  */
 
-import java.util.Map;
-
-import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
 import org.zoumbox.mh_dla_notifier.troll.Troll;
 import org.zoumbox.mh_dla_notifier.utils.SystemLogCallback;
+
+import java.util.Map;
 
 /**
  * @author Arnaud Thimel <thimel@codelutin.com>
@@ -64,7 +63,6 @@ public class MhTester {
             Troll troll = new Troll();
             PublicScriptResult result = new PublicScriptResult(entry.getKey(), entry.getValue());
             PublicScripts.pushToTroll(troll, result, logCallback);
-            System.out.println(troll);
         }
     }
 }

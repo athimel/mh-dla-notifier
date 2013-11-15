@@ -156,10 +156,16 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
             Log.i(TAG, String.format("Adding troll %s to managed trolls: %s", trollId, trollIds));
             trollIds.add(0, trollId);
         }
+        String password = trollPassword;
+        try {
+            password = password.replaceAll("\n", "").trim();
+        } catch (Exception eee) {
+            Log.w(TAG, "Unable to escape password", eee);
+        }
 
         SharedPreferences.Editor editor = getPreferences(context).edit();
         String propertyName = getProperty(trollId, PROPERTY_PASSWORD);
-        editor.putString(propertyName, trollPassword);
+        editor.putString(propertyName, password);
         editor.putString(PROPERTY_TROLL_IDS, Joiner.on(",").join(trollIds));
         editor.commit();
     }
