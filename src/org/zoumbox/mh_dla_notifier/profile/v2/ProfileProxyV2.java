@@ -29,7 +29,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
@@ -269,27 +271,38 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
         editor.commit();
     }
 
-    protected PublicScriptResult fetchScript(Context context, PublicScript script, Pair<String, String> idAndPassword)
+    protected Optional<PublicScriptResult> fetchScript(Context context, PublicScript script, Pair<String, String> idAndPassword)
             throws QuotaExceededException, PublicScriptException, NetworkUnavailableException {
         String trollId = idAndPassword.left();
         String trollPassword = idAndPassword.right();
-        PublicScriptResult result;
+        Optional<PublicScriptResult> result;
         long now = System.currentTimeMillis();
-        try {
-            result = PublicScriptsProxy.fetchScript(context, script, trollId, trollPassword);
-            saveUpdateResult(context, trollId, script, now, null);
-        } catch (PublicScriptException pse) {
-            saveUpdateResult(context, trollId, script, now, pse);
-            throw new PublicScriptException(pse);
-        } catch (QuotaExceededException qee) {
-            saveUpdateResult(context, trollId, script, now, qee);
-            throw new QuotaExceededException(qee);
-        } catch (NetworkUnavailableException nue) {
-            saveUpdateResult(context, trollId, script, now, nue);
-            throw new NetworkUnavailableException(nue);
+        String fetchId = beforeFetch(script, trollId);
+        if (fetchId == null) {
+            result = Optional.absent();
+        } else {
+            try {
+                result = Optional.of(PublicScriptsProxy.fetchScript(context, script, trollId, trollPassword));
+                saveUpdateResult(context, trollId, script, now, null);
+            } catch (PublicScriptException pse) {
+                saveUpdateResult(context, trollId, script, now, pse);
+                throw new PublicScriptException(pse);
+            } catch (QuotaExceededException qee) {
+                saveUpdateResult(context, trollId, script, now, qee);
+                throw new QuotaExceededException(qee);
+            } catch (NetworkUnavailableException nue) {
+                saveUpdateResult(context, trollId, script, now, nue);
+                throw new NetworkUnavailableException(nue);
+            }
         }
 
         return result;
+    }
+
+    protected String beforeFetch(PublicScript script, String trollId) {
+        // TODO AThimel 02/01/2014 Make sure no other update is running
+        String id = UUID.randomUUID().toString();
+        return id;
     }
 
     protected void fetchScripts(Context context, Pair<String, String> idAndPassword, Troll troll, Set<PublicScript> scripts)
@@ -301,7 +314,7 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
 
         AndroidLogCallback logCallback = new AndroidLogCallback();
         for (PublicScript publicScript : scripts) {
-            PublicScriptResult publicScriptResult = fetchScript(context, publicScript, idAndPassword);
+            Optional<PublicScriptResult> publicScriptResult = fetchScript(context, publicScript, idAndPassword);
             PublicScripts.pushToTroll(troll, publicScriptResult, logCallback);
         }
 
