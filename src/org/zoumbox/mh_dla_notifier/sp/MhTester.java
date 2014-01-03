@@ -24,6 +24,8 @@ package org.zoumbox.mh_dla_notifier.sp;
  * #L%
  */
 
+import com.google.common.base.Optional;
+
 import org.zoumbox.mh_dla_notifier.troll.Troll;
 import org.zoumbox.mh_dla_notifier.utils.SystemLogCallback;
 
@@ -42,19 +44,19 @@ public class MhTester {
 
             {
                 PublicScriptResult publicScriptResult = new PublicScriptResult(PublicScript.ProfilPublic2, PublicScriptsProxyMock.DEVEL_PROFIL_PUBLIC2);
-                PublicScripts.pushToTroll(troll, publicScriptResult, logCallback);
+                PublicScripts.pushToTroll(troll, Optional.of(publicScriptResult), logCallback);
                 System.out.println(troll);
             }
 
             {
                 PublicScriptResult publicScriptResult = new PublicScriptResult(PublicScript.Profil2, PublicScriptsProxyMock.DEVEL_PROFIL2);
-                PublicScripts.pushToTroll(troll, publicScriptResult, logCallback);
+                PublicScripts.pushToTroll(troll, Optional.of(publicScriptResult), logCallback);
                 System.out.println(troll);
             }
 
             {
                 PublicScriptResult publicScriptResult = new PublicScriptResult(PublicScript.Caract, PublicScriptsProxyMock.DEVEL_CARACT);
-                PublicScripts.pushToTroll(troll, publicScriptResult, logCallback);
+                PublicScripts.pushToTroll(troll, Optional.of(publicScriptResult), logCallback);
                 System.out.println(troll);
             }
         }
@@ -62,7 +64,7 @@ public class MhTester {
         for (Map.Entry<PublicScript, String> entry : PublicScriptsProxyMock.getMockScripts().entries()) {
             Troll troll = new Troll();
             PublicScriptResult result = new PublicScriptResult(entry.getKey(), entry.getValue());
-            PublicScripts.pushToTroll(troll, result, logCallback);
+            PublicScripts.pushToTroll(troll,Optional.of( result), logCallback);
         }
     }
 }

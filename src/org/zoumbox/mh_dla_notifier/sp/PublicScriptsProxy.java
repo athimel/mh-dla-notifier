@@ -31,6 +31,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -53,6 +54,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -103,14 +105,17 @@ public class PublicScriptsProxy {
         return result;
     }
 
-    protected static final String SQL_COUNT = String.format("SELECT COUNT(*) FROM %s WHERE %s=? AND %s=? AND %s>=?",
-            MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_CATEGORY_COLUMN, MhDlaSQLHelper.SCRIPTS_DATE_COLUMN);
+    protected static final String SQL_SCRIPTS_COUNT = String.format("SELECT COUNT(*) FROM %s WHERE %s=? AND %s=? AND %s>=?",
+            MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_COLUMN_TROLL, MhDlaSQLHelper.SCRIPTS_COLUMN_CATEGORY, MhDlaSQLHelper.SCRIPTS_COLUMN_DATE);
 
-    protected static final String SQL_LAST_UPDATE = String.format("SELECT MAX(%s) FROM %s WHERE %s=? AND %s=?",
-            MhDlaSQLHelper.SCRIPTS_DATE_COLUMN, MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_SCRIPT_COLUMN);
+    protected static final String SQL_SCRIPTS_LAST_UPDATE = String.format("SELECT MAX(%s) FROM %s WHERE %s=? AND %s=?",
+            MhDlaSQLHelper.SCRIPTS_COLUMN_DATE, MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_COLUMN_TROLL, MhDlaSQLHelper.SCRIPTS_COLUMN_SCRIPT);
 
-    protected static final String SQL_LIST_REQUESTS = String.format("SELECT %s, %s FROM %s WHERE %s=? ORDER BY %s DESC LIMIT %s",
-            MhDlaSQLHelper.SCRIPTS_DATE_COLUMN,  MhDlaSQLHelper.SCRIPTS_SCRIPT_COLUMN, MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_DATE_COLUMN, "%d");
+    protected static final String SQL_SCRIPTS_LIST_REQUESTS = String.format("SELECT %s, %s FROM %s WHERE %s=? ORDER BY %s DESC LIMIT %s",
+            MhDlaSQLHelper.SCRIPTS_COLUMN_DATE,  MhDlaSQLHelper.SCRIPTS_COLUMN_SCRIPT, MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_COLUMN_TROLL, MhDlaSQLHelper.SCRIPTS_COLUMN_DATE, "%d");
+
+    protected static final String SQL_LOCKS_GET = String.format("SELECT %s FROM %s WHERE %s=? AND %s=? AND %s>=?",
+            MhDlaSQLHelper.LOCKS_COLUMN_ID, MhDlaSQLHelper.LOCKS_TABLE, MhDlaSQLHelper.LOCKS_COLUMN_TROLL_ID, MhDlaSQLHelper.LOCKS_COLUMN_SCRIPT, MhDlaSQLHelper.LOCKS_COLUMN_DATE);
 
     protected static int computeRequestCount(Context context, ScriptCategory category, String trollId) {
 
@@ -121,7 +126,7 @@ public class PublicScriptsProxy {
         instance.add(Calendar.HOUR_OF_DAY, -24);
         Date sinceDate = instance.getTime();
 
-        Cursor cursor = database.rawQuery(SQL_COUNT, new String[]{trollId, category.name(), "" + sinceDate.getTime()});
+        Cursor cursor = database.rawQuery(SQL_SCRIPTS_COUNT, new String[]{trollId, category.name(), "" + sinceDate.getTime()});
         int result = 0;
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
@@ -138,7 +143,68 @@ public class PublicScriptsProxy {
         return result;
     }
 
-    protected static void saveFetch(Context context, PublicScript script, String trollId) {
+    protected static boolean isExistingLockPresent(Context context, PublicScript script, String trollId) {
+
+        MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
+        SQLiteDatabase database = helper.getReadableDatabase();
+
+        Calendar instance = Calendar.getInstance();
+        instance.add(Calendar.SECOND, -60);
+        Date sinceDate = instance.getTime();
+
+        Cursor cursor = database.rawQuery(SQL_LOCKS_GET, new String[]{trollId, script.name(), "" + sinceDate.getTime()});
+        boolean result = false;
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            String lockId = cursor.getString(0);
+            result = !Strings.isNullOrEmpty(lockId);
+        }
+
+        cursor.close();
+        database.close();
+
+        String format = "Lock found for script %s and troll=%s since '%s'";
+        String message = String.format(format, script, trollId, sinceDate);
+        if (!result) {
+            message = "NO " + message;
+        }
+        Log.i(TAG, message);
+
+        return result;
+    }
+
+    protected static String tryAcquireFetchLock(Context context, PublicScript script, String trollId) {
+        if (isExistingLockPresent(context, script, trollId)) {
+            return null;
+        }
+
+        String id = UUID.randomUUID().toString();
+
+        MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
+        SQLiteDatabase database = helper.getWritableDatabase();
+
+        ContentValues values = new ContentValues(4);
+        values.put(MhDlaSQLHelper.LOCKS_COLUMN_DATE, System.currentTimeMillis());
+        values.put(MhDlaSQLHelper.LOCKS_COLUMN_ID, id);
+        values.put(MhDlaSQLHelper.LOCKS_COLUMN_SCRIPT, script.name());
+        values.put(MhDlaSQLHelper.LOCKS_COLUMN_TROLL_ID, trollId);
+
+        database.insert(MhDlaSQLHelper.LOCKS_TABLE, null, values);
+
+        database.close();
+
+        return id;
+    }
+
+    protected static void releaseFetchLock(SQLiteDatabase database, String lockId) {
+        int count = database.delete(MhDlaSQLHelper.LOCKS_TABLE, MhDlaSQLHelper.LOCKS_COLUMN_ID + "=?", new String[]{lockId});
+
+        String format = "Delete fetch lock with id=%s : %d deleted";
+        String message = String.format(format, lockId, count);
+        Log.i(TAG, message);
+    }
+
+    protected static void saveFetch(Context context, PublicScript script, String trollId, String lockId) {
 
         String format = "Saving fetch for category %s (script=%s) and troll=%s";
         String message = String.format(format, script.category, script, trollId);
@@ -148,12 +214,14 @@ public class PublicScriptsProxy {
         SQLiteDatabase database = helper.getWritableDatabase();
 
         ContentValues values = new ContentValues(4);
-        values.put(MhDlaSQLHelper.SCRIPTS_DATE_COLUMN, System.currentTimeMillis());
-        values.put(MhDlaSQLHelper.SCRIPTS_SCRIPT_COLUMN, script.name());
-        values.put(MhDlaSQLHelper.SCRIPTS_CATEGORY_COLUMN, script.category.name());
-        values.put(MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, trollId);
+        values.put(MhDlaSQLHelper.SCRIPTS_COLUMN_DATE, System.currentTimeMillis());
+        values.put(MhDlaSQLHelper.SCRIPTS_COLUMN_SCRIPT, script.name());
+        values.put(MhDlaSQLHelper.SCRIPTS_COLUMN_CATEGORY, script.category.name());
+        values.put(MhDlaSQLHelper.SCRIPTS_COLUMN_TROLL, trollId);
 
         database.insert(MhDlaSQLHelper.SCRIPTS_TABLE, null, values);
+
+        releaseFetchLock(database, lockId);
 
         database.close();
     }
@@ -163,7 +231,7 @@ public class PublicScriptsProxy {
         MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
         SQLiteDatabase database = helper.getReadableDatabase();
 
-        Cursor cursor = database.rawQuery(SQL_LAST_UPDATE, new String[]{trollId, script.name()});
+        Cursor cursor = database.rawQuery(SQL_SCRIPTS_LAST_UPDATE, new String[]{trollId, script.name()});
         Date result = null;
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
@@ -190,7 +258,7 @@ public class PublicScriptsProxy {
 
         for (PublicScript script : scripts) {
 
-            Cursor cursor = database.rawQuery(SQL_LAST_UPDATE, new String[]{trollId, script.name()});
+            Cursor cursor = database.rawQuery(SQL_SCRIPTS_LAST_UPDATE, new String[]{trollId, script.name()});
             Date lastUpdate = null;
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
@@ -211,7 +279,7 @@ public class PublicScriptsProxy {
     }
 
 
-    public static PublicScriptResult fetchScript(Context context, PublicScript script,
+    public static Optional<PublicScriptResult> fetchScript(Context context, PublicScript script,
                                                  String trollId, String trollPassword)
             throws QuotaExceededException, PublicScriptException, NetworkUnavailableException {
 
@@ -226,6 +294,13 @@ public class PublicScriptsProxy {
             throw new QuotaExceededException(category, requestCount);
         }
 
+        String lockId = tryAcquireFetchLock(context, script, trollId);
+
+        if (Strings.isNullOrEmpty(lockId)) {
+            Log.i(TAG, "Script lock is already present, skip update for script " + script);
+            return Optional.absent();
+        }
+
         String url = String.format(script.url, Uri.encode(trollId), Uri.encode(trollPassword));
         PublicScriptResponse spResult = doHttpGET(url);
         Log.i(TAG, "Public Script response: '" + spResult + "'");
@@ -234,12 +309,12 @@ public class PublicScriptsProxy {
             throw new PublicScriptException(spResult);
         } else {
 
-            saveFetch(context, script, trollId);
+            saveFetch(context, script, trollId, lockId);
 
             String raw = spResult.getRaw();
             PublicScriptResult result = new PublicScriptResult(script, raw);
 
-            return result;
+            return Optional.of(result);
         }
 
     }
@@ -250,8 +325,12 @@ public class PublicScriptsProxy {
         long now = System.currentTimeMillis();
         Map<String, String> result;
         try {
-            PublicScriptResult publicScriptResult = fetchScript(context, script, idAndPassword.left(), idAndPassword.right());
-            result = PublicScripts.SCRIPT_RESULT_TO_MAP.apply(publicScriptResult);
+            Optional<PublicScriptResult> publicScriptResult = fetchScript(context, script, idAndPassword.left(), idAndPassword.right());
+            if (publicScriptResult.isPresent()) {
+                result = PublicScripts.SCRIPT_RESULT_TO_MAP.apply(publicScriptResult.get());
+            } else {
+                result = Maps.newHashMap();
+            }
             saveUpdateResult(context, script, now, null);
         } catch (PublicScriptException pse) {
             saveUpdateResult(context, script, now, pse);
@@ -298,7 +377,7 @@ public class PublicScriptsProxy {
     public static List<MhSpRequest> listLatestRequests(Context context, String trollId) {
         List<MhSpRequest> result = Lists.newArrayList();
 
-        String query = String.format(SQL_LIST_REQUESTS, 50);
+        String query = String.format(SQL_SCRIPTS_LIST_REQUESTS, 50);
 
 
         MhDlaSQLHelper helper = new MhDlaSQLHelper(context);

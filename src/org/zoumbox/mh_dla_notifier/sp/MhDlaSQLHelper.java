@@ -26,28 +26,46 @@ package org.zoumbox.mh_dla_notifier.sp;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
 
 /**
  * @author Arno <arno@zoumbox.org>
  */
 public class MhDlaSQLHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + MhDlaSQLHelper.class.getSimpleName();
+
+    private static final int DATABASE_VERSION = 2;
 
     private static final String DATABASE_NAME = "mh-dla-notifier";
 
     public static final String SCRIPTS_TABLE = "scripts_logs";
-    public static final String SCRIPTS_DATE_COLUMN = "script_date";
-    public static final String SCRIPTS_SCRIPT_COLUMN = "script";
-    public static final String SCRIPTS_CATEGORY_COLUMN = "category";
-    public static final String SCRIPTS_TROLL_COLUMN = "troll_number";
+    public static final String SCRIPTS_COLUMN_DATE = "script_date";
+    public static final String SCRIPTS_COLUMN_SCRIPT = "script";
+    public static final String SCRIPTS_COLUMN_CATEGORY = "category";
+    public static final String SCRIPTS_COLUMN_TROLL = "troll_number";
+
+    public static final String LOCKS_TABLE = "locks";
+    public static final String LOCKS_COLUMN_ID = "id";
+    public static final String LOCKS_COLUMN_DATE = "date";
+    public static final String LOCKS_COLUMN_SCRIPT = "script";
+    public static final String LOCKS_COLUMN_TROLL_ID = "trollId";
 
     private static final String SCRIPTS_TABLE_CREATE =
             "CREATE TABLE " + SCRIPTS_TABLE + " (" +
-                    SCRIPTS_DATE_COLUMN + " LONG, " +
-                    SCRIPTS_SCRIPT_COLUMN + " TEXT, " +
-                    SCRIPTS_CATEGORY_COLUMN + " TEXT, " +
-                    SCRIPTS_TROLL_COLUMN + " TEXT);";
+                    SCRIPTS_COLUMN_DATE + " LONG, " +
+                    SCRIPTS_COLUMN_SCRIPT + " TEXT, " +
+                    SCRIPTS_COLUMN_CATEGORY + " TEXT, " +
+                    SCRIPTS_COLUMN_TROLL + " TEXT);";
+
+    private static final String LOCKS_TABLE_CREATE =
+            "CREATE TABLE " + LOCKS_TABLE + " (" +
+                    LOCKS_COLUMN_ID + " TEXT, " +
+                    LOCKS_COLUMN_DATE + " LONG, " +
+                    LOCKS_COLUMN_SCRIPT + " TEXT, " +
+                    LOCKS_COLUMN_TROLL_ID + " TEXT);";
 
     MhDlaSQLHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -55,12 +73,20 @@ public class MhDlaSQLHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.w(TAG, "Creating " + SCRIPTS_TABLE + " table");
         db.execSQL(SCRIPTS_TABLE_CREATE);
+
+        Log.w(TAG, "Creating " + LOCKS_TABLE + " table");
+        db.execSQL(LOCKS_TABLE_CREATE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        Log.w(TAG, "onUpgrade, oldVersion=" + oldVersion + " ; newVersion=" + newVersion);
+        if (oldVersion < 2 && newVersion >= 2) {
+            Log.w(TAG, "Creating " + LOCKS_TABLE + " table");
+            db.execSQL(LOCKS_TABLE_CREATE);
+        }
     }
 
 }

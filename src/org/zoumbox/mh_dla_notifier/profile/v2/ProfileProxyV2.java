@@ -24,18 +24,23 @@ package org.zoumbox.mh_dla_notifier.profile.v2;
  * #L%
  */
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.gson.Gson;
+
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
 import org.zoumbox.mh_dla_notifier.Pair;
 import org.zoumbox.mh_dla_notifier.PreferencesHolder;
@@ -54,17 +59,11 @@ import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
 import org.zoumbox.mh_dla_notifier.troll.Troll;
 import org.zoumbox.mh_dla_notifier.utils.AndroidLogCallback;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.gson.Gson;
-
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Arnaud Thimel <thimel@codelutin.com>
@@ -277,32 +276,21 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
         String trollPassword = idAndPassword.right();
         Optional<PublicScriptResult> result;
         long now = System.currentTimeMillis();
-        String fetchId = beforeFetch(script, trollId);
-        if (fetchId == null) {
-            result = Optional.absent();
-        } else {
-            try {
-                result = Optional.of(PublicScriptsProxy.fetchScript(context, script, trollId, trollPassword));
-                saveUpdateResult(context, trollId, script, now, null);
-            } catch (PublicScriptException pse) {
-                saveUpdateResult(context, trollId, script, now, pse);
-                throw new PublicScriptException(pse);
-            } catch (QuotaExceededException qee) {
-                saveUpdateResult(context, trollId, script, now, qee);
-                throw new QuotaExceededException(qee);
-            } catch (NetworkUnavailableException nue) {
-                saveUpdateResult(context, trollId, script, now, nue);
-                throw new NetworkUnavailableException(nue);
-            }
+        try {
+            result = PublicScriptsProxy.fetchScript(context, script, trollId, trollPassword);
+            saveUpdateResult(context, trollId, script, now, null);
+        } catch (PublicScriptException pse) {
+            saveUpdateResult(context, trollId, script, now, pse);
+            throw new PublicScriptException(pse);
+        } catch (QuotaExceededException qee) {
+            saveUpdateResult(context, trollId, script, now, qee);
+            throw new QuotaExceededException(qee);
+        } catch (NetworkUnavailableException nue) {
+            saveUpdateResult(context, trollId, script, now, nue);
+            throw new NetworkUnavailableException(nue);
         }
 
         return result;
-    }
-
-    protected String beforeFetch(PublicScript script, String trollId) {
-        // TODO AThimel 02/01/2014 Make sure no other update is running
-        String id = UUID.randomUUID().toString();
-        return id;
     }
 
     protected void fetchScripts(Context context, Pair<String, String> idAndPassword, Troll troll, Set<PublicScript> scripts)
