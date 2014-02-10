@@ -16,7 +16,7 @@
 
   <groupId>org.zoumbox</groupId>
   <artifactId>mh-dla-notifier</artifactId>
-  <version>0.12.2</version>
+  <version>0.12.3</version>
 
   <dependencies>
 
@@ -149,7 +149,7 @@
       <plugin>
         <groupId>com.jayway.maven.plugins.android.generation2</groupId>
         <artifactId>android-maven-plugin</artifactId>
-        <version>3.6.1</version>
+        <version>3.8.1</version>
         <executions>
           <execution>
             <id>alignApk</id>
@@ -162,7 +162,7 @@
         <configuration>
           <sdk>
             <path>${env.ANDROID_HOME}</path>
-            <platform>2.1</platform>
+            <platform>7</platform>
           </sdk>
           <deleteConflictingFiles>true</deleteConflictingFiles>
           <!--device>emulator</device-->
@@ -223,11 +223,11 @@
   </pluginRepositories>
 
   <scm>
-    <connection>scm:svn:http://dev.zoumbox.org/src/mh-dla-notifier/tags/mh-dla-notifier-0.12.2
+    <connection>scm:svn:http://dev.zoumbox.org/src/mh-dla-notifier/tags/mh-dla-notifier-0.12.3
     </connection>
-    <developerConnection>scm:svn:http://dev.zoumbox.org/src/mh-dla-notifier/tags/mh-dla-notifier-0.12.2
+    <developerConnection>scm:svn:http://dev.zoumbox.org/src/mh-dla-notifier/tags/mh-dla-notifier-0.12.3
     </developerConnection>
-    <url>http://dev.zoumbox.org/src/mh-dla-notifier/tags/mh-dla-notifier-0.12.2</url>
+    <url>http://dev.zoumbox.org/src/mh-dla-notifier/tags/mh-dla-notifier-0.12.3</url>
   </scm>
 
   <distributionManagement>
@@ -284,7 +284,7 @@
           <plugin>
             <groupId>com.jayway.maven.plugins.android.generation2</groupId>
             <artifactId>android-maven-plugin</artifactId>
-            <version>3.6.1</version>
+            <version>3.8.1</version>
             <inherited>true</inherited>
             <configuration>
               <sign>
