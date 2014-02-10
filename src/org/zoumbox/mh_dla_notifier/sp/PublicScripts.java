@@ -105,7 +105,6 @@ public class PublicScripts {
 
 
     public static void pushToTroll(Troll troll, Map<String, String> propertiesFetched, LogCallback log) {
-
         List<Method> methods = Arrays.asList(Troll.class.getMethods());
         for (Map.Entry<String, String> entry : propertiesFetched.entrySet()) {
             try {
@@ -151,18 +150,16 @@ public class PublicScripts {
                 log.e(TAG, "An exception occured", ite);
             }
         }
+
     }
 
-    public static void pushToTroll(Troll troll, Optional<PublicScriptResult> publicScriptResult, LogCallback log) {
-        if (publicScriptResult.isPresent()) {
-            PublicScriptResult result = publicScriptResult.get();
-            String scriptName = result.getScript().name();
-            log.i(TAG, String.format("%s result [raw=%s]", scriptName, result.getRaw()));
-            Map<String, String> map = PublicScripts.SCRIPT_RESULT_TO_MAP.apply(result);
-            log.i(TAG, String.format("%s result [map=%s]", scriptName, map));
-            PublicScripts.pushToTroll(troll, map, log);
-            log.i(TAG, String.format("%s result [troll=%s]", scriptName, troll));
-        }
+    public static void pushToTroll(Troll troll, PublicScriptResult publicScriptResult, LogCallback log) {
+        String scriptName = publicScriptResult.getScript().name();
+        log.i(TAG, String.format("%s result [raw=%s]", scriptName, publicScriptResult.getRaw()));
+        Map<String, String> map = PublicScripts.SCRIPT_RESULT_TO_MAP.apply(publicScriptResult);
+        log.i(TAG, String.format("%s result [map=%s]", scriptName, map));
+        PublicScripts.pushToTroll(troll, map, log);
+        log.i(TAG, String.format("%s result [troll=%s]", scriptName, troll));
     }
 
 }

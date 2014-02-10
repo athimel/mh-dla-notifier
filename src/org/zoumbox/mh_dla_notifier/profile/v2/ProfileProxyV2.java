@@ -24,23 +24,16 @@ package org.zoumbox.mh_dla_notifier.profile.v2;
  * #L%
  */
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.gson.Gson;
-
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
 import org.zoumbox.mh_dla_notifier.Pair;
 import org.zoumbox.mh_dla_notifier.PreferencesHolder;
@@ -59,11 +52,17 @@ import org.zoumbox.mh_dla_notifier.sp.QuotaExceededException;
 import org.zoumbox.mh_dla_notifier.troll.Troll;
 import org.zoumbox.mh_dla_notifier.utils.AndroidLogCallback;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.gson.Gson;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
 
 /**
  * @author Arnaud Thimel <thimel@codelutin.com>
@@ -270,11 +269,11 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
         editor.commit();
     }
 
-    protected Optional<PublicScriptResult> fetchScript(Context context, PublicScript script, Pair<String, String> idAndPassword)
+    protected PublicScriptResult fetchScript(Context context, PublicScript script, Pair<String, String> idAndPassword)
             throws QuotaExceededException, PublicScriptException, NetworkUnavailableException {
         String trollId = idAndPassword.left();
         String trollPassword = idAndPassword.right();
-        Optional<PublicScriptResult> result;
+        PublicScriptResult result;
         long now = System.currentTimeMillis();
         try {
             result = PublicScriptsProxy.fetchScript(context, script, trollId, trollPassword);
@@ -302,7 +301,7 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
 
         AndroidLogCallback logCallback = new AndroidLogCallback();
         for (PublicScript publicScript : scripts) {
-            Optional<PublicScriptResult> publicScriptResult = fetchScript(context, publicScript, idAndPassword);
+            PublicScriptResult publicScriptResult = fetchScript(context, publicScript, idAndPassword);
             PublicScripts.pushToTroll(troll, publicScriptResult, logCallback);
         }
 

@@ -166,7 +166,6 @@ public class Receiver extends BroadcastReceiver {
             Set<String> trollIds = getProfileProxy().getTrollIds(context);
             if (trollIds.isEmpty()) {
                 Log.i(TAG, "No troll registered, exiting...");
-                return;
             }
             trollId = trollIds.iterator().next();
             Log.i(TAG, "TrollId not defined, using the fist one: " + trollId);
