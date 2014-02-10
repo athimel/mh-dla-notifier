@@ -149,7 +149,7 @@
       <plugin>
         <groupId>com.jayway.maven.plugins.android.generation2</groupId>
         <artifactId>android-maven-plugin</artifactId>
-        <version>3.6.1</version>
+        <version>3.8.1</version>
         <executions>
           <execution>
             <id>alignApk</id>
@@ -162,7 +162,7 @@
         <configuration>
           <sdk>
             <path>${env.ANDROID_HOME}</path>
-            <platform>2.1</platform>
+            <platform>7</platform>
           </sdk>
           <deleteConflictingFiles>true</deleteConflictingFiles>
           <!--device>emulator</device-->
@@ -284,7 +284,7 @@
           <plugin>
             <groupId>com.jayway.maven.plugins.android.generation2</groupId>
             <artifactId>android-maven-plugin</artifactId>
-            <version>3.6.1</version>
+            <version>3.8.1</version>
             <inherited>true</inherited>
             <configuration>
               <sign>
