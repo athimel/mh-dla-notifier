@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  #%L
+  MountyHall DLA Notifier
+  $Id$
+  $HeadURL$
+  %%
+  Copyright (C) 2012 - 2013 Zoumbox.org
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as
+  published by the Free Software Foundation, either version 3 of the 
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public 
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/gpl-3.0.html>.
+  #L%
+  -->
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:gravity="center_horizontal">
+  <ImageView android:id="@+id/blason"
+             android:orientation="vertical"
+             android:layout_height="160px"
+             android:layout_width="160px"
+             android:scaleType="fitXY"
+             android:src="@drawable/loading"
+          />
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+    <!-- Name -->
+    <TextView android:id="@+id/name"
+              android:layout_height="wrap_content"
+              android:layout_width="wrap_content"
+              style="@style/Name_small"/>
+
+    <!-- Numéro -->
+    <TextView android:id="@+id/number"
+              android:layout_height="wrap_content"
+              android:layout_width="wrap_content"
+              style="@style/Info_small"/>
+
+  </LinearLayout>
+
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+    <!-- Race + nival -->
+    <TextView android:id="@+id/race"
+              android:layout_height="wrap_content"
+              android:layout_width="wrap_content"
+              style="@style/Info_small"/>
+
+    <!-- Guilde-->
+    <TextView android:id="@+id/guilde"
+              android:layout_height="wrap_content"
+              android:layout_width="wrap_content"
+              style="@style/Info_small"/>
+  </LinearLayout>
+
+</LinearLayout>
