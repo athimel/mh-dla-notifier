@@ -23,16 +23,14 @@
     <dependency>
       <groupId>com.google.android</groupId>
       <artifactId>android</artifactId>
-      <version>2.1.2</version>
-      <!-- Don't upgrade higher than 2.1.x because of external storage API -->
+      <version>${androidVersion}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>com.google.android</groupId>
       <artifactId>android-test</artifactId>
-      <version>2.1.2</version>
-      <!-- Don't upgrade higher than 2.1.x because of external storage API -->
+      <version>${androidVersion}</version>
       <scope>test</scope>
     </dependency>
 
@@ -127,8 +125,10 @@
 
   <properties>
     <maven.test.skip>true</maven.test.skip>
-    <guavaVersion>14.0.1</guavaVersion>
+    <guavaVersion>15.0</guavaVersion>
     <gsonVersion>2.2.4</gsonVersion>
+    <androidVersion>4.1.1.4</androidVersion>
+    <androidPluginVersion>3.8.1</androidPluginVersion>
   </properties>
 
   <prerequisites>
@@ -149,7 +149,7 @@
       <plugin>
         <groupId>com.jayway.maven.plugins.android.generation2</groupId>
         <artifactId>android-maven-plugin</artifactId>
-        <version>3.6.1</version>
+        <version>${androidPluginVersion}</version>
         <executions>
           <execution>
             <id>alignApk</id>
@@ -162,7 +162,7 @@
         <configuration>
           <sdk>
             <path>${env.ANDROID_HOME}</path>
-            <platform>2.1</platform>
+            <platform>9</platform>
           </sdk>
           <deleteConflictingFiles>true</deleteConflictingFiles>
           <!--device>emulator</device-->
@@ -284,7 +284,7 @@
           <plugin>
             <groupId>com.jayway.maven.plugins.android.generation2</groupId>
             <artifactId>android-maven-plugin</artifactId>
-            <version>3.6.1</version>
+            <version>${androidPluginVersion}</version>
             <inherited>true</inherited>
             <configuration>
               <sign>
