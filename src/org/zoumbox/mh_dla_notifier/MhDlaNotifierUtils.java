@@ -273,7 +273,11 @@ public class MhDlaNotifierUtils {
                 } catch (Exception eee) {
                     Log.e(TAG, "Exception", eee);
                 } finally {
-                    Closeables.closeQuietly(bis);
+                    try {
+                        Closeables.close(bis, false);
+                    } catch (IOException e) {
+                        Log.e(TAG, "Un exception occurred", e);
+                    }
                 }
 
                 if (result != null) {
@@ -288,7 +292,11 @@ public class MhDlaNotifierUtils {
                         Log.e(TAG, "Exception", eee);
                         return null;
                     } finally {
-                        Closeables.closeQuietly(fos);
+                        try {
+                            Closeables.close(fos, false);
+                        } catch (IOException e) {
+                            Log.e(TAG, "Un exception occurred", e);
+                        }
                     }
                 }
             } else {
@@ -304,7 +312,11 @@ public class MhDlaNotifierUtils {
                 } catch (Exception eee) {
                     Log.e(TAG, "Exception", eee);
                 } finally {
-                    Closeables.closeQuietly(bis);
+                    try {
+                        Closeables.close(bis, false);
+                    } catch (IOException e) {
+                        Log.e(TAG, "Un exception occurred", e);
+                    }
                 }
             }
         }
@@ -335,7 +347,11 @@ public class MhDlaNotifierUtils {
                 } catch (Exception eee) {
                     Log.e(TAG, "Exception", eee);
                 } finally {
-                    Closeables.closeQuietly(bis);
+                    try {
+                        Closeables.close(bis, false);
+                    } catch (IOException e) {
+                        Log.e(TAG, "Un exception occurred", e);
+                    }
                 }
             }
 
@@ -356,7 +372,11 @@ public class MhDlaNotifierUtils {
             } catch (IOException e) {
                 // Forget
             } finally {
-                Closeables.closeQuietly(reader);
+                try {
+                    Closeables.close(reader, false);
+                } catch (IOException e) {
+                    Log.e(TAG, "Un exception occurred", e);
+                }
             }
 
         }
