@@ -340,7 +340,11 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         if (this.technicalStatus == null) {
             this.technicalStatus = (TextView) findViewById(R.id.technical_status);
         }
-        this.technicalStatus.setText(message);
+        if (this.technicalStatus == null) {
+            Log.w(TAG, "Cannot get technicalStatus instance");
+        } else {
+            this.technicalStatus.setText(message);
+        }
     }
 
     protected void setTechnicalStatus(CharSequence message) {
