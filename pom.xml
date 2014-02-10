@@ -16,7 +16,7 @@
 
   <groupId>org.zoumbox</groupId>
   <artifactId>mh-dla-notifier</artifactId>
-  <version>0.12.4-SNAPSHOT</version>
+  <version>0.12.3-SNAPSHOT</version>
 
   <dependencies>
 
