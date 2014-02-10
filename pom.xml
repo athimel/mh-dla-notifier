@@ -178,7 +178,7 @@
             </outputApk>
           </zipalign>
           <proguard>
-            <skip>false</skip> <!-- android.proguard.skip -->
+            <skip>true</skip> <!-- android.proguard.skip -->
           </proguard>
         </configuration>
         <extensions>true</extensions>
