@@ -23,6 +23,23 @@
  */
 package org.zoumbox.mh_dla_notifier;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Set;
+
+import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
+import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
+import org.zoumbox.mh_dla_notifier.profile.v2.ProfileProxyV2;
+import org.zoumbox.mh_dla_notifier.troll.Race;
+import org.zoumbox.mh_dla_notifier.troll.Troll;
+import org.zoumbox.mh_dla_notifier.troll.Trolls;
+
+import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
+
 import android.app.Dialog;
 import android.app.NotificationManager;
 import android.appwidget.AppWidgetManager;
@@ -31,9 +48,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
@@ -48,25 +68,10 @@ import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-import com.google.common.collect.Sets;
-
-import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
-import org.zoumbox.mh_dla_notifier.troll.Race;
-import org.zoumbox.mh_dla_notifier.troll.Troll;
-import org.zoumbox.mh_dla_notifier.troll.Trolls;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Set;
-
 /**
  * Activité principale
  */
-public abstract class MhDlaNotifierUI extends AbstractActivity {
+public abstract class MhDlaNotifierUI extends ActionBarActivity {
 
     private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + MhDlaNotifierUI.class.getSimpleName();
 
@@ -77,8 +82,7 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
     public static final String EXTRA_FROM_NOTIFICATION = "from-notification";
 
-    private ImageView selectedTrollBlason;
-    private TextView selectedTrollName;
+    private ActionBar actionBar;
 
     private ImageView blason;
     private TextView name;
@@ -102,6 +106,9 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
     private ImageView toggleDetailedButton;
     private boolean showDetails = false;
 
+    // Refresh menu item
+    private MenuItem refreshMenuItem;
+
     private ImageView refreshButton;
     private ImageView menuButton;
     private boolean runningRefresh = false;
@@ -114,6 +121,20 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
     private LinearLayout rm;
     private LinearLayout mm;
+
+    private ProfileProxy profileProxy;
+
+    public ProfileProxy getProfileProxy() {
+        if (profileProxy == null) {
+//            profileProxy = new ProfileProxyV1();
+            profileProxy = new ProfileProxyV2();
+        }
+        return profileProxy;
+    }
+
+    protected void showToast(CharSequence message, Object... args) {
+        MhDlaNotifierUtils.toast(getApplicationContext(), message, args);
+    }
 
     ///////////////////////////////////
     //  ANDROID INTERACTION METHODS  //
@@ -160,59 +181,31 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
         details = findViewById(R.id.details);
 
         // Action bar
-        selectedTrollBlason = (ImageView) findViewById(R.id.selectedTrollBlason);
-
-        selectedTrollName = (TextView) findViewById(R.id.selectedTrollName);
-        selectedTrollName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onPlayButtonClicked();
-            }
-        });
-
-        toggleDetailedButton = (ImageView)findViewById(R.id.toggleDetailedButton);
-        toggleDetailedButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleDetails();
-            }
-        });
-//        toggleDetailedButton.set
-
-        refreshButton = (ImageView)findViewById(R.id.refreshButton);
-        refreshButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!runningRefresh) {
-                    manualRefresh();
-                } else {
-                    showToast("Une mise à jour est déjà en cours");
-                }
-            }
-        });
-
-        menuButton = (ImageView)findViewById(R.id.menuButton);
-        menuButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent preferencesIntent = new Intent(MhDlaNotifierUI.this, MhPreferencesActivity.class);
-                startActivityForResult(preferencesIntent, PREFERENCES);
-            }
-        });
+        actionBar = getSupportActionBar();
+//        actionBar.setIcon(R.drawable.trarnoll_256);
+//
+//        toggleDetailedButton = (ImageView)findViewById(R.id.toggleDetailedButton);
+//        toggleDetailedButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                toggleDetails();
+//            }
+//        });
+////        toggleDetailedButton.set
 
         toggleDetails();
 
     }
 
     protected void toggleDetails() {
-        showDetails = !showDetails;
-        if (showDetails) {
+//        showDetails = !showDetails;
+//        if (showDetails) {
             details.setVisibility(View.VISIBLE);
-            toggleDetailedButton.setImageResource(R.drawable.action_less_details);
-        } else {
-            details.setVisibility(View.INVISIBLE);
-            toggleDetailedButton.setImageResource(R.drawable.action_more_details);
-        }
+//            toggleDetailedButton.setImageResource(R.drawable.action_less_details);
+//        } else {
+//            details.setVisibility(View.INVISIBLE);
+//            toggleDetailedButton.setImageResource(R.drawable.action_more_details);
+//        }
     }
 
     @Override
@@ -235,22 +228,33 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.qr_code_market:
+            case R.id.action_qr_code_market:
                 Intent intent_market = new Intent(this, QRCodeMarketActivity.class);
                 startActivity(intent_market);
                 return true;
-            case R.id.credits:
+            case R.id.action_credits:
                 showDialog(CREDIT_DIALOG);
                 return true;
-            case R.id.register:
+            case R.id.action_refresh:
+                refreshMenuItem = item;
+                manualRefresh();
+                return true;
+            case R.id.action_register:
                 startRegister(null);
+                return true;
+            case R.id.action_preferences:
+                Intent preferencesIntent = new Intent(MhDlaNotifierUI.this, MhPreferencesActivity.class);
+                startActivityForResult(preferencesIntent, PREFERENCES);
+                return true;
+            case R.id.action_play:
+                onPlayButtonClicked();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -316,15 +320,17 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
     //////////////////
 
     protected void updateStarted() {
-        refreshButton.setEnabled(false);
-        refreshButton.setClickable(false);
-        runningRefresh = true;
+        if (refreshMenuItem != null) {
+            refreshMenuItem.setActionView(R.layout.action_progressbar);
+            refreshMenuItem.expandActionView();
+        }
     }
 
     protected void updateFinished() {
-        refreshButton.setEnabled(true);
-        refreshButton.setClickable(true);
-        runningRefresh = false;
+        if (refreshMenuItem != null) {
+            refreshMenuItem.collapseActionView();
+            refreshMenuItem.setActionView(null);
+        }
     }
 
     protected void startRegister(String toast) {
@@ -383,16 +389,10 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
 
         Log.i(TAG, "Now rendering troll: " + troll);
 
+        this.actionBar.setTitle(troll.getNom());
+
         this.name.setText(troll.getNom());
-
-//        String prefix = "Accès à ";
-//        String playTrollText = prefix + troll.getNom();
-//        SpannableString playTrollButton = new SpannableString(playTrollText);
-//        playTrollButton.setSpan(new StyleSpan(Typeface.ITALIC), prefix.length(), playTrollText.length(), 0);
-//        this.selectedTrollName.setText(playTrollButton);
-
         this.numero.setText("N° " + troll.getNumero());
-
         this.race.setText(String.format("%s (%d)", troll.getRace(), troll.getNival()));
 
         SpannableString trollInfo = new SpannableString("");
@@ -624,10 +624,10 @@ public abstract class MhDlaNotifierUI extends AbstractActivity {
     protected void updateBlason(Bitmap blason) {
         if (blason == null) {
             this.blason.setImageResource(R.drawable.pas_de_blason);
-            this.selectedTrollBlason.setVisibility(View.INVISIBLE);
+            actionBar.setIcon(R.drawable.trarnoll_square_transparent_128);
         } else {
             this.blason.setImageBitmap(blason);
-            this.selectedTrollBlason.setImageBitmap(blason);
+            actionBar.setIcon(new BitmapDrawable(getResources(), blason));
         }
     }
 

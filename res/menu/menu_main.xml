@@ -24,25 +24,32 @@
   -->
 
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:mhapp="http://schemas.android.com/apk/res-auto">
 
-  <!--<item android:id="@+id/preferences"-->
-        <!--android:icon="@android:drawable/ic_menu_info_details"-->
-        <!--android:title="@string/preferences"/>-->
+  <item android:id="@+id/action_play"
+        android:icon="@drawable/play"
+        android:title="@string/play"
+        mhapp:showAsAction="ifRoom|withText"/>
 
-  <item android:id="@+id/register"
+  <item android:id="@+id/action_refresh"
+        android:icon="@drawable/action_refresh"
+        android:title="@string/refresh"
+        mhapp:showAsAction="ifRoom"/>
+
+  <item android:id="@+id/action_preferences"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:title="@string/preferences"/>
+
+  <item android:id="@+id/action_register"
         android:icon="@android:drawable/ic_menu_info_details"
         android:title="@string/register"/>
 
-  <!--<item android:id="@+id/refresh"-->
-        <!--android:icon="@android:drawable/ic_menu_view"-->
-        <!--android:title="@string/refresh"/>-->
-
-  <item android:id="@+id/qr_code_market"
+  <item android:id="@+id/action_qr_code_market"
         android:icon="@android:drawable/ic_menu_share"
         android:title="@string/qr_code_market"/>
 
-  <item android:id="@+id/credits"
+  <item android:id="@+id/action_credits"
         android:icon="@android:drawable/ic_menu_info_details"
         android:title="@string/credits"/>
 

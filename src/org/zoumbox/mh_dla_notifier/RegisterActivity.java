@@ -25,8 +25,12 @@ package org.zoumbox.mh_dla_notifier;
 
 import java.util.Iterator;
 
+import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
+import org.zoumbox.mh_dla_notifier.profile.v2.ProfileProxyV2;
+
 import com.google.common.base.Strings;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -40,7 +44,7 @@ import android.widget.EditText;
 /**
  * Activité principale
  */
-public class RegisterActivity extends AbstractActivity {
+public class RegisterActivity extends Activity {
 
     private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + RegisterActivity.class.getSimpleName();
 
@@ -48,6 +52,20 @@ public class RegisterActivity extends AbstractActivity {
     protected EditText password;
 
     protected Button saveButton;
+
+    private ProfileProxy profileProxy;
+
+    public ProfileProxy getProfileProxy() {
+        if (profileProxy == null) {
+//            profileProxy = new ProfileProxyV1();
+            profileProxy = new ProfileProxyV2();
+        }
+        return profileProxy;
+    }
+
+    protected void showToast(CharSequence message, Object... args) {
+        MhDlaNotifierUtils.toast(getApplicationContext(), message, args);
+    }
 
     /**
      * Called when the activity is first created.

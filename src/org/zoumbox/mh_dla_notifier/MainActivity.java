@@ -243,6 +243,12 @@ public class MainActivity extends MhDlaNotifierUI {
     private class UpdateTrollTask extends AsyncTask<UpdateRequestType, Void, Pair<Troll, MhDlaException>> {
 
         @Override
+        protected void onPreExecute() {
+            // set the progress bar view
+            updateStarted();
+        }
+
+        @Override
         protected Pair<Troll, MhDlaException> doInBackground(UpdateRequestType... params) {
             Troll troll = null;
             MhDlaException exception = null;

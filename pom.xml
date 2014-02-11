@@ -35,6 +35,26 @@
     </dependency>
 
     <dependency>
+      <groupId>android.support</groupId>
+      <artifactId>compatibility-v7-appcompat</artifactId>
+      <version>${androidSdkVersion}</version>
+      <type>apklib</type>
+    </dependency>
+
+    <dependency>
+      <groupId>android.support</groupId>
+      <artifactId>compatibility-v7-appcompat</artifactId>
+      <version>${androidSdkVersion}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>android.support</groupId>
+      <artifactId>compatibility-v4</artifactId>
+      <version>${androidSdkVersion}</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>${guavaVersion}</version>
@@ -129,6 +149,8 @@
     <gsonVersion>2.2.4</gsonVersion>
     <androidVersion>4.1.1.4</androidVersion>
     <androidPluginVersion>3.8.2</androidPluginVersion>
+
+    <androidSdkVersion>19.0.1</androidSdkVersion>
   </properties>
 
   <prerequisites>
@@ -162,7 +184,7 @@
         <configuration>
           <sdk>
             <path>${env.ANDROID_HOME}</path>
-            <platform>10</platform>
+            <platform>14</platform>
           </sdk>
           <deleteConflictingFiles>true</deleteConflictingFiles>
           <!--device>emulator</device-->
@@ -218,6 +240,12 @@
       <id>zoumbox-snapshots-repository</id>
       <name>Zoumbox snapshots repository</name>
       <url>http://dev.zoumbox.org/repo/snapshots/</url>
+    </repository>
+
+    <repository>
+      <id>nuiton-android-repository</id>
+      <name>Nuiton's Android repository</name>
+      <url>http://maven.nuiton.org/nexus/content/repositories/android/</url>
     </repository>
 
   </repositories>
