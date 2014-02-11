@@ -51,6 +51,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -102,16 +103,8 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
     private TextView trollInfo;
     private TextView technicalStatus;
 
-    private View details;
-    private ImageView toggleDetailedButton;
-    private boolean showDetails = false;
-
     // Refresh menu item
     private MenuItem refreshMenuItem;
-
-    private ImageView refreshButton;
-    private ImageView menuButton;
-    private boolean runningRefresh = false;
 
     private LinearLayout carReg;
     private LinearLayout carAtt;
@@ -149,6 +142,8 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        actionBar = getSupportActionBar();
+
         blason = (ImageView) findViewById(R.id.blason);
         name = (TextView) findViewById(R.id.name);
         trollStatus = (TextView) findViewById(R.id.troll_status);
@@ -177,35 +172,6 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         rm = (LinearLayout) findViewById(R.id.RM);
         mm = (LinearLayout) findViewById(R.id.MM);
 
-
-        details = findViewById(R.id.details);
-
-        // Action bar
-        actionBar = getSupportActionBar();
-//        actionBar.setIcon(R.drawable.trarnoll_256);
-//
-//        toggleDetailedButton = (ImageView)findViewById(R.id.toggleDetailedButton);
-//        toggleDetailedButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                toggleDetails();
-//            }
-//        });
-////        toggleDetailedButton.set
-
-        toggleDetails();
-
-    }
-
-    protected void toggleDetails() {
-//        showDetails = !showDetails;
-//        if (showDetails) {
-            details.setVisibility(View.VISIBLE);
-//            toggleDetailedButton.setImageResource(R.drawable.action_less_details);
-//        } else {
-//            details.setVisibility(View.INVISIBLE);
-//            toggleDetailedButton.setImageResource(R.drawable.action_more_details);
-//        }
     }
 
     @Override
@@ -321,15 +287,23 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
 
     protected void updateStarted() {
         if (refreshMenuItem != null) {
-            refreshMenuItem.setActionView(R.layout.action_progressbar);
-            refreshMenuItem.expandActionView();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                refreshMenuItem.setActionView(R.layout.action_progressbar);
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                refreshMenuItem.expandActionView();
+            }
         }
     }
 
     protected void updateFinished() {
         if (refreshMenuItem != null) {
-            refreshMenuItem.collapseActionView();
-            refreshMenuItem.setActionView(null);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                refreshMenuItem.collapseActionView();
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                refreshMenuItem.setActionView(null);
+            }
         }
     }
 
@@ -403,11 +377,11 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
             int pvWarnColor = getResources().getColor(R.color.pv_warn);
             colorize(trollInfo, pvWarnColor);
         } else if (troll.getPvVariation() > 0 && troll.getPvVariation() < troll.getPv()) {
-                String messageFormat = getText(R.string.pv_gain_title).toString();
-                String message = String.format(messageFormat, troll.getPvVariation());
-                trollInfo = new SpannableString(message);
-                int pvGainColor = getResources().getColor(R.color.pv_gain);
-                colorize(trollInfo, pvGainColor);
+            String messageFormat = getText(R.string.pv_gain_title).toString();
+            String message = String.format(messageFormat, troll.getPvVariation());
+            trollInfo = new SpannableString(message);
+            int pvGainColor = getResources().getColor(R.color.pv_gain);
+            colorize(trollInfo, pvGainColor);
         } else {
             if (troll.getDateInscription() != null) {
                 Calendar now = Calendar.getInstance();
@@ -449,7 +423,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         String kdString = String.format("%d / %d", troll.getNbKills(), troll.getNbMorts());
         int kdStringLength = kdString.length();
         if (troll.getNbMorts() > 0) {
-            kdString += String.format(" (ratio: %.1f) ", new Integer(troll.getNbKills()).doubleValue() / new Integer(troll.getNbMorts()).doubleValue());
+            kdString += String.format(" (ratio: %.1f) ", Integer.valueOf(troll.getNbKills()).doubleValue() / Integer.valueOf(troll.getNbMorts()).doubleValue());
         }
         SpannableString kdSpannable = new SpannableString(kdString);
         if (kdString.length() > kdStringLength) {
@@ -539,7 +513,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         dla.setText(dlaSpannable);
         remainingPAs.setText(paSpannable);
 
-        int nextDlaDuration = Trolls.GET_NEXT_DLA_DURATION.apply(troll);
+        Integer nextDlaDuration = Trolls.GET_NEXT_DLA_DURATION.apply(troll);
         dla_duration.setText(MhDlaNotifierUtils.prettyPrintDuration(this, nextDlaDuration));
 
         Date nextDla = Trolls.GET_NEXT_DLA.apply(troll);
@@ -562,10 +536,10 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         next_dla.setText(nextDlaSpannable);
 
         pushCar(carReg, 3, troll.getRegenerationCar(), troll.getRegenerationBmp(), troll.getRegenerationBmm());
-        pushCar(carAtt, 6, troll.getAttaqueCar(),      troll.getAttaqueBmp(),      troll.getAttaqueBmm());
-        pushCar(carEsq, 6, troll.getEsquiveCar(),      troll.getEsquiveBmp(),      troll.getEsquiveBmm());
-        pushCar(carDeg, 3, troll.getDegatsCar(),       troll.getDegatsBmp(),       troll.getDegatsBmm());
-        pushCar(carArm, 3, troll.getArmureCar(),       troll.getArmureBmp(),       troll.getArmureBmm());
+        pushCar(carAtt, 6, troll.getAttaqueCar(), troll.getAttaqueBmp(), troll.getAttaqueBmm());
+        pushCar(carEsq, 6, troll.getEsquiveCar(), troll.getEsquiveBmp(), troll.getEsquiveBmm());
+        pushCar(carDeg, 3, troll.getDegatsCar(), troll.getDegatsBmp(), troll.getDegatsBmm());
+        pushCar(carArm, 3, troll.getArmureCar(), troll.getArmureBmp(), troll.getArmureBmm());
 
         pushM(rm, troll.getRmCar(), troll.getRmBmm());
         pushM(mm, troll.getMmCar(), troll.getMmBmm());
@@ -578,22 +552,22 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
     }
 
     protected double d(int nb) {
-        return new Integer(nb).doubleValue();
+        return Integer.valueOf(nb).doubleValue();
     }
 
     protected void pushCar(LinearLayout linearLayout, int dSize, int car, int bmp, int bmm) {
         double avg = d(car) * d(dSize + 1) / 2d + d(bmp) + d(bmm);
 
-        TextView carTV = (TextView)linearLayout.getChildAt(0);
+        TextView carTV = (TextView) linearLayout.getChildAt(0);
         carTV.setText(String.format("%dD%d", car, dSize));
 
-        TextView bmpTV = (TextView)linearLayout.getChildAt(1);
+        TextView bmpTV = (TextView) linearLayout.getChildAt(1);
         bmpTV.setText(String.format("%d", bmp));
 
-        TextView bmmTV = (TextView)linearLayout.getChildAt(2);
+        TextView bmmTV = (TextView) linearLayout.getChildAt(2);
         bmmTV.setText(String.format("%d", bmm));
 
-        TextView avgTV = (TextView)linearLayout.getChildAt(3);
+        TextView avgTV = (TextView) linearLayout.getChildAt(3);
         String avgText = String.format("%.1f", avg);
         if (avgText.endsWith(".0") || avgText.endsWith(",0")) {
             avgText = avgText.substring(0, avgText.length() - 2);
@@ -602,13 +576,13 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
     }
 
     protected void pushM(LinearLayout linearLayout, int car, int bmm) {
-        TextView carTV = (TextView)linearLayout.getChildAt(0);
+        TextView carTV = (TextView) linearLayout.getChildAt(0);
         carTV.setText(String.format("%d", car));
 
-        TextView bmmTV = (TextView)linearLayout.getChildAt(1);
+        TextView bmmTV = (TextView) linearLayout.getChildAt(1);
         bmmTV.setText(String.format("%s%d", bmm > 0 ? "+" : "", bmm));
 
-        TextView totalTV = (TextView)linearLayout.getChildAt(2);
+        TextView totalTV = (TextView) linearLayout.getChildAt(2);
         String totalText = String.format("%d", car + bmm);
         totalTV.setText(totalText);
     }

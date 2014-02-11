@@ -226,7 +226,7 @@ public class MhDlaNotifierUtils {
 //        }
 //    };
 
-    public static String prettyPrintDuration(Context context, int duration) {
+    public static String prettyPrintDuration(Context context, Integer duration) {
         int durationHours = duration / 60;
         int durationMinutes = duration % 60;
         CharSequence format = context.getText(R.string.dla_duration_format);
