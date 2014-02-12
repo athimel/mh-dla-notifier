@@ -145,12 +145,13 @@
 
   <properties>
     <maven.test.skip>true</maven.test.skip>
-    <guavaVersion>16.0.1</guavaVersion>
-    <gsonVersion>2.2.4</gsonVersion>
-    <androidVersion>4.1.1.4</androidVersion>
-    <androidPluginVersion>3.8.2</androidPluginVersion>
 
     <androidSdkVersion>19.0.1</androidSdkVersion>
+    <androidVersion>4.1.1.4</androidVersion>
+    <gsonVersion>2.2.4</gsonVersion>
+    <guavaVersion>16.0.1</guavaVersion>
+
+    <androidPluginVersion>3.8.2</androidPluginVersion>
   </properties>
 
   <prerequisites>
