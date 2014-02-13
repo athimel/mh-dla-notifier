@@ -32,7 +32,7 @@ public class MhDlaNotifierConstants {
 
     public static final String MOCK_TROLL_ID = "123456789";
 
-    public static final String LOG_PREFIX = "MhDlaNotifier-";
+    public static final String LOG_PREFIX = "mhdn-";
 
     public static final Uri MH_PLAY_URI = Uri.parse("http://games.mountyhall.com/mountyhall/MH_Play/PlayStart.php");
     public static final Uri MH_PLAY_SMARTPHONE_URI = Uri.parse("http://smartphone.mountyhall.com/mountyhall/MH_Play/PlayStart.php");
