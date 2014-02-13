@@ -63,6 +63,8 @@ public class PublicScriptsProxy {
 
     public static PublicScriptResponse doHttpGET(String url) throws NetworkUnavailableException, PublicScriptException {
 
+        long start = System.currentTimeMillis();
+
         if (url.contains("?Numero=" + MhDlaNotifierConstants.MOCK_TROLL_ID)) {
             return PublicScriptsProxyMock.doMockHttpGET(url);
         }
@@ -99,7 +101,8 @@ public class PublicScriptsProxy {
             }
         }
 
-        PublicScriptResponse result = new PublicScriptResponse(responseContent);
+        long end = System.currentTimeMillis();
+        PublicScriptResponse result = new PublicScriptResponse(responseContent, end - start);
         return result;
     }
 
@@ -228,7 +231,7 @@ public class PublicScriptsProxy {
 
         String url = String.format(script.url, Uri.encode(trollId), Uri.encode(trollPassword));
         PublicScriptResponse spResult = doHttpGET(url);
-        Log.i(TAG, "Public Script response: '" + spResult + "'");
+        Log.i(TAG, String.format("Script response: '%s'", spResult));
 
         if (spResult.hasError()) {
             throw new PublicScriptException(spResult);

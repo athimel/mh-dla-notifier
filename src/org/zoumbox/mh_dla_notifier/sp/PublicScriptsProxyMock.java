@@ -39,6 +39,7 @@ public class PublicScriptsProxyMock {
     }
 
     public static PublicScriptResponse doMockHttpGET(String url) {
+        long start = System.currentTimeMillis();
         MockTroll mockTroll = MockTroll.DevelZimzoum;
 
         String rawResult = null;
@@ -56,7 +57,8 @@ public class PublicScriptsProxyMock {
         if (rawResult == null) {
             throw new UnsupportedOperationException("URL non prévue : " + url + " troll: " + mockTroll);
         }
-        PublicScriptResponse result = new PublicScriptResponse(rawResult);
+        long end = System.currentTimeMillis();
+        PublicScriptResponse result = new PublicScriptResponse(rawResult, end - start);
         return result;
     }
 

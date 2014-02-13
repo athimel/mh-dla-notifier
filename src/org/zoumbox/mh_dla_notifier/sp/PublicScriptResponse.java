@@ -31,11 +31,13 @@ import com.google.common.base.Objects;
 public class PublicScriptResponse {
 
     protected String raw;
+    protected long duration;
 
     protected String errorMessage;
 
-    public PublicScriptResponse(String raw) {
+    public PublicScriptResponse(String raw, long duration) {
         this.raw = raw;
+        this.duration = duration;
 
         if (raw == null) {
             errorMessage = "Erreur inconnue";
@@ -52,6 +54,10 @@ public class PublicScriptResponse {
         return errorMessage;
     }
 
+    public long getDuration() {
+        return duration;
+    }
+
     public boolean hasError() {
         return errorMessage != null;
     }
@@ -59,6 +65,7 @@ public class PublicScriptResponse {
     @Override
     public String toString() {
         return Objects.toStringHelper(this).
+                add("duration", duration + "ms").
                 add("raw", raw).
                 add("errorMessage", errorMessage).
                 toString();
