@@ -57,7 +57,6 @@ public class RegisterActivity extends Activity {
 
     public ProfileProxy getProfileProxy() {
         if (profileProxy == null) {
-//            profileProxy = new ProfileProxyV1();
             profileProxy = new ProfileProxyV2();
         }
         return profileProxy;
@@ -140,10 +139,6 @@ public class RegisterActivity extends Activity {
         String trollNumber = Strings.nullToEmpty(troll.getText().toString());
         String trollPassword = Strings.nullToEmpty(password.getText().toString());
 
-        saveIdAndPassword(trollNumber, trollPassword);
-    }
-
-    protected void saveIdAndPassword(String trollNumber, String trollPassword) {
         showToast("Enregistrement. Merci de patienter...");
 
         getProfileProxy().saveIdPassword(this, trollNumber, trollPassword);

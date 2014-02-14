@@ -47,6 +47,7 @@ import com.google.common.collect.Iterables;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.MenuItem;
 
 public class MainActivity extends MhDlaNotifierUI {
 
@@ -57,7 +58,6 @@ public class MainActivity extends MhDlaNotifierUI {
         public String apply(Map.Entry<ScriptCategory, Integer> input) {
             ScriptCategory category = input.getKey();
             String result = String.format("%s=%d/%d", category.name(), input.getValue(), category.getQuota());
-            System.out.println();
             return result;
         }
     };
@@ -85,7 +85,7 @@ public class MainActivity extends MhDlaNotifierUI {
             if (Strings.isNullOrEmpty(trollId)) {
                 startRegister("Vous devez saisir vos identifiants");
             } else {
-                Pair<Troll, Boolean> trollAndUpdate = getProfileProxy().fetchTroll(this, trollId, UpdateRequestType.NONE);
+                Pair<Troll, Boolean> trollAndUpdate = getProfileProxy().fetchTrollWithoutUpdate(this, trollId);
                 Troll troll = trollAndUpdate.left();
                 boolean needsUpdate = trollAndUpdate.right();
 
@@ -94,7 +94,6 @@ public class MainActivity extends MhDlaNotifierUI {
                 clearTechnicalStatus();
 
                 if (needsUpdate) {
-    //                showToast("Mise à jour");
                     startUpdate(UpdateRequestType.ONLY_NECESSARY);
                 }
             }
@@ -119,9 +118,7 @@ public class MainActivity extends MhDlaNotifierUI {
 
     @Override
     protected void startUpdate(UpdateRequestType updateType, String message) {
-        setTechnicalStatus(message);
-        updateStarted();
-        new UpdateTrollTask().execute(updateType);
+        new UpdateTrollTask(message).execute(updateType);
     }
 
     protected void startUpdate(UpdateRequestType updateType) {
@@ -130,10 +127,12 @@ public class MainActivity extends MhDlaNotifierUI {
     }
 
     protected void updateSuccess() {
+        updateFinished();
         clearTechnicalStatus();
     }
 
     protected void updateFailure(MhDlaException exception) {
+        updateFinished();
         String error = null;
         if (exception instanceof QuotaExceededException) {
             String message = "Mise à jour bloquée pour le moment, quota atteint";
@@ -180,7 +179,7 @@ public class MainActivity extends MhDlaNotifierUI {
 
         pushTrollToUI(troll, updateToFollow);
 
-        scheduleAlarms();
+        scheduleAlarms(false);
     }
 
     protected void showAlarmToast(Date dla) {
@@ -194,18 +193,24 @@ public class MainActivity extends MhDlaNotifierUI {
     }
 
     @Override
-    protected void scheduleAlarms() {
+    protected void scheduleAlarms(boolean displayToast) {
 
         boolean fromNotification = getIntent().getBooleanExtra(EXTRA_FROM_NOTIFICATION, false);
         Log.i(TAG, "From notification: " + fromNotification);
 
         if (!fromNotification) {
             String trollId = getCurrentTrollId();
-            new ScheduleAlarmsTask().execute(trollId);
+            new ScheduleAlarmsTask(displayToast).execute(trollId);
         }
     }
 
     private class ScheduleAlarmsTask extends AsyncTask<String, Void, Pair<Map<AlarmType, Date>, MhDlaException>> {
+
+        protected boolean displayToast;
+
+        private ScheduleAlarmsTask(boolean displayToast) {
+            this.displayToast = displayToast;
+        }
 
         @Override
         protected Pair<Map<AlarmType, Date>, MhDlaException> doInBackground(String ... params) {
@@ -232,8 +237,10 @@ public class MainActivity extends MhDlaNotifierUI {
                     Date currentDlaAlarm = scheduledAlarms.get(AlarmType.CURRENT_DLA);
                     Date nextDlaAlarm = scheduledAlarms.get(AlarmType.NEXT_DLA);
 
-                    showAlarmToast(currentDlaAlarm);
-                    showAlarmToast(nextDlaAlarm);
+                    if (displayToast) {
+                        showAlarmToast(currentDlaAlarm);
+                        showAlarmToast(nextDlaAlarm);
+                    }
 
                 }
             }
@@ -242,14 +249,25 @@ public class MainActivity extends MhDlaNotifierUI {
 
     private class UpdateTrollTask extends AsyncTask<UpdateRequestType, Void, Pair<Troll, MhDlaException>> {
 
+        protected String message;
+
+        private UpdateTrollTask(String message) {
+            this.message = message;
+        }
+
         @Override
         protected void onPreExecute() {
+            Log.i(TAG, String.format("[%s] org.zoumbox.mh_dla_notifier.MainActivity.UpdateTrollTask.onPreExecute#begin", new Date()));
             // set the progress bar view
-            updateStarted();
+            updateStarted(message);
+            Log.i(TAG, String.format("[%s] org.zoumbox.mh_dla_notifier.MainActivity.UpdateTrollTask.onPreExecute#end", new Date()));
         }
 
         @Override
         protected Pair<Troll, MhDlaException> doInBackground(UpdateRequestType... params) {
+
+            Log.i(TAG, String.format("[%s] org.zoumbox.mh_dla_notifier.MainActivity.UpdateTrollTask.doInBackground#begin", new Date()));
+
             Troll troll = null;
             MhDlaException exception = null;
             try {
@@ -264,11 +282,16 @@ public class MainActivity extends MhDlaNotifierUI {
                 e.printStackTrace();
             }
             Pair<Troll, MhDlaException> result = Pair.of(troll, exception);
+
+            Log.i(TAG, String.format("[%s] org.zoumbox.mh_dla_notifier.MainActivity.UpdateTrollTask.doInBackground#end", new Date()));
+
             return result;
         }
 
         @Override
         protected void onPostExecute(Pair<Troll, MhDlaException> result) {
+            Log.i(TAG, String.format("[%s] org.zoumbox.mh_dla_notifier.MainActivity.UpdateTrollTask.onPostExecute#begin", new Date()));
+
             MhDlaException exception = result.right();
             if (exception != null) {
                 updateFailure(exception);
@@ -277,7 +300,8 @@ public class MainActivity extends MhDlaNotifierUI {
                 trollUpdated(troll, false);
                 updateSuccess();
             }
-            updateFinished();
+
+            Log.i(TAG, String.format("[%s] org.zoumbox.mh_dla_notifier.MainActivity.UpdateTrollTask.onPostExecute#end", new Date()));
         }
     }
 

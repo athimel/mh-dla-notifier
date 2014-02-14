@@ -41,6 +41,11 @@
         android:title="@string/preferences"
         mhapp:showAsAction="ifRoom"/>
 
+  <item android:id="@+id/action_displayAlarms"
+        android:icon="@drawable/ic_action_alarms"
+        android:title="@string/displayAlarms"
+        mhapp:showAsAction="ifRoom"/>
+
   <item android:id="@+id/action_qr_code_market"
         android:icon="@drawable/ic_action_share"
         android:title="@string/qr_code_market"

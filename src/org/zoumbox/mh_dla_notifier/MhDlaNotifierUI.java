@@ -84,6 +84,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
     public static final String EXTRA_FROM_NOTIFICATION = "from-notification";
 
     private ActionBar actionBar;
+    private Menu actionBarMenu;
 
     private ImageView blason;
     private TextView name;
@@ -103,9 +104,6 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
     private TextView trollInfo;
     private TextView technicalStatus;
 
-    // Refresh menu item
-    private MenuItem refreshMenuItem;
-
     private LinearLayout carReg;
     private LinearLayout carAtt;
     private LinearLayout carEsq;
@@ -119,7 +117,6 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
 
     public ProfileProxy getProfileProxy() {
         if (profileProxy == null) {
-//            profileProxy = new ProfileProxyV1();
             profileProxy = new ProfileProxyV2();
         }
         return profileProxy;
@@ -194,6 +191,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
+        this.actionBarMenu = menu;
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -209,7 +207,6 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
                 showDialog(CREDIT_DIALOG);
                 return true;
             case R.id.action_refresh:
-                refreshMenuItem = item;
                 manualRefresh();
                 return true;
             case R.id.action_register:
@@ -221,6 +218,9 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
                 return true;
             case R.id.action_play:
                 onPlayButtonClicked();
+                return true;
+            case R.id.action_displayAlarms:
+                scheduleAlarms(true);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -249,10 +249,11 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REGISTER && resultCode == RESULT_OK) {
+            pushTrollToUI(new Troll(), true);
             startUpdate(UpdateRequestType.FULL, "Récupération du profil");
         }
         if (requestCode == PREFERENCES) {
-            scheduleAlarms();
+            scheduleAlarms(false);
         }
     }
 
@@ -273,7 +274,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
 
     protected abstract void loadTroll();
 
-    protected abstract void scheduleAlarms();
+    protected abstract void scheduleAlarms(boolean displayToast);
 
     protected abstract void manualRefresh();
 
@@ -285,24 +286,36 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
     //  UI METHODS  //
     //////////////////
 
-    protected void updateStarted() {
-        if (refreshMenuItem != null) {
+    protected MenuItem getRefreshMenuItem() {
+        MenuItem result = null;
+        if (actionBarMenu != null) {
+            result = actionBarMenu.findItem(R.id.action_refresh);
+            Log.i(TAG, "Menu item from actionBarMenu: " + result);
+        }
+        return result;
+    }
+
+    protected void updateStarted(String message) {
+        setTechnicalStatus(message);
+        MenuItem refreshMenuItem0 = getRefreshMenuItem();
+        if (refreshMenuItem0 != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                refreshMenuItem.setActionView(R.layout.action_progressbar);
+                refreshMenuItem0.setActionView(R.layout.action_progressbar);
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                refreshMenuItem.expandActionView();
+                refreshMenuItem0.expandActionView();
             }
         }
     }
 
     protected void updateFinished() {
-        if (refreshMenuItem != null) {
+        MenuItem refreshMenuItem0 = getRefreshMenuItem();
+        if (refreshMenuItem0 != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                refreshMenuItem.collapseActionView();
+                refreshMenuItem0.collapseActionView();
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                refreshMenuItem.setActionView(null);
+                refreshMenuItem0.setActionView(null);
             }
         }
     }
@@ -491,9 +504,6 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         int dlaToExpireColor = getResources().getColor(R.color.dla_to_expire);
 
         if (now.after(currentDla)) {
-            if (!updateToFollow) {
-                showToast(getText(R.string.current_dla_expired_title));
-            }
             colorize(dlaSpannable, dlaExpiredColor);
         } else {
             PreferencesHolder preferences = PreferencesHolder.load(this);
@@ -521,9 +531,6 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         SpannableString nextDlaSpannable = new SpannableString(nextDlaText);
 
         if (now.after(nextDla)) {
-            if (!updateToFollow) {
-                showToast(getText(R.string.next_dla_expired_title));
-            }
             colorize(nextDlaSpannable, dlaExpiredColor);
         } else {
             PreferencesHolder preferences = PreferencesHolder.load(this);

@@ -24,6 +24,8 @@ package org.zoumbox.mh_dla_notifier.profile.v2;
  * #L%
  */
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -64,12 +66,20 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import sun.print.resources.serviceui_fr;
+
 /**
  * @author Arnaud Thimel <thimel@codelutin.com>
  */
 public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy {
 
     private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + ProfileProxyV2.class.getSimpleName();
+
+    protected static final Set<PublicScript> WATCHED_SCRIPTS = ImmutableSortedSet.of(
+            PublicScript.ProfilPublic2,
+            PublicScript.Profil2,
+            PublicScript.Caract
+    );
 
     protected static final String PREFS_NAME_V2 = "org.zoumbox.mh.dla.notifier.preferences.v2";
 
@@ -189,45 +199,40 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
             throws QuotaExceededException, MissingLoginPasswordException, PublicScriptException, NetworkUnavailableException {
         Troll troll = readTroll(context, trollId);
 
-        Set<PublicScript> scriptsToUpdate = Sets.newLinkedHashSet();
+        Set<PublicScript> lazyUpdates = getScriptsThatRequiresAnUpdate(context, trollId);
+
+        if (UpdateRequestType.FULL.equals(updateRequestType)) {
+            // XXX AThimel 12/11/13 Do not include static profile to avoid too much requests
+            lazyUpdates.add(PublicScript.Profil2);
+            lazyUpdates.add(PublicScript.Caract);
+        }
 
         // Pas de nom -> Besoin des informations statiques
         if (Strings.isNullOrEmpty(troll.getNom())) {
-            scriptsToUpdate.add(PublicScript.ProfilPublic2);
+            lazyUpdates.add(PublicScript.ProfilPublic2);
         }
         // Pas de DLA -> Besoin des informations dynamiques (DLA, PV, PA, ...)
         if (troll.getDla() == null) {
-            scriptsToUpdate.add(PublicScript.Profil2);
+            lazyUpdates.add(PublicScript.Profil2);
         }
         // Pas de poids d'équipement -> Besoin des caracts
         if (troll.getPoidsBmp() == 0d) {
-            scriptsToUpdate.add(PublicScript.Caract);
-        }
-        if (UpdateRequestType.FULL.equals(updateRequestType)) {
-            // XXX AThimel 12/11/13 Do not include static profile to avoid too much requests
-            scriptsToUpdate.add(PublicScript.Profil2);
-            scriptsToUpdate.add(PublicScript.Caract);
-        }
-        Set<PublicScript> scriptsThatRequiresAnUpdate = getScriptsThatRequiresAnUpdate(context, trollId);
-        if (updateRequestType.needUpdate()) {
-            scriptsToUpdate.addAll(scriptsThatRequiresAnUpdate);
+            lazyUpdates.add(PublicScript.Caract);
         }
 
-        if (!scriptsToUpdate.isEmpty()) {
+        if (!UpdateRequestType.NONE.equals(updateRequestType)) {
             Pair<String, String> idAndPassword = getTrollPassword(context, trollId);
 
-            fetchScripts(context, idAndPassword, troll, scriptsToUpdate);
-            scriptsThatRequiresAnUpdate.removeAll(scriptsToUpdate);
+            fetchScripts(context, idAndPassword, troll, lazyUpdates);
+            lazyUpdates.clear();
 
             saveTroll(context, trollId, troll);
         }
 
-        boolean needsABackgroundUpdate = !scriptsThatRequiresAnUpdate.isEmpty();
+        boolean needsABackgroundUpdate = !lazyUpdates.isEmpty();
         Pair<Troll, Boolean> result = Pair.of(troll, needsABackgroundUpdate);
         return result;
     }
-
-    protected static final Set<PublicScript> WATCHED_SCRIPTS = ImmutableSortedSet.of(PublicScript.ProfilPublic2, PublicScript.Profil2, PublicScript.Caract);
 
     protected Set<PublicScript> getScriptsThatRequiresAnUpdate(Context context, String trollId) {
         final Map<PublicScript, Date> lastUpdates = PublicScriptsProxy.geLastUpdates(context, trollId, WATCHED_SCRIPTS);
@@ -297,6 +302,8 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
 
         Preconditions.checkNotNull(troll);
 
+        Log.i(TAG, String.format("[%s] Update scripts: %s", new Date(), scripts));
+
         int pvBeforeUpdate = troll.getPvActuelsCar();
 
         AndroidLogCallback logCallback = new AndroidLogCallback();
@@ -304,6 +311,8 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
             PublicScriptResult publicScriptResult = fetchScript(context, publicScript, idAndPassword);
             PublicScripts.pushToTroll(troll, publicScriptResult, logCallback);
         }
+
+        Log.i(TAG, String.format("[%s] Update finished", new Date()));
 
         int pvAfterUpdate = troll.getPvActuelsCar();
 
