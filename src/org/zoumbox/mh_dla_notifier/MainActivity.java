@@ -257,16 +257,12 @@ public class MainActivity extends MhDlaNotifierUI {
 
         @Override
         protected void onPreExecute() {
-            Log.i(TAG, String.format("[%s] org.zoumbox.mh_dla_notifier.MainActivity.UpdateTrollTask.onPreExecute#begin", new Date()));
             // set the progress bar view
             updateStarted(message);
-            Log.i(TAG, String.format("[%s] org.zoumbox.mh_dla_notifier.MainActivity.UpdateTrollTask.onPreExecute#end", new Date()));
         }
 
         @Override
         protected Pair<Troll, MhDlaException> doInBackground(UpdateRequestType... params) {
-
-            Log.i(TAG, String.format("[%s] org.zoumbox.mh_dla_notifier.MainActivity.UpdateTrollTask.doInBackground#begin", new Date()));
 
             Troll troll = null;
             MhDlaException exception = null;
@@ -283,15 +279,11 @@ public class MainActivity extends MhDlaNotifierUI {
             }
             Pair<Troll, MhDlaException> result = Pair.of(troll, exception);
 
-            Log.i(TAG, String.format("[%s] org.zoumbox.mh_dla_notifier.MainActivity.UpdateTrollTask.doInBackground#end", new Date()));
-
             return result;
         }
 
         @Override
         protected void onPostExecute(Pair<Troll, MhDlaException> result) {
-            Log.i(TAG, String.format("[%s] org.zoumbox.mh_dla_notifier.MainActivity.UpdateTrollTask.onPostExecute#begin", new Date()));
-
             MhDlaException exception = result.right();
             if (exception != null) {
                 updateFailure(exception);
@@ -300,8 +292,6 @@ public class MainActivity extends MhDlaNotifierUI {
                 trollUpdated(troll, false);
                 updateSuccess();
             }
-
-            Log.i(TAG, String.format("[%s] org.zoumbox.mh_dla_notifier.MainActivity.UpdateTrollTask.onPostExecute#end", new Date()));
         }
     }
 

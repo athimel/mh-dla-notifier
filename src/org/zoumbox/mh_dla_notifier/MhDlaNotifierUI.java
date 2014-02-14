@@ -53,6 +53,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.SpannableString;
@@ -346,7 +347,14 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
 
     protected void setTechnicalStatus(CharSequence message, int duration) {
         internalSetTechnicalStatus(Objects.firstNonNull(message, ""));
-        new ClearStatusTask().execute(duration);
+        if (duration > 0) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    clearTechnicalStatus();
+                }
+            }, duration * 1000);
+        }
     }
 
     protected void setTechnicalStatusError(CharSequence error) {
@@ -632,25 +640,6 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         @Override
         protected void onPostExecute(Bitmap blason) {
             updateBlason(blason);
-        }
-    }
-
-    private class ClearStatusTask extends AsyncTask<Integer, Void, Integer> {
-
-        @Override
-        protected Integer doInBackground(Integer... params) {
-            Integer duration = params[0];
-            try {
-                Thread.sleep(duration * 1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return duration;
-        }
-
-        @Override
-        protected void onPostExecute(Integer duration) {
-            clearTechnicalStatus();
         }
     }
 
