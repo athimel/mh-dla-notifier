@@ -50,6 +50,7 @@ import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.StrictMode;
 import android.os.SystemClock;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -196,6 +197,10 @@ public class Receiver extends BroadcastReceiver {
         }
 
         Log.i(TAG, String.format("requestUpdate=%b ; requestAlarmRegistering=%b", requestUpdate, requestAlarmRegistering));
+
+        // FIXME AThimel 14/02/14 Remove ASAP
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
         try {
             if (requestUpdate) {
