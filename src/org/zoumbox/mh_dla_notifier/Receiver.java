@@ -198,14 +198,13 @@ public class Receiver extends BroadcastReceiver {
 
         Log.i(TAG, String.format("requestUpdate=%b ; requestAlarmRegistering=%b", requestUpdate, requestAlarmRegistering));
 
-        // FIXME AThimel 14/02/14 Remove ASAP
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+//        // FIXME AThimel 14/02/14 Remove ASAP
+//        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+//        StrictMode.setThreadPolicy(policy);
 
         try {
             if (requestUpdate) {
-                getProfileProxy().refreshDLA(context, trollId);
-                new RefreshTrollTask(context, requestUpdate).doInBackground(trollId);
+                refreshDla(context, trollId, requestUpdate);
             } else if (requestAlarmRegistering) {
                 Troll troll = getProfileProxy().fetchTrollWithoutUpdate(context, trollId).left();
                 trollLoaded(troll, context, requestUpdate);
@@ -219,65 +218,81 @@ public class Receiver extends BroadcastReceiver {
 
     protected void trollLoaded(Troll troll, Context receivedContext, boolean requestUpdate) {
 
-        PreferencesHolder preferences = PreferencesHolder.load(receivedContext);
+        if (troll != null) {
+            PreferencesHolder preferences = PreferencesHolder.load(receivedContext);
 
-        // Re-schedule them (in case it changed)
-        String trollId = troll.getNumero();
-        try {
-            Map<AlarmType, Date> alarms = Alarms.getAlarms(receivedContext, getProfileProxy(), trollId);
+            // Re-schedule them (in case it changed)
+            String trollId = troll.getNumero();
+            try {
+                Map<AlarmType, Date> alarms = Alarms.getAlarms(receivedContext, getProfileProxy(), trollId);
 
-            Date now = new Date();
+                Date now = new Date();
 
-            Date beforeCurrentDla = alarms.get(AlarmType.CURRENT_DLA);
-            Date currentDla = troll.getDla();
-            Date beforeNextDla = alarms.get(AlarmType.NEXT_DLA);
-            Date nextDla = Trolls.GET_NEXT_DLA.apply(troll);
+                Date beforeCurrentDla = alarms.get(AlarmType.CURRENT_DLA);
+                Date currentDla = troll.getDla();
+                Date beforeNextDla = alarms.get(AlarmType.NEXT_DLA);
+                Date nextDla = Trolls.GET_NEXT_DLA.apply(troll);
 
-            if (now.after(beforeCurrentDla) && now.before(currentDla)) {
-                Log.i(TAG, String.format("Need to notify DLA='%s' about to expire", currentDla));
-                int pa = troll.getPa();
-                boolean willNotify = needsNotificationAccordingToPA(preferences, pa);
-                Log.i(TAG, String.format("PA=%d. Will notify? %b", pa, willNotify));
-                if (willNotify) {
-                    notifyCurrentDlaAboutToExpire(receivedContext, currentDla, pa, preferences);
+                if (now.after(beforeCurrentDla) && now.before(currentDla)) {
+                    Log.i(TAG, String.format("Need to notify DLA='%s' about to expire", currentDla));
+                    int pa = troll.getPa();
+                    boolean willNotify = needsNotificationAccordingToPA(preferences, pa);
+                    Log.i(TAG, String.format("PA=%d. Will notify? %b", pa, willNotify));
+                    if (willNotify) {
+                        notifyCurrentDlaAboutToExpire(receivedContext, currentDla, pa, preferences);
+                    }
+                } else {
+                    Log.i(TAG, String.format("No need to notify for DLA=%s", currentDla));
                 }
-            } else {
-                Log.i(TAG, String.format("No need to notify for DLA=%s", currentDla));
+
+                if (now.after(beforeNextDla) && now.before(nextDla)) {
+                    Log.i(TAG, String.format("Need to notify NDLA='%s' about to expire", nextDla));
+                    notifyNextDlaAboutToExpire(receivedContext, nextDla, preferences);
+                } else {
+                    Log.i(TAG, String.format("No need to notify for NDLA=%s", nextDla));
+                }
+
+                if (requestUpdate && troll.getPvVariation() < 0 && preferences.notifyOnPvLoss) {
+                    int pvLoss = Math.abs(troll.getPvVariation());
+                    Log.i(TAG, String.format("Troll lost %d PV", pvLoss));
+                    notifyPvLoss(receivedContext, pvLoss, troll.getPv(), preferences);
+                }
+
+                checkForWidgetsUpdate(receivedContext, troll);
+            } catch (MissingLoginPasswordException e) {
+                e.printStackTrace();
             }
 
-            if (now.after(beforeNextDla) && now.before(nextDla)) {
-                Log.i(TAG, String.format("Need to notify NDLA='%s' about to expire", nextDla));
-                notifyNextDlaAboutToExpire(receivedContext, nextDla, preferences);
-            } else {
-                Log.i(TAG, String.format("No need to notify for NDLA=%s", nextDla));
+            // Re-schedule them (in case it changed due to update)
+            try {
+                Alarms.scheduleAlarms(receivedContext, getProfileProxy(), trollId);
+            } catch (MissingLoginPasswordException e) {
+                Log.w(TAG, "Missing trollId and/or password, unable to schedule alarms...");
             }
-
-            if (requestUpdate && troll.getPvVariation() < 0 && preferences.notifyOnPvLoss) {
-                int pvLoss = Math.abs(troll.getPvVariation());
-                Log.i(TAG, String.format("Troll lost %d PV", pvLoss));
-                notifyPvLoss(receivedContext, pvLoss, troll.getPv(), preferences);
-            }
-
-            checkForWidgetsUpdate(receivedContext, troll);
-        } catch (MissingLoginPasswordException e) {
-            e.printStackTrace();
-        }
-
-        // Re-schedule them (in case it changed due to update)
-        try {
-            Alarms.scheduleAlarms(receivedContext, getProfileProxy(), trollId);
-        } catch (MissingLoginPasswordException e) {
-            Log.w(TAG, "Missing trollId and/or password, unable to schedule alarms...");
         }
 
     }
 
-    private class RefreshTrollTask extends AsyncTask<String, Void, Troll> {
+//    protected void refreshDla(Context context, String trollId, boolean requestUpdate) {
+//        Troll troll = null;
+//        try {
+//            troll = getProfileProxy().refreshDLA(context, trollId);
+//        } catch (MissingLoginPasswordException e) {
+//            Log.w(TAG, "Missing trollId and/or password, unable to refresh DLA...");
+//        }
+//        trollLoaded(troll, context, requestUpdate);
+//    }
+//
+    protected void refreshDla(Context context, String trollId, boolean requestUpdate) {
+        new RefreshDlaTask(context, requestUpdate).doInBackground(trollId);
+    }
+
+    private class RefreshDlaTask extends AsyncTask<String, Void, Troll> {
 
         protected Context context;
         protected boolean requestUpdate;
 
-        private RefreshTrollTask(Context context, boolean requestUpdate) {
+        private RefreshDlaTask(Context context, boolean requestUpdate) {
             this.context = context;
             this.requestUpdate = requestUpdate;
         }
