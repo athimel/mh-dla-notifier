@@ -49,7 +49,6 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.os.SystemClock;
 import android.util.Log;
@@ -198,9 +197,9 @@ public class Receiver extends BroadcastReceiver {
 
         Log.i(TAG, String.format("requestUpdate=%b ; requestAlarmRegistering=%b", requestUpdate, requestAlarmRegistering));
 
-//        // FIXME AThimel 14/02/14 Remove ASAP
-//        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-//        StrictMode.setThreadPolicy(policy);
+        // FIXME AThimel 14/02/14 Remove ASAP
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
         try {
             if (requestUpdate) {
@@ -273,53 +272,53 @@ public class Receiver extends BroadcastReceiver {
 
     }
 
+    protected void refreshDla(Context context, String trollId, boolean requestUpdate) {
+        Troll troll = null;
+        try {
+            troll = getProfileProxy().refreshDLA(context, trollId);
+        } catch (MissingLoginPasswordException e) {
+            Log.w(TAG, "Missing trollId and/or password, unable to refresh DLA...");
+        }
+        trollLoaded(troll, context, requestUpdate);
+    }
+
 //    protected void refreshDla(Context context, String trollId, boolean requestUpdate) {
-//        Troll troll = null;
-//        try {
-//            troll = getProfileProxy().refreshDLA(context, trollId);
-//        } catch (MissingLoginPasswordException e) {
-//            Log.w(TAG, "Missing trollId and/or password, unable to refresh DLA...");
-//        }
-//        trollLoaded(troll, context, requestUpdate);
+//        new RefreshDlaTask(context, requestUpdate).doInBackground(trollId);
 //    }
 //
-    protected void refreshDla(Context context, String trollId, boolean requestUpdate) {
-        new RefreshDlaTask(context, requestUpdate).doInBackground(trollId);
-    }
-
-    private class RefreshDlaTask extends AsyncTask<String, Void, Troll> {
-
-        protected Context context;
-        protected boolean requestUpdate;
-
-        private RefreshDlaTask(Context context, boolean requestUpdate) {
-            this.context = context;
-            this.requestUpdate = requestUpdate;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            // nothing to do
-        }
-
-        @Override
-        protected Troll doInBackground(String ... params) {
-            Troll troll = null;
-            try {
-                String trollId = params[0];
-
-                troll = getProfileProxy().refreshDLA(context, trollId);
-            } catch (MhDlaException e) {
-                e.printStackTrace();
-            }
-            return troll;
-        }
-
-        @Override
-        protected void onPostExecute(Troll result) {
-            trollLoaded(result, context, requestUpdate);
-        }
-    }
+//    private class RefreshDlaTask extends AsyncTask<String, Void, Troll> {
+//
+//        protected Context context;
+//        protected boolean requestUpdate;
+//
+//        private RefreshDlaTask(Context context, boolean requestUpdate) {
+//            this.context = context;
+//            this.requestUpdate = requestUpdate;
+//        }
+//
+//        @Override
+//        protected void onPreExecute() {
+//            // nothing to do
+//        }
+//
+//        @Override
+//        protected Troll doInBackground(String ... params) {
+//            Troll troll = null;
+//            try {
+//                String trollId = params[0];
+//
+//                troll = getProfileProxy().refreshDLA(context, trollId);
+//            } catch (MhDlaException e) {
+//                e.printStackTrace();
+//            }
+//            return troll;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Troll result) {
+//            trollLoaded(result, context, requestUpdate);
+//        }
+//    }
 
     protected void checkForWidgetsUpdate(Context context, Troll troll) {
 
