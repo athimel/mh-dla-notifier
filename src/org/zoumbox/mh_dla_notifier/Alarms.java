@@ -57,32 +57,34 @@ public class Alarms {
         Preconditions.checkNotNull(troll);
 
         Date currentDla = troll.getDla();
-        Date nextDla = Trolls.GET_NEXT_DLA.apply(troll);
-
-        Log.i(TAG, String.format("Computing wakeups for [DLA=%s] [NDLA=%s]", currentDla, nextDla));
-
-        long millisecondsBetween = nextDla.getTime() - currentDla.getTime();
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(currentDla.getTime());
-        calendar.add(Calendar.MILLISECOND, new Long(millisecondsBetween / 2).intValue());
-        Date afterCurrentDla = calendar.getTime();
-
-        calendar.setTimeInMillis(nextDla.getTime());
-        calendar.add(Calendar.MILLISECOND, new Long(millisecondsBetween / 2).intValue());
-        Date afterNextDla = calendar.getTime();
-
-        calendar.setTimeInMillis(nextDla.getTime());
-        calendar.add(Calendar.MILLISECOND, new Long(millisecondsBetween * 9 / 10).intValue());
-        Date dlaEvenAfter = calendar.getTime();
-
         Map<AlarmType, Date> result = Maps.newLinkedHashMap();
 
-        result.put(AlarmType.CURRENT_DLA, MhDlaNotifierUtils.substractMinutes(currentDla, notificationDelay));
-        result.put(AlarmType.AFTER_CURRENT_DLA, afterCurrentDla);
-        result.put(AlarmType.NEXT_DLA, MhDlaNotifierUtils.substractMinutes(nextDla, notificationDelay));
-        result.put(AlarmType.AFTER_NEXT_DLA, afterNextDla);
-        result.put(AlarmType.DLA_EVEN_AFTER, MhDlaNotifierUtils.substractMinutes(dlaEvenAfter, notificationDelay));
+        if (currentDla != null) {
+            Date nextDla = Trolls.GET_NEXT_DLA.apply(troll);
+
+            Log.i(TAG, String.format("Computing wakeups for [DLA=%s] [NDLA=%s]", currentDla, nextDla));
+
+            long millisecondsBetween = nextDla.getTime() - currentDla.getTime();
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(currentDla.getTime());
+            calendar.add(Calendar.MILLISECOND, new Long(millisecondsBetween / 2).intValue());
+            Date afterCurrentDla = calendar.getTime();
+
+            calendar.setTimeInMillis(nextDla.getTime());
+            calendar.add(Calendar.MILLISECOND, new Long(millisecondsBetween / 2).intValue());
+            Date afterNextDla = calendar.getTime();
+
+            calendar.setTimeInMillis(nextDla.getTime());
+            calendar.add(Calendar.MILLISECOND, new Long(millisecondsBetween * 9 / 10).intValue());
+            Date dlaEvenAfter = calendar.getTime();
+
+            result.put(AlarmType.CURRENT_DLA, MhDlaNotifierUtils.substractMinutes(currentDla, notificationDelay));
+            result.put(AlarmType.AFTER_CURRENT_DLA, afterCurrentDla);
+            result.put(AlarmType.NEXT_DLA, MhDlaNotifierUtils.substractMinutes(nextDla, notificationDelay));
+            result.put(AlarmType.AFTER_NEXT_DLA, afterNextDla);
+            result.put(AlarmType.DLA_EVEN_AFTER, MhDlaNotifierUtils.substractMinutes(dlaEvenAfter, notificationDelay));
+        }
 
         Log.i(TAG, "Computed wakeups: " + result);
 

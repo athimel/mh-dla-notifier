@@ -116,10 +116,13 @@ public class Trolls {
 
             int nextDlaDuration = GET_NEXT_DLA_DURATION.apply(troll);
 
+            Date result = null;
             Calendar nextDla = Calendar.getInstance();
-            nextDla.setTime(troll.dla);
-            nextDla.add(Calendar.MINUTE, nextDlaDuration);
-            Date result = nextDla.getTime();
+            if (troll.dla != null) {
+                nextDla.setTime(troll.dla);
+                nextDla.add(Calendar.MINUTE, nextDlaDuration);
+                result = nextDla.getTime();
+            }
             return result;
         }
     };

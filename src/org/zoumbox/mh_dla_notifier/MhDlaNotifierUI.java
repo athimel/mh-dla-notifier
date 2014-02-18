@@ -511,19 +511,21 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         int dlaExpiredColor = getResources().getColor(R.color.dla_expired);
         int dlaToExpireColor = getResources().getColor(R.color.dla_to_expire);
 
-        if (now.after(currentDla)) {
-            colorize(dlaSpannable, dlaExpiredColor);
-        } else {
-            PreferencesHolder preferences = PreferencesHolder.load(this);
-            Date dlaMinusNDMin = MhDlaNotifierUtils.substractMinutes(currentDla, preferences.notificationDelay);
-            if (now.after(dlaMinusNDMin)) {
-                colorize(dlaSpannable, dlaToExpireColor);
-                if (pa > 0) {
-                    if (!updateToFollow) {
-                        showToast("Il vous reste des PA à jouer !");
+        if (currentDla != null) {
+            if (now.after(currentDla)) {
+                colorize(dlaSpannable, dlaExpiredColor);
+            } else {
+                PreferencesHolder preferences = PreferencesHolder.load(this);
+                Date dlaMinusNDMin = MhDlaNotifierUtils.substractMinutes(currentDla, preferences.notificationDelay);
+                if (now.after(dlaMinusNDMin)) {
+                    colorize(dlaSpannable, dlaToExpireColor);
+                    if (pa > 0) {
+                        if (!updateToFollow) {
+                            showToast("Il vous reste des PA à jouer !");
+                        }
+                        colorize(paSpannable, dlaToExpireColor);
+                        stylize(paSpannable, Typeface.BOLD);
                     }
-                    colorize(paSpannable, dlaToExpireColor);
-                    stylize(paSpannable, Typeface.BOLD);
                 }
             }
         }
@@ -538,13 +540,15 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         String nextDlaText = MhDlaNotifierUtils.formatDLA(this, nextDla);
         SpannableString nextDlaSpannable = new SpannableString(nextDlaText);
 
-        if (now.after(nextDla)) {
-            colorize(nextDlaSpannable, dlaExpiredColor);
-        } else {
-            PreferencesHolder preferences = PreferencesHolder.load(this);
-            Date dlaMinusNDMin = MhDlaNotifierUtils.substractMinutes(nextDla, preferences.notificationDelay);
-            if (now.after(dlaMinusNDMin)) {
-                colorize(nextDlaSpannable, dlaToExpireColor);
+        if (nextDla != null) {
+            if (now.after(nextDla)) {
+                colorize(nextDlaSpannable, dlaExpiredColor);
+            } else {
+                PreferencesHolder preferences = PreferencesHolder.load(this);
+                Date dlaMinusNDMin = MhDlaNotifierUtils.substractMinutes(nextDla, preferences.notificationDelay);
+                if (now.after(dlaMinusNDMin)) {
+                    colorize(nextDlaSpannable, dlaToExpireColor);
+                }
             }
         }
 
