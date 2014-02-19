@@ -46,11 +46,15 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.StrictMode;
 import android.os.SystemClock;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -62,6 +66,8 @@ import android.widget.RemoteViews;
 public class Receiver extends BroadcastReceiver {
 
     private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + Receiver.class.getSimpleName();
+
+    public static final long[] VIBRATE_PATTERNN = new long[] {100, 100, 100, 100, 100, 700};
 
     private ProfileProxy profileProxy;
 
@@ -405,24 +411,41 @@ public class Receiver extends BroadcastReceiver {
     }
 
     protected void displayNotification(Context context, NotificationType type, CharSequence title, CharSequence text, boolean vibrate) {
-        long now = System.currentTimeMillis();
-
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = new Notification(R.drawable.trarnoll_square_transparent_128, title, now);
-        if (vibrate) {
-            notification.defaults |= Notification.DEFAULT_SOUND;
-            notification.defaults |= Notification.DEFAULT_VIBRATE;
-        }
 
         // The PendingIntent to launch our activity if the user selects this notification
         Intent main = new Intent(context, MainActivity.class);
         main.putExtra(MainActivity.EXTRA_FROM_NOTIFICATION, true);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, main, 0);
 
-        // Set the info for the views that show in the notification panel.
-        notification.setLatestEventInfo(context, title, text, contentIntent);
+        long now = System.currentTimeMillis();
 
-        notificationManager.notify(type.name().hashCode(), notification);
+        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.trarnoll_square_transparent_128);
+
+        long[] vibratePattern = VIBRATE_PATTERNN;
+        if (!vibrate) {
+            vibratePattern = new long[] {100L};
+        }
+
+//        if (vibrate) {
+//            notification.defaults |= Notification.DEFAULT_SOUND;
+//            notification.defaults |= Notification.DEFAULT_VIBRATE;
+//        }
+
+        int notificationId = type.name().hashCode();
+        Notification notification = new NotificationCompat.Builder(context)
+                .setOnlyAlertOnce(true)
+                .setVibrate(vibratePattern)
+                .setLights(Color.YELLOW, 1500, 1500)
+                .setSmallIcon(R.drawable.trarnoll_square_transparent_128)
+                .setLargeIcon(largeIcon)
+                .setContentTitle(title)
+                .setContentText(text)
+                .setWhen(now)
+                .setContentIntent(contentIntent)
+                .build();
+
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(notificationId, notification);
     }
 
 }

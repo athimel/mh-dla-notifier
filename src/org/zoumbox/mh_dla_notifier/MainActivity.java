@@ -45,13 +45,8 @@ import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.os.AsyncTask;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.view.MenuItem;
 
 public class MainActivity extends MhDlaNotifierUI {
 
@@ -207,32 +202,6 @@ public class MainActivity extends MhDlaNotifierUI {
             new ScheduleAlarmsTask(displayToast).execute(trollId);
         }
     }
-
-
-//    protected void testNotification() {
-//
-//        long[] SOS = new long[] {
-//                500, 500,
-//                500, 500 ,
-//                500, 500,
-//                500, 2500,
-//                1500 , 2500,
-//                1500 , 2500,
-//                500, 500,
-//                500, 500 ,
-//                500, 500
-//        };
-//
-//        long[] nothing = new long[] {
-//                500
-//        };
-//
-//
-//        Notification notification = new NotificationCompat.Builder(this).setAutoCancel(true).setVibrate(nothing).build();
-//
-//        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//        notificationManager.notify(123445, notification);
-//    }
 
     private class ScheduleAlarmsTask extends AsyncTask<String, Void, Pair<Map<AlarmType, Date>, MhDlaException>> {
 
