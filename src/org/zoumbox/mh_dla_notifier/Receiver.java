@@ -50,8 +50,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.AudioManager;
+import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.StrictMode;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
@@ -67,13 +69,12 @@ public class Receiver extends BroadcastReceiver {
 
     private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + Receiver.class.getSimpleName();
 
-    public static final long[] VIBRATE_PATTERNN = new long[] {100, 100, 100, 100, 100, 700};
+    public static final long[] VIBRATE_PATTERN = new long[] {100, 100, 100, 100, 100, 700};
 
     private ProfileProxy profileProxy;
 
     public ProfileProxy getProfileProxy() {
         if (profileProxy == null) {
-//            profileProxy = new ProfileProxyV1();
             profileProxy = new ProfileProxyV2();
         }
         return profileProxy;
@@ -353,18 +354,31 @@ public class Receiver extends BroadcastReceiver {
 
     }
 
-    protected boolean shouldVibrate(Context context, PreferencesHolder preferences) {
+    protected Pair<Boolean, Boolean> soundAndVibrate(Context context, PreferencesHolder preferences) {
         switch (preferences.silentNotification) {
-            case ALWAYS:
-                return false;
-            case NEVER:
-                return true;
-            case BY_NIGHT:
+            case ALWAYS: { // Toujours silencieux (pas de son, pas de vibration)
+                Pair<Boolean, Boolean> result = Pair.of(false, false);
+                return result;
+            }
+            case NEVER: { // Jamais silencieux (son + vibration)
+                Pair<Boolean, Boolean> result = Pair.of(true, true);
+                return result;
+            }
+            case BY_NIGHT: { // Ni son, ni vibration entre 23h et 7h
                 Calendar now = Calendar.getInstance();
-                return (now.get(Calendar.HOUR_OF_DAY) >= 7 || now.get(Calendar.HOUR_OF_DAY) < 23);
-            case WHEN_SILENT:
+                boolean soundAndVibrate = now.get(Calendar.HOUR_OF_DAY) >= 7 || now.get(Calendar.HOUR_OF_DAY) < 23;
+                Pair<Boolean, Boolean> result = Pair.of(soundAndVibrate, soundAndVibrate);
+                return result;
+            }
+            case WHEN_SILENT: { // Dépend du système
                 AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-                return am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL;
+                int ringerMode = am.getRingerMode();
+                Pair<Boolean, Boolean> result = Pair.of(
+                        ringerMode == AudioManager.RINGER_MODE_NORMAL, // son
+                        ringerMode == AudioManager.RINGER_MODE_NORMAL || ringerMode == AudioManager.RINGER_MODE_VIBRATE // vibration
+                );
+                return result;
+            }
             default:
                 Log.w(TAG, "Unexpected mode : " + preferences.silentNotification);
                 throw new IllegalStateException("Unexpected mode : " + preferences.silentNotification);
@@ -384,9 +398,9 @@ public class Receiver extends BroadcastReceiver {
         String format = context.getText(R.string.current_dla_expiring_text).toString();
         CharSequence notifText = String.format(format, MhDlaNotifierUtils.formatHour(dla), pa);
 
-        boolean vibrate = shouldVibrate(context, preferences);
+        Pair<Boolean, Boolean> soundAndVibrate= soundAndVibrate(context, preferences);
 
-        displayNotification(context, NotificationType.DLA, notifTitle, notifText, vibrate);
+        displayNotification(context, NotificationType.DLA, notifTitle, notifText, soundAndVibrate);
     }
 
     protected void notifyNextDlaAboutToExpire(Context context, Date dla, PreferencesHolder preferences) {
@@ -394,9 +408,9 @@ public class Receiver extends BroadcastReceiver {
         String format = context.getText(R.string.next_dla_expiring_text).toString();
         CharSequence notifText = String.format(format, MhDlaNotifierUtils.formatHour(dla));
 
-        boolean vibrate = shouldVibrate(context, preferences);
+        Pair<Boolean, Boolean> soundAndVibrate= soundAndVibrate(context, preferences);
 
-        displayNotification(context, NotificationType.DLA, notifTitle, notifText, vibrate);
+        displayNotification(context, NotificationType.DLA, notifTitle, notifText, soundAndVibrate);
     }
 
     protected void notifyPvLoss(Context context, int pvLoss, int pv, PreferencesHolder preferences) {
@@ -405,12 +419,12 @@ public class Receiver extends BroadcastReceiver {
         String messageFormat = context.getText(R.string.pv_remaining_text).toString();
         CharSequence notifText = String.format(messageFormat, pv);
 
-        boolean vibrate = shouldVibrate(context, preferences);
+        Pair<Boolean, Boolean> soundAndVibrate= soundAndVibrate(context, preferences);
 
-        displayNotification(context, NotificationType.PV_LOSS, notifTitle, notifText, vibrate);
+        displayNotification(context, NotificationType.PV_LOSS, notifTitle, notifText, soundAndVibrate);
     }
 
-    protected void displayNotification(Context context, NotificationType type, CharSequence title, CharSequence text, boolean vibrate) {
+    protected void displayNotification(Context context, NotificationType type, CharSequence title, CharSequence text, Pair<Boolean, Boolean> soundAndVibrate) {
 
         // The PendingIntent to launch our activity if the user selects this notification
         Intent main = new Intent(context, MainActivity.class);
@@ -421,28 +435,27 @@ public class Receiver extends BroadcastReceiver {
 
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.trarnoll_square_transparent_128);
 
-        long[] vibratePattern = VIBRATE_PATTERNN;
-        if (!vibrate) {
-            vibratePattern = new long[] {100L};
-        }
-
-//        if (vibrate) {
-//            notification.defaults |= Notification.DEFAULT_SOUND;
-//            notification.defaults |= Notification.DEFAULT_VIBRATE;
-//        }
-
         int notificationId = type.name().hashCode();
-        Notification notification = new NotificationCompat.Builder(context)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setOnlyAlertOnce(true)
-                .setVibrate(vibratePattern)
                 .setLights(Color.YELLOW, 1500, 1500)
                 .setSmallIcon(R.drawable.trarnoll_square_transparent_128)
                 .setLargeIcon(largeIcon)
                 .setContentTitle(title)
                 .setContentText(text)
                 .setWhen(now)
-                .setContentIntent(contentIntent)
-                .build();
+                .setContentIntent(contentIntent);
+
+        if (soundAndVibrate.left()) {
+            Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            builder.setSound(defaultSound);
+        }
+
+        if (soundAndVibrate.right()) {
+            builder.setVibrate(VIBRATE_PATTERN);
+        }
+
+        Notification notification = builder.build();
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(notificationId, notification);
