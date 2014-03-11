@@ -176,7 +176,7 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
         result.setNom(properties.get("NOM"));
         result.setRace(Race.valueOf(properties.get("RACE")));
         result.setNival(Integer.parseInt(properties.get("NIVAL")));
-        result.setDateInscription(MhDlaNotifierUtils.parseDate(properties.get("DATE_INSCRIPTION")));
+        result.setDateInscription(MhDlaNotifierUtils.parseSpDate(properties.get("DATE_INSCRIPTION")));
 
         result.setPvActuelsCar(Integer.parseInt(properties.get("PV")));
         result.setPvVariation(Integer.parseInt(properties.get("PV_VARIATION")));
@@ -196,7 +196,7 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
         result.setLevitation("1".equals(properties.get("LEVITATION")));
 
         result.setDureeDuTourCar(Integer.parseInt(properties.get("DUREE_DU_TOUR")));
-        result.setDla(MhDlaNotifierUtils.parseDate(properties.get("DLA")));
+        result.setDla(MhDlaNotifierUtils.parseSpDate(properties.get("DLA")));
         result.setPa(Integer.parseInt(properties.get("PA_RESTANT")));
 
         result.setBlason(properties.get("BLASON"));
@@ -438,7 +438,7 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
 
 //    private static Date getDLA(SharedPreferences preferences) {
 //        String string = preferences.getString(DLA.name(), null);
-//        Date result = MhDlaNotifierUtils.parseDate(string);
+//        Date result = MhDlaNotifierUtils.parseSpDate(string);
 //        return result;
 //    }
 

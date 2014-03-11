@@ -43,6 +43,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.apache.commons.codec.binary.Hex;
 
@@ -118,21 +119,22 @@ public class MhDlaNotifierUtils {
         return "";
     }
 
-    public static Date parseDate(String input) {
+    public static Date parseSpDate(String input) {
         Date result = null;
         if (input != null) {
             DateFormat inputDF = new SimpleDateFormat(INTPUT_DATE_FORMAT);
+            inputDF.setTimeZone(TimeZone.getTimeZone("Europe/Paris"));
             try {
                 result = inputDF.parse(input);
             } catch (ParseException pe) {
-                Log.e(TAG, "Date mal formatée", pe);
+                Log.e(TAG, "Date mal formatée ", pe);
             }
         }
         return result;
     }
 
 //    public static String formatDate(String input) {
-//        Date date = parseDate(input);
+//        Date date = parseSpDate(input);
 //        String result = formatDate(date);
 //        return result;
 //    }

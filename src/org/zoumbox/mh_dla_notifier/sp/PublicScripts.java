@@ -134,7 +134,7 @@ public class PublicScripts {
                     } else if (Race.class.equals(type)) {
                         value = Race.valueOf(stringValue);
                     } else if (Date.class.equals(type)) {
-                        value = MhDlaNotifierUtils.parseDate(stringValue);
+                        value = MhDlaNotifierUtils.parseSpDate(stringValue);
                     }
 
                     method.invoke(troll, value);
