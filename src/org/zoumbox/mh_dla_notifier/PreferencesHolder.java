@@ -23,8 +23,6 @@
  */
 package org.zoumbox.mh_dla_notifier;
 
-import java.util.Calendar;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -42,7 +40,7 @@ public class PreferencesHolder {
 
     public static final String PREFS_SMARTPHONE_INTERFACE = "prefs.use_smartphone_interface";
 
-    public static final String SKIP_LEGACY_PASSWORD_CHECK_UNTIL = "prefs.skip_legacy_password_check_until";
+    public static final String PREFS_TIME_ZONE = "prefs.timeZoneId";
 
     public int notificationDelay;
     public boolean notifyWithoutPA;
@@ -53,8 +51,7 @@ public class PreferencesHolder {
 
     public boolean enableAutomaticUpdates;
 
-    public long skipLegacyPasswordCheckUntil;
-
+    public String timeZoneId;
 
     public static PreferencesHolder load(Context context) {
 
@@ -73,25 +70,9 @@ public class PreferencesHolder {
 
         result.enableAutomaticUpdates = prefs.getBoolean(PREFS_ALLOW_AUTOMATIC_UPDATES, MhDlaNotifierConstants.DEFAULT_ALLOW_AUTOMATIC_UPDATES);
 
-        result.skipLegacyPasswordCheckUntil = prefs.getLong(SKIP_LEGACY_PASSWORD_CHECK_UNTIL, 0l);
+        result.timeZoneId = prefs.getString(PREFS_TIME_ZONE, MhDlaNotifierConstants.DEFAULT_TIME_ZONE);
 
         return result;
-    }
-
-    public static void skipLegacyPasswordCheckForToday(Context context) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-
-        SharedPreferences.Editor editor = prefs.edit();
-
-        Calendar instance = Calendar.getInstance();
-        instance.set(Calendar.HOUR_OF_DAY, 23);
-        instance.set(Calendar.MINUTE, 59);
-        instance.set(Calendar.SECOND, 59);
-        instance.set(Calendar.MILLISECOND, 59);
-
-        editor.putLong(SKIP_LEGACY_PASSWORD_CHECK_UNTIL, instance.getTimeInMillis());
-        editor.commit();
-
     }
 
 }

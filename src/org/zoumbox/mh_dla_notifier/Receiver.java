@@ -336,7 +336,7 @@ public class Receiver extends BroadcastReceiver {
             int[] appWidgetIds = widgetManager.getAppWidgetIds(componentName);
 
             if (appWidgetIds != null && appWidgetIds.length > 0) {
-                String dlaText = Trolls.GET_WIDGET_DLA_TEXT.apply(troll);
+                String dlaText = Trolls.getWidgetDlaTextFunction(context).apply(troll);
 
                 for (int appWidgetId : appWidgetIds) {
 

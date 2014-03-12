@@ -109,6 +109,11 @@
 
   <string name="prefs_use_smartphone_interface">Interface smartphone ?</string>
 
+  <string name="prefs_time_zone" formatted="false">Fuseau horaire à l\'affichage</string>
+  <string name="prefs_time_zone_default">Heure de MountyHall</string>
+  <string name="prefs_time_zone_system">Heure du téléphone</string>
+  <string name="prefs_time_zone_custom">Heure personnalisée</string>
+
   <string name="legacy_password_title">Nouvelle sécurité</string>
   <string name="legacy_password_message">Depuis le 1er mars 2013, vous devez utiliser un mot de passe "spécifique"
     fournit par MountyHall. Voulez-vous entrer ce mot de passe maintenant ?

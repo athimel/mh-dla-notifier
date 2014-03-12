@@ -24,6 +24,8 @@ package org.zoumbox.mh_dla_notifier.troll;
  * #L%
  */
 
+import android.content.Context;
+
 import java.util.Calendar;
 import java.util.Date;
 
@@ -127,21 +129,25 @@ public class Trolls {
         }
     };
 
-    public static final Function<Troll, String> GET_WIDGET_DLA_TEXT = new Function<Troll, String>() {
-        @Override
-        public String apply(Troll troll) {
+    public static Function<Troll, String> getWidgetDlaTextFunction(final Context context) {
+        Function<Troll, String> result = new Function<Troll, String>() {
+            @Override
+            public String apply(Troll troll) {
 
-            String result;
-            Date dla = troll.getDla();
-            if (MhDlaNotifierUtils.IS_IN_THE_FUTURE.apply(dla)) {
-                result = MhDlaNotifierUtils.formatHourNoSeconds(dla);
-            } else {
-                Date nextDla = GET_NEXT_DLA.apply(troll);
-                result = String.format("(%s)", MhDlaNotifierUtils.formatHourNoSeconds(nextDla));
+                String result;
+                Date dla = troll.getDla();
+                if (MhDlaNotifierUtils.IS_IN_THE_FUTURE.apply(dla)) {
+                    result = MhDlaNotifierUtils.formatHourNoSecondsForDisplay(context, dla);
+                } else {
+                    Date nextDla = GET_NEXT_DLA.apply(troll);
+                    result = String.format("(%s)", MhDlaNotifierUtils.formatHourNoSecondsForDisplay(context, nextDla));
+                }
+                return result;
             }
-            return result;
-        }
-    };
+        };
+        return result;
+    }
+
 
 //    public static final Function<Mouche,MoucheType> GET_MOUCHE_TYPE = new Function<Mouche, MoucheType>() {
 //        @Override

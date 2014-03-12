@@ -24,8 +24,10 @@
 package org.zoumbox.mh_dla_notifier;
 
 import java.util.Map;
+import java.util.TimeZone;
 
 import com.google.common.base.Function;
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
 import android.content.Context;
@@ -34,11 +36,14 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 /**
  * @author Arno <arno@zoumbox.org>
  */
 public class MhPreferencesActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+    private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + MhPreferencesActivity.class.getSimpleName();
 
     protected static final Function<Context, String> GET_NOTIFY_WITHOUT_PA_SUMMARY = new Function<Context, String>() {
         @Override
@@ -109,6 +114,27 @@ public class MhPreferencesActivity extends PreferenceActivity implements SharedP
         }
     };
 
+    protected static final Function<Context, String> GET_TIME_ZONE_SUMMARY = new Function<Context, String>() {
+        @Override
+        public String apply(Context context) {
+            PreferencesHolder preferences = PreferencesHolder.load(context);
+            String label;
+            if (Strings.isNullOrEmpty(preferences.timeZoneId) || "default".equalsIgnoreCase(preferences.timeZoneId)) {
+                // Heure du serveur MH
+                label = context.getText(R.string.prefs_time_zone_default).toString();
+            } else if ("system".equalsIgnoreCase(preferences.timeZoneId)) {
+                // Heure du téléphone
+                label = context.getText(R.string.prefs_time_zone_system).toString();
+            } else {
+                // Heure custom
+                label = context.getText(R.string.prefs_time_zone_custom).toString();
+            }
+            TimeZone timeZone = MhDlaNotifierUtils.getDisplayTimeZone(preferences.timeZoneId);
+            String result = String.format("%s : %s", label, timeZone.getID());
+            return result;
+        }
+    };
+
     protected static final Map<String, Function<Context, String>> preferencesFunctions = Maps.newLinkedHashMap();
 
     static {
@@ -117,6 +143,7 @@ public class MhPreferencesActivity extends PreferenceActivity implements SharedP
         preferencesFunctions.put(PreferencesHolder.PREFS_NOTIFICATION_DELAY, GET_NOTIF_DELAY_SUMMARY);
         preferencesFunctions.put(PreferencesHolder.PREFS_SMARTPHONE_INTERFACE, GET_USE_SMARTPHONE_SUMMARY);
         preferencesFunctions.put(PreferencesHolder.PREFS_NOTIFY_ON_PV_LOSS, GET_NOTIFY_ON_PV_LOSS_SUMMARY);
+        preferencesFunctions.put(PreferencesHolder.PREFS_TIME_ZONE, GET_TIME_ZONE_SUMMARY);
     }
 
     @Override
@@ -134,6 +161,11 @@ public class MhPreferencesActivity extends PreferenceActivity implements SharedP
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs.registerOnSharedPreferenceChangeListener(this);
+
+        String[] availableIDs = TimeZone.getAvailableIDs();
+        for (String availableID : availableIDs) {
+            Log.i(TAG, "TimeZone: " + availableID);
+        }
     }
 
     @Override

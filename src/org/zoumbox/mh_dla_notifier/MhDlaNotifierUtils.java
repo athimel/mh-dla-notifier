@@ -119,11 +119,41 @@ public class MhDlaNotifierUtils {
         return "";
     }
 
+    public static TimeZone getSpTimeZone() {
+        TimeZone result = TimeZone.getTimeZone("Europe/Paris");
+        return result;
+    }
+
+    public static TimeZone getDisplayTimeZone(Context context) {
+        PreferencesHolder preferences = PreferencesHolder.load(context);
+        TimeZone result = getDisplayTimeZone(preferences.timeZoneId);
+        return result;
+    }
+
+    public static TimeZone getDisplayTimeZone(String timeZoneId) {
+        TimeZone result;
+        if (Strings.isNullOrEmpty(timeZoneId) || "default".equalsIgnoreCase(timeZoneId)) {
+            // Heure du serveur MH
+            result = getSpTimeZone();
+        } else if ("system".equalsIgnoreCase(timeZoneId)) {
+            // Heure du téléphone
+            result = TimeZone.getDefault();
+        } else {
+            // Heure custom
+            try {
+                result = TimeZone.getTimeZone(timeZoneId);
+            } catch (Exception eee) {
+                result = getSpTimeZone();
+            }
+        }
+        return result;
+    }
+
     public static Date parseSpDate(String input) {
         Date result = null;
         if (input != null) {
             DateFormat inputDF = new SimpleDateFormat(INTPUT_DATE_FORMAT);
-            inputDF.setTimeZone(TimeZone.getTimeZone("Europe/Paris"));
+            inputDF.setTimeZone(getSpTimeZone());
             try {
                 result = inputDF.parse(input);
             } catch (ParseException pe) {
@@ -139,24 +169,25 @@ public class MhDlaNotifierUtils {
 //        return result;
 //    }
 
-    public static String formatDLA(Context context, Date input) {
+    public static String formatDLAForDisplay(Context context, Date input) {
         String result = N_C;
         if (input != null) {
             CharSequence format = context.getText(R.string.dla_format);
             DateFormat outputDF = new SimpleDateFormat(format.toString(), Locale.FRENCH);
+            outputDF.setTimeZone(getDisplayTimeZone(context));
             result = outputDF.format(input);
         }
         return result;
     }
 
-    public static String formatDate(Date input) {
-        String result = N_C;
-        if (input != null) {
-            DateFormat outputDF = new SimpleDateFormat(DISPLAY_DATE_FORMAT, Locale.FRENCH);
-            result = outputDF.format(input);
-        }
-        return result;
-    }
+//    public static String formatDate(Date input) {
+//        String result = N_C;
+//        if (input != null) {
+//            DateFormat outputDF = new SimpleDateFormat(DISPLAY_DATE_FORMAT, Locale.FRENCH);
+//            result = outputDF.format(input);
+//        }
+//        return result;
+//    }
 
     public static String formatDay(Date input) {
         String result = N_C;
@@ -176,10 +207,11 @@ public class MhDlaNotifierUtils {
         return result;
     }
 
-    public static String formatHourNoSeconds(Date input) {
+    public static String formatHourNoSecondsForDisplay(Context context, Date input) {
         String result = N_C;
         if (input != null) {
             DateFormat outputDF = new SimpleDateFormat(HOUR_NO_SEC_DATE_FORMAT, Locale.FRENCH);
+            outputDF.setTimeZone(getDisplayTimeZone(context));
             result = outputDF.format(input);
         }
         return result;

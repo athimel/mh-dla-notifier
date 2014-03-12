@@ -42,6 +42,7 @@ public class MhDlaNotifierConstants {
     public static final boolean DEFAULT_USE_SMARTPHONE_INTERFACE = true;
     public static final boolean DEFAULT_NOTIFY_ON_PV_LOSS = true;
     public static final boolean DEFAULT_ALLOW_AUTOMATIC_UPDATES = true;
+    public static final String DEFAULT_TIME_ZONE = null; // null means SP hour (Europe/Paris)
 
     public static final int PV_WARM_THRESHOLD = 66;
     public static final int PV_ALARM_THRESHOLD = 33;

@@ -502,7 +502,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         Date currentDla = troll.getDla();
         int pa = troll.getPa();
 
-        SpannableString dlaSpannable = new SpannableString(MhDlaNotifierUtils.formatDLA(this, currentDla));
+        SpannableString dlaSpannable = new SpannableString(MhDlaNotifierUtils.formatDLAForDisplay(this, currentDla));
         SpannableString paSpannable = new SpannableString("" + pa); // Leave ""+ as integer is considered as an Android id
 
         stylize(dlaSpannable, Typeface.BOLD);
@@ -537,7 +537,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         dla_duration.setText(MhDlaNotifierUtils.prettyPrintDuration(this, nextDlaDuration));
 
         Date nextDla = Trolls.GET_NEXT_DLA.apply(troll);
-        String nextDlaText = MhDlaNotifierUtils.formatDLA(this, nextDla);
+        String nextDlaText = MhDlaNotifierUtils.formatDLAForDisplay(this, nextDla);
         SpannableString nextDlaSpannable = new SpannableString(nextDlaText);
 
         if (nextDla != null) {
@@ -675,7 +675,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
 
                 if (appWidgetIds != null && appWidgetIds.length > 0) {
                     Troll troll = params[0];
-                    String dlaText = Trolls.GET_WIDGET_DLA_TEXT.apply(troll);
+                    String dlaText = Trolls.getWidgetDlaTextFunction(MhDlaNotifierUI.this).apply(troll);
 
                     for (int appWidgetId : appWidgetIds) {
 

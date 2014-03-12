@@ -83,7 +83,7 @@ public class HomeScreenWidget extends AppWidgetProvider {
                 Pair<Troll, Boolean> pair = profileProxy.fetchTrollWithoutUpdate(context, firstTrollId);
                 Troll troll = pair.left();
 
-                result = Trolls.GET_WIDGET_DLA_TEXT.apply(troll);
+                result = Trolls.getWidgetDlaTextFunction(context).apply(troll);
             } catch (MissingLoginPasswordException e) {
                 Log.w(TAG, "Unable to get troll's DLA", e);
             }

@@ -22,16 +22,217 @@
   #L%
   -->
 <resources>
-  <array name="silent_notification_keys">
-    <item>ALWAYS</item>
-    <item>BY_NIGHT</item>
-    <item>WHEN_SILENT</item>
-    <item>NEVER</item>
-  </array>
-  <array name="silent_notification">
-    <item>Toujours silencieux</item>
-    <item>Seulement la nuit (23h-7h)</item>
-    <item>En mode silencieux</item>
-    <item>Jamais silencieux</item>
-  </array>
+    <array name="silent_notification_keys">
+        <item>ALWAYS</item>
+        <item>BY_NIGHT</item>
+        <item>WHEN_SILENT</item>
+        <item>NEVER</item>
+    </array>
+    <array name="silent_notification">
+        <item>Toujours silencieux</item>
+        <item>Seulement la nuit (23h-7h)</item>
+        <item>En mode silencieux</item>
+        <item>Jamais silencieux</item>
+    </array>
+
+    <array name="time_zones_keys">
+        <item>default</item>
+        <item>system</item>
+        <item>Pacific/Midway</item>
+        <item>Pacific/Honolulu</item>
+        <item>US/Alaska</item>
+        <item>America/Los_Angeles</item>
+        <item>America/Tijuana</item>
+        <item>America/Phoenix</item>
+        <item>America/Chihuahua</item>
+        <item>America/Denver</item>
+        <item>America/Mexico_City</item>
+        <item>America/Regina</item>
+        <item>America/Chicago</item>
+        <item>America/Bogota</item>
+        <item>America/Caracas</item>
+        <item>America/New_York</item>
+        <item>America/Barbados</item>
+        <item>America/Manaus</item>
+        <item>America/Halifax</item>
+        <item>America/Santiago</item>
+        <item>America/Sao_Paulo</item>
+        <item>America/Buenos_Aires</item>
+        <item>America/Godthab</item>
+        <item>America/Montevideo</item>
+        <item>America/St_Johns</item>
+        <item>Atlantic/South_Georgia</item>
+        <item>Atlantic/Azores</item>
+        <item>Atlantic/Cape_Verde</item>
+        <item>Africa/Casablanca</item>
+        <item>Europe/London</item>
+        <item>Europe/Amsterdam</item>
+        <item>Europe/Belgrade</item>
+        <item>Europe/Brussels</item>
+        <item>Europe/Paris</item>
+        <item>Europe/Sarajevo</item>
+        <item>Africa/Brazzaville</item>
+        <item>Africa/Windhoek</item>
+        <item>Europe/Athens</item>
+        <item>Asia/Beirut</item>
+        <item>Africa/Cairo</item>
+        <item>Europe/Helsinki</item>
+        <item>Asia/Jerusalem</item>
+        <item>Africa/Harare</item>
+        <item>Asia/Amman</item>
+        <item>Europe/Minsk</item>
+        <item>Asia/Baghdad</item>
+        <item>Asia/Kuwait</item>
+        <item>Africa/Nairobi</item>
+        <item>Asia/Tehran</item>
+        <item>Europe/Moscow</item>
+        <item>Asia/Baku</item>
+        <item>Asia/Tbilisi</item>
+        <item>Asia/Yerevan</item>
+        <item>Asia/Dubai</item>
+        <item>Asia/Kabul</item>
+        <item>Asia/Karachi</item>
+        <item>Asia/Oral</item>
+        <item>Asia/Kolkata</item>
+        <item>Asia/Colombo</item>
+        <item>Asia/Kathmandu</item>
+        <item>Asia/Yekaterinburg</item>
+        <item>Asia/Almaty</item>
+        <item>Asia/Rangoon</item>
+        <item>Asia/Bangkok</item>
+        <item>Asia/Krasnoyarsk</item>
+        <item>Asia/Shanghai</item>
+        <item>Asia/Hong_Kong</item>
+        <item>Asia/Kuala_Lumpur</item>
+        <item>Australia/Perth</item>
+        <item>Asia/Taipei</item>
+        <item>Asia/Irkutsk</item>
+        <item>Asia/Seoul</item>
+        <item>Asia/Tokyo</item>
+        <item>Australia/Darwin</item>
+        <item>Asia/Yakutsk</item>
+        <item>Australia/Brisbane</item>
+        <item>Pacific/Guam</item>
+        <item>Australia/Adelaide</item>
+        <item>Australia/Hobart</item>
+        <item>Australia/Sydney</item>
+        <item>Asia/Vladivostok</item>
+        <item>Pacific/Majuro</item>
+        <item>Asia/Magadan</item>
+        <item>Pacific/Fiji</item>
+        <item>Pacific/Auckland</item>
+        <item>Pacific/Tongatapu</item>
+    </array>
+    <array name="time_zones">
+        <item>Heure de MountyHall</item>
+        <item>Heure du téléphone</item>
+        <item>Midway (GMT-11:00)</item>
+        <item>Honolulu (GMT-10:00)</item>
+        <item>Alaska (GMT-8:00)</item>
+        <item>Los Angeles(GMT-7:00)</item>
+        <item>Tijuana(GMT-7:00)</item>
+        <item>Phoenix (GMT-7:00)</item>
+        <item>Chihuahua (GMT-7:00)</item>
+        <item>Denver (GMT-6:00)</item>
+        <item>Mexico (GMT-6:00)</item>
+        <item>Régina (GMT-6:00)</item>
+        <item>Chicago (GMT-5:00)</item>
+        <item>Bogota (GMT-5:00)</item>
+        <item>Caracas (GMT-4:30)</item>
+        <item>New York (GMT-4:00)</item>
+        <item>La Barbade (GMT-4:00)</item>
+        <item>Manaos (GMT-4:00)</item>
+        <item>Halifax (GMT-3:00)</item>
+        <item>Santiago (GMT-3:00)</item>
+        <item>São Paulo (GMT-3:00)</item>
+        <item>Buenos Aires (GMT-3:00)</item>
+        <item>Godthåb (GMT-3:00)</item>
+        <item>Montévideo (GMT-3:00)</item>
+        <item>Saint-Jean de Terre-Neuve (GMT-2:30)</item>
+        <item>Géorgie du Sud (GMT-2:00)</item>
+        <item>Açores (GMT-1:00)</item>
+        <item>Cap Vert (GMT-1:00)</item>
+        <item>Casablanca (GMT+0:00)</item>
+        <item>Londres (GMT+0:00)</item>
+        <item>Amsterdam (GMT+1:00)</item>
+        <item>Belgrade (GMT+1:00)</item>
+        <item>Bruxelles (GMT+1:00)</item>
+        <item>Paris (GMT+1:00)</item>
+        <item>Sarajevo (GMT+1:00)</item>
+        <item>Brazzaville (GMT+1:00)</item>
+        <item>Windhoek (GMT+2:00)</item>
+        <item>Athènes (GMT+2:00)</item>
+        <item>Beyrouth (GMT+2:00)</item>
+        <item>Le Caire (GMT+2:00)</item>
+        <item>Helsinki (GMT+2:00)</item>
+        <item>Jérusalem (GMT+2:00)</item>
+        <item>Harare (GMT+2:00)</item>
+        <item>Amman (GMT+3:00)</item>
+        <item>Minsk (GMT+3:00)</item>
+        <item>Bagdad (GMT+3:00)</item>
+        <item>Koweït (GMT+3:00)</item>
+        <item>Nairobi (GMT+3:00)</item>
+        <item>Téhéran (GMT+3:30)</item>
+        <item>Moscou (GMT+4:00)</item>
+        <item>Bakou (GMT+4:00)</item>
+        <item>Tbilissi (GMT+4:00)</item>
+        <item>Erevan (GMT+4:00)</item>
+        <item>Dubaï (GMT+4:00)</item>
+        <item>Kaboul (GMT+4:30)</item>
+        <item>Karâchi (GMT+5:00)</item>
+        <item>Ouralsk (GMT+5:00)</item>
+        <item>Kolkata (GMT+5:30)</item>
+        <item>Colombo (GMT+5:30)</item>
+        <item>Katmandou (GMT+5:45)</item>
+        <item>Ekaterinbourg (GMT+6:00)</item>
+        <item>Almaty (GMT+6:00)</item>
+        <item>Rangoon (GMT+6:30)</item>
+        <item>Bangkok (GMT+7:00)</item>
+        <item>Krasnoïarsk (GMT+8:00)</item>
+        <item>Pékin (GMT+8:00)</item>
+        <item>Hong-Kong (GMT+8:00)</item>
+        <item>Kuala Lumpur (GMT+8:00)</item>
+        <item>Perth (GMT+8:00)</item>
+        <item>Taipei (GMT+8:00)</item>
+        <item>Irkoutsk (GMT+9:00)</item>
+        <item>Séoul (GMT+9:00)</item>
+        <item>Tokyo (GMT+9:00)</item>
+        <item>Darwin (GMT+9:30)</item>
+        <item>Iakoutsk (GMT+10:00)</item>
+        <item>Brisbane (GMT+10:00)</item>
+        <item>Hagåtña (GMT+10:00)</item>
+        <item>Adélaïde (GMT+10:30)</item>
+        <item>Hobart (GMT+11:00)</item>
+        <item>Sydney (GMT+11:00)</item>
+        <item>Vladivostok (GMT+11:00)</item>
+        <item>Majuro (GMT+12:00)</item>
+        <item>Magadan (GMT+12:00)</item>
+        <item>Fidji (GMT+12:00)</item>
+        <item>Auckland (GMT+13:00)</item>
+        <item>Nukuʻalofa (GMT+13:00)</item>
+    </array>
 </resources>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
