@@ -162,10 +162,6 @@ public class MhPreferencesActivity extends PreferenceActivity implements SharedP
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs.registerOnSharedPreferenceChangeListener(this);
 
-        String[] availableIDs = TimeZone.getAvailableIDs();
-        for (String availableID : availableIDs) {
-            Log.i(TAG, "TimeZone: " + availableID);
-        }
     }
 
     @Override
