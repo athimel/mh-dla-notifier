@@ -367,7 +367,8 @@ public class Receiver extends BroadcastReceiver {
             }
             case BY_NIGHT: { // Ni son, ni vibration entre 23h et 7h
                 Calendar now = Calendar.getInstance();
-                boolean soundAndVibrate = now.get(Calendar.HOUR_OF_DAY) >= 7 || now.get(Calendar.HOUR_OF_DAY) < 23;
+                int hour = now.get(Calendar.HOUR_OF_DAY);
+                boolean soundAndVibrate = hour >= 7 && hour < 23;
                 Pair<Boolean, Boolean> result = Pair.of(soundAndVibrate, soundAndVibrate);
                 return result;
             }
