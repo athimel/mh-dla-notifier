@@ -439,7 +439,6 @@ public class Receiver extends BroadcastReceiver {
 
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.trarnoll_square_transparent_128);
 
-        int notificationId = type.name().hashCode();
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setOnlyAlertOnce(true)
                 .setLights(Color.YELLOW, 1500, 1500)
@@ -450,6 +449,7 @@ public class Receiver extends BroadcastReceiver {
                 .setWhen(now)
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true)
+                .setTicker(title)
                 .addAction(R.drawable.ic_action_play, context.getText(R.string.play), playPendingIntent)
                 ;
 
@@ -467,7 +467,8 @@ public class Receiver extends BroadcastReceiver {
         Notification notification = builder.build();
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(notificationId, notification);
+        int notifId = type.name().hashCode();
+        notificationManager.notify(notifId, notification);
     }
 
 }
