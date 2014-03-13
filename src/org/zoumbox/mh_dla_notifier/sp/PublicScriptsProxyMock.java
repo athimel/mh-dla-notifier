@@ -94,27 +94,51 @@ public class PublicScriptsProxyMock {
 //                    "BMP; 1;2; 4;-4; 0; 0;-1;   0;   0;10;   0;193.5;0\n" +
 //                    "CAR;13;4;21; 5;90;56; 4;1095;1439; 2; 585;    0;0\n";
     public static final String DEVEL_MOUCHES =
-            "567856;ers;Lunettes;404;LA\n" +
-                    "563814;ToMars;Crobate;453;LA\n" +
-                    "562632;ingToTheMoon;Nabolisants;467;LA\n" +
-                    "565369;ToGether;Crobate;434;LA\n" +
-                    "569033;fe;Telaite;389;LA\n" +
-                    "571309;ingToTheSpace;Nabolisants;361;LA\n" +
-                    "570159;ingToTheSun;Nabolisants;375;LA\n" +
-                    "572547;Faster;Rivatant;350;LA\n" +
-                    "574887;Strong;Xidant;318;LA\n" +
-                    "575785;eRs;Lunettes;305;LA\n" +
-                    "578000;;Vertie;272;LA\n" +
-                    "579486;;Rivatant;241;LA\n" +
-                    "581779;;Vertie;210;LA\n" +
-                    "583093;;Telaite;194;LA\n" +
-                    "586569;;Rivatant;149;LA\n" +
-                    "588345;;Vertie;126;LA\n" +
-                    "589627;;Xidant;110;LA\n" +
-                    "591596;;Miel;83;LA\n" +
-                    "592829;;Rivatant;67;LA\n" +
-                    "594975;;Xidant;38;LA\n" +
-                    "596944;;Telaite;12;LA\n" +
+            "599939;;Crobate;632;LA\n" +
+                    "567856;ers;Lunettes;1065;LA\n" +
+                    "563814;ToMars;Crobate;1114;LA\n" +
+                    "633679;;Miel;153;LA\n" +
+                    "612312;;Vertie;458;LA\n" +
+                    "636799;;Miel;105;LA\n" +
+                    "562632;ingToTheMoon;Nabolisants;1128;LA\n" +
+                    "602416;;Héros;595;LA\n" +
+                    "616779;;Nabolisants;400;LA\n" +
+                    "637453;;Héros;95;LA\n" +
+                    "565369;ToGether;Crobate;1095;LA\n" +
+                    "569033;fe;Telaite;1051;LA\n" +
+                    "571309;ingToTheSpace;Nabolisants;1023;LA\n" +
+                    "570159;ingToTheSun;Nabolisants;1037;LA\n" +
+                    "572547;Faster;Rivatant;1011;LA\n" +
+                    "574887;Strong;Xidant;980;LA\n" +
+                    "575785;eRs;Lunettes;967;LA\n" +
+                    "578000;;Vertie;933;LA\n" +
+                    "579486;;Rivatant;902;LA\n" +
+                    "581779;;Vertie;872;LA\n" +
+                    "583093;;Rivatant;855;LA\n" +
+                    "586569;;Rivatant;811;LA\n" +
+                    "588345;;Vertie;787;LA\n" +
+                    "589627;;Xidant;772;LA\n" +
+                    "641119;;Rivatant;38;LA\n" +
+                    "591596;;Miel;744;LA\n" +
+                    "592829;;Rivatant;729;LA\n" +
+                    "594975;;Xidant;699;LA\n" +
+                    "596944;;Nabolisants;674;LA\n" +
+                    "602417;;Rivatant;595;LA\n" +
+                    "604774;;Xidant;559;LA\n" +
+                    "607662;;Lunettes;522;LA\n" +
+                    "614433;;Telaite;429;LA\n" +
+                    "619546;;Miel;363;LA\n" +
+                    "621732;;Vertie;334;LA\n" +
+                    "624911;;Miel;286;LA\n" +
+                    "628982;;Héros;220;LA\n" +
+                    "629009;;Nabolisants;219;LA\n" +
+                    "642141;[Lampe Géniale 10032945];Rivatant;24;LA\n" +
+                    "642142;[Lampe Géniale 10032945];Vertie;24;LA\n" +
+                    "642143;[Lampe Géniale 10032945];Rivatant;24;LA\n" +
+                    "642144;[Lampe Géniale 10032945];Miel;24;LA\n" +
+                    "642145;[Lampe Géniale 10032945];Nabolisants;24;LA\n" +
+                    "642146;[Lampe Géniale 10032945];Lunettes;24;LA\n" +
+                    "642984;;Telaite;8;LA\n" +
                     "\n" +
                     "\n" +
                     "\n";
@@ -124,19 +148,31 @@ public class PublicScriptsProxyMock {
                     "Glue;Sortilège;;0\n" +
                     "Désorientation;Téléportation;ATT : -12 | ESQ : -13;2\n";
     public static final String DEVEL_APTITUDES2 =
-            "C;18;52;0;1\n" +
-                    "C;3;90;0;1\n" +
-                    "C;16;38;0;2\n" +
-                    "C;16;90;0;1\n" +
-                    "C;12;90;0;1\n" +
-                    "C;21;83;0;1\n" +
-                    "C;8;73;0;3\n" +
-                    "C;8;87;0;2\n" +
-                    "C;8;87;0;1\n" +
-                    "C;14;69;0;1\n" +
+            "C;18;90;0;2;\n" +
+                    "C;18;90;0;1;\n" +
+                    "C;3;93;0;1;\n" +
+                    "C;16;90;0;5;\n" +
+                    "C;16;90;0;4;\n" +
+                    "C;16;90;0;3;\n" +
+                    "C;16;90;0;2;\n" +
+                    "C;16;90;0;1;\n" +
+                    "C;12;90;0;1;\n" +
+                    "C;21;90;0;1;\n" +
+                    "C;8;85;0;5;\n" +
+                    "C;8;90;0;4;\n" +
+                    "C;8;90;0;3;\n" +
+                    "C;8;90;0;2;\n" +
+                    "C;8;87;0;1;\n" +
+                    "C;14;82;0;1;\n" +
+                    "C;44;90;0;1;\n" +
+                    "C;11;90;0;1;\n" +
+                    "C;7;84;0;1;\n" +
+                    "C;5;57;0;1;\n" +
+                    "C;9;54;0;1;\n" +
                     "S;3;80;0;1\n" +
                     "S;10;80;0;1\n" +
-                    "S;27;61;0;1\n";
+                    "S;27;80;0;1\n" +
+                    "S;28;37;0;1";
     public static final String DEVEL_EQUIP =
             "9332117;0;Potion;1;Jus de Chronomètre;;TOUR : -120 min;5\n" +
                     "9332290;0;Potion;1;Voï'Pu'Rin;;Vue : -20;5\n" +
