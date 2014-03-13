@@ -69,7 +69,8 @@ public class Receiver extends BroadcastReceiver {
 
     private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + Receiver.class.getSimpleName();
 
-    public static final long[] VIBRATE_PATTERN = new long[] {100, 100, 100, 100, 100, 700};
+    public static final long[] VIBRATE_PATTERN = new long[] {100, 250, 100, 250, 100, 700};
+    public static final long[] NO_VIBRATION = new long[] {100};
 
     private ProfileProxy profileProxy;
 
@@ -427,10 +428,12 @@ public class Receiver extends BroadcastReceiver {
     protected void displayNotification(Context context, NotificationType type, CharSequence title, CharSequence text, Pair<Boolean, Boolean> soundAndVibrate) {
 
         // The PendingIntent to launch our activity if the user selects this notification
-        Intent main = new Intent(context, MainActivity.class);
-        main.putExtra(MainActivity.EXTRA_FROM_NOTIFICATION, true);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, main, 0);
+        Intent mainActivity = new Intent(context, MainActivity.class);
+        mainActivity.putExtra(MainActivity.EXTRA_FROM_NOTIFICATION, true);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, mainActivity, 0);
 
+        Intent playIntent = MhDlaNotifierUtils.GET_PLAY_INTENT.apply(context);
+        PendingIntent playPendingIntent = PendingIntent.getActivity(context, 0, playIntent, 0);
         long now = System.currentTimeMillis();
 
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.trarnoll_square_transparent_128);
@@ -444,7 +447,10 @@ public class Receiver extends BroadcastReceiver {
                 .setContentTitle(title)
                 .setContentText(text)
                 .setWhen(now)
-                .setContentIntent(contentIntent);
+                .setContentIntent(contentIntent)
+                .setAutoCancel(true)
+                .addAction(R.drawable.ic_action_play, context.getText(R.string.play), playPendingIntent)
+                ;
 
         if (soundAndVibrate.left()) {
             Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -453,6 +459,8 @@ public class Receiver extends BroadcastReceiver {
 
         if (soundAndVibrate.right()) {
             builder.setVibrate(VIBRATE_PATTERN);
+        } else {
+            builder.setVibrate(NO_VIBRATION);
         }
 
         Notification notification = builder.build();

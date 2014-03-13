@@ -47,6 +47,7 @@ import java.util.TimeZone;
 
 import org.apache.commons.codec.binary.Hex;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -56,8 +57,10 @@ import com.google.common.io.Files;
 import com.google.common.io.InputSupplier;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -416,4 +419,18 @@ public class MhDlaNotifierUtils {
         }
         return result;
     }
+
+    public static final Function<Context, Intent> GET_PLAY_INTENT = new Function<Context, Intent>() {
+        @Override
+        public Intent apply(Context input) {
+            Uri uri = MhDlaNotifierConstants.MH_PLAY_URI;
+            PreferencesHolder preferences = PreferencesHolder.load(input);
+            if (preferences.useSmartphoneInterface) {
+                uri = MhDlaNotifierConstants.MH_PLAY_SMARTPHONE_URI;
+            }
+            Intent webIntent = new Intent(Intent.ACTION_VIEW, uri);
+            return webIntent;
+        }
+    };
+
 }

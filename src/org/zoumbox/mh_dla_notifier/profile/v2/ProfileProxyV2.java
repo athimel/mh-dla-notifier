@@ -163,8 +163,11 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
     public void saveIdPassword(Context context, String trollId, String trollPassword) {
         List<String> trollIds = getTrollIds0(context);
         if (!trollIds.contains(trollId)) {
-            Log.i(TAG, String.format("Adding troll %s to managed trolls: %s", trollId, trollIds));
-            trollIds.add(0, trollId);
+//            Log.i(TAG, String.format("Adding troll %s to managed trolls: %s", trollId, trollIds));
+//            trollIds.add(0, trollId);
+            Log.i(TAG, String.format("Replacing troll %s to managed trolls: %s", trollId, trollIds));
+            trollIds.clear();
+            trollIds.add(trollId);
         }
         String password = trollPassword;
         try {
