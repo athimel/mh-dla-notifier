@@ -69,8 +69,8 @@ public class Receiver extends BroadcastReceiver {
 
     private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + Receiver.class.getSimpleName();
 
-    public static final long[] VIBRATE_PATTERN = new long[] {100, 250, 100, 250, 100, 700};
-    public static final long[] NO_VIBRATION = new long[] {100};
+    public static final long[] VIBRATE_PATTERN = new long[]{100, 250, 150, 250, 150, 700};
+    public static final long[] NO_VIBRATION = new long[]{100};
 
     private ProfileProxy profileProxy;
 
@@ -400,7 +400,7 @@ public class Receiver extends BroadcastReceiver {
         String format = context.getText(R.string.current_dla_expiring_text).toString();
         CharSequence notifText = String.format(format, MhDlaNotifierUtils.formatHour(dla), pa);
 
-        Pair<Boolean, Boolean> soundAndVibrate= soundAndVibrate(context, preferences);
+        Pair<Boolean, Boolean> soundAndVibrate = soundAndVibrate(context, preferences);
 
         displayNotification(context, NotificationType.DLA, notifTitle, notifText, soundAndVibrate);
     }
@@ -410,7 +410,7 @@ public class Receiver extends BroadcastReceiver {
         String format = context.getText(R.string.next_dla_expiring_text).toString();
         CharSequence notifText = String.format(format, MhDlaNotifierUtils.formatHour(dla));
 
-        Pair<Boolean, Boolean> soundAndVibrate= soundAndVibrate(context, preferences);
+        Pair<Boolean, Boolean> soundAndVibrate = soundAndVibrate(context, preferences);
 
         displayNotification(context, NotificationType.DLA, notifTitle, notifText, soundAndVibrate);
     }
@@ -421,7 +421,7 @@ public class Receiver extends BroadcastReceiver {
         String messageFormat = context.getText(R.string.pv_remaining_text).toString();
         CharSequence notifText = String.format(messageFormat, pv);
 
-        Pair<Boolean, Boolean> soundAndVibrate= soundAndVibrate(context, preferences);
+        Pair<Boolean, Boolean> soundAndVibrate = soundAndVibrate(context, preferences);
 
         displayNotification(context, NotificationType.PV_LOSS, notifTitle, notifText, soundAndVibrate);
     }
@@ -450,8 +450,7 @@ public class Receiver extends BroadcastReceiver {
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true)
                 .setTicker(title)
-                .addAction(R.drawable.ic_action_play, context.getText(R.string.play), playPendingIntent)
-                ;
+                .addAction(R.drawable.ic_action_play, context.getText(R.string.play), playPendingIntent);
 
         if (soundAndVibrate.left()) {
             Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

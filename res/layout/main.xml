@@ -30,13 +30,14 @@
   <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:layout_width="fill_parent"
                   android:layout_height="wrap_content"
                   android:orientation="vertical"
                   style="@style/Main">
 
-      <include layout="@layout/header" android:layout_width="fill_parent"/>
+      <include layout="@layout/card_header" android:layout_width="fill_parent"/>
 
       <!-- HR -->
       <LinearLayout android:layout_width="fill_parent"

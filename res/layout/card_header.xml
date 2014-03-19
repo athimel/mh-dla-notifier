@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  #%L
+  MountyHall DLA Notifier
+  $Id$
+  $HeadURL$
+  %%
+  Copyright (C) 2012 - 2013 Zoumbox.org
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as
+  published by the Free Software Foundation, either version 3 of the 
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public 
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/gpl-3.0.html>.
+  #L%
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <!-- Name -->
+        <TextView
+            android:id="@+id/name"
+            style="@style/Name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:id="@+id/troll_status"
+            style="@style/TrollStatus"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal" />
+
+        <!-- Numéro -->
+        <TextView
+            android:id="@+id/number"
+            style="@style/Info"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left" />
+
+        <!-- Race + nival -->
+        <TextView
+            android:id="@+id/race"
+            style="@style/Info"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left" />
+
+        <!-- Guilde-->
+        <TextView
+            android:id="@+id/guilde"
+            style="@style/Info"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left" />
+
+        <!-- Zone de notif-->
+        <TextView
+            android:id="@+id/troll_info"
+            style="@style/TrollInfo"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:id="@+id/technical_status"
+            style="@style/Status"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/blason"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:orientation="vertical"
+        android:scaleType="fitXY"
+        android:src="@drawable/loading" />
+
+</LinearLayout>

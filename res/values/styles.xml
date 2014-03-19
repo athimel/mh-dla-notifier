@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   #%L
   MountyHall DLA Notifier
   $Id$
@@ -24,169 +23,188 @@
   -->
 <resources>
 
-  <style name="Main">
-    <item name="android:background">@color/bg</item>
-    <item name="android:cacheColorHint">@color/bg</item>
-  </style>
+    <style name="Main">
+        <item name="android:background">@color/bg</item>
+        <item name="android:cacheColorHint">@color/bg</item>
+    </style>
 
-  <style name="TextCommons">
-    <item name="android:gravity">center_horizontal</item>
-    <item name="android:singleLine">true</item>
-  </style>
+    <style name="MainWithCards">
+        <item name="android:background">@color/bg_cards</item>
+        <item name="android:cacheColorHint">@color/bg_cards</item>
+    </style>
 
-  <style name="Info" parent="TextCommons">
-    <item name="android:textColor">@color/fg</item>
-    <item name="android:paddingLeft">10dp</item>
-    <item name="android:paddingRight">10dp</item>
-  </style>
+    <style name="Card">
+        <item name="android:layout_marginLeft">6dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginRight">6dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:paddingLeft">6dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingRight">6dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:background">@drawable/bg_card</item>
+    </style>
 
-  <style name="Name" parent="Info">
-    <item name="android:gravity">center_horizontal</item>
-    <item name="android:layout_marginTop">5dp</item>
-    <item name="android:textStyle">bold</item>
-  </style>
+    <style name="CardPadded" parent="Card">
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+    </style>
 
-  <style name="Link" parent="Info">
-    <item name="android:textStyle">italic</item>
-  </style>
+    <style name="TextCommons">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:singleLine">true</item>
+    </style>
 
-  <style name="TrollStatus" parent="Info">
-    <item name="android:textColor">@color/troll_status</item>
-    <item name="android:gravity">center_horizontal</item>
-    <item name="android:layout_marginBottom">8dp</item>
-  </style>
+    <style name="Info" parent="TextCommons">
+        <item name="android:textColor">@color/fg</item>
+    </style>
 
-  <style name="TrollInfo" parent="TextCommons">
-    <item name="android:textColor">@color/fg</item>
-    <item name="android:gravity">center_horizontal</item>
-    <item name="android:layout_marginTop">8dp</item>
-    <item name="android:paddingLeft">1dp</item>
-    <item name="android:paddingRight">1dp</item>
-    <item name="android:textSize">14dp</item>
-  </style>
+    <style name="Name" parent="Info">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 
-  <style name="Status" parent="TextCommons">
-    <item name="android:textColor">@color/status</item>
-    <item name="android:gravity">center_horizontal</item>
-    <item name="android:layout_marginTop">3dp</item>
-    <item name="android:paddingLeft">1dp</item>
-    <item name="android:paddingRight">1dp</item>
-    <item name="android:textStyle">italic</item>
-    <item name="android:textSize">12dp</item>
-  </style>
+    <!--<style name="Link" parent="Info">-->
+    <!--<item name="android:textStyle">italic</item>-->
+    <!--</style>-->
 
-  <style name="DL" parent="Info">
-    <item name="android:layout_marginTop">5dp</item>
-    <item name="android:layout_marginBottom">3dp</item>
-  </style>
+    <style name="TrollStatus" parent="Info">
+        <item name="android:textColor">@color/troll_status</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_marginBottom">8dp</item>
+    </style>
 
-  <style name="DT" parent="Info">
-    <item name="android:gravity">left</item>
-    <item name="android:textStyle">bold</item>
-  </style>
+    <style name="TrollInfo" parent="TextCommons">
+        <item name="android:textColor">@color/fg</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:textSize">14dp</item>
+    </style>
 
-  <style name="DD" parent="Info">
-    <item name="android:gravity">right</item>
-  </style>
+    <style name="Status" parent="TextCommons">
+        <item name="android:textColor">@color/status</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_marginTop">3dp</item>
+        <item name="android:paddingLeft">1dp</item>
+        <item name="android:paddingRight">1dp</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:textSize">12dp</item>
+    </style>
 
-  <style name="caractDL" parent="Info">
-    <item name="android:layout_marginTop">2dp</item>
-    <item name="android:layout_marginBottom">0dp</item>
-  </style>
+    <style name="DL" parent="Info">
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
+    </style>
 
-  <style name="caractDT" parent="Info">
-    <item name="android:gravity">left</item>
-    <item name="android:textStyle">bold</item>
-    <item name="android:paddingRight">0dp</item>
-  </style>
+    <style name="DT" parent="Info">
+        <item name="android:gravity">left</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingRight">0dp</item>
+    </style>
 
-  <style name="caract" parent="Info">
-    <item name="android:paddingLeft">0dp</item>
-    <item name="android:paddingRight">0dp</item>
-    <item name="android:gravity">right</item>
-  </style>
+    <style name="DD" parent="Info">
+        <item name="android:gravity">right</item>
+    </style>
 
-  <style name="caractCar" parent="caract">
-    <item name="android:width">42dp</item>
-  </style>
+    <!--<style name="caractDL" parent="Info">-->
+    <!--<item name="android:layout_marginTop">2dp</item>-->
+    <!--<item name="android:layout_marginBottom">0dp</item>-->
+    <!--</style>-->
 
-  <style name="caractBm" parent="caract">
-    <item name="android:width">28dp</item>
-  </style>
+    <!--<style name="caractDT" parent="Info">-->
+    <!--<item name="android:gravity">left</item>-->
+    <!--<item name="android:textStyle">bold</item>-->
+    <!--</style>-->
 
-  <style name="caractAvg" parent="caract">
-    <item name="android:width">50dp</item>
-    <item name="android:textStyle">bold</item>
-  </style>
+    <style name="caract" parent="Info">
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
+        <item name="android:gravity">right</item>
+    </style>
 
-  <style name="caractM" parent="caract">
-    <item name="android:width">42dp</item>
-  </style>
+    <style name="caractCar" parent="caract">
+        <item name="android:width">42dp</item>
+    </style>
 
-  <style name="caractMAvg" parent="caractM">
-    <item name="android:textStyle">bold</item>
-  </style>
+    <style name="caractBm" parent="caract">
+        <item name="android:width">28dp</item>
+    </style>
 
-  <style name="Buttons" parent="TextCommons">
-    <item name="android:ellipsize">end</item>
-    <item name="android:textSize">16dp</item>
-    <item name="android:textStyle">bold</item>
-  </style>
+    <style name="caractAvg" parent="caract">
+        <item name="android:width">50dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 
-  <style name="hr" parent="DL">
-    <item name="android:background">@color/hr</item>
-    <item name="android:layout_marginLeft">10dp</item>
-    <item name="android:layout_marginRight">10dp</item>
-  </style>
+    <style name="caractM" parent="caract">
+        <item name="android:width">42dp</item>
+    </style>
 
-  <style name="ActionBar">
-    <item name="android:background">@color/actionbar</item>
-    <item name="android:cacheColorHint">@color/actionbar</item>
-  </style>
+    <style name="caractMAvg" parent="caractM">
+        <item name="android:textStyle">bold</item>
+    </style>
 
-  <!-- Small styles -->
+    <style name="Buttons" parent="TextCommons">
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 
-  <style name="Name_small" parent="Info">
-    <item name="android:gravity">center_horizontal</item>
-    <item name="android:textStyle">bold</item>
-  </style>
+    <style name="hr" parent="DL">
+        <item name="android:background">@color/hr</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+    </style>
 
-  <style name="Info_small" parent="TextCommons">
-    <item name="android:textColor">@color/fg</item>
-    <item name="android:paddingLeft">5dp</item>
-    <item name="android:paddingRight">5dp</item>
-  </style>
+    <style name="ActionBar">
+        <item name="android:background">@color/actionbar</item>
+        <item name="android:cacheColorHint">@color/actionbar</item>
+    </style>
 
-  <style name="widgetText">
-    <item name="android:textColor">@android:color/white</item>
-    <item name="android:background">#66000000</item>
-    <item name="android:bottomLeftRadius">2dp</item>
-    <item name="android:bottomRightRadius">2dp</item>
-    <item name="android:topLeftRadius">2dp</item>
-    <item name="android:topRightRadius">2dp</item>
-    <item name="android:gravity">center_horizontal</item>
-    <item name="android:layout_marginTop">3dp</item>
-    <!--<item name="android:paddingTop">0dp</item>-->
-    <item name="android:paddingBottom">1dp</item>
-    <item name="android:paddingLeft">3dp</item>
-    <item name="android:paddingRight">3dp</item>
-    <item name="android:ellipsize">end</item>
-  </style>
+    <!-- Small styles -->
 
-  <color name="actionbar">#DDDDDD</color>
+    <style name="Name_small" parent="Info">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 
-  <color name="bg">@android:color/white</color>
-  <color name="fg">@android:color/black</color>
-  <color name="hr">#888888</color>
+    <style name="Info_small" parent="TextCommons">
+        <item name="android:textColor">@color/fg</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingRight">5dp</item>
+    </style>
 
-  <color name="troll_status">#FF0000</color>
-  <color name="status">@android:color/darker_gray</color>
+    <style name="widgetText">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">#66000000</item>
+        <item name="android:bottomLeftRadius">2dp</item>
+        <item name="android:bottomRightRadius">2dp</item>
+        <item name="android:topLeftRadius">2dp</item>
+        <item name="android:topRightRadius">2dp</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_marginTop">3dp</item>
+        <!--<item name="android:paddingTop">0dp</item>-->
+        <item name="android:paddingBottom">1dp</item>
+        <item name="android:paddingLeft">3dp</item>
+        <item name="android:paddingRight">3dp</item>
+        <item name="android:ellipsize">end</item>
+    </style>
 
-  <color name="dla_expired">#FF0000</color>
-  <color name="dla_to_expire">#FFF9790D</color>
-  <color name="pv_gain">#009400</color>
-  <color name="pv_warn">#FFF9790D</color>
-  <color name="pv_alarm">#FF0000</color>
-  <color name="error">#FF0000</color>
+    <color name="actionbar">#DDDDDD</color>
+
+    <color name="bg">@android:color/white</color>
+    <color name="bg_cards">#E3E3E3</color>
+    <color name="fg">@android:color/black</color>
+    <color name="hr">#888888</color>
+
+    <color name="troll_status">#FF0000</color>
+    <color name="status">@android:color/darker_gray</color>
+
+    <color name="dla_expired">#FF0000</color>
+    <color name="dla_to_expire">#FFF9790D</color>
+    <color name="pv_gain">#009400</color>
+    <color name="pv_warn">#FFF9790D</color>
+    <color name="pv_alarm">#FF0000</color>
+    <color name="error">#FF0000</color>
 
 </resources>

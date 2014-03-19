@@ -328,7 +328,7 @@
       </build>
     </profile>
 
-    <!-- This profile update license stuff with new goal update-file-header -->
+    <!-- This profile update license stuff with new goal update-file-card_header -->
     <profile>
       <id>update-file-header</id>
       <activation>

@@ -138,7 +138,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.main_with_cards);
 
         actionBar = getSupportActionBar();
 

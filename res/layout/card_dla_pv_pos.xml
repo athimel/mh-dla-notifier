@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  #%L
+  MountyHall DLA Notifier
+  $Id$
+  $HeadURL$
+  %%
+  Copyright (C) 2012 - 2014 Zoumbox.org
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/gpl-3.0.html>.
+  #L%
+  -->
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/CardPadded"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!-- DLA -->
+    <LinearLayout
+        style="@style/DL"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/DT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dla" />
+
+        <TextView
+            android:id="@+id/dla_field"
+            style="@style/DD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <!-- PA restants -->
+    <LinearLayout
+        style="@style/DL"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/DT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/remaining_pas" />
+
+        <TextView
+            android:id="@+id/pas"
+            style="@style/DD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <!-- Durée tour -->
+    <LinearLayout
+        style="@style/DL"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/DT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dla_duration" />
+
+        <TextView
+            android:id="@+id/dla_duration_field"
+            style="@style/DD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <!-- DLA suivante -->
+    <LinearLayout
+        style="@style/DL"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/DT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/next_dla" />
+
+        <TextView
+            android:id="@+id/next_dla_field"
+            style="@style/DD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <!-- Position -->
+    <LinearLayout
+        style="@style/DL"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/DT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/position" />
+
+        <TextView
+            android:id="@+id/position"
+            style="@style/DD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <!-- Points de vie -->
+    <LinearLayout
+        style="@style/DL"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/DT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pvs" />
+
+        <TextView
+            android:id="@+id/pvs"
+            style="@style/DD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+
+    <!-- Fatigue -->
+    <LinearLayout
+        style="@style/DL"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/DT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fatigue" />
+
+        <TextView
+            android:id="@+id/fatigue"
+            style="@style/DD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <!-- Kill / death -->
+    <LinearLayout
+        style="@style/DL"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/DT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/kd" />
+
+        <TextView
+            android:id="@+id/kd"
+            style="@style/DD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+</LinearLayout>
