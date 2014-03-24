@@ -25,28 +25,16 @@
 
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical" android:padding="2px" android:layout_width="fill_parent"
+              android:orientation="vertical" android:layout_width="fill_parent"
               android:layout_height="wrap_content" android:background="#000000">
 
   <LinearLayout android:orientation="vertical" android:padding="10dip" android:layout_width="fill_parent"
                 android:layout_height="fill_parent" android:background="#eeeeee">
 
     <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent"
-                  android:layout_height="wrap_content" android:layout_marginBottom="5dip">
-      <ImageView android:layout_width="256px" android:layout_height="256px"
-                 android:src="@drawable/trarnoll_256" android:scaleType="fitXY"/>
-      <LinearLayout android:orientation="vertical" android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:layout_marginTop="10dip"
-                    android:layout_marginLeft="20dip">
-        <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
-                  android:text="@string/version_full" android:textStyle="italic" android:textColor="#444444"/>
-      </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent"
                   android:layout_height="wrap_content" android:layout_marginTop="5dip"
                   android:layout_marginLeft="15dip">
-      <ImageView android:layout_width="80px" android:layout_height="80px"
+      <ImageView android:layout_width="60dp" android:layout_height="60dp"
                  android:scaleType="fitXY" android:src="@drawable/arno"/>
       <LinearLayout android:orientation="vertical" android:layout_width="wrap_content"
                     android:layout_height="wrap_content" android:layout_marginLeft="10dip">
@@ -60,7 +48,7 @@
     <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent"
                   android:layout_height="wrap_content" android:layout_marginTop="5dip"
                   android:layout_marginLeft="15dip">
-      <ImageView android:layout_width="80px" android:layout_height="80px"
+      <ImageView android:layout_width="60dp" android:layout_height="60dp"
                  android:scaleType="fitXY"
                  android:src="@drawable/bouloche61"/>
       <LinearLayout android:orientation="vertical" android:layout_width="wrap_content"
@@ -76,21 +64,18 @@
     <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent"
                   android:layout_height="wrap_content" android:layout_marginTop="5dip"
                   android:layout_marginLeft="15dip">
-      <ImageView android:layout_width="80px" android:layout_height="80px"
+      <ImageView android:layout_width="60dp" android:layout_height="60dp"
                  android:scaleType="fitXY" android:src="@drawable/ic_contact_picture"/>
       <LinearLayout android:orientation="vertical" android:layout_width="wrap_content"
                     android:layout_height="wrap_content" android:layout_marginLeft="10dip">
         <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
-                  android:text="Heb, omnipotente, Verjus, 100, moljnir"
+                  android:text="@string/credits_testers_list"
                   android:textColor="#444444"/>
         <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
                   android:text="@string/credits_testers" android:textColor="#444444"
                   android:textStyle="italic"/>
       </LinearLayout>
     </LinearLayout>
-
-    <Button android:id="@+id/credits_close" android:layout_width="fill_parent" android:layout_height="wrap_content"
-            android:text="@string/close" android:layout_marginTop="10dip"/>
 
   </LinearLayout>
 

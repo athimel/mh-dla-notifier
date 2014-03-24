@@ -40,11 +40,13 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationManager;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -60,11 +62,11 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RemoteViews;
@@ -79,8 +81,6 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
 
     public static final int REGISTER = 0;
     public static final int PREFERENCES = 1;
-
-    protected static final int CREDIT_DIALOG = 0;
 
     public static final String EXTRA_FROM_NOTIFICATION = "from-notification";
 
@@ -205,7 +205,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
                 startActivity(intent_market);
                 return true;
             case R.id.action_credits:
-                showDialog(CREDIT_DIALOG);
+                showCredits();
                 return true;
             case R.id.action_refresh:
                 manualRefresh();
@@ -228,23 +228,23 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         }
     }
 
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        if (id == CREDIT_DIALOG) {
-            final Dialog dialog = new Dialog(this);
-            dialog.setContentView(R.layout.credits);
-            dialog.setTitle(R.string.app_name);
-            Button btnExitInfo = (Button) dialog.findViewById(R.id.credits_close);
-            btnExitInfo.setOnClickListener(new View.OnClickListener() {
+    private void showCredits() {
 
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-            return dialog;
-        }
-        return super.onCreateDialog(id);
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.credits, null);
+
+        String title = getString(R.string.app_name) + " - " + getString(R.string.version_full);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setIcon(R.drawable.trarnoll_square_transparent)
+                .setTitle(title)
+                .setView(view)
+                .setPositiveButton(android.R.string.ok, new Dialog.OnClickListener() {
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+        builder.create().show();
     }
 
     @Override
