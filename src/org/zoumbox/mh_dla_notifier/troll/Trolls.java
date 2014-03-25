@@ -138,6 +138,7 @@ public class Trolls {
                 Date dla = troll.getDla();
                 if (MhDlaNotifierUtils.IS_IN_THE_FUTURE.apply(dla)) {
                     result = MhDlaNotifierUtils.formatHourNoSecondsForDisplay(context, dla);
+                    result += " - " + troll.getPa() + "PA";
                 } else {
                     Date nextDla = GET_NEXT_DLA.apply(troll);
                     result = String.format("(%s)", MhDlaNotifierUtils.formatHourNoSecondsForDisplay(context, nextDla));
