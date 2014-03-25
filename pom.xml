@@ -188,8 +188,8 @@
             <platform>14</platform>
           </sdk>
           <deleteConflictingFiles>true</deleteConflictingFiles>
-          <device>emulator</device>
-          <!--<device>usb</device>-->
+          <!--<device>emulator</device>-->
+          <device>usb</device>
           <zipalign>
             <verbose>true</verbose>
             <skip>false</skip>
