@@ -262,10 +262,10 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
             List<MhSpRequest> requests = PublicScriptsProxy.
                     listLatestRequestsSince(this, trollIds.iterator().next(), 2);
 
-            String message = "Les appels marqués par une (*) ont moins de 24H\n\n";
+            String message = "Les appels marqués par une * ont moins de 24H\n\n";
             for (MhSpRequest request : requests) {
                 if (request.lessThan24Hours()) {
-                    message += "(*) ";
+                    message += "* ";
                 }
                 message += MhDlaNotifierUtils.formatDLAForDisplay(this, request.getDate()) + " - " + request.getScript().name() + "\n";
             }
