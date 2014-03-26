@@ -50,8 +50,16 @@ public interface ProfileProxy {
             if (input == null) {
                 return 1;
             }
-            int dailyQuota = input.getQuota();
-            int result = dailyQuota / 3; //FIXME AThimel 29/03/2012 divide by 3 for the moment to avoid mistakes
+
+            int result;
+            if (ScriptCategory.STATIC.equals(input)) {
+                // Static scripts are updated only once a day
+                result = 1;
+            } else {
+                int dailyQuota = input.getQuota();
+                result = dailyQuota / 3; // Divide by 3 for the moment to avoid mistakes
+            }
+
             return result;
         }
     };
