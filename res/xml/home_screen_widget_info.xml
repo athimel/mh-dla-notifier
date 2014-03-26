@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   #%L
   MountyHall DLA Notifier
   $Id$
@@ -25,9 +24,7 @@
 
 
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:minWidth="40dp"
-                    android:minHeight="40dp"
-                    android:updatePeriodMillis="1800000"
-                    android:initialLayout="@layout/home_screen_widget"
-        >
-</appwidget-provider>
+    android:minWidth="40dp"
+    android:minHeight="40dp"
+    android:updatePeriodMillis="1800000"
+    android:initialLayout="@layout/home_screen_widget"></appwidget-provider>

@@ -27,75 +27,75 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
+      android:layout_weight="1"
+      android:gravity="center_vertical"
+      android:orientation="vertical">
+
+    <!-- Name -->
+    <TextView
+        android:id="@+id/name"
+        style="@style/Name"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal" />
 
-        <!-- Name -->
-        <TextView
-            android:id="@+id/name"
-            style="@style/Name"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal" />
+    <TextView
+        android:id="@+id/troll_status"
+        style="@style/TrollStatus"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal" />
 
-        <TextView
-            android:id="@+id/troll_status"
-            style="@style/TrollStatus"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal" />
+    <!-- Numéro -->
+    <TextView
+        android:id="@+id/number"
+        style="@style/Info"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left" />
 
-        <!-- Numéro -->
-        <TextView
-            android:id="@+id/number"
-            style="@style/Info"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="left" />
+    <!-- Race + nival -->
+    <TextView
+        android:id="@+id/race"
+        style="@style/Info"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left" />
 
-        <!-- Race + nival -->
-        <TextView
-            android:id="@+id/race"
-            style="@style/Info"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="left" />
+    <!-- Guilde-->
+    <TextView
+        android:id="@+id/guilde"
+        style="@style/Info"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left" />
 
-        <!-- Guilde-->
-        <TextView
-            android:id="@+id/guilde"
-            style="@style/Info"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="left" />
+    <!-- Zone de notif-->
+    <TextView
+        android:id="@+id/troll_info"
+        style="@style/TrollInfo"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal" />
 
-        <!-- Zone de notif-->
-        <TextView
-            android:id="@+id/troll_info"
-            style="@style/TrollInfo"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal" />
+    <TextView
+        android:id="@+id/technical_status"
+        style="@style/Status"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal" />
 
-        <TextView
-            android:id="@+id/technical_status"
-            style="@style/Status"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal" />
+  </LinearLayout>
 
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/blason"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
-        android:orientation="vertical"
-        android:scaleType="fitXY"
-        android:src="@drawable/loading" />
+  <ImageView
+      android:id="@+id/blason"
+      style="@style/blason"
+      android:contentDescription="@string/blason_alt"
+      android:orientation="vertical"
+      android:scaleType="fitXY"
+      android:src="@drawable/loading" />
 
 </LinearLayout>

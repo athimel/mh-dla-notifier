@@ -204,8 +204,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_qr_code_market:
-                Intent intent_market = new Intent(this, QRCodeMarketActivity.class);
-                startActivity(intent_market);
+                showQRCode();
                 return true;
             case R.id.action_credits:
                 showCredits();
@@ -238,6 +237,25 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
 
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.credits, null);
+
+        String title = getString(R.string.app_name) + " - " + getString(R.string.version_full);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setIcon(R.drawable.trarnoll_square_transparent)
+                .setTitle(title)
+                .setView(view)
+                .setPositiveButton(android.R.string.ok, new Dialog.OnClickListener() {
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+        builder.create().show();
+    }
+
+    protected void showQRCode() {
+
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.qr_code, null);
 
         String title = getString(R.string.app_name) + " - " + getString(R.string.version_full);
 

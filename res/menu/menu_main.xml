@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   #%L
   MountyHall DLA Notifier
   $Id$
@@ -24,46 +23,54 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:mhapp="http://schemas.android.com/apk/res-auto">
+    xmlns:mhapp="http://schemas.android.com/apk/res-auto">
 
-  <item android:id="@+id/action_play"
-        android:icon="@drawable/ic_action_play"
-        android:title="@string/play"
-        mhapp:showAsAction="ifRoom|withText"/>
+  <item
+      android:id="@+id/action_play"
+      android:icon="@drawable/ic_action_play"
+      android:title="@string/play"
+      mhapp:showAsAction="ifRoom|withText" />
 
-  <item android:id="@+id/action_refresh"
-        android:icon="@drawable/ic_action_refresh"
-        android:title="@string/refresh"
-        mhapp:showAsAction="ifRoom"/>
+  <item
+      android:id="@+id/action_refresh"
+      android:icon="@drawable/ic_action_refresh"
+      android:title="@string/refresh"
+      mhapp:showAsAction="ifRoom" />
 
-  <item android:id="@+id/action_preferences"
-        android:icon="@drawable/ic_action_settings"
-        android:title="@string/preferences"
-        mhapp:showAsAction="ifRoom"/>
+  <item
+      android:id="@+id/action_preferences"
+      android:icon="@drawable/ic_action_settings"
+      android:title="@string/preferences"
+      mhapp:showAsAction="ifRoom" />
 
-  <item android:id="@+id/action_displayAlarms"
-        android:icon="@drawable/ic_action_alarms"
-        android:title="@string/displayAlarms"
-        mhapp:showAsAction="ifRoom"/>
+  <item
+      android:id="@+id/action_displayAlarms"
+      android:icon="@drawable/ic_action_alarms"
+      android:title="@string/displayAlarms"
+      mhapp:showAsAction="ifRoom" />
 
-  <item android:id="@+id/action_displayRequests"
-        android:icon="@drawable/ic_action_view_as_list"
-        android:title="@string/displayRequests"
-        mhapp:showAsAction="ifRoom"/>
+  <item
+      android:id="@+id/action_displayRequests"
+      android:icon="@drawable/ic_action_view_as_list"
+      android:title="@string/displayRequests"
+      mhapp:showAsAction="ifRoom" />
 
-  <item android:id="@+id/action_qr_code_market"
-        android:icon="@drawable/ic_action_share"
-        android:title="@string/qr_code_market"
-        mhapp:showAsAction="ifRoom"/>
+  <item
+      android:id="@+id/action_qr_code_market"
+      android:icon="@drawable/ic_action_share"
+      android:title="@string/qr_code_market"
+      mhapp:showAsAction="ifRoom" />
 
-  <item android:id="@+id/action_register"
-        android:icon="@drawable/ic_action_edit"
-        android:title="@string/register"
-        mhapp:showAsAction="ifRoom"/>
+  <item
+      android:id="@+id/action_register"
+      android:icon="@drawable/ic_action_edit"
+      android:title="@string/register"
+      mhapp:showAsAction="ifRoom" />
 
-  <item android:id="@+id/action_credits"
-        android:icon="@drawable/ic_action_group"
-        android:title="@string/credits"
-        mhapp:showAsAction="ifRoom"/>
+  <item
+      android:id="@+id/action_credits"
+      android:icon="@drawable/ic_action_group"
+      android:title="@string/credits"
+      mhapp:showAsAction="ifRoom" />
 
 </menu>

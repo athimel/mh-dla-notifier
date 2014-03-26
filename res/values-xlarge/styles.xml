@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  #%L
+  MountyHall DLA Notifier
+  $Id$
+  $HeadURL$
+  %%
+  Copyright (C) 2012 - 2013 Zoumbox.org
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as
+  published by the Free Software Foundation, either version 3 of the 
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public 
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/gpl-3.0.html>.
+  #L%
+  -->
+
+<resources>
+
+  <style name="blason">
+    <item name="android:layout_width">280dp</item>
+    <item name="android:layout_height">280dp</item>
+  </style>
+
+  <style name="TextCommons">
+    <item name="android:gravity">center_horizontal</item>
+    <item name="android:singleLine">true</item>
+    <item name="android:textSize">24sp</item>
+  </style>
+
+  <style name="TrollInfo" parent="TextCommons">
+    <item name="android:textColor">@color/fg</item>
+    <item name="android:gravity">center_horizontal</item>
+    <item name="android:layout_marginTop">8dp</item>
+    <item name="android:textSize">24sp</item>
+  </style>
+
+  <style name="Status" parent="TextCommons">
+    <item name="android:textColor">@color/status</item>
+    <item name="android:gravity">center_horizontal</item>
+    <item name="android:layout_marginTop">3dp</item>
+    <item name="android:paddingLeft">1dp</item>
+    <item name="android:paddingRight">1dp</item>
+    <item name="android:textStyle">italic</item>
+    <item name="android:textSize">20sp</item>
+  </style>
+
+  <style name="caractCar" parent="caract">
+    <item name="android:width">104dp</item>
+  </style>
+
+  <style name="caractBm" parent="caract">
+    <item name="android:width">70dp</item>
+  </style>
+
+  <style name="caractAvg" parent="caract">
+    <item name="android:width">125dp</item>
+    <item name="android:textStyle">bold</item>
+  </style>
+
+  <style name="caractM" parent="caract">
+    <item name="android:width">104dp</item>
+  </style>
+
+</resources>

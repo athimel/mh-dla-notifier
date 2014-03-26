@@ -33,15 +33,7 @@
             android:noHistory="true">
     </activity>
 
-    <activity android:name=".QRCodeMarketActivity"
-              android:noHistory="true">
-      <intent-filter>
-        <action android:name="org.zoumbox.tarot.QR_CODE_MARKET"/>
-        <category android:name="android.intent.category.DEFAULT"/>
-      </intent-filter>
-    </activity>
-
-    <receiver android:name="Receiver">
+      <receiver android:name="Receiver">
       <intent-filter>
         <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
       </intent-filter>

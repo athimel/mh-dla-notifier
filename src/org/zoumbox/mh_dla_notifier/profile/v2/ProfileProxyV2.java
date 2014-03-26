@@ -24,8 +24,6 @@ package org.zoumbox.mh_dla_notifier.profile.v2;
  * #L%
  */
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -65,8 +63,6 @@ import com.google.gson.Gson;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
-
-import sun.print.resources.serviceui_fr;
 
 /**
  * @author Arnaud Thimel <thimel@codelutin.com>
@@ -246,8 +242,6 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
                 if (lastUpdate == null) {
                     return true;
                 }
-
-                // TODO AThimel 28/08/13 Improve update policy
 
                 int dailyQuota = GET_USABLE_QUOTA.apply(input.getCategory());
                 int minutesDelay = 24 * 60 / dailyQuota;
