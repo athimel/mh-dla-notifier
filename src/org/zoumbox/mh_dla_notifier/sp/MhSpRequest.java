@@ -57,11 +57,15 @@ public class MhSpRequest {
         this.date = date;
     }
 
+    public boolean lessThan24Hours() {
+        boolean result = System.currentTimeMillis() - date.getTime() < M_24_HOURS;
+        return result;
+    }
+
     @Override
     public String toString() {
-        boolean lessThan24Hours = System.currentTimeMillis() - date.getTime() < M_24_HOURS;
         String result = String.format("MhSpRequest{ date=%s%s, script=%8s %s }",
-                date, lessThan24Hours ? " (*)":"", script.getCategory().name(), script.name());
+                date, lessThan24Hours() ? " (*)":"", script.getCategory().name(), script.name());
         return result;
     }
 }

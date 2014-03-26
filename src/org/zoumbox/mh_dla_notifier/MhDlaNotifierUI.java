@@ -25,11 +25,14 @@ package org.zoumbox.mh_dla_notifier;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
 import org.zoumbox.mh_dla_notifier.profile.v2.ProfileProxyV2;
+import org.zoumbox.mh_dla_notifier.sp.MhSpRequest;
+import org.zoumbox.mh_dla_notifier.sp.PublicScriptsProxy;
 import org.zoumbox.mh_dla_notifier.troll.Race;
 import org.zoumbox.mh_dla_notifier.troll.Troll;
 import org.zoumbox.mh_dla_notifier.troll.Trolls;
@@ -223,12 +226,15 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
             case R.id.action_displayAlarms:
                 scheduleAlarms(true);
                 return true;
+            case R.id.action_displayRequests:
+                showLastRequests();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void showCredits() {
+    protected void showCredits() {
 
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.credits, null);
@@ -245,6 +251,36 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
                     }
                 });
         builder.create().show();
+    }
+
+    protected void showLastRequests() {
+
+        String title = getString(R.string.app_name);
+
+        Set<String> trollIds = getProfileProxy().getTrollIds(this);
+        if (trollIds != null && !trollIds.isEmpty()) {
+            List<MhSpRequest> requests = PublicScriptsProxy.
+                    listLatestRequestsSince(this, trollIds.iterator().next(), 2);
+
+            String message = "Les appels marqués par une (*) ont moins de 24H\n\n";
+            for (MhSpRequest request : requests) {
+                if (request.lessThan24Hours()) {
+                    message += "(*) ";
+                }
+                message += MhDlaNotifierUtils.formatDLAForDisplay(this, request.getDate()) + " - " + request.getScript().name() + "\n";
+            }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                    .setIcon(R.drawable.trarnoll_square_transparent)
+                    .setTitle(title)
+                    .setMessage(message)
+                    .setPositiveButton(android.R.string.ok, new Dialog.OnClickListener() {
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+            builder.create().show();
+        }
     }
 
     @Override

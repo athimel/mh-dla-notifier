@@ -35,6 +35,7 @@
   <string name="register">Saisie de vos identifiants</string>
   <string name="preferences">Préférences</string>
   <string name="displayAlarms">Afficher les alarmes</string>
+  <string name="displayRequests">Afficher les dernières requêtes</string>
   <string name="refresh">Mise à jour</string>
   <string name="qr_code_market">QR code (Market)</string>
   <string name="credits">Crédits</string>

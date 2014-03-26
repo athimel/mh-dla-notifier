@@ -167,10 +167,10 @@ public class MainActivity extends MhDlaNotifierUI {
         try {
             Map<ScriptCategory, Integer> quotas = PublicScriptsProxy.listQuotas(this, troll.getNumero());
             Log.i(TAG, String.format("24H quotas are: %s", Iterables.transform(quotas.entrySet(), QUOTA_ENTRY_TO_STRING)));
-            List<MhSpRequest> requests = PublicScriptsProxy.listLatestRequests(this, troll.getNumero());
-            Log.i(TAG, String.format("Here comes the %d latest requests:", requests.size()));
+            List<MhSpRequest> requests = PublicScriptsProxy.listLatestRequests(this, troll.getNumero(), 50);
+            Log.d(TAG, String.format("Here comes the %d latest requests:", requests.size()));
             for (MhSpRequest request : requests) {
-                Log.i(TAG, " -> " + request);
+                Log.d(TAG, " -> " + request);
             }
         } catch (Exception eee) {
             Log.w(TAG, "Exception", eee);

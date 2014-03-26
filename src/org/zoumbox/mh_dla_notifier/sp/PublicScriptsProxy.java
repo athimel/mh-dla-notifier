@@ -115,6 +115,9 @@ public class PublicScriptsProxy {
     protected static final String SQL_LIST_REQUESTS = String.format("SELECT %s, %s FROM %s WHERE %s=? ORDER BY %s DESC LIMIT %s",
             MhDlaSQLHelper.SCRIPTS_DATE_COLUMN,  MhDlaSQLHelper.SCRIPTS_SCRIPT_COLUMN, MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_DATE_COLUMN, "%d");
 
+    protected static final String SQL_LIST_REQUESTS_SINCE = String.format("SELECT %s, %s FROM %s WHERE %s=? AND %s>=? ORDER BY %s DESC ",
+            MhDlaSQLHelper.SCRIPTS_DATE_COLUMN,  MhDlaSQLHelper.SCRIPTS_SCRIPT_COLUMN, MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_DATE_COLUMN, MhDlaSQLHelper.SCRIPTS_DATE_COLUMN);
+
     protected static int computeRequestCount(Context context, ScriptCategory category, String trollId) {
 
         MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
@@ -298,10 +301,10 @@ public class PublicScriptsProxy {
         }
     }
 
-    public static List<MhSpRequest> listLatestRequests(Context context, String trollId) {
+    public static List<MhSpRequest> listLatestRequests(Context context, String trollId, int count) {
         List<MhSpRequest> result = Lists.newArrayList();
 
-        String query = String.format(SQL_LIST_REQUESTS, 50);
+        String query = String.format(SQL_LIST_REQUESTS, count);
 
 
         MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
@@ -310,6 +313,37 @@ public class PublicScriptsProxy {
         Calendar calendar = Calendar.getInstance();
 
         Cursor cursor = database.rawQuery(query, new String[]{trollId});
+        while (cursor.moveToNext()) {
+            Long timeMillis = cursor.getLong(0);
+            String scriptName = cursor.getString(1);
+
+            calendar.setTimeInMillis(timeMillis);
+            Date date = calendar.getTime();
+            PublicScript script = PublicScript.valueOf(scriptName);
+
+            MhSpRequest request = new MhSpRequest(date, script);
+            result.add(request);
+        }
+
+        cursor.close();
+        database.close();
+
+        return result;
+    }
+
+    public static List<MhSpRequest> listLatestRequestsSince(Context context, String trollId, int dayCount) {
+        List<MhSpRequest> result = Lists.newArrayList();
+
+        Calendar instance = Calendar.getInstance();
+        instance.add(Calendar.HOUR_OF_DAY, dayCount * -24);
+        Date sinceDate = instance.getTime();
+
+        MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
+        SQLiteDatabase database = helper.getReadableDatabase();
+
+        Calendar calendar = Calendar.getInstance();
+
+        Cursor cursor = database.rawQuery(SQL_LIST_REQUESTS_SINCE, new String[]{trollId, "" + sinceDate.getTime()});
         while (cursor.moveToNext()) {
             Long timeMillis = cursor.getLong(0);
             String scriptName = cursor.getString(1);
