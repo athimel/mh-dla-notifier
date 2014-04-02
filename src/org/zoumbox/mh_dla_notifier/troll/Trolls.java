@@ -28,6 +28,7 @@ import android.content.Context;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierUtils;
 
@@ -138,7 +139,7 @@ public class Trolls {
                 Date dla = troll.getDla();
                 if (MhDlaNotifierUtils.IS_IN_THE_FUTURE.apply(dla)) {
                     result = MhDlaNotifierUtils.formatHourNoSecondsForDisplay(context, dla);
-                    result += " - " + troll.getPa() + "PA";
+                    result += new Random(System.currentTimeMillis()).nextBoolean() ? "/" : " " + troll.getPa() + "PA";
                 } else {
                     Date nextDla = GET_NEXT_DLA.apply(troll);
                     result = String.format("(%s)", MhDlaNotifierUtils.formatHourNoSecondsForDisplay(context, nextDla));
