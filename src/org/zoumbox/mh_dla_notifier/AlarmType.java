@@ -29,10 +29,16 @@ package org.zoumbox.mh_dla_notifier;
  */
 public enum AlarmType {
     CURRENT_DLA(111111),
-    AFTER_CURRENT_DLA(222222),
     NEXT_DLA(333333),
+
+    AFTER_CURRENT_DLA(222222),
     AFTER_NEXT_DLA(444444),
-    DLA_EVEN_AFTER(555555);
+
+    NEXT_DLA_ACTIVATION(300000),
+    DLA_EVEN_AFTER_ACTIVATION(555555),
+    DLA_EVEN_EVEN_AFTER_ACTIVATION(666666),
+
+    IN_THE_FUTURE_ACTIVATION(999999);
 
     protected int identifier;
 

@@ -186,7 +186,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
     protected void onPostResume() {
         super.onPostResume();
 
-        Log.i(TAG, "Clear notifications");
+        Log.d(TAG, "Clear notifications");
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
     }
@@ -345,7 +345,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         MenuItem result = null;
         if (actionBarMenu != null) {
             result = actionBarMenu.findItem(R.id.action_refresh);
-            Log.i(TAG, "Menu item from actionBarMenu: " + result);
+            Log.d(TAG, "Menu item from actionBarMenu: " + result);
         }
         return result;
     }

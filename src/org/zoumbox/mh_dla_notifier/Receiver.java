@@ -239,29 +239,37 @@ public class Receiver extends BroadcastReceiver {
                 Date currentDla = troll.getDla();
                 Date beforeNextDla = alarms.get(AlarmType.NEXT_DLA);
                 Date nextDla = Trolls.GET_NEXT_DLA.apply(troll);
+                Date nextDlaActivation = alarms.get(AlarmType.NEXT_DLA_ACTIVATION);
 
-                if (now.after(beforeCurrentDla) && now.before(currentDla)) {
-                    Log.i(TAG, String.format("Need to notify DLA='%s' about to expire", currentDla));
+                if (between(now, beforeCurrentDla, currentDla)) {
+                    Log.d(TAG, String.format("Need to notify DLA='%s' about to expire", currentDla));
                     int pa = troll.getPa();
                     boolean willNotify = needsNotificationAccordingToPA(preferences, pa);
-                    Log.i(TAG, String.format("PA=%d. Will notify? %b", pa, willNotify));
+                    Log.d(TAG, String.format("PA=%d. Will notify? %b", pa, willNotify));
                     if (willNotify) {
                         notifyCurrentDlaAboutToExpire(receivedContext, currentDla, pa, preferences);
                     }
                 } else {
-                    Log.i(TAG, String.format("No need to notify for DLA=%s", currentDla));
+                    Log.d(TAG, String.format("No need to notify for DLA=%s", currentDla));
                 }
 
-                if (now.after(beforeNextDla) && now.before(nextDla)) {
-                    Log.i(TAG, String.format("Need to notify NDLA='%s' about to expire", nextDla));
+                if (between(now, nextDlaActivation, beforeNextDla)) {
+                    Log.d(TAG, String.format("Need to notify NDLA='%s' not activated", nextDla));
+                    notifyNextDlaNotActivated(receivedContext, nextDla, preferences);
+                } else {
+                    Log.d(TAG, String.format("No need to notify for NDLA=%s", nextDla));
+                }
+
+                if (between(now, beforeNextDla, nextDla)) {
+                    Log.d(TAG, String.format("Need to notify NDLA='%s' about to expire", nextDla));
                     notifyNextDlaAboutToExpire(receivedContext, nextDla, preferences);
                 } else {
-                    Log.i(TAG, String.format("No need to notify for NDLA=%s", nextDla));
+                    Log.d(TAG, String.format("No need to notify for NDLA=%s", nextDla));
                 }
 
                 if (requestUpdate && troll.getPvVariation() < 0 && preferences.notifyOnPvLoss) {
                     int pvLoss = Math.abs(troll.getPvVariation());
-                    Log.i(TAG, String.format("Troll lost %d PV", pvLoss));
+                    Log.d(TAG, String.format("Troll lost %d PV", pvLoss));
                     notifyPvLoss(receivedContext, pvLoss, troll.getPv(), preferences);
                 }
 
@@ -278,6 +286,10 @@ public class Receiver extends BroadcastReceiver {
             }
         }
 
+    }
+
+    protected boolean between(Date date, Date lowerBound, Date upperBound) {
+        return date.after(lowerBound) && date.before(upperBound);
     }
 
     protected void refreshDla(Context context, String trollId, boolean requestUpdate) {
@@ -399,6 +411,16 @@ public class Receiver extends BroadcastReceiver {
         }
         String format = context.getText(R.string.current_dla_expiring_text).toString();
         CharSequence notifText = String.format(format, MhDlaNotifierUtils.formatHour(dla), pa);
+
+        Pair<Boolean, Boolean> soundAndVibrate = soundAndVibrate(context, preferences);
+
+        displayNotification(context, NotificationType.DLA, notifTitle, notifText, soundAndVibrate);
+    }
+
+    protected void notifyNextDlaNotActivated(Context context, Date dla, PreferencesHolder preferences) {
+        CharSequence notifTitle = context.getText(R.string.next_dla_not_activated_title);
+        String format = context.getText(R.string.next_dla_not_activated_text).toString();
+        CharSequence notifText = String.format(format, MhDlaNotifierUtils.formatHour(dla));
 
         Pair<Boolean, Boolean> soundAndVibrate = soundAndVibrate(context, preferences);
 

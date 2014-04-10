@@ -62,28 +62,62 @@ public class Alarms {
         if (currentDla != null) {
             Date nextDla = Trolls.GET_NEXT_DLA.apply(troll);
 
-            Log.i(TAG, String.format("Computing wakeups for [DLA=%s] [NDLA=%s]", currentDla, nextDla));
+            Log.d(TAG, String.format("Computing wakeups for [DLA=%s] [NDLA=%s]", currentDla, nextDla));
+
+            // DLA check
+
+            result.put(AlarmType.CURRENT_DLA, MhDlaNotifierUtils.substractMinutes(currentDla, notificationDelay));
+            result.put(AlarmType.NEXT_DLA, MhDlaNotifierUtils.substractMinutes(nextDla, notificationDelay));
+
+            // between DLAs
 
             long millisecondsBetween = nextDla.getTime() - currentDla.getTime();
 
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(currentDla.getTime());
-            calendar.add(Calendar.MILLISECOND, new Long(millisecondsBetween / 2).intValue());
+            calendar.add(Calendar.MILLISECOND, Long.valueOf(millisecondsBetween / 2).intValue());
             Date afterCurrentDla = calendar.getTime();
 
             calendar.setTimeInMillis(nextDla.getTime());
-            calendar.add(Calendar.MILLISECOND, new Long(millisecondsBetween / 2).intValue());
+            calendar.add(Calendar.MILLISECOND, Long.valueOf(millisecondsBetween / 2).intValue());
             Date afterNextDla = calendar.getTime();
 
-            calendar.setTimeInMillis(nextDla.getTime());
-            calendar.add(Calendar.MILLISECOND, new Long(millisecondsBetween * 9 / 10).intValue());
-            Date dlaEvenAfter = calendar.getTime();
-
-            result.put(AlarmType.CURRENT_DLA, MhDlaNotifierUtils.substractMinutes(currentDla, notificationDelay));
             result.put(AlarmType.AFTER_CURRENT_DLA, afterCurrentDla);
-            result.put(AlarmType.NEXT_DLA, MhDlaNotifierUtils.substractMinutes(nextDla, notificationDelay));
             result.put(AlarmType.AFTER_NEXT_DLA, afterNextDla);
-            result.put(AlarmType.DLA_EVEN_AFTER, MhDlaNotifierUtils.substractMinutes(dlaEvenAfter, notificationDelay));
+
+            // Activation des 3 prochaines DLA
+
+            int activationDelay = 60;
+            while (notificationDelay >= activationDelay) {
+                activationDelay += 60;
+            }
+
+            Date nextDlaActivation = MhDlaNotifierUtils.substractMinutes(nextDla, activationDelay);
+
+            int dlaDuration = Trolls.GET_NEXT_DLA_DURATION.apply(troll);
+            calendar.setTimeInMillis(nextDlaActivation.getTime());
+            calendar.add(Calendar.MINUTE, dlaDuration);
+            Date dlaEvenAfterActivation = calendar.getTime();
+
+            calendar.add(Calendar.MINUTE, dlaDuration);
+            Date dlaEvenEvenAfterActivation = calendar.getTime();
+
+            result.put(AlarmType.NEXT_DLA_ACTIVATION, nextDlaActivation);
+            result.put(AlarmType.DLA_EVEN_AFTER_ACTIVATION, dlaEvenAfterActivation);
+            result.put(AlarmType.DLA_EVEN_EVEN_AFTER_ACTIVATION, dlaEvenEvenAfterActivation);
+
+            // Activation d'une DLA toujours dans le futur
+
+            calendar.setTimeInMillis(dlaEvenEvenAfterActivation.getTime());
+            calendar.add(Calendar.MINUTE, dlaDuration);
+            Date inTheFutureActivation = calendar.getTime();
+            while (!MhDlaNotifierUtils.IS_IN_THE_FUTURE.apply(inTheFutureActivation)) {
+                calendar.add(Calendar.MINUTE, dlaDuration);
+                inTheFutureActivation = calendar.getTime();
+            }
+
+            result.put(AlarmType.IN_THE_FUTURE_ACTIVATION, inTheFutureActivation);
+
         }
 
         Log.i(TAG, "Computed wakeups: " + result);
@@ -119,7 +153,7 @@ public class Alarms {
             Log.i(TAG, String.format("Scheduled wakeup [%s] at '%s'", type, alarmDate));
             return true;
         } else {
-            Log.i(TAG, String.format("No wakeup [%s] scheduled at '%s'", type, alarmDate));
+            Log.d(TAG, String.format("No wakeup [%s] scheduled at '%s'", type, alarmDate));
             return false;
         }
     }

@@ -151,7 +151,7 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
         String trollIdsString = getPreferences(context).getString(PROPERTY_TROLL_IDS, "");
         Iterable<String> trollIds = Splitter.on(",").omitEmptyStrings().split(trollIdsString);
         List<String> result = Lists.newArrayList(trollIds);
-        Log.i(TAG, "Managed trolls: " + result);
+        Log.d(TAG, "Managed trolls: " + result);
         return result;
     }
 
@@ -299,7 +299,7 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
 
         Preconditions.checkNotNull(troll);
 
-        Log.i(TAG, String.format("[%s] Update scripts: %s", new Date(), scripts));
+        Log.d(TAG, String.format("[%s] Update scripts: %s", new Date(), scripts));
 
         int pvBeforeUpdate = troll.getPvActuelsCar();
 
@@ -309,7 +309,7 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
             PublicScripts.pushToTroll(troll, publicScriptResult, logCallback);
         }
 
-        Log.i(TAG, String.format("[%s] Update finished", new Date()));
+        Log.d(TAG, String.format("[%s] Update finished", new Date()));
 
         int pvAfterUpdate = troll.getPvActuelsCar();
 

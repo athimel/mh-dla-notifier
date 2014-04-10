@@ -141,7 +141,7 @@ public class MainActivity extends MhDlaNotifierUI {
             error = "Quota atteint";
         } else if (exception instanceof PublicScriptException) {
             String message = exception.getMessage();
-            Log.i(TAG, "Erreur : " + message);
+            Log.w(TAG, "Erreur : " + message);
             showToast(message);
 
             if (message.startsWith("Erreur 2") || message.startsWith("Erreur 3")) {
@@ -151,7 +151,7 @@ public class MainActivity extends MhDlaNotifierUI {
             }
         } else if (exception instanceof NetworkUnavailableException) {
             String message = "Pas de réseau, mise à jour des informations impossible";
-            Log.i(TAG, message);
+            Log.w(TAG, message);
             showToast(message);
 
             error = "Pas de réseau";
@@ -195,7 +195,7 @@ public class MainActivity extends MhDlaNotifierUI {
     protected void scheduleAlarms(boolean displayToast) {
 
         boolean fromNotification = getIntent().getBooleanExtra(EXTRA_FROM_NOTIFICATION, false);
-        Log.i(TAG, "From notification: " + fromNotification);
+        Log.d(TAG, "From notification: " + fromNotification);
 
         if (!fromNotification) {
             String trollId = getCurrentTrollId();

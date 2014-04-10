@@ -81,6 +81,9 @@
   <string name="current_dla_expiring_text" formatted="false">DLA : %s - %d PA restant(s)</string>
   <string name="current_dla_expired_title">Vous pouvez réactiver votre DLA !</string>
 
+  <string name="next_dla_not_activated_title">Pensez à activer votre prochaine DLA</string>
+  <string name="next_dla_not_activated_text" formatted="false">Prochaine DLA : %s</string>
+
   <string name="next_dla_expiring_title">Attention à votre prochaine DLA !</string>
   <string name="next_dla_expiring_text" formatted="false">Prochaine DLA : %s</string>
   <string name="next_dla_expired_title">Votre DLA suivante a également expiré !</string>

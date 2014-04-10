@@ -139,7 +139,7 @@ public class PublicScriptsProxy {
 
         String format = "Quota for category %s and troll=%s since '%s' is: %d";
         String message = String.format(format, category, trollId, sinceDate, result);
-        Log.i(TAG, message);
+        Log.d(TAG, message);
 
         return result;
     }
@@ -148,7 +148,7 @@ public class PublicScriptsProxy {
 
         String format = "Saving fetch for category %s (script=%s) and troll=%s";
         String message = String.format(format, script.category, script, trollId);
-        Log.i(TAG, message);
+        Log.d(TAG, message);
 
         MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
         SQLiteDatabase database = helper.getWritableDatabase();
@@ -182,7 +182,7 @@ public class PublicScriptsProxy {
 
         String format = "Last update for category %s (script=%s) and troll=%s is: '%s'";
         String message = String.format(format, script.category, script, trollId, result);
-        Log.i(TAG, message);
+        Log.d(TAG, message);
 
         return result;
     }
