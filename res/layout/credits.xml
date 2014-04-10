@@ -115,7 +115,7 @@
           android:layout_width="60dp"
           android:layout_height="60dp"
           android:scaleType="fitXY"
-          android:src="@drawable/ic_contact_picture" />
+          android:src="@drawable/testers" />
 
       <LinearLayout
           android:orientation="vertical"
