@@ -97,8 +97,9 @@ public enum PublicScript {
     Caract(
             ScriptCategory.DYNAMIC,
             "http://sp.mountyhall.com/SP_Caract.php?Numero=%s&Motdepasse=%s",
+            // http://dev.zoumbox.org/issues/161 : 7th value is supposed to be pvActuels but is bogus in SP (reported by email on april 10th 2014)
             Lists.newArrayList(
-                    "type", "attaque", "esquive", "degats", "regeneration", "pvMax", "pvActuels", "vue", "rm", "mm", "armure", "dureeDuTour", "poids", "concentration"
+                    "type", "attaque", "esquive", "degats", "regeneration", "pvMax", "pvActuelsFake", "vue", "rm", "mm", "armure", "dureeDuTour", "poids", "concentration"
             ),
             Sets.newHashSet("BMM", "BMP", "CAR")
     ),
