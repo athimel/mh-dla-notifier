@@ -289,7 +289,7 @@ public class Receiver extends BroadcastReceiver {
     }
 
     protected boolean between(Date date, Date lowerBound, Date upperBound) {
-        return date.after(lowerBound) && date.before(upperBound);
+        return date.compareTo(lowerBound) >= 0 && date.compareTo(upperBound) <= 0;
     }
 
     protected void refreshDla(Context context, String trollId, boolean requestUpdate) {
