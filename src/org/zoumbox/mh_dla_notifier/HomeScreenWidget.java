@@ -37,6 +37,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -59,23 +60,31 @@ public class HomeScreenWidget extends AppWidgetProvider {
 
             // Compute DLA
             ProfileProxyV2 profileProxy = new ProfileProxyV2();
-            String dlaText = getDlaText(context, profileProxy);
+            Pair<String, Bitmap> pair = getDlaText(context, profileProxy);
 
             // Get the layout for the App Widget and attach an on-click listener
             // to the button
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.home_screen_widget);
             views.setOnClickPendingIntent(R.id.widgetLayout, startActivityIntent);
-            views.setTextViewText(R.id.widgetDla, dlaText);
+            views.setTextViewText(R.id.widgetDla, pair.left());
+
+            Bitmap blasonImage = pair.right();
+            if (blasonImage == null) {
+                views.setImageViewResource(R.id.widgetImage, R.drawable.trarnoll_square_transparent_128);
+            } else {
+                views.setImageViewBitmap(R.id.widgetImage, blasonImage);
+            }
 
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
     }
 
-    protected String getDlaText(Context context, ProfileProxy profileProxy) {
+    protected Pair<String, Bitmap> getDlaText(Context context, ProfileProxy profileProxy) {
 
         Set<String> trollIds = profileProxy.getTrollIds(context);
-        String result = context.getString(R.string.app_name);
+        String text = context.getString(R.string.app_name);
+        Bitmap blason = null;
         if (trollIds != null && !trollIds.isEmpty()) {
             String firstTrollId = trollIds.iterator().next();
             try {
@@ -83,12 +92,13 @@ public class HomeScreenWidget extends AppWidgetProvider {
                 Pair<Troll, Boolean> pair = profileProxy.fetchTrollWithoutUpdate(context, firstTrollId);
                 Troll troll = pair.left();
 
-                result = Trolls.getWidgetDlaTextFunction(context).apply(troll);
+                text = Trolls.getWidgetDlaTextFunction(context).apply(troll);
+                blason = MhDlaNotifierUtils.loadBlason(troll.getBlason(), context.getCacheDir());
             } catch (MissingLoginPasswordException e) {
                 Log.w(TAG, "Unable to get troll's DLA", e);
             }
         }
-        return result;
+        return Pair.of(text, blason);
     }
 
 }

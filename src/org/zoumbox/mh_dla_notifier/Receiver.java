@@ -350,11 +350,18 @@ public class Receiver extends BroadcastReceiver {
 
             if (appWidgetIds != null && appWidgetIds.length > 0) {
                 String dlaText = Trolls.getWidgetDlaTextFunction(context).apply(troll);
+                Bitmap blason = MhDlaNotifierUtils.loadBlason(troll.getBlason(), context.getCacheDir());
 
                 for (int appWidgetId : appWidgetIds) {
 
                     RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.home_screen_widget);
                     views.setTextViewText(R.id.widgetDla, dlaText);
+
+                    if (blason == null) {
+                        views.setImageViewResource(R.id.widgetImage, R.drawable.trarnoll_square_transparent_128);
+                    } else {
+                        views.setImageViewBitmap(R.id.widgetImage, blason);
+                    }
 
                     // Tell the AppWidgetManager to perform an update on the current app widget
                     widgetManager.updateAppWidget(appWidgetId, views);

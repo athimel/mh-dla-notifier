@@ -730,11 +730,18 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
                 if (appWidgetIds != null && appWidgetIds.length > 0) {
                     Troll troll = params[0];
                     String dlaText = Trolls.getWidgetDlaTextFunction(MhDlaNotifierUI.this).apply(troll);
+                    Bitmap blasonImage = MhDlaNotifierUtils.loadBlason(troll.getBlason(), getCacheDir());
 
                     for (int appWidgetId : appWidgetIds) {
 
                         RemoteViews views = new RemoteViews(getPackageName(), R.layout.home_screen_widget);
                         views.setTextViewText(R.id.widgetDla, dlaText);
+
+                        if (blasonImage == null) {
+                            views.setImageViewResource(R.id.widgetImage, R.drawable.trarnoll_square_transparent_128);
+                        } else {
+                            views.setImageViewBitmap(R.id.widgetImage, blasonImage);
+                        }
 
                         // Tell the AppWidgetManager to perform an update on the current app widget
                         widgetManager.updateAppWidget(appWidgetId, views);
