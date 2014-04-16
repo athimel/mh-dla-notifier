@@ -210,11 +210,20 @@ public class Receiver extends BroadcastReceiver {
         StrictMode.setThreadPolicy(policy);
 
         try {
+            Troll troll = getProfileProxy().fetchTrollWithoutUpdate(context, trollId).left();
             if (requestUpdate) {
-                refreshDla(context, trollId, requestUpdate);
+                // If the current DLA already has no more PA, skip update
+                boolean skipUpdate = false;
+                if (AlarmType.CURRENT_DLA.name().equals(type)) {
+                    skipUpdate = troll.getPa() == 0;
+                }
+                if (skipUpdate) {
+                    trollLoaded(troll, context, false);
+                } else {
+                    refreshDla(context, trollId);
+                }
             } else if (requestAlarmRegistering) {
-                Troll troll = getProfileProxy().fetchTrollWithoutUpdate(context, trollId).left();
-                trollLoaded(troll, context, requestUpdate);
+                trollLoaded(troll, context, false);
             } else {
                 Log.i(TAG, "Skip loading Troll");
             }
@@ -292,14 +301,14 @@ public class Receiver extends BroadcastReceiver {
         return date.compareTo(lowerBound) >= 0 && date.compareTo(upperBound) <= 0;
     }
 
-    protected void refreshDla(Context context, String trollId, boolean requestUpdate) {
+    protected void refreshDla(Context context, String trollId) {
         Troll troll = null;
         try {
             troll = getProfileProxy().refreshDLA(context, trollId);
         } catch (MissingLoginPasswordException e) {
             Log.w(TAG, "Missing trollId and/or password, unable to refresh DLA...");
         }
-        trollLoaded(troll, context, requestUpdate);
+        trollLoaded(troll, context, true);
     }
 
 //    protected void refreshDla(Context context, String trollId, boolean requestUpdate) {
