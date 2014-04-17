@@ -181,11 +181,26 @@ public class MainActivity extends MhDlaNotifierUI {
         scheduleAlarms(false);
     }
 
-    protected void showAlarmToast(Date dla) {
-        if (dla != null) {
-            String text = getText(R.string.next_alarm).toString();
-            String day = MhDlaNotifierUtils.formatDay(dla);
-            String hour = MhDlaNotifierUtils.formatHour(dla);
+    protected void showAlarmToast(AlarmType type, Date date) {
+        if (date != null) {
+            int resId;
+            switch (type) {
+                case CURRENT_DLA:
+                    resId = R.string.alarm_scheduled_for_current_dla;
+                    break;
+                case NEXT_DLA_ACTIVATION:
+                    resId = R.string.alarm_scheduled_for_next_dla_activation;
+                    break;
+                case NEXT_DLA:
+                    resId = R.string.alarm_scheduled_for_next_dla;
+                    break;
+                default:
+                    resId = R.string.alarm_scheduled;
+                    break;
+            }
+            String text = getText(resId).toString();
+            String day = MhDlaNotifierUtils.formatDay(date);
+            String hour = MhDlaNotifierUtils.formatHour(date);
             String message = String.format(text, day, hour);
             showToast(message);
         }
@@ -234,11 +249,13 @@ public class MainActivity extends MhDlaNotifierUI {
                 Map<AlarmType, Date> scheduledAlarms = result.left();
                 if (scheduledAlarms != null) {
                     Date currentDlaAlarm = scheduledAlarms.get(AlarmType.CURRENT_DLA);
+                    Date nextDlaActivationAlarm = scheduledAlarms.get(AlarmType.NEXT_DLA_ACTIVATION);
                     Date nextDlaAlarm = scheduledAlarms.get(AlarmType.NEXT_DLA);
 
                     if (displayToast) {
-                        showAlarmToast(currentDlaAlarm);
-                        showAlarmToast(nextDlaAlarm);
+                        showAlarmToast(AlarmType.CURRENT_DLA, currentDlaAlarm);
+                        showAlarmToast(AlarmType.NEXT_DLA_ACTIVATION, nextDlaActivationAlarm);
+                        showAlarmToast(AlarmType.NEXT_DLA, nextDlaAlarm);
                     }
 
                 }

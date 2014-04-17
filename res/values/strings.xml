@@ -74,7 +74,10 @@
   <string name="RM">Résistance à la Magie</string>
   <string name="MM">Maîtrise de la Magie</string>
 
-  <string name="next_alarm" formatted="false">Notification programmée le %s à %s</string>
+  <string name="alarm_scheduled" formatted="false">Notification programmée le %s à %s</string>
+  <string name="alarm_scheduled_for_current_dla" formatted="false">Avant votre DLA, le %s à %s</string>
+  <string name="alarm_scheduled_for_next_dla_activation" formatted="false">Pour activation de votre prochaine DLA, le %s à %s</string>
+  <string name="alarm_scheduled_for_next_dla" formatted="false">Avant votre prochaine DLA, le %s à %s</string>
 
   <string name="current_dla_expiring_title">Attention à votre DLA !</string>
   <string name="current_dla_expiring_title_noPA">Votre DLA va bientôt expirer</string>
