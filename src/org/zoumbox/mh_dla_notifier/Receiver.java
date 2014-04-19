@@ -92,16 +92,16 @@ public class Receiver extends BroadcastReceiver {
             public boolean apply(Context context) {
                 // Check if the device just restarted
                 long elapsedSinceLastRestartCheck = getProfileProxy().getElapsedSinceLastRestartCheck(context);
-                Log.i(TAG, "Elapsed since last restart check: " + elapsedSinceLastRestartCheck + "ms ~= " + (elapsedSinceLastRestartCheck / 60000) + "min");
+                Log.d(TAG, "Elapsed since last restart check: " + elapsedSinceLastRestartCheck + "ms ~= " + (elapsedSinceLastRestartCheck / 60000) + "min");
 
                 long uptime = SystemClock.uptimeMillis();
-                Log.i(TAG, "Uptime: " + uptime + "ms ~= " + (uptime / 60000) + "min");
+                Log.d(TAG, "Uptime: " + uptime + "ms ~= " + (uptime / 60000) + "min");
 
                 boolean result = elapsedSinceLastRestartCheck > uptime;
                 if (result) {
                     getProfileProxy().restartCheckDone(context);
                 }
-                Log.i(TAG, "Device restarted since last check: " + result);
+                Log.d(TAG, "Device restarted since last check: " + result);
                 return result;
             }
         };
@@ -116,15 +116,15 @@ public class Receiver extends BroadcastReceiver {
                 // Check if the device restarted since last update
                 Long elapsedSinceLastSuccess = getProfileProxy().getElapsedSinceLastUpdateSuccess(context, trollId);
                 if (elapsedSinceLastSuccess != null) {
-                    Log.i(TAG, "Elapsed since last update success: " + elapsedSinceLastSuccess + "ms ~= " + (elapsedSinceLastSuccess / 60000) + "min");
+                    Log.d(TAG, "Elapsed since last update success: " + elapsedSinceLastSuccess + "ms ~= " + (elapsedSinceLastSuccess / 60000) + "min");
 
-                    long upTime = SystemClock.uptimeMillis();
-                    Log.i(TAG, "Uptime: " + upTime + "ms ~= " + (upTime / 60000) + "min");
+                    long uptime = SystemClock.uptimeMillis();
+                    Log.d(TAG, "Uptime: " + uptime + "ms ~= " + (uptime / 60000) + "min");
 
-                    result = elapsedSinceLastSuccess > upTime; // Device restarted since last update
-                    Log.i(TAG, "shouldUpdateBecauseOfRestart: " + result);
+                    result = elapsedSinceLastSuccess > uptime; // Device restarted since last update
+                    Log.d(TAG, "shouldUpdateBecauseOfRestart: " + result);
                     result &= elapsedSinceLastSuccess > (1000l * 60l * 60l * 2l); // 2 hours
-                    Log.i(TAG, "shouldUpdateBecauseOfRestart (<=2hours): " + result);
+                    Log.d(TAG, "shouldUpdateBecauseOfRestart (<=2hours): " + result);
                 }
                 return result;
             }
@@ -137,9 +137,9 @@ public class Receiver extends BroadcastReceiver {
             @Override
             public boolean apply(Context context) {
                 String lastUpdateResult = getProfileProxy().getLastUpdateResult(context, trollId);
-                Log.i(TAG, "lastUpdateResult: " + lastUpdateResult);
+                Log.d(TAG, "lastUpdateResult: " + lastUpdateResult);
                 boolean result = lastUpdateResult != null && lastUpdateResult.startsWith("NETWORK ERROR");
-                Log.i(TAG, "shouldUpdateBecauseOfNetworkFailure: " + result);
+                Log.d(TAG, "shouldUpdateBecauseOfNetworkFailure: " + result);
                 return result;
             }
         };
@@ -150,7 +150,7 @@ public class Receiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         String intentAction = intent.getAction();
-        Log.i(TAG, String.format("<<< %s#onReceive action=%s", getClass().getName(), intentAction));
+        Log.d(TAG, String.format("<<< %s#onReceive action=%s", getClass().getName(), intentAction));
 
         boolean connectivityChanged = ConnectivityManager.CONNECTIVITY_ACTION.equals(intentAction);
         boolean justGotConnection = false;
@@ -162,11 +162,11 @@ public class Receiver extends BroadcastReceiver {
             NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 
             justGotConnection = activeNetwork != null && activeNetwork.isConnected();
-            Log.i(TAG, "Connectivity change. isConnected=" + justGotConnection);
+            Log.d(TAG, "Connectivity change. isConnected=" + justGotConnection);
         }
 
         if (connectivityChanged && !justGotConnection) {
-            Log.i(TAG, "Just lost connectivity, nothing to do");
+            Log.d(TAG, "Just lost connectivity, nothing to do");
             return;
         }
 
@@ -174,15 +174,15 @@ public class Receiver extends BroadcastReceiver {
         if (Strings.isNullOrEmpty(trollId)) {
             Set<String> trollIds = getProfileProxy().getTrollIds(context);
             if (trollIds.isEmpty()) {
-                Log.i(TAG, "No troll registered, exiting...");
+                Log.d(TAG, "No troll registered, exiting...");
                 return;
             }
             trollId = trollIds.iterator().next();
-            Log.i(TAG, "TrollId not defined, using the fist one: " + trollId);
+            Log.d(TAG, "TrollId not defined, using the fist one: " + trollId);
         }
 
         if (!getProfileProxy().isPasswordDefined(context, trollId)) {
-            Log.i(TAG, "Troll password is not defined, exiting...");
+            Log.d(TAG, "Troll password is not defined, exiting...");
             return;
         }
 
@@ -203,7 +203,7 @@ public class Receiver extends BroadcastReceiver {
             ).apply(context);
         }
 
-        Log.i(TAG, String.format("requestUpdate=%b ; requestAlarmRegistering=%b", requestUpdate, requestAlarmRegistering));
+        Log.d(TAG, String.format("requestUpdate=%b ; requestAlarmRegistering=%b", requestUpdate, requestAlarmRegistering));
 
         // FIXME AThimel 14/02/14 Remove ASAP
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -225,7 +225,7 @@ public class Receiver extends BroadcastReceiver {
             } else if (requestAlarmRegistering) {
                 trollLoaded(troll, context, false);
             } else {
-                Log.i(TAG, "Skip loading Troll");
+                Log.d(TAG, "Skip loading Troll");
             }
         } catch (MissingLoginPasswordException mde) {
             Log.w(TAG, "Missing trollId and/or password, exiting...");
