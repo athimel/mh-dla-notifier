@@ -92,11 +92,48 @@ public class Trolls {
             int pvMax = GET_MAX_PV.apply(troll);
             int result = 0;
             if (pvMax > 0) {
-                result = (250 * (pvMax - troll.pvActuelsCar) / pvMax);
+                // La règle est : 250 min./ nb PV total x PV manquants
+                // source (http://mountypedia.mountyhall.com/Mountyhall/PV)
+                double value = 250d / pvMax;
+                value = Math.floor(value * 100d) / 100d; // On arrondi à 2 nombres après la virgule
+                int pvManquants = pvMax - troll.pvActuelsCar;
+                value = value * pvManquants;
+                result = Double.valueOf(value).intValue();
             }
             return result;
         }
     };
+
+//    public static void main(String[] args) {
+//
+//        {
+//            Troll troll = new Troll();
+//            troll.setPvMaxCar(115);
+//            troll.setPvActuelsCar(92);
+//
+//            Integer integer = GET_PV_DLA_MALUS.apply(troll);
+//            System.out.println(integer); // 49 espéré
+//        }
+//
+//        {
+//            Troll troll = new Troll();
+//            troll.setPvMaxCar(100);
+//            troll.setPvActuelsCar(50);
+//
+//            Integer integer = GET_PV_DLA_MALUS.apply(troll);
+//            System.out.println(integer); // 125 espéré
+//        }
+//
+//        {
+//            Troll troll = new Troll();
+//            troll.setPvMaxCar(150);
+//            troll.setPvActuelsCar(100);
+//
+//            Integer integer = GET_PV_DLA_MALUS.apply(troll);
+//            System.out.println(integer); // 83 espéré
+//        }
+//
+//    }
 
     public static final Function<Troll, Integer> GET_NEXT_DLA_DURATION = new Function<Troll, Integer>() {
         @Override
@@ -108,7 +145,6 @@ public class Trolls {
             int computed = dureeDuTour.intValue() + poids.intValue() + dlaPVMalus;
             int result = Math.max(computed, Double.valueOf(troll.dureeDuTourCar).intValue());
             return result;
-//            return 8;
         }
     };
 
