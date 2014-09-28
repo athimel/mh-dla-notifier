@@ -179,6 +179,9 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
 
+        // Because of an unexpected NPE
+        trollInfo = (TextView) findViewById(R.id.troll_info);
+
         loadTroll();
     }
 
