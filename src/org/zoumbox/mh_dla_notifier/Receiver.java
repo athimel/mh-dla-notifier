@@ -239,59 +239,61 @@ public class Receiver extends BroadcastReceiver {
 
             // Re-schedule them (in case it changed)
             String trollId = troll.getNumero();
-            try {
-                Map<AlarmType, Date> alarms = Alarms.getAlarms(receivedContext, getProfileProxy(), trollId);
+            if (!Strings.isNullOrEmpty(trollId)) {
+                try {
+                    Map<AlarmType, Date> alarms = Alarms.getAlarms(receivedContext, getProfileProxy(), trollId);
 
-                Date now = new Date();
+                    Date now = new Date();
 
-                Date beforeCurrentDla = alarms.get(AlarmType.CURRENT_DLA);
-                Date currentDla = troll.getDla();
-                Date beforeNextDla = alarms.get(AlarmType.NEXT_DLA);
-                Date nextDla = Trolls.GET_NEXT_DLA.apply(troll);
-                Date nextDlaActivation = alarms.get(AlarmType.NEXT_DLA_ACTIVATION);
+                    Date beforeCurrentDla = alarms.get(AlarmType.CURRENT_DLA);
+                    Date currentDla = troll.getDla();
+                    Date beforeNextDla = alarms.get(AlarmType.NEXT_DLA);
+                    Date nextDla = Trolls.GET_NEXT_DLA.apply(troll);
+                    Date nextDlaActivation = alarms.get(AlarmType.NEXT_DLA_ACTIVATION);
 
-                if (between(now, beforeCurrentDla, currentDla)) {
-                    Log.d(TAG, String.format("Need to notify DLA='%s' about to expire", currentDla));
-                    int pa = troll.getPa();
-                    boolean willNotify = needsNotificationAccordingToPA(preferences, pa);
-                    Log.d(TAG, String.format("PA=%d. Will notify? %b", pa, willNotify));
-                    if (willNotify) {
-                        notifyCurrentDlaAboutToExpire(receivedContext, currentDla, pa, preferences);
+                    if (between(now, beforeCurrentDla, currentDla)) {
+                        Log.d(TAG, String.format("Need to notify DLA='%s' about to expire", currentDla));
+                        int pa = troll.getPa();
+                        boolean willNotify = needsNotificationAccordingToPA(preferences, pa);
+                        Log.d(TAG, String.format("PA=%d. Will notify? %b", pa, willNotify));
+                        if (willNotify) {
+                            notifyCurrentDlaAboutToExpire(receivedContext, currentDla, pa, preferences);
+                        }
+                    } else {
+                        Log.d(TAG, String.format("No need to notify for DLA=%s", currentDla));
                     }
-                } else {
-                    Log.d(TAG, String.format("No need to notify for DLA=%s", currentDla));
+
+                    if (between(now, nextDlaActivation, beforeNextDla)) {
+                        Log.d(TAG, String.format("Need to notify NDLA='%s' not activated", nextDla));
+                        notifyNextDlaNotActivated(receivedContext, nextDla, preferences);
+                    } else {
+                        Log.d(TAG, String.format("No need to notify for NDLA=%s", nextDla));
+                    }
+
+                    if (between(now, beforeNextDla, nextDla)) {
+                        Log.d(TAG, String.format("Need to notify NDLA='%s' about to expire", nextDla));
+                        notifyNextDlaAboutToExpire(receivedContext, nextDla, preferences);
+                    } else {
+                        Log.d(TAG, String.format("No need to notify for NDLA=%s", nextDla));
+                    }
+
+                    if (requestUpdate && troll.getPvVariation() < 0 && preferences.notifyOnPvLoss) {
+                        int pvLoss = Math.abs(troll.getPvVariation());
+                        Log.d(TAG, String.format("Troll lost %d PV", pvLoss));
+                        notifyPvLoss(receivedContext, pvLoss, troll.getPv(), preferences);
+                    }
+
+                    checkForWidgetsUpdate(receivedContext, troll);
+                } catch (MissingLoginPasswordException e) {
+                    e.printStackTrace();
                 }
 
-                if (between(now, nextDlaActivation, beforeNextDla)) {
-                    Log.d(TAG, String.format("Need to notify NDLA='%s' not activated", nextDla));
-                    notifyNextDlaNotActivated(receivedContext, nextDla, preferences);
-                } else {
-                    Log.d(TAG, String.format("No need to notify for NDLA=%s", nextDla));
+                // Re-schedule them (in case it changed due to update)
+                try {
+                    Alarms.scheduleAlarms(receivedContext, getProfileProxy(), trollId);
+                } catch (MissingLoginPasswordException e) {
+                    Log.w(TAG, "Missing trollId and/or password, unable to schedule alarms...");
                 }
-
-                if (between(now, beforeNextDla, nextDla)) {
-                    Log.d(TAG, String.format("Need to notify NDLA='%s' about to expire", nextDla));
-                    notifyNextDlaAboutToExpire(receivedContext, nextDla, preferences);
-                } else {
-                    Log.d(TAG, String.format("No need to notify for NDLA=%s", nextDla));
-                }
-
-                if (requestUpdate && troll.getPvVariation() < 0 && preferences.notifyOnPvLoss) {
-                    int pvLoss = Math.abs(troll.getPvVariation());
-                    Log.d(TAG, String.format("Troll lost %d PV", pvLoss));
-                    notifyPvLoss(receivedContext, pvLoss, troll.getPv(), preferences);
-                }
-
-                checkForWidgetsUpdate(receivedContext, troll);
-            } catch (MissingLoginPasswordException e) {
-                e.printStackTrace();
-            }
-
-            // Re-schedule them (in case it changed due to update)
-            try {
-                Alarms.scheduleAlarms(receivedContext, getProfileProxy(), trollId);
-            } catch (MissingLoginPasswordException e) {
-                Log.w(TAG, "Missing trollId and/or password, unable to schedule alarms...");
             }
         }
 

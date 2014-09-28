@@ -159,6 +159,7 @@ public class Alarms {
     }
 
     public static Map<AlarmType, Date> scheduleAlarms(Context context, ProfileProxy profileProxy, String trollId) throws MissingLoginPasswordException {
+        Preconditions.checkArgument(trollId != null);
         PreferencesHolder preferences = PreferencesHolder.load(context);
         Troll troll = profileProxy.fetchTrollWithoutUpdate(context, trollId).left();
 
@@ -168,6 +169,7 @@ public class Alarms {
     }
 
     public static Map<AlarmType, Date> getAlarms(Context context, ProfileProxy profileProxy, String trollId) throws MissingLoginPasswordException {
+        Preconditions.checkArgument(trollId != null);
         PreferencesHolder preferences = PreferencesHolder.load(context);
         Troll troll = profileProxy.fetchTrollWithoutUpdate(context, trollId).left();
 
