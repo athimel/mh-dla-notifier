@@ -215,7 +215,7 @@ public class Receiver extends BroadcastReceiver {
                 // If the current DLA already has no more PA, skip update
                 boolean skipUpdate = false;
                 if (AlarmType.CURRENT_DLA.name().equals(type)) {
-                    skipUpdate = troll.getPa() == 0;
+                    skipUpdate = troll.getPa() == 0 && MhDlaNotifierUtils.IS_IN_THE_FUTURE.apply(troll.getDla());
                 }
                 if (skipUpdate) {
                     trollLoaded(troll, context, false);
