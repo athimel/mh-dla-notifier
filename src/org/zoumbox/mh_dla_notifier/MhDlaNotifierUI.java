@@ -288,7 +288,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
                 if (request.lessThan24Hours()) {
                     message += "* ";
                 }
-                message += MhDlaNotifierUtils.formatDLAForDisplay(this, request.getDate()) + " - " + request.getScript().name() + "\n";
+                message += MhDlaNotifierUtils.formatDLAForDisplay(this, request.getDate()) + " - " + request.getScript().name()  + " - " + request.getStatus()  + " - " + request.getDuration() + "ms\n";
             }
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this)

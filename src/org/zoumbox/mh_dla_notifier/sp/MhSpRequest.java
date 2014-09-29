@@ -61,6 +61,14 @@ public class MhSpRequest {
         this.date = date;
     }
 
+    public long getDuration() {
+        return duration;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
     public boolean lessThan24Hours() {
         boolean result = System.currentTimeMillis() - date.getTime() < M_24_HOURS;
         return result;
