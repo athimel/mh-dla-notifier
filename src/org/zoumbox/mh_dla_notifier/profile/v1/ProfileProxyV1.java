@@ -37,6 +37,7 @@ import org.zoumbox.mh_dla_notifier.profile.AbstractProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.UpdateRequestType;
+import org.zoumbox.mh_dla_notifier.sp.HighUpdateRateException;
 import org.zoumbox.mh_dla_notifier.sp.NetworkUnavailableException;
 import org.zoumbox.mh_dla_notifier.sp.PublicScript;
 import org.zoumbox.mh_dla_notifier.sp.PublicScriptException;
@@ -316,8 +317,12 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
             }
 
             for (PublicScript script : scripts) {
-                Map<String, String> propertiesFetched = PublicScriptsProxy.fetchProperties(context, script, idAndPassword);
-                saveProperties(preferences, propertiesFetched);
+                try {
+                    Map<String, String> propertiesFetched = PublicScriptsProxy.fetchProperties(context, script, idAndPassword);
+                    saveProperties(preferences, propertiesFetched);
+                } catch (HighUpdateRateException hure) {
+                    // Nothing to do
+                }
             }
         } else {
             Predicate<PublicScript> noNeedToUpdatePredicate = noNeedToUpdate(context, trollNumber);
@@ -422,6 +427,8 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
                 Log.w(TAG, "Network failure, ignoring update", qee);
             } catch (PublicScriptException pse) {
                 Log.w(TAG, "Script exception, ignoring update", pse);
+            } catch (HighUpdateRateException hure) {
+                Log.w(TAG, "Too much updates, ignoring update", hure);
             }
         }
 

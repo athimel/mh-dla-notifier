@@ -53,6 +53,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -60,6 +61,8 @@ import java.util.Set;
 public class PublicScriptsProxy {
 
     private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + PublicScriptsProxy.class.getSimpleName();
+
+    protected static final Long THIRTY_MINUTES = 30L * 1000;
 
     public static PublicScriptResponse doHttpGET(String url) throws NetworkUnavailableException, PublicScriptException {
 
@@ -107,16 +110,19 @@ public class PublicScriptsProxy {
     }
 
     protected static final String SQL_COUNT = String.format("SELECT COUNT(*) FROM %s WHERE %s=? AND %s=? AND %s>=?",
-            MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_CATEGORY_COLUMN, MhDlaSQLHelper.SCRIPTS_DATE_COLUMN);
+            MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_CATEGORY_COLUMN, MhDlaSQLHelper.SCRIPTS_END_DATE_COLUMN);
 
-    protected static final String SQL_LAST_UPDATE = String.format("SELECT MAX(%s) FROM %s WHERE %s=? AND %s=?",
-            MhDlaSQLHelper.SCRIPTS_DATE_COLUMN, MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_SCRIPT_COLUMN);
+    protected static final String SQL_LAST_REQUEST = String.format("SELECT MAX(%s) FROM %s WHERE %s=? AND %s=?",
+            MhDlaSQLHelper.SCRIPTS_END_DATE_COLUMN, MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_SCRIPT_COLUMN);
 
-    protected static final String SQL_LIST_REQUESTS = String.format("SELECT %s, %s FROM %s WHERE %s=? ORDER BY %s DESC LIMIT %s",
-            MhDlaSQLHelper.SCRIPTS_DATE_COLUMN,  MhDlaSQLHelper.SCRIPTS_SCRIPT_COLUMN, MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_DATE_COLUMN, "%d");
+    protected static final String SQL_LAST_UPDATE = String.format("SELECT MAX(%s) FROM %s WHERE %s=? AND %s=? AND %s=?",
+            MhDlaSQLHelper.SCRIPTS_END_DATE_COLUMN, MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_SCRIPT_COLUMN, MhDlaSQLHelper.SCRIPTS_STATUS_COLUMN);
 
-    protected static final String SQL_LIST_REQUESTS_SINCE = String.format("SELECT %s, %s FROM %s WHERE %s=? AND %s>=? ORDER BY %s DESC ",
-            MhDlaSQLHelper.SCRIPTS_DATE_COLUMN,  MhDlaSQLHelper.SCRIPTS_SCRIPT_COLUMN, MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_DATE_COLUMN, MhDlaSQLHelper.SCRIPTS_DATE_COLUMN);
+    protected static final String SQL_LIST_REQUESTS = String.format("SELECT %s, %s, %s, %s FROM %s WHERE %s=? ORDER BY %s DESC LIMIT %s",
+            MhDlaSQLHelper.SCRIPTS_START_DATE_COLUMN,  MhDlaSQLHelper.SCRIPTS_END_DATE_COLUMN,  MhDlaSQLHelper.SCRIPTS_SCRIPT_COLUMN, MhDlaSQLHelper.SCRIPTS_STATUS_COLUMN, MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_END_DATE_COLUMN, "%d");
+
+    protected static final String SQL_LIST_REQUESTS_SINCE = String.format("SELECT %s, %s, %s, %s FROM %s WHERE %s=? AND %s>=? ORDER BY %s DESC ",
+            MhDlaSQLHelper.SCRIPTS_START_DATE_COLUMN,  MhDlaSQLHelper.SCRIPTS_END_DATE_COLUMN,  MhDlaSQLHelper.SCRIPTS_SCRIPT_COLUMN, MhDlaSQLHelper.SCRIPTS_STATUS_COLUMN, MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_END_DATE_COLUMN, MhDlaSQLHelper.SCRIPTS_END_DATE_COLUMN);
 
     protected static int computeRequestCount(Context context, ScriptCategory category, String trollId) {
 
@@ -144,7 +150,7 @@ public class PublicScriptsProxy {
         return result;
     }
 
-    protected static void saveFetch(Context context, PublicScript script, String trollId) {
+    protected static void saveFetch(Context context, PublicScript script, String trollId, String uuid, String status) {
 
         String format = "Saving fetch for category %s (script=%s) and troll=%s";
         String message = String.format(format, script.category, script, trollId);
@@ -153,15 +159,38 @@ public class PublicScriptsProxy {
         MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
         SQLiteDatabase database = helper.getWritableDatabase();
 
-        ContentValues values = new ContentValues(4);
-        values.put(MhDlaSQLHelper.SCRIPTS_DATE_COLUMN, System.currentTimeMillis());
-        values.put(MhDlaSQLHelper.SCRIPTS_SCRIPT_COLUMN, script.name());
-        values.put(MhDlaSQLHelper.SCRIPTS_CATEGORY_COLUMN, script.category.name());
-        values.put(MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, trollId);
+        ContentValues values = new ContentValues(2);
+        long now = System.currentTimeMillis();
+        values.put(MhDlaSQLHelper.SCRIPTS_END_DATE_COLUMN, now);
+        values.put(MhDlaSQLHelper.SCRIPTS_STATUS_COLUMN, status);
 
-        database.insert(MhDlaSQLHelper.SCRIPTS_TABLE, null, values);
+        String whereClause = String.format("%s = %s", MhDlaSQLHelper.SCRIPTS_ID_COLUMN, uuid);
+        database.update(MhDlaSQLHelper.SCRIPTS_TABLE, values, whereClause, null);
 
         database.close();
+    }
+
+    public static Date geLastRequest(Context context, PublicScript script, String trollId) {
+
+        MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
+        SQLiteDatabase database = helper.getReadableDatabase();
+
+        Cursor cursor = database.rawQuery(SQL_LAST_REQUEST, new String[]{trollId, script.name()});
+        Date result = null;
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            long resultTimestamp = cursor.getLong(0);
+            result = new Date(resultTimestamp);
+        }
+
+        cursor.close();
+        database.close();
+
+        String format = "Last request for category %s (script=%s) and troll=%s is: '%s'";
+        String message = String.format(format, script.category, script, trollId, result);
+        Log.d(TAG, message);
+
+        return result;
     }
 
     public static Date geLastUpdate(Context context, PublicScript script, String trollId) {
@@ -169,7 +198,7 @@ public class PublicScriptsProxy {
         MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
         SQLiteDatabase database = helper.getReadableDatabase();
 
-        Cursor cursor = database.rawQuery(SQL_LAST_UPDATE, new String[]{trollId, script.name()});
+        Cursor cursor = database.rawQuery(SQL_LAST_UPDATE, new String[]{trollId, script.name(), MhDlaSQLHelper.STATUS_SUCCESS});
         Date result = null;
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
@@ -196,7 +225,7 @@ public class PublicScriptsProxy {
 
         for (PublicScript script : scripts) {
 
-            Cursor cursor = database.rawQuery(SQL_LAST_UPDATE, new String[]{trollId, script.name()});
+            Cursor cursor = database.rawQuery(SQL_LAST_UPDATE, new String[]{trollId, script.name(), MhDlaSQLHelper.STATUS_SUCCESS});
             Date lastUpdate = null;
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
@@ -219,7 +248,7 @@ public class PublicScriptsProxy {
 
     public static PublicScriptResult fetchScript(Context context, PublicScript script,
                                                  String trollId, String trollPassword)
-            throws QuotaExceededException, PublicScriptException, NetworkUnavailableException {
+            throws QuotaExceededException, PublicScriptException, NetworkUnavailableException, HighUpdateRateException {
 
         Log.i(TAG, String.format("Fetching in script=%s and troll=%s ", script, trollId));
         ScriptCategory category = script.category;
@@ -232,15 +261,24 @@ public class PublicScriptsProxy {
             throw new QuotaExceededException(category, requestCount);
         }
 
+        Date lastRequest = geLastRequest(context, script, trollId);
+        if (System.currentTimeMillis() - lastRequest.getTime() < THIRTY_MINUTES) {
+            throw new HighUpdateRateException(script, lastRequest);
+        }
+
+        String uuid = UUID.randomUUID().toString();
+        createFetchLog(context, script, trollId, uuid);
+
         String url = String.format(script.url, Uri.encode(trollId), Uri.encode(trollPassword));
         PublicScriptResponse spResult = doHttpGET(url);
         Log.i(TAG, String.format("Script response: '%s'", spResult));
 
         if (spResult.hasError()) {
+            saveFetch(context, script, trollId, uuid, MhDlaSQLHelper.STATUS_ERROR);
             throw new PublicScriptException(spResult);
         } else {
 
-            saveFetch(context, script, trollId);
+            saveFetch(context, script, trollId, uuid, MhDlaSQLHelper.STATUS_SUCCESS);
 
             String raw = spResult.getRaw();
             PublicScriptResult result = new PublicScriptResult(script, raw);
@@ -250,9 +288,32 @@ public class PublicScriptsProxy {
 
     }
 
+    protected static void createFetchLog(Context context, PublicScript script, String trollId, String uuid) {
+
+        String format = "Create fetch log for script=%s and troll=%s";
+        String message = String.format(format, script, trollId);
+        Log.d(TAG, message);
+
+        MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
+        SQLiteDatabase database = helper.getWritableDatabase();
+
+        ContentValues values = new ContentValues(6);
+        long now = System.currentTimeMillis();
+        values.put(MhDlaSQLHelper.SCRIPTS_ID_COLUMN, uuid);
+        values.put(MhDlaSQLHelper.SCRIPTS_START_DATE_COLUMN, now);
+        values.put(MhDlaSQLHelper.SCRIPTS_SCRIPT_COLUMN, script.name());
+        values.put(MhDlaSQLHelper.SCRIPTS_CATEGORY_COLUMN, script.category.name());
+        values.put(MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, trollId);
+        values.put(MhDlaSQLHelper.SCRIPTS_STATUS_COLUMN, "PENDING");
+
+        database.insert(MhDlaSQLHelper.SCRIPTS_TABLE, null, values);
+
+        database.close();
+    }
+
     @Deprecated
     public static Map<String, String> fetchProperties(Context context, PublicScript script, Pair<String, String> idAndPassword)
-            throws PublicScriptException, QuotaExceededException, NetworkUnavailableException {
+            throws PublicScriptException, QuotaExceededException, NetworkUnavailableException, HighUpdateRateException {
         long now = System.currentTimeMillis();
         Map<String, String> result;
         try {
@@ -268,6 +329,9 @@ public class PublicScriptsProxy {
         } catch (NetworkUnavailableException nue) {
             saveUpdateResult(context, script, now, nue);
             throw new NetworkUnavailableException(nue);
+        } catch (HighUpdateRateException hure) {
+            saveUpdateResult(context, script, now, hure);
+            throw new HighUpdateRateException(hure);
         }
         return result;
     }
@@ -314,14 +378,20 @@ public class PublicScriptsProxy {
 
         Cursor cursor = database.rawQuery(query, new String[]{trollId});
         while (cursor.moveToNext()) {
-            Long timeMillis = cursor.getLong(0);
-            String scriptName = cursor.getString(1);
+            long startTimeMillis = cursor.getLong(0);
+            long endTimeMillis = cursor.getLong(1);
+            String scriptName = cursor.getString(2);
+            String status = cursor.getString(3);
 
-            calendar.setTimeInMillis(timeMillis);
+            calendar.setTimeInMillis(startTimeMillis);
             Date date = calendar.getTime();
             PublicScript script = PublicScript.valueOf(scriptName);
 
-            MhSpRequest request = new MhSpRequest(date, script);
+            long duration = 0;
+            if (endTimeMillis > 0) {
+                duration = endTimeMillis - startTimeMillis;
+            }
+            MhSpRequest request = new MhSpRequest(date, duration, script, status);
             result.add(request);
         }
 
@@ -345,14 +415,20 @@ public class PublicScriptsProxy {
 
         Cursor cursor = database.rawQuery(SQL_LIST_REQUESTS_SINCE, new String[]{trollId, "" + sinceDate.getTime()});
         while (cursor.moveToNext()) {
-            Long timeMillis = cursor.getLong(0);
-            String scriptName = cursor.getString(1);
+            long startTimeMillis = cursor.getLong(0);
+            long endTimeMillis = cursor.getLong(1);
+            String scriptName = cursor.getString(2);
+            String status = cursor.getString(3);
 
-            calendar.setTimeInMillis(timeMillis);
+            calendar.setTimeInMillis(startTimeMillis);
             Date date = calendar.getTime();
             PublicScript script = PublicScript.valueOf(scriptName);
 
-            MhSpRequest request = new MhSpRequest(date, script);
+            long duration = 0;
+            if (endTimeMillis > 0) {
+                duration = endTimeMillis - startTimeMillis;
+            }
+            MhSpRequest request = new MhSpRequest(date, duration, script, status);
             result.add(request);
         }
 

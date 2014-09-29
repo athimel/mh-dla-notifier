@@ -34,11 +34,15 @@ public class MhSpRequest {
     protected static final long M_24_HOURS = 24L * 60L * 60L * 1000L;
 
     protected PublicScript script;
+    protected long duration;
     protected Date date;
+    protected String status;
 
-    public MhSpRequest(Date date, PublicScript script) {
+    public MhSpRequest(Date date, long duration, PublicScript script, String status) {
         this.date = date;
+        this.duration = duration;
         this.script = script;
+        this.status = status;
     }
 
     public PublicScript getScript() {
@@ -64,8 +68,8 @@ public class MhSpRequest {
 
     @Override
     public String toString() {
-        String result = String.format("MhSpRequest{ date=%s%s, script=%8s %s }",
-                date, lessThan24Hours() ? " (*)":"", script.getCategory().name(), script.name());
+        String result = String.format("MhSpRequest{ date=%s%s, script=%8s %s, status=%s, duration=%dms }",
+                date, lessThan24Hours() ? " (*)":"", script.getCategory().name(), script.name(), status, duration);
         return result;
     }
 }
