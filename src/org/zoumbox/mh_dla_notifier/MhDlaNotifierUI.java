@@ -748,7 +748,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
                 if (appWidgetIds != null && appWidgetIds.length > 0) {
                     Troll troll = params[0];
                     String dlaText = Trolls.getWidgetDlaTextFunction(MhDlaNotifierUI.this).apply(troll);
-                    Bitmap blasonImage = MhDlaNotifierUtils.loadBlason(troll.getBlason(), getCacheDir());
+                    Bitmap blasonImage = MhDlaNotifierUtils.loadBlasonForWidget(troll.getBlason(), getCacheDir());
 
                     for (int appWidgetId : appWidgetIds) {
 

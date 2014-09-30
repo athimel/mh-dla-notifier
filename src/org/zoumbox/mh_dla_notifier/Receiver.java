@@ -361,7 +361,7 @@ public class Receiver extends BroadcastReceiver {
 
             if (appWidgetIds != null && appWidgetIds.length > 0) {
                 String dlaText = Trolls.getWidgetDlaTextFunction(context).apply(troll);
-                Bitmap blason = MhDlaNotifierUtils.loadBlason(troll.getBlason(), context.getCacheDir());
+                Bitmap blason = MhDlaNotifierUtils.loadBlasonForWidget(troll.getBlason(), context.getCacheDir());
 
                 for (int appWidgetId : appWidgetIds) {
 

@@ -303,29 +303,37 @@ public class MhDlaNotifierUtils {
         }
     }
 
+    public static Bitmap loadBlason(String blasonUrl, File filesDir) {
+        return loadBlason0(blasonUrl, filesDir, BLASON_MAX_SIZE);
+    }
+
     public static Bitmap loadBlasonForWidget(String blasonUrl, File filesDir) {
+        return loadBlason0(blasonUrl, filesDir, BLASON_WIDGET_MAX_SIZE);
+    }
+
+    protected static Bitmap loadBlason0(String blasonUrl, File filesDir, int blasonMaxSize) {
         Bitmap result = null;
         if (!Strings.isNullOrEmpty(blasonUrl)) {
-            String localWidgetFilePath = MhDlaNotifierUtils.md5(blasonUrl) + "_" + BLASON_WIDGET_MAX_SIZE;
-            Log.i(TAG, "localWidgetFilePath: " + localWidgetFilePath);
+            String localWidgetFilePath = MhDlaNotifierUtils.md5(blasonUrl) + "_" + blasonMaxSize;
+            Log.i(TAG, "localFilePath: " + localWidgetFilePath);
             File localWidgetFile = new File(filesDir, localWidgetFilePath);
-            Log.i(TAG, "localWidgetFile: " + localWidgetFile);
+            Log.i(TAG, "localFile: " + localWidgetFile);
             if (!localWidgetFile.exists()) {
 
-                result = loadBlason(blasonUrl, filesDir);
+                result = loadBlason0(blasonUrl, filesDir);
 
-                if (result.getWidth() > BLASON_WIDGET_MAX_SIZE || result.getHeight() > BLASON_WIDGET_MAX_SIZE) {
+                if (result.getWidth() > blasonMaxSize || result.getHeight() > blasonMaxSize) {
 
-                    double blasonMaxSize = BLASON_WIDGET_MAX_SIZE;
+                    double blasonMaxSizeDouble = blasonMaxSize;
 
-                    double factor = Math.min(blasonMaxSize / result.getWidth(), blasonMaxSize / result.getHeight());
+                    double factor = Math.min(blasonMaxSizeDouble / result.getWidth(), blasonMaxSizeDouble / result.getHeight());
                     int newWidth = (int) (result.getWidth() * factor);
                     int newHeight = (int) (result.getHeight() * factor);
                     Log.i(TAG, String.format("Will resize from %dx%d to %dx%d",result.getWidth(), result.getHeight(), newWidth, newHeight));
 
                     result = Bitmap.createScaledBitmap(result, newWidth, newHeight, true);
 
-                    Log.i(TAG, "Save fetched result to " + localWidgetFile);
+                    Log.i(TAG, "Save resized result to " + localWidgetFile);
                     FileOutputStream fos = null;
                     try {
                         fos = new FileOutputStream(localWidgetFile);
@@ -367,7 +375,7 @@ public class MhDlaNotifierUtils {
         return result;
     }
 
-    public static Bitmap loadBlason(String blasonUrl, File filesDir) {
+    protected static Bitmap loadBlason0(String blasonUrl, File filesDir) {
         Bitmap result = null;
         if (!Strings.isNullOrEmpty(blasonUrl)) {
             String localFilePath = MhDlaNotifierUtils.md5(blasonUrl);
