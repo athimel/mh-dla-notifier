@@ -164,8 +164,8 @@ public class PublicScriptsProxy {
         values.put(MhDlaSQLHelper.SCRIPTS_END_DATE_COLUMN, now);
         values.put(MhDlaSQLHelper.SCRIPTS_STATUS_COLUMN, status);
 
-        String whereClause = String.format("%s = %s", MhDlaSQLHelper.SCRIPTS_ID_COLUMN, uuid);
-        database.update(MhDlaSQLHelper.SCRIPTS_TABLE, values, whereClause, null);
+        String whereClause = String.format("%s = ?", MhDlaSQLHelper.SCRIPTS_ID_COLUMN);
+        database.update(MhDlaSQLHelper.SCRIPTS_TABLE, values, whereClause, new String[]{uuid});
 
         database.close();
     }
