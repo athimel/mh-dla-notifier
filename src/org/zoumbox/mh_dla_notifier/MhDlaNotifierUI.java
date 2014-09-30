@@ -37,10 +37,12 @@ import org.zoumbox.mh_dla_notifier.troll.Race;
 import org.zoumbox.mh_dla_notifier.troll.Troll;
 import org.zoumbox.mh_dla_notifier.troll.Trolls;
 
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
 import android.app.AlertDialog;
@@ -283,13 +285,23 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
             List<MhSpRequest> requests = PublicScriptsProxy.
                     listLatestRequestsSince(this, trollIds.iterator().next(), 2);
 
-            String message = "Les appels marqués par une * ont moins de 24H\n\n";
-            for (MhSpRequest request : requests) {
-                if (request.lessThan24Hours()) {
-                    message += "* ";
+            Iterable<String> requestsAsString = Iterables.transform(requests, new Function<MhSpRequest, String>() {
+                @Override
+                public String apply(MhSpRequest mhSpRequest) {
+                    String result = "";
+                    if (mhSpRequest.lessThan24Hours()) {
+                        result += "* ";
+                    }
+                    result += MhDlaNotifierUtils.formatDLAForDisplayShort(MhDlaNotifierUI.this, mhSpRequest.getDate())
+                            + " - " + mhSpRequest.getScript().name()
+                            + " - " + mhSpRequest.getStatus()
+                            + " - " + mhSpRequest.getDuration() + "ms";
+                    return result;
                 }
-                message += MhDlaNotifierUtils.formatDLAForDisplay(this, request.getDate()) + " - " + request.getScript().name()  + " - " + request.getStatus()  + " - " + request.getDuration() + "ms\n";
-            }
+            });
+
+            String message = "Les appels marqués par une * ont moins de 24H :\n\n"
+                + Joiner.on("\n").join(requestsAsString);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this)
                     .setIcon(R.drawable.trarnoll_square_transparent)
@@ -300,7 +312,10 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
                             dialogInterface.dismiss();
                         }
                     });
-            builder.create().show();
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+            TextView textView = (TextView) alertDialog.findViewById(android.R.id.message);
+            textView.setTextSize(12);
         }
     }
 

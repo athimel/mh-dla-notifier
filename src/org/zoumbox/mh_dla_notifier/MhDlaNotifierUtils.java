@@ -69,6 +69,7 @@ import android.widget.Toast;
  */
 public class MhDlaNotifierUtils {
 
+    public static final int BLASON_MAX_SIZE = 1024;
     public static final int BLASON_WIDGET_MAX_SIZE = 300;
 
     private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + MhDlaNotifierUtils.class.getSimpleName();
@@ -178,6 +179,17 @@ public class MhDlaNotifierUtils {
         String result = N_C;
         if (input != null) {
             CharSequence format = context.getText(R.string.dla_format);
+            DateFormat outputDF = new SimpleDateFormat(format.toString(), Locale.FRENCH);
+            outputDF.setTimeZone(getDisplayTimeZone(context));
+            result = outputDF.format(input);
+        }
+        return result;
+    }
+
+    public static String formatDLAForDisplayShort(Context context, Date input) {
+        String result = N_C;
+        if (input != null) {
+            CharSequence format = context.getText(R.string.dla_format_short);
             DateFormat outputDF = new SimpleDateFormat(format.toString(), Locale.FRENCH);
             outputDF.setTimeZone(getDisplayTimeZone(context));
             result = outputDF.format(input);

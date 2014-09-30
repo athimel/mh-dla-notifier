@@ -96,6 +96,7 @@
   <string name="pv_remaining_text" formatted="false">Il vous reste %d PV</string>
 
   <string name="dla_format">dd MMM - HH:mm:ss</string>
+  <string name="dla_format_short">dd/MM HH:mm:ss</string>
   <string name="dla_duration_format" formatted="false">%d heures et %d minutes</string>
 
   <!-- Preferences -->
