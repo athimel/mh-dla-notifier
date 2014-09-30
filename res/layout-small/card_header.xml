@@ -34,7 +34,7 @@
       android:orientation="vertical"
       android:layout_height="160px"
       android:layout_width="160px"
-      android:scaleType="fitXY"
+      android:scaleType="fitCenter"
       android:src="@drawable/loading" />
 
   <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

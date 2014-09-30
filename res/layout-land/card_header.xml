@@ -33,7 +33,7 @@
       style="@style/blason"
       android:contentDescription="@string/blason_alt"
       android:orientation="vertical"
-      android:scaleType="fitXY"
+      android:scaleType="fitCenter"
       android:src="@drawable/loading" />
 
   <!-- Name -->

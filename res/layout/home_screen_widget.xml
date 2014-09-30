@@ -35,7 +35,7 @@
       android:src="@drawable/trarnoll_square_transparent_128"
       android:layout_height="60dp"
       android:layout_width="60dp"
-      android:scaleType="fitXY"
+      android:scaleType="fitCenter"
       android:gravity="center_horizontal"
       android:contentDescription="@string/app_name"/>
 

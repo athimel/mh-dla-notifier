@@ -46,7 +46,7 @@
       <ImageView
           android:layout_width="60dp"
           android:layout_height="60dp"
-          android:scaleType="fitXY"
+          android:scaleType="fitCenter"
           android:src="@drawable/arno" />
 
       <LinearLayout
@@ -80,7 +80,7 @@
       <ImageView
           android:layout_width="60dp"
           android:layout_height="60dp"
-          android:scaleType="fitXY"
+          android:scaleType="fitCenter"
           android:src="@drawable/bouloche61" />
 
       <LinearLayout
@@ -114,7 +114,7 @@
       <ImageView
           android:layout_width="60dp"
           android:layout_height="60dp"
-          android:scaleType="fitXY"
+          android:scaleType="fitCenter"
           android:src="@drawable/testers" />
 
       <LinearLayout
