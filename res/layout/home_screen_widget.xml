@@ -27,17 +27,17 @@
     android:id="@+id/widgetLayout"
     android:orientation="vertical"
     android:layout_width="70dp"
-    android:layout_height="70dp"
+    android:layout_height="80dp"
     android:gravity="center_horizontal">
 
   <ImageView
       android:id="@+id/widgetImage"
       android:src="@drawable/trarnoll_square_transparent_128"
-      android:layout_height="50dp"
-      android:layout_width="50dp"
+      android:layout_height="60dp"
+      android:layout_width="60dp"
       android:scaleType="fitXY"
       android:gravity="center_horizontal"
-      android:contentDescription="@string/app_name" />
+      android:contentDescription="@string/app_name"/>
 
   <TextView
       android:id="@+id/widgetDla"

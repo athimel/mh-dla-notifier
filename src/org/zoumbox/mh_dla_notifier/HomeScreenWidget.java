@@ -50,6 +50,18 @@ public class HomeScreenWidget extends AppWidgetProvider {
 
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
+        String dlaText = null;
+        Bitmap blason = null;
+        if (appWidgetIds != null && appWidgetIds.length >= 1) {
+
+            // Compute DLA
+            ProfileProxyV2 profileProxy = new ProfileProxyV2();
+            Pair<String, Bitmap> pair = getDlaText(context, profileProxy);
+
+            dlaText = pair.left();
+            blason = pair.right();
+        }
+
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int appWidgetId : appWidgetIds) {
             Log.i(TAG, "onUpdate widget : " + appWidgetId);
@@ -58,21 +70,16 @@ public class HomeScreenWidget extends AppWidgetProvider {
             Intent intent = new Intent(context, MainActivity.class);
             PendingIntent startActivityIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
-            // Compute DLA
-            ProfileProxyV2 profileProxy = new ProfileProxyV2();
-            Pair<String, Bitmap> pair = getDlaText(context, profileProxy);
-
             // Get the layout for the App Widget and attach an on-click listener
             // to the button
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.home_screen_widget);
             views.setOnClickPendingIntent(R.id.widgetLayout, startActivityIntent);
-            views.setTextViewText(R.id.widgetDla, pair.left());
+            views.setTextViewText(R.id.widgetDla, dlaText);
 
-            Bitmap blasonImage = pair.right();
-            if (blasonImage == null) {
+            if (blason == null) {
                 views.setImageViewResource(R.id.widgetImage, R.drawable.trarnoll_square_transparent_128);
             } else {
-                views.setImageViewBitmap(R.id.widgetImage, blasonImage);
+                views.setImageViewBitmap(R.id.widgetImage, blason);
             }
 
             // Tell the AppWidgetManager to perform an update on the current app widget
@@ -93,7 +100,7 @@ public class HomeScreenWidget extends AppWidgetProvider {
                 Troll troll = pair.left();
 
                 text = Trolls.getWidgetDlaTextFunction(context).apply(troll);
-                blason = MhDlaNotifierUtils.loadBlason(troll.getBlason(), context.getCacheDir());
+                blason = MhDlaNotifierUtils.loadBlasonForWidget(troll.getBlason(), context.getCacheDir());
             } catch (MissingLoginPasswordException e) {
                 Log.w(TAG, "Unable to get troll's DLA", e);
             }

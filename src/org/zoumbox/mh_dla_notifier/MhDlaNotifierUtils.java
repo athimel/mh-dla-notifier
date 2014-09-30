@@ -69,6 +69,8 @@ import android.widget.Toast;
  */
 public class MhDlaNotifierUtils {
 
+    public static final int BLASON_WIDGET_MAX_SIZE = 300;
+
     private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + MhDlaNotifierUtils.class.getSimpleName();
 
     public static final String INTPUT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
@@ -287,6 +289,70 @@ public class MhDlaNotifierUtils {
             }
             Toast.makeText(context, messageString, Toast.LENGTH_LONG).show();
         }
+    }
+
+    public static Bitmap loadBlasonForWidget(String blasonUrl, File filesDir) {
+        Bitmap result = null;
+        if (!Strings.isNullOrEmpty(blasonUrl)) {
+            String localWidgetFilePath = MhDlaNotifierUtils.md5(blasonUrl) + "_" + BLASON_WIDGET_MAX_SIZE;
+            Log.i(TAG, "localWidgetFilePath: " + localWidgetFilePath);
+            File localWidgetFile = new File(filesDir, localWidgetFilePath);
+            Log.i(TAG, "localWidgetFile: " + localWidgetFile);
+            if (!localWidgetFile.exists()) {
+
+                result = loadBlason(blasonUrl, filesDir);
+
+                if (result.getWidth() > BLASON_WIDGET_MAX_SIZE || result.getHeight() > BLASON_WIDGET_MAX_SIZE) {
+
+                    double blasonMaxSize = BLASON_WIDGET_MAX_SIZE;
+
+                    double factor = Math.min(blasonMaxSize / result.getWidth(), blasonMaxSize / result.getHeight());
+                    int newWidth = (int) (result.getWidth() * factor);
+                    int newHeight = (int) (result.getHeight() * factor);
+                    Log.i(TAG, String.format("Will resize from %dx%d to %dx%d",result.getWidth(), result.getHeight(), newWidth, newHeight));
+
+                    result = Bitmap.createScaledBitmap(result, newWidth, newHeight, true);
+
+                    Log.i(TAG, "Save fetched result to " + localWidgetFile);
+                    FileOutputStream fos = null;
+                    try {
+                        fos = new FileOutputStream(localWidgetFile);
+
+                        result.compress(Bitmap.CompressFormat.PNG, 90, fos);
+
+                    } catch (Exception eee) {
+                        Log.e(TAG, "Exception", eee);
+                    } finally {
+                        try {
+                            Closeables.close(fos, false);
+                        } catch (IOException e) {
+                            Log.e(TAG, "Un exception occurred", e);
+                        }
+                    }
+                }
+
+            } else {
+
+                Log.i(TAG, "Existing, loading from cache");
+                BufferedInputStream bis = null;
+                try {
+                    bis = new BufferedInputStream(new FileInputStream(localWidgetFile));
+
+                    result = BitmapFactory.decodeStream(bis);
+
+                    bis.close();
+                } catch (Exception eee) {
+                    Log.e(TAG, "Exception", eee);
+                } finally {
+                    try {
+                        Closeables.close(bis, false);
+                    } catch (IOException e) {
+                        Log.e(TAG, "Un exception occurred", e);
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     public static Bitmap loadBlason(String blasonUrl, File filesDir) {
