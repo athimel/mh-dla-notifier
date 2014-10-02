@@ -26,6 +26,7 @@ package org.zoumbox.mh_dla_notifier.sp;
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -125,4 +126,36 @@ public class MhDlaSQLHelper extends SQLiteOpenHelper {
         }
     }
 
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        boolean isOk = false;
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + SCRIPTS_TABLE + " LIMIT 1", null);
+            int columnCount = cursor.getColumnCount();
+            isOk = columnCount == 7;
+        } catch (Exception eee) {
+            Log.w(TAG, "Unable to query table", eee);
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+            if (!isOk) {
+                Log.w(TAG, "Unexpected database state, trying to fix...");
+
+                // Drop and create database
+                try {
+                    db.execSQL("DROP TABLE " + SCRIPTS_TABLE);
+                } catch (Exception eee2) {
+                    Log.e(TAG, "Unable to drop table", eee2);
+                }
+                try {
+                    db.execSQL(SCRIPTS_TABLE_CREATE);
+                } catch (Exception eee2) {
+                    Log.e(TAG, "Unable to create table", eee2);
+                }
+            }
+        }
+    }
 }
