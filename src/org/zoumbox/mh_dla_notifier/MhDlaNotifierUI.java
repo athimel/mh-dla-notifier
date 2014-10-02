@@ -635,6 +635,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         pushM(rm, troll.getRmCar(), troll.getRmBmm());
         pushM(mm, troll.getMmCar(), troll.getMmBmm());
 
+        blason.setImageResource(R.drawable.loading);
         new LoadBlasonTask().execute(troll.getBlason());
 
         new LoadGuildeTask().execute(troll.getGuilde());

@@ -71,9 +71,9 @@ public class PublicScriptsProxyMock {
 //            "104259;28;-59;-69;105;67;0;2013-11-15 16:04:55;7;8;24;5;4;14;1705;1467;0;14;0;0;0;0;0;573;-60;3;0;0;0;0;0";
 //            "104259;-23;-98;-71;111;100;1;2014-04-10 16:56:25;14;11;26;5;4;17;2075;1670;0;1;0;0;0;0;0;573;-80;3;0;0;0;0;0";
     public static final String DEVEL_PROFIL_PUBLIC2 =
-//            "123456;Mon Trõll;Kastar;19;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;17;122;9;1900;20;0";
-//            "104259;DevelZimZoum;Kastar;30;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;30;317;10;1900;20;0\n";
-            "123456789;Mon Trõll;Kastar;33;2011-01-21 14:07:48;;http://zoumbox.org/mh/DevelZimZoumMH.png;34;341;10;1900;20;0";
+//            "123456;Mon Trõll;Kastar;19;2011-01-21 14:07:48;;http://zoumbox.org/mh/syndikhd/104259-happy.png;17;122;9;1900;20;0";
+//            "104259;DevelZimZoum;Kastar;30;2011-01-21 14:07:48;;http://zoumbox.org/mh/syndikhd/104259-happy.png;30;317;10;1900;20;0\n";
+            "123456789;Mon Trõll;Kastar;33;2011-01-21 14:07:48;;http://zoumbox.org/mh/syndikhd/104259-happy.png;34;341;10;1900;20;0";
     public static final String DEVEL_CARACT =
             // Type; Attaque; Esquive; Dégats; Régénération; PVMax; PVActuels; Portée deVue; RM; MM; Armure; Duree du Tour; Poids; Concentration
 //            "BMM;-6;-8; 9; 6; 15;  0; 3;1232; 647; 4;-120;  0;0\n" +
