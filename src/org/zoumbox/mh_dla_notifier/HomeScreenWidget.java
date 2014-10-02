@@ -26,6 +26,7 @@ package org.zoumbox.mh_dla_notifier;
 
 import java.util.Set;
 
+import android.os.StrictMode;
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
 import org.zoumbox.mh_dla_notifier.profile.v2.ProfileProxyV2;
@@ -88,6 +89,10 @@ public class HomeScreenWidget extends AppWidgetProvider {
     }
 
     protected Pair<String, Bitmap> getDlaText(Context context, ProfileProxy profileProxy) {
+
+        // FIXME AThimel 14/02/14 Remove ASAP
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
         Set<String> trollIds = profileProxy.getTrollIds(context);
         String text = context.getString(R.string.app_name);

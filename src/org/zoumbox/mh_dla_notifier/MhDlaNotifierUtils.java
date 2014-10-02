@@ -69,16 +69,18 @@ import android.widget.Toast;
  */
 public class MhDlaNotifierUtils {
 
+    private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + MhDlaNotifierUtils.class.getSimpleName();
+
     public static final int BLASON_MAX_SIZE = 1024;
     public static final int BLASON_WIDGET_MAX_SIZE = 300;
-
-    private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + MhDlaNotifierUtils.class.getSimpleName();
 
     public static final String INTPUT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String HOUR_DATE_FORMAT = "HH:mm:ss";
     public static final String HOUR_NO_SEC_DATE_FORMAT = "HH:mm";
     public static final String DAY_DATE_FORMAT = "dd MMM";
     public static final String DISPLAY_DATE_FORMAT = DAY_DATE_FORMAT + " - " + HOUR_DATE_FORMAT;
+
+    public static final String BLASON_FILES_PREFIX = "v0.13.3_";
 
     protected static final String N_C = "n/c";
 
@@ -317,15 +319,14 @@ public class MhDlaNotifierUtils {
     protected static Bitmap loadBlason0(String blasonUrl, File filesDir, int blasonMaxSize) {
         Bitmap result = null;
         if (!Strings.isNullOrEmpty(blasonUrl)) {
-            String localWidgetFilePath = MhDlaNotifierUtils.md5(blasonUrl) + "_" + blasonMaxSize;
-            Log.i(TAG, "localFilePath: " + localWidgetFilePath);
-            File localWidgetFile = new File(filesDir, localWidgetFilePath);
-            Log.i(TAG, "localFile: " + localWidgetFile);
-            if (!localWidgetFile.exists()) {
+            String fileName = BLASON_FILES_PREFIX + MhDlaNotifierUtils.md5(blasonUrl) + "_" + blasonMaxSize;
+            File localFile = new File(filesDir, fileName);
+            Log.i(TAG, "localFile: " + localFile);
+            if (!localFile.exists()) {
 
                 result = loadAndCropBlason(blasonUrl, filesDir);
 
-                if (result.getWidth() > blasonMaxSize || result.getHeight() > blasonMaxSize) {
+                if (result != null && (result.getWidth() > blasonMaxSize || result.getHeight() > blasonMaxSize)) {
 
                     double blasonMaxSizeDouble = blasonMaxSize;
 
@@ -336,10 +337,10 @@ public class MhDlaNotifierUtils {
 
                     result = Bitmap.createScaledBitmap(result, newWidth, newHeight, true);
 
-                    Log.i(TAG, "Save resized result to " + localWidgetFile);
+                    Log.i(TAG, "Save resized result to " + localFile);
                     FileOutputStream fos = null;
                     try {
-                        fos = new FileOutputStream(localWidgetFile);
+                        fos = new FileOutputStream(localFile);
 
                         result.compress(Bitmap.CompressFormat.PNG, 90, fos);
 
@@ -359,7 +360,7 @@ public class MhDlaNotifierUtils {
                 Log.i(TAG, "Existing, loading from cache");
                 BufferedInputStream bis = null;
                 try {
-                    bis = new BufferedInputStream(new FileInputStream(localWidgetFile));
+                    bis = new BufferedInputStream(new FileInputStream(localFile));
 
                     result = BitmapFactory.decodeStream(bis);
 
@@ -382,60 +383,61 @@ public class MhDlaNotifierUtils {
 
         Bitmap result = null;
         if (!Strings.isNullOrEmpty(blasonUrl)) {
-            String localWidgetFilePath = MhDlaNotifierUtils.md5(blasonUrl) + "_cropped";
-            Log.i(TAG, "localFilePath: " + localWidgetFilePath);
-            File blasonFile = new File(filesDir, localWidgetFilePath);
-            Log.i(TAG, "localFile: " + blasonFile);
-            if (!blasonFile.exists()) {
+            String fileName = BLASON_FILES_PREFIX + MhDlaNotifierUtils.md5(blasonUrl) + "_cropped";
+            File localFile = new File(filesDir, fileName);
+            Log.i(TAG, "localFile: " + localFile);
+            if (!localFile.exists()) {
 
                 Bitmap rawBlason = loadRawBlason(blasonUrl, filesDir);
 
-                int minX = Integer.MAX_VALUE;
-                int minY = Integer.MAX_VALUE;
-                int maxX = Integer.MIN_VALUE;
-                int maxY = Integer.MIN_VALUE;
-                for (int x=0; x<rawBlason.getWidth(); x++) {
-                    for (int y=0; y<rawBlason.getHeight(); y++) {
-                        int pixel = rawBlason.getPixel(x, y);
-                        int alpha = (pixel >> 24) & 0xff;
-                        boolean transparent = alpha == 0;
-                        if (!transparent) {
-                            minX = Math.min(minX, x);
-                            minY = Math.min(minY, y);
-                            maxX = Math.max(maxX, x);
-                            maxY = Math.max(maxY, y);
+                if (rawBlason != null) {
+                    int minX = Integer.MAX_VALUE;
+                    int minY = Integer.MAX_VALUE;
+                    int maxX = Integer.MIN_VALUE;
+                    int maxY = Integer.MIN_VALUE;
+                    for (int x=0; x<rawBlason.getWidth(); x++) {
+                        for (int y=0; y<rawBlason.getHeight(); y++) {
+                            int pixel = rawBlason.getPixel(x, y);
+                            int alpha = (pixel >> 24) & 0xff;
+                            boolean transparent = alpha == 0;
+                            if (!transparent) {
+                                minX = Math.min(minX, x);
+                                minY = Math.min(minY, y);
+                                maxX = Math.max(maxX, x);
+                                maxY = Math.max(maxY, y);
+                            }
                         }
                     }
-                }
 
-                int cropMinX = Math.max(0, minX - CROP_PADDING);
-                int cropMinY = Math.max(0, minY - CROP_PADDING);
-                int cropMaxX = Math.min(rawBlason.getWidth(), maxX + CROP_PADDING);
-                int cropMaxY = Math.min(rawBlason.getHeight(), maxY + CROP_PADDING);
+                    int cropMinX = Math.max(0, minX - CROP_PADDING);
+                    int cropMinY = Math.max(0, minY - CROP_PADDING);
+                    int cropMaxX = Math.min(rawBlason.getWidth() - 1, maxX + CROP_PADDING);
+                    int cropMaxY = Math.min(rawBlason.getHeight() - 1, maxY + CROP_PADDING);
 
-                Log.i(TAG,
-                        "Size info: " + rawBlason.getWidth() + "x" + rawBlason.getHeight() + " ; " +
-                        "Alpha info: min=" + minX + "x" + minY + " ; max=" + maxX + "x" + maxY + " ; " +
-                        "Crop info: min=" + cropMinX + "x" + cropMinY + " ; max=" + cropMaxX + "x" + cropMaxY);
+                    Log.i(TAG,
+                            "Size info: " + rawBlason.getWidth() + "x" + rawBlason.getHeight() + " ; " +
+                            "Alpha info: min=" + minX + "x" + minY + " ; max=" + maxX + "x" + maxY + " ; " +
+                            "Crop info: min=" + cropMinX + "x" + cropMinY + " ; max=" + cropMaxX + "x" + cropMaxY);
 
-                if (cropMinX > 0 || cropMinY > 0 || cropMaxX < rawBlason.getWidth() || cropMaxY < rawBlason.getHeight()) {
+                    if (cropMinX > 0 || cropMinY > 0 || cropMaxX < rawBlason.getWidth() || cropMaxY < rawBlason.getHeight()) {
 
-                    result = Bitmap.createBitmap(rawBlason, cropMinX, cropMinY, cropMaxX - cropMinX, cropMaxY - cropMinY);
+                        result = Bitmap.createBitmap(rawBlason, cropMinX, cropMinY, cropMaxX - cropMinX, cropMaxY - cropMinY);
 
-                    Log.i(TAG, "Save cropped result to " + blasonFile);
-                    FileOutputStream fos = null;
-                    try {
-                        fos = new FileOutputStream(blasonFile);
-
-                        result.compress(Bitmap.CompressFormat.PNG, 90, fos);
-
-                    } catch (Exception eee) {
-                        Log.e(TAG, "Exception", eee);
-                    } finally {
+                        Log.i(TAG, "Save cropped result to " + localFile);
+                        FileOutputStream fos = null;
                         try {
-                            Closeables.close(fos, false);
-                        } catch (IOException e) {
-                            Log.e(TAG, "Un exception occurred", e);
+                            fos = new FileOutputStream(localFile);
+
+                            result.compress(Bitmap.CompressFormat.PNG, 90, fos);
+
+                        } catch (Exception eee) {
+                            Log.e(TAG, "Exception", eee);
+                        } finally {
+                            try {
+                                Closeables.close(fos, false);
+                            } catch (IOException e) {
+                                Log.e(TAG, "Un exception occurred", e);
+                            }
                         }
                     }
                 }
@@ -444,7 +446,7 @@ public class MhDlaNotifierUtils {
                 Log.i(TAG, "Existing, loading from cache");
                 BufferedInputStream bis = null;
                 try {
-                    bis = new BufferedInputStream(new FileInputStream(blasonFile));
+                    bis = new BufferedInputStream(new FileInputStream(localFile));
 
                     result = BitmapFactory.decodeStream(bis);
 
@@ -466,9 +468,8 @@ public class MhDlaNotifierUtils {
     protected static Bitmap loadRawBlason(String blasonUrl, File filesDir) {
         Bitmap result = null;
         if (!Strings.isNullOrEmpty(blasonUrl)) {
-            String localFilePath = MhDlaNotifierUtils.md5(blasonUrl);
-            Log.i(TAG, "localFilePath: " + localFilePath);
-            File localFile = new File(filesDir, localFilePath);
+            String fileName = BLASON_FILES_PREFIX + MhDlaNotifierUtils.md5(blasonUrl);
+            File localFile = new File(filesDir, fileName);
             Log.i(TAG, "localFile: " + localFile);
             if (!localFile.exists()) {
 

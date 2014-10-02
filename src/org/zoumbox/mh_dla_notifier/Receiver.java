@@ -360,6 +360,11 @@ public class Receiver extends BroadcastReceiver {
             int[] appWidgetIds = widgetManager.getAppWidgetIds(componentName);
 
             if (appWidgetIds != null && appWidgetIds.length > 0) {
+
+                // FIXME AThimel 14/02/14 Remove ASAP
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                StrictMode.setThreadPolicy(policy);
+
                 String dlaText = Trolls.getWidgetDlaTextFunction(context).apply(troll);
                 Bitmap blason = MhDlaNotifierUtils.loadBlasonForWidget(troll.getBlason(), context.getCacheDir());
 
