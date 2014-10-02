@@ -29,11 +29,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
@@ -569,7 +570,7 @@ public class MhDlaNotifierUtils {
 
             BufferedReader reader = null;
             try {
-                reader = new BufferedReader(new FileReader(localFile));
+                reader = new BufferedReader(new InputStreamReader( new FileInputStream(localFile), Charset.forName("ISO8859_15")));
                 String str;
                 String beginsWith = guildeNumber + ";";
                 while ((str = reader.readLine()) != null) {

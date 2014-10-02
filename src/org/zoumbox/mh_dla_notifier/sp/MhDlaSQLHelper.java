@@ -80,31 +80,47 @@ public class MhDlaSQLHelper extends SQLiteOpenHelper {
 
         Log.w(TAG, "onUpgrade, oldVersion=" + oldVersion + " ; newVersion=" + newVersion);
         if (oldVersion < 2 && newVersion >= 2) {
-            Log.w(TAG, "Rename script_date to " + SCRIPTS_END_DATE_COLUMN);
-            db.execSQL("ALTER TABLE " + SCRIPTS_TABLE + " RENAME TO tmp_" + SCRIPTS_TABLE);
+            try {
+                Log.w(TAG, "Rename script_date to " + SCRIPTS_END_DATE_COLUMN);
+                db.execSQL("ALTER TABLE " + SCRIPTS_TABLE + " RENAME TO tmp_" + SCRIPTS_TABLE);
 
-            db.execSQL(SCRIPTS_TABLE_CREATE);
+                db.execSQL(SCRIPTS_TABLE_CREATE);
 
-            db.execSQL(
-                    "INSERT INTO " + SCRIPTS_TABLE +
-                        "(" +
-                            SCRIPTS_START_DATE_COLUMN + ", " +
-                            SCRIPTS_END_DATE_COLUMN + ", " +
-                            SCRIPTS_SCRIPT_COLUMN + ", " +
-                            SCRIPTS_CATEGORY_COLUMN + ", " +
-                            SCRIPTS_STATUS_COLUMN + ", " +
-                            SCRIPTS_TROLL_COLUMN
-                        + ")" +
-                    "SELECT " +
-                        "script_date, " +
-                        "script_date, " +
-                        SCRIPTS_SCRIPT_COLUMN + ", " +
-                        SCRIPTS_CATEGORY_COLUMN + ", " +
-                        " '"+STATUS_SUCCESS+"', " +
-                        SCRIPTS_TROLL_COLUMN +
-                    " FROM tmp_" + SCRIPTS_TABLE);
+                db.execSQL(
+                        "INSERT INTO " + SCRIPTS_TABLE +
+                                "(" +
+                                    SCRIPTS_START_DATE_COLUMN + ", " +
+                                    SCRIPTS_END_DATE_COLUMN + ", " +
+                                    SCRIPTS_SCRIPT_COLUMN + ", " +
+                                    SCRIPTS_CATEGORY_COLUMN + ", " +
+                                    SCRIPTS_STATUS_COLUMN + ", " +
+                                    SCRIPTS_TROLL_COLUMN
+                                + ")" +
+                                "SELECT " +
+                                    "script_date, " +
+                                    "script_date, " +
+                                    SCRIPTS_SCRIPT_COLUMN + ", " +
+                                    SCRIPTS_CATEGORY_COLUMN + ", " +
+                                    " '" + STATUS_SUCCESS + "', " +
+                                    SCRIPTS_TROLL_COLUMN +
+                                " FROM tmp_" + SCRIPTS_TABLE);
 
-            db.execSQL("DROP TABLE tmp_" + SCRIPTS_TABLE);
+                db.execSQL("DROP TABLE tmp_" + SCRIPTS_TABLE);
+            } catch (Exception eee) {
+                Log.e(TAG, "Unable to migrate", eee);
+
+                // Drop and create database
+                try {
+                    db.execSQL("DROP TABLE " + SCRIPTS_TABLE);
+                } catch (Exception eee2) {
+                    Log.e(TAG, "Unable to drop table", eee2);
+                }
+                try {
+                    db.execSQL(SCRIPTS_TABLE_CREATE);
+                } catch (Exception eee2) {
+                    Log.e(TAG, "Unable to create table", eee2);
+                }
+            }
 
         }
     }
