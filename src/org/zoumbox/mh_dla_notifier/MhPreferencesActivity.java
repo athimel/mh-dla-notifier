@@ -23,12 +23,12 @@
  */
 package org.zoumbox.mh_dla_notifier;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -36,7 +36,6 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -135,7 +134,7 @@ public class MhPreferencesActivity extends PreferenceActivity implements SharedP
         }
     };
 
-    protected static final Map<String, Function<Context, String>> preferencesFunctions = Maps.newLinkedHashMap();
+    protected static final Map<String, Function<Context, String>> preferencesFunctions = new LinkedHashMap<String, Function<Context, String>>();
 
     static {
         preferencesFunctions.put(PreferencesHolder.PREFS_NOTIFY_WITHOUT_PA, GET_NOTIFY_WITHOUT_PA_SUMMARY);

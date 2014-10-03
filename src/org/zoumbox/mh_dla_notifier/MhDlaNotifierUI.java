@@ -25,6 +25,7 @@ package org.zoumbox.mh_dla_notifier;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -43,7 +44,6 @@ import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Sets;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -487,7 +487,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         }
         this.trollInfo.setText(trollInfo);
 
-        Set<String> statuses = Sets.newLinkedHashSet();
+        Set<String> statuses = new LinkedHashSet<String>();
         if (troll.isATerre()) {
             statuses.add("[À terre]");
         }

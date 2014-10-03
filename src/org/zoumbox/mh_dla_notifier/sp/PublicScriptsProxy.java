@@ -32,8 +32,6 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -48,8 +46,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -221,7 +222,7 @@ public class PublicScriptsProxy {
         MhDlaSQLHelper helper = new MhDlaSQLHelper(context);
         SQLiteDatabase database = helper.getReadableDatabase();
 
-        Map<PublicScript, Date> result = Maps.newHashMap();
+        Map<PublicScript, Date> result = new HashMap<PublicScript, Date>();
 
         for (PublicScript script : scripts) {
 
@@ -366,7 +367,7 @@ public class PublicScriptsProxy {
     }
 
     public static List<MhSpRequest> listLatestRequests(Context context, String trollId, int count) {
-        List<MhSpRequest> result = Lists.newArrayList();
+        List<MhSpRequest> result = new ArrayList<MhSpRequest>();
 
         String query = String.format(SQL_LIST_REQUESTS, count);
 
@@ -402,7 +403,7 @@ public class PublicScriptsProxy {
     }
 
     public static List<MhSpRequest> listLatestRequestsSince(Context context, String trollId, int dayCount) {
-        List<MhSpRequest> result = Lists.newArrayList();
+        List<MhSpRequest> result = new ArrayList<MhSpRequest>();
 
         Calendar instance = Calendar.getInstance();
         instance.add(Calendar.HOUR_OF_DAY, dayCount * -24);
@@ -439,7 +440,7 @@ public class PublicScriptsProxy {
     }
 
     public static Map<ScriptCategory, Integer> listQuotas(Context context, String trollId) {
-        Map<ScriptCategory, Integer> result = Maps.newLinkedHashMap();
+        Map<ScriptCategory, Integer> result = new LinkedHashMap<ScriptCategory, Integer>();
         for (ScriptCategory scriptCategory : ScriptCategory.values()) {
             int count = computeRequestCount(context, scriptCategory, trollId);
             result.put(scriptCategory, count);

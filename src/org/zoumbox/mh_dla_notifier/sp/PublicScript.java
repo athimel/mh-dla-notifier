@@ -23,11 +23,10 @@
  */
 package org.zoumbox.mh_dla_notifier.sp;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -37,7 +36,7 @@ public enum PublicScript {
     ProfilPublic2(
             ScriptCategory.STATIC,
             "http://sp.mountyhall.com/SP_ProfilPublic2.php?Numero=%s&Motdepasse=%s",
-            Lists.newArrayList(
+            Arrays.asList(
                     "numero",
                     "nom",
                     "race",
@@ -58,7 +57,7 @@ public enum PublicScript {
     Profil2(
             ScriptCategory.DYNAMIC,
             "http://sp.mountyhall.com/SP_Profil2.php?Numero=%s&Motdepasse=%s",
-            Lists.newArrayList(
+            Arrays.asList(
                     "numero",
                     "posX",
                     "posY",
@@ -98,10 +97,10 @@ public enum PublicScript {
             ScriptCategory.DYNAMIC,
             "http://sp.mountyhall.com/SP_Caract.php?Numero=%s&Motdepasse=%s",
             // http://dev.zoumbox.org/issues/161 : 7th value is supposed to be pvActuels but is bogus in SP (reported by email on april 10th 2014)
-            Lists.newArrayList(
+            Arrays.asList(
                     "type", "attaque", "esquive", "degats", "regeneration", "pvMax", "pvActuelsFake", "vue", "rm", "mm", "armure", "dureeDuTour", "poids", "concentration"
             ),
-            Sets.newHashSet("BMM", "BMP", "CAR")
+            new HashSet<String>(Arrays.asList("BMM", "BMP", "CAR"))
     ),
 
 //    Profil3(

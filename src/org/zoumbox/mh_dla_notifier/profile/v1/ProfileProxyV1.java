@@ -23,8 +23,11 @@
  */
 package org.zoumbox.mh_dla_notifier.profile.v1;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,11 +51,8 @@ import org.zoumbox.mh_dla_notifier.troll.Troll;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -95,11 +95,11 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
     public Set<String> getTrollIds(Context context) {
 
         String trollId = getTrollNumber(context);
-        Set<String> result = Sets.newLinkedHashSet();
+        Set<String> result = new LinkedHashSet<String>();
         if (!Strings.isNullOrEmpty(trollId)) {
             result.add(trollId); // TODO AThimel 06/08/13 manage several trolls
         }
-        return ImmutableSet.copyOf(result);
+        return result;
     }
 
     public void saveIdPassword(Context context, String trollId, String trollPassword) {
@@ -164,7 +164,7 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
 
         Troll result = new Troll();
 
-        List<String> requestedProperties = Lists.newArrayList(
+        List<String> requestedProperties = Arrays.asList(
                 "NOM", "RACE", "NIVAL", "GUILDE", "CARACT", "BLASON", "NB_KILLS", "NB_MORTS", "DATE_INSCRIPTION",
                 "PV", "PV_MAX", "FATIGUE", "POS_X", "POS_Y", "POS_N",
                 "DUREE_DU_TOUR", "DLA", "PA_RESTANT",
@@ -285,7 +285,7 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
         final String trollNumber = idAndPassword.left();
 
         // Iterate over requested properties to know which SP are concerned
-        Set<PublicScript> scripts = Sets.newLinkedHashSet();
+        Set<PublicScript> scripts = new LinkedHashSet<PublicScript>();
         Log.i(TAG, "Requesting properties: " + requestedProperties);
 //        for (String property : requestedProperties) {
 //            PublicScript script = PublicScript.forProperty(property);
@@ -334,7 +334,7 @@ public class ProfileProxyV1 extends AbstractProfileProxy implements ProfileProxy
             }
         }
 
-        Map<String, String> result = Maps.newLinkedHashMap();
+        Map<String, String> result = new LinkedHashMap<String, String>();
         Log.i(TAG, "Background update needed ? " + backgroundUpdate);
         result.put("NEEDS_UPDATE", backgroundUpdate.name());
 

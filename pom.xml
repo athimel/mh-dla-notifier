@@ -11,7 +11,7 @@
   <parent>
     <groupId>org.zoumbox</groupId>
     <artifactId>mavenpom</artifactId>
-    <version>0.9</version>
+    <version>0.10-SNAPSHOT</version>
   </parent>
 
   <groupId>org.zoumbox</groupId>
@@ -52,12 +52,6 @@
       <groupId>android.support</groupId>
       <artifactId>compatibility-v4</artifactId>
       <version>${androidSdkVersion}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>${guavaVersion}</version>
     </dependency>
 
     <dependency>
@@ -148,8 +142,7 @@
 
     <androidSdkVersion>19.0.1</androidSdkVersion>
     <androidVersion>4.1.1.4</androidVersion>
-    <gsonVersion>2.2.4</gsonVersion>
-    <guavaVersion>16.0.1</guavaVersion>
+    <gsonVersion>2.3</gsonVersion>
 
     <androidPluginVersion>3.8.2</androidPluginVersion>
   </properties>
@@ -187,7 +180,7 @@
             <path>${env.ANDROID_HOME}</path>
             <platform>14</platform>
           </sdk>
-          <deleteConflictingFiles>true</deleteConflictingFiles>
+          <!--<deleteConflictingFiles>true</deleteConflictingFiles>-->
           <!--<device>emulator</device>-->
           <device>usb</device>
           <zipalign>

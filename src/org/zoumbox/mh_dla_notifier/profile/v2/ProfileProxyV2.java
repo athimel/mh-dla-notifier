@@ -24,16 +24,16 @@ package org.zoumbox.mh_dla_notifier.profile.v2;
  * #L%
  */
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Iterables;
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
 import org.zoumbox.mh_dla_notifier.Pair;
@@ -59,7 +59,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 
 import android.content.Context;
@@ -73,11 +72,11 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
 
     private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + ProfileProxyV2.class.getSimpleName();
 
-    protected static final Set<PublicScript> WATCHED_SCRIPTS = ImmutableSortedSet.of(
+    protected static final Set<PublicScript> WATCHED_SCRIPTS = new LinkedHashSet<PublicScript>(Arrays.asList(
             PublicScript.ProfilPublic2,
             PublicScript.Profil2,
             PublicScript.Caract
-    );
+    ));
 
     protected static final String PREFS_NAME_V2 = "org.zoumbox.mh.dla.notifier.preferences.v2";
 
@@ -103,11 +102,11 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
 
     @Override
     public Set<String> getTrollIds(Context context) {
-        Set<String> result = Sets.newLinkedHashSet(getTrollIds0(context));
+        Set<String> result = new LinkedHashSet<String>(getTrollIds0(context));
         if (result == null || result.isEmpty()) {
             boolean migrationResult = tryMigration(context);
             if (migrationResult) {
-                result = Sets.newLinkedHashSet(getTrollIds0(context));
+                result = new LinkedHashSet<String>(getTrollIds0(context));
             }
         }
         return result;
@@ -236,7 +235,7 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
 
     protected Set<PublicScript> getScriptsThatRequiresAnUpdate(Context context, String trollId) {
         final Map<PublicScript, Date> lastUpdates = PublicScriptsProxy.geLastUpdates(context, trollId, WATCHED_SCRIPTS);
-        Set<PublicScript> result = Sets.newHashSet(Iterables.filter(WATCHED_SCRIPTS, new Predicate<PublicScript>() {
+        Iterable<PublicScript> filtered = Iterables.filter(WATCHED_SCRIPTS, new Predicate<PublicScript>() {
             @Override
             public boolean apply(PublicScript input) {
                 Date lastUpdate = lastUpdates.get(input);
@@ -252,7 +251,8 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
                 boolean result = lastUpdate.before(delay);
                 return result;
             }
-        }));
+        });
+        Set<PublicScript> result = new HashSet<PublicScript>(Lists.newArrayList(filtered));
         return result;
     }
 
@@ -388,7 +388,9 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
             try {
                 Troll troll = readTroll(context, trollId);
 
-                fetchScripts(context, trollId, trollPassword, troll, ImmutableSet.of(PublicScript.Profil2));
+                Set<PublicScript> publicScripts = new HashSet<PublicScript>();
+                publicScripts.add(PublicScript.Profil2);
+                fetchScripts(context, trollId, trollPassword, troll, publicScripts);
 
                 saveTroll(context, trollId, troll);
             } catch (QuotaExceededException qee) {

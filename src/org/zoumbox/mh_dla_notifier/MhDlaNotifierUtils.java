@@ -25,6 +25,7 @@ package org.zoumbox.mh_dla_notifier;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -53,9 +54,6 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.common.io.Closeables;
-import com.google.common.io.Files;
-import com.google.common.io.InputSupplier;
 
 import android.content.Context;
 import android.content.Intent;
@@ -348,11 +346,7 @@ public class MhDlaNotifierUtils {
                     } catch (Exception eee) {
                         Log.e(TAG, "Exception", eee);
                     } finally {
-                        try {
-                            Closeables.close(fos, false);
-                        } catch (IOException e) {
-                            Log.e(TAG, "Un exception occurred", e);
-                        }
+                        closeQuitely(fos);
                     }
                 }
 
@@ -369,15 +363,21 @@ public class MhDlaNotifierUtils {
                 } catch (Exception eee) {
                     Log.e(TAG, "Exception", eee);
                 } finally {
-                    try {
-                        Closeables.close(bis, false);
-                    } catch (IOException e) {
-                        Log.e(TAG, "Un exception occurred", e);
-                    }
+                    closeQuitely(bis);
                 }
             }
         }
         return result;
+    }
+
+    protected static void closeQuitely(Closeable closeable) {
+        try {
+            if (closeable != null) {
+                closeable.close();
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Un exception occurred", e);
+        }
     }
 
     protected static Bitmap loadAndCropBlason(String blasonUrl, File filesDir) {
@@ -434,11 +434,7 @@ public class MhDlaNotifierUtils {
                         } catch (Exception eee) {
                             Log.e(TAG, "Exception", eee);
                         } finally {
-                            try {
-                                Closeables.close(fos, false);
-                            } catch (IOException e) {
-                                Log.e(TAG, "Un exception occurred", e);
-                            }
+                            closeQuitely(fos);
                         }
                     }
                 }
@@ -455,11 +451,7 @@ public class MhDlaNotifierUtils {
                 } catch (Exception eee) {
                     Log.e(TAG, "Exception", eee);
                 } finally {
-                    try {
-                        Closeables.close(bis, false);
-                    } catch (IOException e) {
-                        Log.e(TAG, "Un exception occurred", e);
-                    }
+                    closeQuitely(bis);
                 }
             }
         }
@@ -486,11 +478,7 @@ public class MhDlaNotifierUtils {
                 } catch (Exception eee) {
                     Log.e(TAG, "Exception", eee);
                 } finally {
-                    try {
-                        Closeables.close(bis, false);
-                    } catch (IOException e) {
-                        Log.e(TAG, "Un exception occurred", e);
-                    }
+                    closeQuitely(bis);
                 }
 
                 if (result != null) {
@@ -505,11 +493,7 @@ public class MhDlaNotifierUtils {
                         Log.e(TAG, "Exception", eee);
                         return null;
                     } finally {
-                        try {
-                            Closeables.close(fos, false);
-                        } catch (IOException e) {
-                            Log.e(TAG, "Un exception occurred", e);
-                        }
+                        closeQuitely(fos);
                     }
                 }
             } else {
@@ -525,15 +509,28 @@ public class MhDlaNotifierUtils {
                 } catch (Exception eee) {
                     Log.e(TAG, "Exception", eee);
                 } finally {
-                    try {
-                        Closeables.close(bis, false);
-                    } catch (IOException e) {
-                        Log.e(TAG, "Un exception occurred", e);
-                    }
+                    closeQuitely(bis);
                 }
             }
         }
         return result;
+    }
+
+    protected static void inputStreamToFile(InputStream is, File to) throws IOException {
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(to);
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = is.read(buffer)) != -1) {
+                out.write(buffer, 0, len);
+            }
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+            is.close();
+        }
     }
 
     public static String loadGuilde(int guildeNumber, File filesDir) {
@@ -551,20 +548,11 @@ public class MhDlaNotifierUtils {
                     final BufferedInputStream fbis = new BufferedInputStream(conn.getInputStream());
                     bis = fbis;
 
-                    Files.copy(new InputSupplier<InputStream>() {
-                        @Override
-                        public InputStream getInput() throws IOException {
-                            return fbis;
-                        }
-                    }, localFile);
+                    inputStreamToFile(fbis, localFile);
                 } catch (Exception eee) {
                     Log.e(TAG, "Exception", eee);
                 } finally {
-                    try {
-                        Closeables.close(bis, false);
-                    } catch (IOException e) {
-                        Log.e(TAG, "Un exception occurred", e);
-                    }
+                    closeQuitely(bis);
                 }
             }
 
@@ -585,11 +573,7 @@ public class MhDlaNotifierUtils {
             } catch (IOException e) {
                 // Forget
             } finally {
-                try {
-                    Closeables.close(reader, false);
-                } catch (IOException e) {
-                    Log.e(TAG, "Un exception occurred", e);
-                }
+                closeQuitely(reader);
             }
 
         }

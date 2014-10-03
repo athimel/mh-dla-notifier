@@ -23,11 +23,8 @@
  */
 package org.zoumbox.mh_dla_notifier.sp;
 
+import java.util.HashMap;
 import java.util.Map;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -307,11 +304,11 @@ public class PublicScriptsProxyMock {
 
     public static final String UCH_PROFIL2 = "88222;81;-100;-76;100;100;0;2012-06-29 18:23:12;3;11;3;7;28;11;4336;1139;0;0;0;0;0;0;0;618;-50;1;0;0;0;0";
 
-    public static final Map<PublicScript, Map<MockTroll, String>> scripts = Maps.newHashMap();
+    public static final Map<PublicScript, Map<MockTroll, String>> scripts = new HashMap<PublicScript, Map<MockTroll, String>>();
 
     static {
         for (PublicScript ps : PublicScript.values()) {
-            Map<MockTroll, String> trollStringMap = Maps.newHashMap();
+            Map<MockTroll, String> trollStringMap = new HashMap<MockTroll, String>();
             scripts.put(ps, trollStringMap);
         }
 
@@ -343,11 +340,5 @@ public class PublicScriptsProxyMock {
 
     }
 
-    public static Multimap<PublicScript, String> getMockScripts() {
-        Multimap<PublicScript, String> result = HashMultimap.create();
-        for (Map.Entry<PublicScript, Map<MockTroll, String>> entry : scripts.entrySet()) {
-            result.putAll(entry.getKey(), entry.getValue().values());
-        }
-        return result;
-    }
+
 }

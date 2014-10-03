@@ -26,6 +26,7 @@ package org.zoumbox.mh_dla_notifier;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.zoumbox.mh_dla_notifier.profile.MissingLoginPasswordException;
@@ -34,8 +35,6 @@ import org.zoumbox.mh_dla_notifier.troll.Troll;
 import org.zoumbox.mh_dla_notifier.troll.Trolls;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Maps;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -57,7 +56,7 @@ public class Alarms {
         Preconditions.checkNotNull(troll);
 
         Date currentDla = troll.getDla();
-        Map<AlarmType, Date> result = Maps.newLinkedHashMap();
+        Map<AlarmType, Date> result = new LinkedHashMap<AlarmType, Date>();
 
         if (currentDla != null) {
             Date nextDla = Trolls.GET_NEXT_DLA.apply(troll);
@@ -127,7 +126,7 @@ public class Alarms {
 
     private static Map<AlarmType, Date> scheduleAlarms(Context context, Map<AlarmType, Date> alarms, String trollId) {
 
-        Map<AlarmType, Date> result = Maps.newLinkedHashMap();
+        Map<AlarmType, Date> result = new LinkedHashMap<AlarmType, Date>();
         for (Map.Entry<AlarmType, Date> entry : alarms.entrySet()) {
             AlarmType alarmType = entry.getKey();
             Date alarmDate = entry.getValue();

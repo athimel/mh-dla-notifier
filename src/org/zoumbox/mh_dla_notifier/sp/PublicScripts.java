@@ -28,6 +28,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,7 +48,6 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 /**
  * @author Arnaud Thimel <thimel@codelutin.com>
@@ -61,7 +61,7 @@ public class PublicScripts {
         public Map<String, String> apply(PublicScriptResult input) {
             PublicScript script = input.getScript();
             List<String> lines = Lists.newArrayList(Splitter.on("\n").trimResults().omitEmptyStrings().split(input.getRaw()));
-            Map<String, String> result = Maps.newLinkedHashMap();
+            Map<String, String> result = new LinkedHashMap<String, String>();
             Set<String> types = script.getTypes();
 
             for (String line : lines) {
