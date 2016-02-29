@@ -15,10 +15,12 @@ Si vous ne disposez pas d'Android 4, contactez-moi pour avoir une version compat
 
 Si vous ne connaissez pas MountyHall, tout est là : http://www.mountyhall.com/
 
-Cette application est un Logiciel Libre, livré sous licence GPLv3, toutes les informations sur le projet : http://dev.zoumbox.org/projects/mh-dla-notifier
-N'hésitez pas à rapporter vos idées ou bugs ici : http://dev.zoumbox.org/projects/mh-dla-notifier/issues
-
 Illustrations par Maxime Belloche : http://maximebelloche.fr
 
 Note technique : L'application est développée en se basant sur les scripts publics fournis par MountyHall. Plus d'infos sur : http://sp.mountyhall.com/
 
+Licence
+-------
+
+Cette application est un Logiciel Libre, livré sous licence GPLv3.
+N'hésitez pas à rapporter vos idées ou bugs dans les « issues ».
