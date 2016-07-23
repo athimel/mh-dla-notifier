@@ -50,7 +50,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 /**
- * @author Arnaud Thimel <thimel@codelutin.com>
+ * @author Arnaud Thimel <a.thimel at gmail.com>
  */
 public class PublicScripts {
 

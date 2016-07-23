@@ -34,7 +34,7 @@ import com.google.common.base.Function;
 import android.content.Context;
 
 /**
- * @author Arnaud Thimel <thimel@codelutin.com>
+ * @author Arnaud Thimel <a.thimel at gmail.com>
  */
 public class Trolls {
 

@@ -27,7 +27,7 @@ package org.zoumbox.mh_dla_notifier.utils;
 import android.util.Log;
 
 /**
- * @author Arnaud Thimel <thimel@codelutin.com>
+ * @author Arnaud Thimel <a.thimel at gmail.com>
  */
 public class AndroidLogCallback implements LogCallback {
 

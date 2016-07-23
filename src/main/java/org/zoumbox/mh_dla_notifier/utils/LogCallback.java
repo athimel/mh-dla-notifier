@@ -25,7 +25,7 @@ package org.zoumbox.mh_dla_notifier.utils;
  */
 
 /**
- * @author Arnaud Thimel <thimel@codelutin.com>
+ * @author Arnaud Thimel <a.thimel at gmail.com>
  */
 public interface LogCallback {
 

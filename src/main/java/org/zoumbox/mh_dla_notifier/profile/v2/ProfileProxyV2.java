@@ -66,7 +66,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 /**
- * @author Arnaud Thimel <thimel@codelutin.com>
+ * @author Arnaud Thimel <a.thimel at gmail.com>
  */
 public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy {
 

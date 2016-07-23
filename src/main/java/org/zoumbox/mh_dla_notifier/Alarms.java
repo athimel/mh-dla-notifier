@@ -43,7 +43,7 @@ import android.content.Intent;
 import android.util.Log;
 
 /**
- * @author Arnaud Thimel <thimel@codelutin.com>
+ * @author Arnaud Thimel <a.thimel at gmail.com>
  */
 public class Alarms {
 
