@@ -300,7 +300,15 @@ public class Receiver extends BroadcastReceiver {
     }
 
     protected boolean between(Date date, Date lowerBound, Date upperBound) {
-        return date.compareTo(lowerBound) >= 0 && date.compareTo(upperBound) <= 0;
+        if (date == null) {
+            return false;
+        }
+        try {
+            return date.compareTo(lowerBound) >= 0 && date.compareTo(upperBound) <= 0;
+        } catch (Exception eee) {
+            Log.e(TAG, "Unable to compare dates. Date=" + date + " ; lowerBound=" + lowerBound + " ; upperBound=" + upperBound, eee);
+            return false;
+        }
     }
 
     protected void refreshDla(Context context, String trollId) {
