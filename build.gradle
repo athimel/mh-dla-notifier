@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.0.0'
+        classpath 'com.android.tools.build:gradle:2.1.2'
     }
 
 }
@@ -16,7 +16,6 @@ android {
 
     compileSdkVersion 14
     buildToolsVersion "23.0.3"
-
     defaultConfig {
         // applicationId "org.zoumbox.mh_dla_notifier"
         versionCode 22
@@ -24,11 +23,9 @@ android {
         minSdkVersion 14
         targetSdkVersion 14
     }
-
     lintOptions {
         abortOnError false
     }
-
     buildTypes {
         release {
             shrinkResources true
@@ -48,5 +45,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:19.1.0'
     compile 'com.google.code.gson:gson:2.6.2'
     compile 'com.google.guava:guava:19.0'
-    compile 'commons-codec:commons-codec:1.3' // Devrait être provided
+    provided 'commons-codec:commons-codec:1.3'
 }
