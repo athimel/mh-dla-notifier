@@ -19,7 +19,7 @@ android {
     defaultConfig {
         // applicationId "org.zoumbox.mh_dla_notifier"
         versionCode 23
-        versionName "0.14"
+        versionName "0.14 (beta)"
         minSdkVersion 14
         targetSdkVersion 14
     }
