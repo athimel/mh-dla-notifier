@@ -18,7 +18,7 @@ android {
     buildToolsVersion "23.0.3"
     defaultConfig {
         // applicationId "org.zoumbox.mh_dla_notifier"
-        versionCode 22
+        versionCode 23
         versionName "0.14"
         minSdkVersion 14
         targetSdkVersion 14
@@ -43,7 +43,7 @@ repositories {
 dependencies {
     compile 'com.android.support:support-v4:19.1.0'
     compile 'com.android.support:appcompat-v7:19.1.0'
-    compile 'com.google.code.gson:gson:2.6.2'
+    compile 'com.google.code.gson:gson:2.7'
     compile 'com.google.guava:guava:19.0'
     provided 'commons-codec:commons-codec:1.3'
 }
