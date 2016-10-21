@@ -26,8 +26,14 @@ public class GsonDateAdapter implements JsonSerializer<Date>, JsonDeserializer<D
 
     private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + GsonDateAdapter.class.getSimpleName();
 
+    /*
+     * Exemples de dates legacy :
+     * Jan 21, 2011 14:07:48
+     * Aug 6, 2014 00:03:49
+     * May 13, 2004 16:58:51
+     */
+    public static final String LEGACY_DATE_FORMAT = "MMM dd, yyyy HH:mm:ss";
     public static final String SIMPLE_DATE_FORMAT = "dd/MM/yyyy HH:mm:ss";
-    public static final String LEGACY_DATE_FORMAT = "MMM dd, yyyy HH:mm:ss"; // Jan 21, 2011 14:07:48
 
     protected DateFormat newDateFormat(String dateFormat) {
         DateFormat result = new SimpleDateFormat(dateFormat);
