@@ -35,6 +35,7 @@ import java.util.Set;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.gson.GsonBuilder;
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
 import org.zoumbox.mh_dla_notifier.Pair;
 import org.zoumbox.mh_dla_notifier.PreferencesHolder;
@@ -260,16 +261,22 @@ public class ProfileProxyV2 extends AbstractProfileProxy implements ProfileProxy
         String propertyProfile = getProperty(trollId, PROPERTY_PROFILE);
         String profileString = getPreferences(context).getString(propertyProfile, "{}");
 
-        Troll result = new Gson().fromJson(profileString, Troll.class);
+        Troll result = newGson().fromJson(profileString, Troll.class);
         return result;
     }
 
     protected void saveTroll(Context context, String trollId, Troll troll) {
         String propertyProfile = getProperty(trollId, PROPERTY_PROFILE);
         SharedPreferences.Editor editor = getPreferences(context).edit();
-        String profileString = new Gson().toJson(troll);
+        String profileString = newGson().toJson(troll);
         editor.putString(propertyProfile, profileString);
         editor.commit();
+    }
+
+    protected Gson newGson() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Date.class, new GsonDateAdapter());
+        return gsonBuilder.create();
     }
 
     protected PublicScriptResult fetchScript(Context context, PublicScript script, String trollId, String trollPassword)
