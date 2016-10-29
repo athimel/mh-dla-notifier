@@ -32,7 +32,7 @@ import java.util.Map;
 public class PublicScriptsProxyMock {
 
     private enum MockTroll {
-        DevelZimzoum, Snorf, omnipotente, plusilyadefoumoinilyaderi, Uch
+        DevelZimzoum, Snorf, omnipotente, plusilyadefoumoinilyaderi, Uch, zebu
     }
 
     public static PublicScriptResponse doMockHttpGET(String url) {
@@ -309,6 +309,15 @@ public class PublicScriptsProxyMock {
 
     public static final String UCH_PROFIL2 = "88222;81;-100;-76;100;100;0;2012-06-29 18:23:12;3;11;3;7;28;11;4336;1139;0;0;0;0;0;0;0;618;-50;1;0;0;0;0";
 
+    public static final String ZEBU_PROFIL2 =
+            "105395;45;-87;-16;145;140;6;2016-10-25 05:40:40;3;10;30;4;3;9;5397;2148;0;2;0;0;0;0;0;573;-45;3;0;0;0;0;0";
+    public static final String ZEBU_PROFIL_PUBLIC2 =
+            "105395;zebu\\'troll;Kastar;38;2011-09-02 11:14:36;;http://zoumbox.org/mh/syndikhd/105395_100.png;26;443;13;1900;40;0";
+    public static final String ZEBU_CARACT =
+            "BMM;9;1;5;5;5;0;3;1353;1511;5;-90;0;0\n" +
+            "BMP;-1;5;1;-2;0;0;0;-107;-269;9;0;63;84\n" +
+            "CAR;3;10;30;4;140;145;3;2148;5397;3;573;0;0";
+
     public static final Map<PublicScript, Map<MockTroll, String>> scripts = new HashMap<PublicScript, Map<MockTroll, String>>();
 
     static {
@@ -343,6 +352,10 @@ public class PublicScriptsProxyMock {
         // Uch
         scripts.get(PublicScript.Profil2).put(MockTroll.Uch, UCH_PROFIL2);
 
+        // zebu
+        scripts.get(PublicScript.Profil2).put(MockTroll.zebu, ZEBU_PROFIL2);
+        scripts.get(PublicScript.ProfilPublic2).put(MockTroll.zebu, ZEBU_PROFIL_PUBLIC2);
+        scripts.get(PublicScript.Caract).put(MockTroll.zebu, ZEBU_CARACT);
     }
 
 
