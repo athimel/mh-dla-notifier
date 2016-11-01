@@ -109,6 +109,8 @@ public class PublicScripts {
         for (Map.Entry<String, String> entry : propertiesFetched.entrySet()) {
             try {
                 String name = entry.getKey();
+                log.w(TAG, "Try to set property: " + name);
+                // TODO: 01/11/16 Ne pas utiliser l'introspection
                 final String expectedMethodName = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
                 Optional<Method> optional = Iterables.tryFind(methods, new Predicate<Method>() {
                     @Override
