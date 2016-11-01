@@ -11,6 +11,11 @@ import org.zoumbox.mh_dla_notifier.utils.SystemLogCallback;
 public class PublicScriptsTest {
 
     @Test
+    public void testEscapeName() {
+        Assert.assertEquals("zebu\'troll", PublicScripts.escapeName("zebu\\'troll"));
+    }
+
+    @Test
     public void testPushToTroll() {
 
         PublicScriptResult psrProfilPublic2 = new PublicScriptResult(PublicScript.ProfilPublic2, PublicScriptsProxyMock.ZEBU_PROFIL_PUBLIC2);
@@ -21,7 +26,7 @@ public class PublicScriptsTest {
         PublicScripts.pushToTroll(troll, psrProfil2, new SystemLogCallback());
         PublicScripts.pushToTroll(troll, psrCaract, new SystemLogCallback());
         Assert.assertEquals("105395", troll.getNumero());
-        Assert.assertEquals("zebu\\'troll", troll.getNom());
+        Assert.assertEquals("zebu\'troll", troll.getNom());
         Assert.assertEquals(Race.Kastar, troll.getRace());
         Assert.assertEquals(38, troll.getNival());
         Assert.assertEquals(MhDlaNotifierUtils.parseSpDate("2011-09-02 11:14:36"), troll.getDateInscription());

@@ -32,12 +32,12 @@ import java.util.Map;
 public class PublicScriptsProxyMock {
 
     private enum MockTroll {
-        DevelZimzoum, Snorf, omnipotente, plusilyadefoumoinilyaderi, Uch, zebu
+        DevelZimzoum, Snorf, omnipotente, plusilyadefoumoinilyaderi, Uch, zebu, Kaht, TmT
     }
 
     public static PublicScriptResponse doMockHttpGET(String url) {
         long start = System.currentTimeMillis();
-        MockTroll mockTroll = MockTroll.DevelZimzoum;
+        MockTroll mockTroll = MockTroll.Kaht;
 
         String rawResult = null;
         for (PublicScript ps : PublicScript.values()) {
@@ -309,14 +309,62 @@ public class PublicScriptsProxyMock {
 
     public static final String UCH_PROFIL2 = "88222;81;-100;-76;100;100;0;2012-06-29 18:23:12;3;11;3;7;28;11;4336;1139;0;0;0;0;0;0;0;618;-50;1;0;0;0;0";
 
+//    public static final String ZEBU_PROFIL2 =
+//            "105395;45;-87;-16;145;140;6;2016-10-25 05:40:40;3;10;30;4;3;9;5397;2148;0;2;0;0;0;0;0;573;-45;3;0;0;0;0;0";
+//    public static final String ZEBU_PROFIL_PUBLIC2 =
+//            "105395;zebu\\'troll;Kastar;38;2011-09-02 11:14:36;;http://zoumbox.org/mh/syndikhd/105395_100.png;26;443;13;1900;40;0";
+//    public static final String ZEBU_CARACT =
+//            "BMM;9;1;5;5;5;0;3;1353;1511;5;-90;0;0\n" +
+//            "BMP;-1;5;1;-2;0;0;0;-107;-269;9;0;63;84\n" +
+//            "CAR;3;10;30;4;140;145;3;2148;5397;3;573;0;0";
+
+    // 01/11/2016 22h43
     public static final String ZEBU_PROFIL2 =
-            "105395;45;-87;-16;145;140;6;2016-10-25 05:40:40;3;10;30;4;3;9;5397;2148;0;2;0;0;0;0;0;573;-45;3;0;0;0;0;0";
+            "105395;15;-104;-55;145;140;0;2016-11-02 04:44:40;3;13;30;5;3;9;5419;2155;0;7;0;0;0;0;0;573;-45;3;0;0;0;0;0";
     public static final String ZEBU_PROFIL_PUBLIC2 =
             "105395;zebu\\'troll;Kastar;38;2011-09-02 11:14:36;;http://zoumbox.org/mh/syndikhd/105395_100.png;26;443;13;1900;40;0";
     public static final String ZEBU_CARACT =
-            "BMM;9;1;5;5;5;0;3;1353;1511;5;-90;0;0\n" +
-            "BMP;-1;5;1;-2;0;0;0;-107;-269;9;0;63;84\n" +
-            "CAR;3;10;30;4;140;145;3;2148;5397;3;573;0;0";
+            "BMM;9;1;5;5;5;0;3;560;54;5;-90;0;0\n" +
+                    "BMP;-1;5;1;-2;0;0;0;-107;-270;9;0;75.5;0\n" +
+                    "CAR;3;13;30;5;140;145;3;2155;5419;3;573;0;0";
+
+    public static final String KAHT_PROFIL2 = "86132;20;-56;-56;191;240;0;2016-11-02 06:32:17;6;19;42;9;3;23;14194;4167;0;0;0;0;0;0;0;573;-75;5;0;0;0;0;0";
+    public static final String KAHT_APTITUDES2 = "C;7;75;0;1;\n" +
+            "C;26;77;0;1;\n" +
+            "C;21;90;0;1;\n" +
+            "C;12;90;0;1;\n" +
+            "C;14;81;0;1;\n" +
+            "C;24;90;0;1;\n" +
+            "C;16;90;0;4;\n" +
+            "C;16;90;0;3;\n" +
+            "C;16;90;0;2;\n" +
+            "C;16;90;0;1;\n" +
+            "C;3;90;0;1;\n" +
+            "C;5;84;0;1;\n" +
+            "C;18;90;0;1;\n" +
+            "C;44;90;0;1;\n" +
+            "C;48;90;0;1;\n" +
+            "S;3;82;0;1\n" +
+            "S;8;80;0;1\n" +
+            "S;10;80;0;1\n" +
+            "S;12;80;0;1\n" +
+            "S;13;54;0;1\n" +
+            "S;15;80;0;1\n" +
+            "S;16;80;0;1\n" +
+            "S;17;80;0;1\n" +
+            "S;24;80;0;1\n" +
+            "S;27;80;0;1";
+    public static final String KAHT_PROFIL_PUBLIC2 = "86132;Kahtaströll;Kastar;59;2007-02-06 23:08:29;cedric.hallereau@free.fr;http://zoumbox.org/mh/syndikhd/86132-fofo_300.png;63;889;12;1900;150;0";
+    public static final String KAHT_CARACT = "BMM;11;-3;7;7;5;0;5;11084;6387;15;-150;0;0\n" +
+            "BMP;-2;-4;1;3;0;0;-2;0;0;23;0;261;0\n" +
+            "CAR;6;19;42;9;240;191;3;4167;14194;5;573;0;0";
+
+    public static final String TMT_PROFIL2 = "100160;20;-102;-43;270;260;0;2016-11-01 22:36:42;17;24;26;9;3;22;8208;3114;0;0;0;0;0;0;0;585;-90;3;0;0;0;0;0";
+    public static final String TMT_PROFIL_PUBLIC2 = "100160;TailleMannequinTroll;Durakuir;55;2009-07-09 10:10:29;;http://zoumbox.org/mh/syndikhd/100160.png;62;443;12;1900;180;0";
+    public static final String TMT_CARACT =
+        "BMM;-25;-9;11;6;10;0;8;6695;3283;11;-180;0;0\n" +
+        "BMP;0;-4;4;-4;0;0;-1;0;0;22;0;170.5;0\n" +
+        "CAR;17;24;26;9;260;270;3;3114;8208;3;585;0;0";
 
     public static final Map<PublicScript, Map<MockTroll, String>> scripts = new HashMap<PublicScript, Map<MockTroll, String>>();
 
@@ -356,6 +404,16 @@ public class PublicScriptsProxyMock {
         scripts.get(PublicScript.Profil2).put(MockTroll.zebu, ZEBU_PROFIL2);
         scripts.get(PublicScript.ProfilPublic2).put(MockTroll.zebu, ZEBU_PROFIL_PUBLIC2);
         scripts.get(PublicScript.Caract).put(MockTroll.zebu, ZEBU_CARACT);
+
+        // Kaht
+        scripts.get(PublicScript.Profil2).put(MockTroll.Kaht, KAHT_PROFIL2);
+        scripts.get(PublicScript.ProfilPublic2).put(MockTroll.Kaht, KAHT_PROFIL_PUBLIC2);
+        scripts.get(PublicScript.Caract).put(MockTroll.Kaht, KAHT_CARACT);
+
+        // TmT
+        scripts.get(PublicScript.Profil2).put(MockTroll.TmT, TMT_PROFIL2);
+        scripts.get(PublicScript.ProfilPublic2).put(MockTroll.TmT, TMT_PROFIL_PUBLIC2);
+        scripts.get(PublicScript.Caract).put(MockTroll.TmT, TMT_CARACT);
     }
 
 

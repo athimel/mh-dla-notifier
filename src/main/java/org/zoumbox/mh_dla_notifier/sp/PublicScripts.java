@@ -97,6 +97,9 @@ public class PublicScripts {
         }
     };
 
+    protected static String escapeName(String rawName) {
+        return rawName.replaceAll("\\\\'", "\\'");
+    }
 
     public static void pushToTroll(Troll troll, Map<String, String> propertiesFetched, LogCallback log) {
         for (Map.Entry<String, String> entry : propertiesFetched.entrySet()) {
@@ -106,7 +109,7 @@ public class PublicScripts {
 
                 String stringValue = entry.getValue();
                 if ("numero".equals(name)) { troll.setNumero(stringValue);
-                } else if ("nom".equals(name)) { troll.setNom(stringValue);
+                } else if ("nom".equals(name)) { troll.setNom(escapeName(stringValue));
                 } else if ("race".equals(name)) { troll.setRace(Race.valueOf(stringValue));
                 } else if ("nival".equals(name)) { troll.setNival(Integer.parseInt(stringValue));
                 } else if ("dateInscription".equals(name)) { troll.setDateInscription(MhDlaNotifierUtils.parseSpDate(stringValue));
