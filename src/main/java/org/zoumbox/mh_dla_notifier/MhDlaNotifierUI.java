@@ -203,7 +203,22 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
         this.actionBarMenu = menu;
+
+        boolean displayTechnicalStuff = shouldDisplayTechnicalStuff();
+        this.actionBarMenu.findItem(R.id.action_technical_stuff).setVisible(displayTechnicalStuff);
+
         return super.onCreateOptionsMenu(menu);
+    }
+
+    protected boolean shouldDisplayTechnicalStuff() {
+//        try {
+//            Troll troll = readTrollWithoutUpdate();
+//            return "104259".equals(troll.getNumero());
+//        } catch (Exception eee) {
+//            // Impossible de charger le troll
+//        }
+//        return false;
+        return true;
     }
 
     @Override
