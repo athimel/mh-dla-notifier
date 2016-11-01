@@ -134,4 +134,7 @@
   <string name="qr_code_alt">A QR code that represents a link to the Play Store page</string>
   <string name="blason_alt">The troll\'s blason</string>
 
+  <string name="technical_stuff">Données techniques</string>
+  <string name="copy_to_clipboard">Copier dans le presse-papier</string>
+
 </resources>

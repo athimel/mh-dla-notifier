@@ -73,4 +73,11 @@
       android:title="@string/credits"
       mhapp:showAsAction="ifRoom" />
 
+  <item
+      android:id="@+id/action_technical_stuff"
+      android:icon="@drawable/ic_action_copy"
+      android:title="@string/technical_stuff"
+      android:visible="true"
+      mhapp:showAsAction="ifRoom" />
+
 </menu>

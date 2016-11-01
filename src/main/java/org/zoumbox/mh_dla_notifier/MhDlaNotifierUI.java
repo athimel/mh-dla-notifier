@@ -49,6 +49,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationManager;
 import android.appwidget.AppWidgetManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -233,6 +235,9 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
             case R.id.action_displayRequests:
                 showLastRequests();
                 return true;
+            case R.id.action_technical_stuff:
+                showTechnicalStuff();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -249,6 +254,55 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
                 .setIcon(R.drawable.trarnoll_square_transparent)
                 .setTitle(title)
                 .setView(view)
+                .setPositiveButton(android.R.string.ok, new Dialog.OnClickListener() {
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+        builder.create().show();
+    }
+
+    protected void showTechnicalStuff() {
+
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.technical_stuff, null);
+
+        TextView encoding = (TextView) view.findViewById(R.id.technical_encoding);
+        encoding.setText(System.getProperty("file.encoding"));
+
+        String trollAsString;
+        String clipLabel;
+        try {
+            Troll troll = readTrollWithoutUpdate();
+            if (troll == null) {
+                clipLabel = "Pas de données";
+                trollAsString = "null";
+            } else {
+                clipLabel = "Profil " + troll.getNumero();
+                trollAsString = troll.toString();
+            }
+        } catch (Exception eee) {
+            clipLabel = "Erreur";
+            trollAsString = eee.getMessage();
+        }
+        TextView troll = (TextView) view.findViewById(R.id.technical_troll);
+        troll.setText(trollAsString);
+
+        final ClipData clip = ClipData.newPlainText(clipLabel, trollAsString);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setIcon(R.drawable.trarnoll_square_transparent)
+                .setTitle(getString(R.string.technical_stuff))
+                .setView(view)
+                .setNeutralButton(R.string.copy_to_clipboard, new Dialog.OnClickListener() {
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        ClipboardManager clipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+                        clipboard.setPrimaryClip(clip);
+
+                        dialogInterface.dismiss();
+                    }
+                })
                 .setPositiveButton(android.R.string.ok, new Dialog.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
@@ -344,6 +398,8 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
     //////////////////////
     //  NOT UI METHODS  //
     //////////////////////
+
+    protected abstract Troll readTrollWithoutUpdate() throws Exception;
 
     protected abstract void loadTroll();
 

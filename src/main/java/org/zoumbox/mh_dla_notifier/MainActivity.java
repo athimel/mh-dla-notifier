@@ -73,6 +73,21 @@ public class MainActivity extends MhDlaNotifierUI {
     }
 
     @Override
+    protected Troll readTrollWithoutUpdate() throws Exception {
+
+        // First load the troll without update
+        String trollId = getCurrentTrollId();
+
+        if (Strings.isNullOrEmpty(trollId)) {
+            return null;
+        } else {
+            Pair<Troll, Boolean> trollAndUpdate = getProfileProxy().fetchTrollWithoutUpdate(this, trollId);
+            Troll troll = trollAndUpdate.left();
+            return troll;
+        }
+    }
+
+    @Override
     protected void loadTroll() {
 
         Log.i(TAG, "Initial Loading Troll");
