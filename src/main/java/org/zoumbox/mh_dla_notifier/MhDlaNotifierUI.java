@@ -712,8 +712,8 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         pushCar(carDeg, 3, troll.getDegatsCar(), troll.getDegatsBmp(), troll.getDegatsBmm());
         pushCar(carArm, 3, troll.getArmureCar(), troll.getArmureBmp(), troll.getArmureBmm());
 
-        pushM(rm, troll.getRmCar(), troll.getRmBmm());
-        pushM(mm, troll.getMmCar(), troll.getMmBmm());
+        pushM(rm, troll.getRmCar(), troll.getRmBmp(), troll.getRmBmm());
+        pushM(mm, troll.getMmCar(), troll.getMmBmp(), troll.getMmBmm());
 
         blason.setImageResource(R.drawable.loading);
         new LoadBlasonTask().execute(troll.getBlason());
@@ -747,15 +747,16 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         avgTV.setText(avgText);
     }
 
-    protected void pushM(LinearLayout linearLayout, int car, int bmm) {
+    protected void pushM(LinearLayout linearLayout, int car, int bmp, int bmm) {
         TextView carTV = (TextView) linearLayout.getChildAt(0);
         carTV.setText(String.format("%d", car));
 
-        TextView bmmTV = (TextView) linearLayout.getChildAt(1);
-        bmmTV.setText(String.format("%s%d", bmm > 0 ? "+" : "", bmm));
+        int bm = bmp + bmm;
+        TextView bmTV = (TextView) linearLayout.getChildAt(1);
+        bmTV.setText(String.format("%s%d", bm > 0 ? "+" : "", bm));
 
         TextView totalTV = (TextView) linearLayout.getChildAt(2);
-        String totalText = String.format("%d", car + bmm);
+        String totalText = String.format("%d", car + bm);
         totalTV.setText(totalText);
     }
 

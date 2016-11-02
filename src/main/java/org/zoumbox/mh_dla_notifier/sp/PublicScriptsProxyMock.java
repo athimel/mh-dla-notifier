@@ -37,7 +37,7 @@ public class PublicScriptsProxyMock {
 
     public static PublicScriptResponse doMockHttpGET(String url) {
         long start = System.currentTimeMillis();
-        MockTroll mockTroll = MockTroll.Kaht;
+        MockTroll mockTroll = MockTroll.zebu;
 
         String rawResult = null;
         for (PublicScript ps : PublicScript.values()) {
@@ -324,9 +324,9 @@ public class PublicScriptsProxyMock {
     public static final String ZEBU_PROFIL_PUBLIC2 =
             "105395;zebu\\'troll;Kastar;38;2011-09-02 11:14:36;;http://zoumbox.org/mh/syndikhd/105395_100.png;26;443;13;1900;40;0";
     public static final String ZEBU_CARACT =
-            "BMM;9;1;5;5;5;0;3;560;54;5;-90;0;0\n" +
-                    "BMP;-1;5;1;-2;0;0;0;-107;-270;9;0;75.5;0\n" +
-                    "CAR;3;13;30;5;140;145;3;2155;5419;3;573;0;0";
+            "BMM; 2;-4; 5; 5;  5;  0;3;1357;1517;5;-90;   0;0\n" +
+            "BMP;-1; 5; 1;-2;  0;  0;0;-107;-270;9;  0;75.5;0\n" +
+            "CAR; 3;13;30; 5;140;145;3;2155;5419;3;573;   0;0";
 
     public static final String KAHT_PROFIL2 = "86132;20;-56;-56;191;240;0;2016-11-02 06:32:17;6;19;42;9;3;23;14194;4167;0;0;0;0;0;0;0;573;-75;5;0;0;0;0;0";
     public static final String KAHT_APTITUDES2 = "C;7;75;0;1;\n" +
