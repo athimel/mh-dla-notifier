@@ -32,7 +32,7 @@ import java.util.Map;
 public class PublicScriptsProxyMock {
 
     private enum MockTroll {
-        DevelZimzoum, Snorf, omnipotente, plusilyadefoumoinilyaderi, Uch, zebu, Kaht, TmT
+        DevelZimzoum, Snorf, omnipotente, plusilyadefoumoinilyaderi, Uch, zebu, Kaht, TmT, OutrAskai
     }
 
     public static PublicScriptResponse doMockHttpGET(String url) {
@@ -366,6 +366,8 @@ public class PublicScriptsProxyMock {
         "BMP;0;-4;4;-4;0;0;-1;0;0;22;0;170.5;0\n" +
         "CAR;17;24;26;9;260;270;3;3114;8208;3;585;0;0";
 
+    public static final String OUTRASKAI_PROFIL_PUBLIC2 = "109623;Outr'Askaï;Darkling;19;2015-10-06 11:25:39;;http://zoumbox.org/mh/syndikhd/109623_300.png;19;1;0;1900;20;0";
+
     public static final Map<PublicScript, Map<MockTroll, String>> scripts = new HashMap<PublicScript, Map<MockTroll, String>>();
 
     static {
@@ -414,6 +416,9 @@ public class PublicScriptsProxyMock {
         scripts.get(PublicScript.Profil2).put(MockTroll.TmT, TMT_PROFIL2);
         scripts.get(PublicScript.ProfilPublic2).put(MockTroll.TmT, TMT_PROFIL_PUBLIC2);
         scripts.get(PublicScript.Caract).put(MockTroll.TmT, TMT_CARACT);
+
+        // Outr'Askaï
+        scripts.get(PublicScript.ProfilPublic2).put(MockTroll.OutrAskai, OUTRASKAI_PROFIL_PUBLIC2);
     }
 
 

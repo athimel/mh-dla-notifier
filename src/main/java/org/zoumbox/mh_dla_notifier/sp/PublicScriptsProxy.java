@@ -31,6 +31,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 
 import org.apache.http.HttpResponse;
@@ -80,7 +81,7 @@ public class PublicScriptsProxy {
             HttpGet request = new HttpGet(url);
             HttpResponse response = client.execute(request);
             InputStream content = response.getEntity().getContent();
-            in = new BufferedReader(new InputStreamReader(content));
+            in = new BufferedReader(new InputStreamReader(content, Charsets.ISO_8859_1));
             String line;
             while ((line = in.readLine()) != null) {
                 if (!Strings.isNullOrEmpty(responseContent)) {

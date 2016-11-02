@@ -35,7 +35,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
@@ -49,6 +48,7 @@ import java.util.TimeZone;
 
 import org.apache.commons.codec.binary.Hex;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
@@ -560,7 +560,7 @@ public class MhDlaNotifierUtils {
 
             BufferedReader reader = null;
             try {
-                reader = new BufferedReader(new InputStreamReader( new FileInputStream(localFile), Charset.forName("ISO8859_15")));
+                reader = new BufferedReader(new InputStreamReader( new FileInputStream(localFile), Charsets.ISO_8859_1));
                 String str;
                 String beginsWith = guildeNumber + ";";
                 while ((str = reader.readLine()) != null) {
@@ -602,7 +602,7 @@ public class MhDlaNotifierUtils {
             return info.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             Log.w(TAG, "Unable to read version", e);
-            return "n/c";
+            return N_C;
         }
     }
 
@@ -613,7 +613,7 @@ public class MhDlaNotifierUtils {
             return String.format("%s (%d)", info.versionName, info.versionCode);
         } catch (PackageManager.NameNotFoundException e) {
             Log.w(TAG, "Unable to read full version", e);
-            return "n/c";
+            return N_C;
         }
     }
 

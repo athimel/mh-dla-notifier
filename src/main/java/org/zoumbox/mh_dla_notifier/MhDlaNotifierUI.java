@@ -23,6 +23,7 @@
  */
 package org.zoumbox.mh_dla_notifier;
 
+import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashSet;
@@ -285,6 +286,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
 
         String versionString = String.format("Version : %s", MhDlaNotifierUtils.readVersionAndCode(this));
         String encodingString = String.format("Encoding : %s", System.getProperty("file.encoding"));
+        String charsetString = String.format("Charset : %s", Charset.defaultCharset());
         String localeString = String.format("Locale : %s", Locale.getDefault());
         String trollString;
         try {
@@ -304,6 +306,9 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         TextView encoding = (TextView) view.findViewById(R.id.technical_encoding);
         encoding.setText(encodingString);
 
+        TextView charset = (TextView) view.findViewById(R.id.technical_charset);
+        charset.setText(charsetString);
+
         TextView locale = (TextView) view.findViewById(R.id.technical_locale);
         locale.setText(localeString);
 
@@ -312,7 +317,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
 
         final ClipData clip = ClipData.newPlainText(
                 "Données techniques de votre troll",
-                Joiner.on("\n").join(versionString, encodingString, localeString, trollString));
+                Joiner.on("\n").join(versionString, encodingString, charsetString, localeString, trollString));
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setIcon(R.drawable.trarnoll_square_transparent)
