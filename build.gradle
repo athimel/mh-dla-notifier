@@ -18,8 +18,8 @@ android {
     buildToolsVersion "23.0.3"
     defaultConfig {
         // applicationId "org.zoumbox.mh_dla_notifier"
-        versionCode 24
-        versionName "0.14"
+        versionCode 25
+        versionName "0.14-beta-3"
         minSdkVersion 14
         targetSdkVersion 14
     }
