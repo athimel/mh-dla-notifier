@@ -57,6 +57,8 @@ import com.google.common.collect.Lists;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -592,5 +594,27 @@ public class MhDlaNotifierUtils {
             return webIntent;
         }
     };
+
+    protected static String readVersion(Context context) {
+        try {
+            PackageManager manager = context.getPackageManager();
+            PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
+            return info.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.w(TAG, "Unable to read version", e);
+            return "n/c";
+        }
+    }
+
+    protected static String readVersionAndCode(Context context) {
+        try {
+            PackageManager manager = context.getPackageManager();
+            PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
+            return String.format("%s (%d)", info.versionName, info.versionCode);
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.w(TAG, "Unable to read full version", e);
+            return "n/c";
+        }
+    }
 
 }

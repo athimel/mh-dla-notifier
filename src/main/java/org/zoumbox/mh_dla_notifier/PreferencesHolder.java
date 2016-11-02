@@ -42,6 +42,8 @@ public class PreferencesHolder {
 
     public static final String PREFS_TIME_ZONE = "prefs.timeZoneId";
 
+    public static final String PREFS_ABOUT = "prefs.about";
+
     public int notificationDelay;
     public boolean notifyWithoutPA;
     public boolean notifyOnPvLoss;

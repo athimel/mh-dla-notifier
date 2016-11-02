@@ -27,6 +27,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.zoumbox.mh_dla_notifier.profile.ProfileProxy;
@@ -263,7 +264,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.credits, null);
 
-        String title = getString(R.string.app_name) + " - " + getString(R.string.version_full);
+        String title = getString(R.string.app_name) + " - Version " + MhDlaNotifierUtils.readVersion(this);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setIcon(R.drawable.trarnoll_square_transparent)
@@ -282,28 +283,36 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.technical_stuff, null);
 
-        TextView encoding = (TextView) view.findViewById(R.id.technical_encoding);
-        encoding.setText(System.getProperty("file.encoding"));
-
-        String trollAsString;
-        String clipLabel;
+        String versionString = String.format("Version : %s", MhDlaNotifierUtils.readVersionAndCode(this));
+        String encodingString = String.format("Encoding : %s", System.getProperty("file.encoding"));
+        String localeString = String.format("Locale : %s", Locale.getDefault());
+        String trollString;
         try {
             Troll troll = readTrollWithoutUpdate();
             if (troll == null) {
-                clipLabel = "Pas de données";
-                trollAsString = "null";
+                trollString = "null";
             } else {
-                clipLabel = "Profil " + troll.getNumero();
-                trollAsString = troll.toString();
+                trollString = "Profil : " + troll.toString();
             }
         } catch (Exception eee) {
-            clipLabel = "Erreur";
-            trollAsString = eee.getMessage();
+            trollString = eee.getMessage();
         }
-        TextView troll = (TextView) view.findViewById(R.id.technical_troll);
-        troll.setText(trollAsString);
 
-        final ClipData clip = ClipData.newPlainText(clipLabel, trollAsString);
+        TextView version = (TextView) view.findViewById(R.id.technical_version);
+        version.setText(versionString);
+
+        TextView encoding = (TextView) view.findViewById(R.id.technical_encoding);
+        encoding.setText(encodingString);
+
+        TextView locale = (TextView) view.findViewById(R.id.technical_locale);
+        locale.setText(localeString);
+
+        TextView troll = (TextView) view.findViewById(R.id.technical_troll);
+        troll.setText(trollString);
+
+        final ClipData clip = ClipData.newPlainText(
+                "Données techniques de votre troll",
+                Joiner.on("\n").join(versionString, encodingString, localeString, trollString));
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setIcon(R.drawable.trarnoll_square_transparent)
@@ -331,7 +340,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.qr_code, null);
 
-        String title = getString(R.string.app_name) + " - " + getString(R.string.version_full);
+        String title = getString(R.string.app_name) + " - Version " + MhDlaNotifierUtils.readVersion(this);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setIcon(R.drawable.trarnoll_square_transparent)

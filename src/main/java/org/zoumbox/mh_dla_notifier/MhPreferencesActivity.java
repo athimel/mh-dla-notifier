@@ -161,6 +161,8 @@ public class MhPreferencesActivity extends PreferenceActivity implements SharedP
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs.registerOnSharedPreferenceChangeListener(this);
 
+        Preference preference = findPreference(PreferencesHolder.PREFS_ABOUT);
+        preference.setSummary("Version " + MhDlaNotifierUtils.readVersion(this));
     }
 
     @Override

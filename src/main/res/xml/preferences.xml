@@ -64,7 +64,6 @@
         android:editable="false"
         android:enabled="false"
         android:key="prefs.about"
-        android:summary="@string/version_full"
         android:title="@string/app_name" />
   </PreferenceCategory>
 

@@ -36,7 +36,19 @@
       android:background="#eeeeee">
 
     <TextView
+        android:id="@+id/technical_version"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#444444" />
+
+    <TextView
         android:id="@+id/technical_encoding"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#444444" />
+
+    <TextView
+        android:id="@+id/technical_locale"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textColor="#444444" />
