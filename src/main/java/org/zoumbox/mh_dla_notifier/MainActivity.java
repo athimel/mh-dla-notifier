@@ -227,7 +227,7 @@ public class MainActivity extends MhDlaNotifierUI {
         boolean fromNotification = getIntent().getBooleanExtra(EXTRA_FROM_NOTIFICATION, false);
         Log.d(TAG, "From notification: " + fromNotification);
 
-        if (!fromNotification) {
+        if (displayToast || !fromNotification) {
             String trollId = getCurrentTrollId();
             new ScheduleAlarmsTask(displayToast).execute(trollId);
         }
