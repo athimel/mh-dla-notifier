@@ -67,6 +67,7 @@
   <string name="ESQ">Esquive</string>
   <string name="DEG">Dégâts</string>
   <string name="ARM">Armure</string>
+  <string name="VUE">Vue</string>
 
   <string name="RM">Résistance à la Magie</string>
   <string name="MM">Maîtrise de la Magie</string>
@@ -133,5 +134,6 @@
 
   <string name="technical_stuff">Données techniques</string>
   <string name="copy_to_clipboard">Copier dans le presse-papier</string>
+
 
 </resources>
