@@ -119,7 +119,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
     private LinearLayout carEsq;
     private LinearLayout carDeg;
     private LinearLayout carArm;
-
+    private LinearLayout vue;
     private LinearLayout rm;
     private LinearLayout mm;
 
@@ -175,6 +175,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         carEsq = (LinearLayout) findViewById(R.id.ESQ);
         carDeg = (LinearLayout) findViewById(R.id.DEG);
         carArm = (LinearLayout) findViewById(R.id.ARM);
+        vue = (LinearLayout) findViewById(R.id.VUE);
 
         rm = (LinearLayout) findViewById(R.id.RM);
         mm = (LinearLayout) findViewById(R.id.MM);
@@ -717,6 +718,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         pushCar(carDeg, 3, troll.getDegatsCar(), troll.getDegatsBmp(), troll.getDegatsBmm());
         pushCar(carArm, 3, troll.getArmureCar(), troll.getArmureBmp(), troll.getArmureBmm());
 
+        pushVue(vue, troll.getVueCar(), troll.getVueBmp(), troll.getVueBmm());
         pushM(rm, troll.getRmCar(), troll.getRmBmp(), troll.getRmBmm());
         pushM(mm, troll.getMmCar(), troll.getMmBmp(), troll.getMmBmm());
 
@@ -750,6 +752,22 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
             avgText = avgText.substring(0, avgText.length() - 2);
         }
         avgTV.setText(avgText);
+    }
+
+    protected void pushVue(LinearLayout linearLayout, int car, int bmp, int bmm) {
+        TextView carTV = (TextView) linearLayout.getChildAt(0);
+        carTV.setText(String.format("%d", car));
+
+        TextView bmpTV = (TextView) linearLayout.getChildAt(1);
+        bmpTV.setText(String.format("%d", bmp));
+
+        TextView bmmTV = (TextView) linearLayout.getChildAt(2);
+        bmmTV.setText(String.format("%d", bmm));
+
+        int bm = bmp + bmm;
+        TextView totalTV = (TextView) linearLayout.getChildAt(3);
+        String totalText = String.format("%d", car + bm);
+        totalTV.setText(totalText);
     }
 
     protected void pushM(LinearLayout linearLayout, int car, int bmp, int bmm) {

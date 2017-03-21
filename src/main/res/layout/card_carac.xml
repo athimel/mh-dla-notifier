@@ -244,6 +244,50 @@
 
   </LinearLayout>
 
+  <!-- VUE -->
+
+    <LinearLayout
+        style="@style/DL"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/DT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/VUE" />
+
+        <LinearLayout
+            android:id="@+id/VUE"
+            style="@style/DD"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <!-- CAR -->
+            <TextView
+                style="@style/caractCar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <!-- BMP -->
+            <TextView
+                style="@style/caractBm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <!-- BMM -->
+            <TextView
+                style="@style/caractBm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <!-- AVG -->
+            <TextView
+                style="@style/caractAvg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </LinearLayout>
+
   <!-- RM -->
   <LinearLayout
       style="@style/DL"
