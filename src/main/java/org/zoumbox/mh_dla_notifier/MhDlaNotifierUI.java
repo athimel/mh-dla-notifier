@@ -764,9 +764,8 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         TextView bmmTV = (TextView) linearLayout.getChildAt(2);
         bmmTV.setText(String.format("%d", bmm));
 
-        int bm = bmp + bmm;
         TextView totalTV = (TextView) linearLayout.getChildAt(3);
-        String totalText = String.format("%d", car + bm);
+        String totalText = String.format("%d", car + bmp + bmm);
         totalTV.setText(totalText);
     }
 
