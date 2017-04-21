@@ -15,11 +15,11 @@ apply plugin: 'com.android.application'
 android {
 
     compileSdkVersion 14
-    buildToolsVersion "23.0.3"
+    buildToolsVersion "25.0.2"
     defaultConfig {
         // applicationId "org.zoumbox.mh_dla_notifier"
-        versionCode 27
-        versionName "0.14"
+        versionCode 28
+        versionName "0.14.1"
         minSdkVersion 14
         targetSdkVersion 14
     }
