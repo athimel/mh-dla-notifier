@@ -31,22 +31,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Strings;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
 import org.zoumbox.mh_dla_notifier.Pair;
 import org.zoumbox.mh_dla_notifier.profile.v1.ProfileProxyV1;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -65,51 +53,6 @@ public class PublicScriptsProxy {
     private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + PublicScriptsProxy.class.getSimpleName();
 
     protected static final Long THIRTY_MINUTES = 30L * 1000;
-
-    public static PublicScriptResponse doHttpGET(String url) throws NetworkUnavailableException, PublicScriptException {
-
-        long start = System.currentTimeMillis();
-
-        if (url.contains("?Numero=" + MhDlaNotifierConstants.MOCK_TROLL_ID)) {
-            return PublicScriptsProxyMock.doMockHttpGET(url);
-        }
-
-        String responseContent = "";
-        BufferedReader in = null;
-        try {
-            HttpClient client = new DefaultHttpClient();
-            HttpGet request = new HttpGet(url);
-            HttpResponse response = client.execute(request);
-            InputStream content = response.getEntity().getContent();
-            in = new BufferedReader(new InputStreamReader(content, Charsets.ISO_8859_1));
-            String line;
-            while ((line = in.readLine()) != null) {
-                if (!Strings.isNullOrEmpty(responseContent)) {
-                    responseContent += "\n";
-                }
-                responseContent += line;
-            }
-            in.close();
-        } catch (UnknownHostException uhe) {
-            Log.e(TAG, "Network error", uhe);
-            throw new NetworkUnavailableException(uhe);
-        } catch (Exception eee) {
-            Log.e(TAG, "Exception", eee);
-            throw new PublicScriptException(eee);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException ioe) {
-                    Log.e(TAG, "IOException", ioe);
-                }
-            }
-        }
-
-        long end = System.currentTimeMillis();
-        PublicScriptResponse result = new PublicScriptResponse(responseContent, end - start);
-        return result;
-    }
 
     protected static final String SQL_COUNT = String.format("SELECT COUNT(*) FROM %s WHERE %s=? AND %s=? AND %s>=?",
             MhDlaSQLHelper.SCRIPTS_TABLE, MhDlaSQLHelper.SCRIPTS_TROLL_COLUMN, MhDlaSQLHelper.SCRIPTS_CATEGORY_COLUMN, MhDlaSQLHelper.SCRIPTS_END_DATE_COLUMN);
@@ -272,7 +215,7 @@ public class PublicScriptsProxy {
         createFetchLog(context, script, trollId, uuid);
 
         String url = String.format(script.url, Uri.encode(trollId), Uri.encode(trollPassword));
-        PublicScriptResponse spResult = doHttpGET(url);
+        PublicScriptResponse spResult = AsyncHttpFetcher.doHttpGET(url);
         Log.i(TAG, String.format("Script response: '%s'", spResult));
 
         if (spResult.hasError()) {
