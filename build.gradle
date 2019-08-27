@@ -18,20 +18,31 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         // applicationId "org.zoumbox.mh_dla_notifier"
-        versionCode 29
-        versionName "0.14.2"
+        versionCode 30
+        versionName "0.14.3"
         minSdkVersion 14
         targetSdkVersion 14
     }
     lintOptions {
         abortOnError false
     }
+
+    signingConfigs {
+       release {
+           storeFile file(RELEASE_STORE_FILE)
+           storePassword RELEASE_STORE_PASSWORD
+           keyAlias RELEASE_KEY_ALIAS
+           keyPassword RELEASE_KEY_PASSWORD
+       }
+    }
+
     buildTypes {
         release {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
                     'proguard.cfg'
+            signingConfig signingConfigs.release
         }
     }
 }
