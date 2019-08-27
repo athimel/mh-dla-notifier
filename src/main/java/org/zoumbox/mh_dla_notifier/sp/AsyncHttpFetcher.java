@@ -25,20 +25,17 @@ package org.zoumbox.mh_dla_notifier.sp;
 
 import android.util.Log;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.zoumbox.mh_dla_notifier.MhDlaNotifierConstants;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.UnknownHostException;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -69,9 +66,20 @@ public class AsyncHttpFetcher {
     }
 
     private static String syncHttpGET(String url) throws NetworkUnavailableException, PublicScriptException {
-        String responseContent = "";
-        BufferedReader in = null;
+        String responseContent;
+        Response response = null;
         try {
+
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                 .url(url)
+                 .build();
+
+            response = client.newCall(request).execute();
+            responseContent = response.body().string();
+
+            /*
+                return response.body().string();
             HttpClient client = new DefaultHttpClient();
             HttpGet request = new HttpGet(url);
             HttpResponse response = client.execute(request);
@@ -83,8 +91,8 @@ public class AsyncHttpFetcher {
                     responseContent += "\n";
                 }
                 responseContent += line;
-            }
-            in.close();
+            }*/
+            response.close();
         } catch (UnknownHostException uhe) {
             Log.e(TAG, "Network error", uhe);
             throw new NetworkUnavailableException(uhe);
@@ -92,12 +100,8 @@ public class AsyncHttpFetcher {
             Log.e(TAG, "Exception", eee);
             throw new PublicScriptException(eee);
         } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException ioe) {
-                    Log.e(TAG, "IOException", ioe);
-                }
+            if (response != null) {
+                response.close();
             }
         }
         return responseContent;
