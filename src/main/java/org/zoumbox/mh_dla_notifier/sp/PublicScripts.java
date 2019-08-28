@@ -101,6 +101,24 @@ public class PublicScripts {
         return rawName.replaceAll("\\\\'", "\\'");
     }
 
+    protected static int parseEmptyableInt(String stringValue) {
+        if (Strings.isNullOrEmpty(stringValue)) {
+            return 0;
+        }
+        int result = Integer.parseInt(stringValue);
+        return result;
+    }
+
+    protected static String checkBlasonWithProtocol(String stringValue) {
+        if (Strings.isNullOrEmpty(stringValue)) {
+            return stringValue;
+        }
+        if (stringValue.startsWith("//blason.mountyhall.com")) {
+            return "https:" + stringValue;
+        }
+        return stringValue;
+    }
+
     public static void pushToTroll(Troll troll, Map<String, String> propertiesFetched, LogCallback log) {
         for (Map.Entry<String, String> entry : propertiesFetched.entrySet()) {
             try {
@@ -111,13 +129,13 @@ public class PublicScripts {
                 if ("numero".equals(name)) { troll.setNumero(stringValue);
                 } else if ("nom".equals(name)) { troll.setNom(escapeName(stringValue));
                 } else if ("race".equals(name)) { troll.setRace(Race.valueOf(stringValue));
-                } else if ("nival".equals(name)) { troll.setNival(Integer.parseInt(stringValue));
+                } else if ("nival".equals(name)) { troll.setNival(parseEmptyableInt(stringValue));
                 } else if ("dateInscription".equals(name)) { troll.setDateInscription(MhDlaNotifierUtils.parseSpDate(stringValue));
 //                } else if ("email".equals(name)) { troll.setEm(stringValue);
-                } else if ("blason".equals(name)) { troll.setBlason(stringValue);
-                } else if ("nbMouches".equals(name)) { troll.setNbMouches(Integer.parseInt(stringValue));
-                } else if ("nbKills".equals(name)) { troll.setNbKills(Integer.parseInt(stringValue));
-                } else if ("nbMorts".equals(name)) { troll.setNbMorts(Integer.parseInt(stringValue));
+                } else if ("blason".equals(name)) { troll.setBlason(checkBlasonWithProtocol(stringValue));
+                } else if ("nbMouches".equals(name)) { troll.setNbMouches(parseEmptyableInt(stringValue));
+                } else if ("nbKills".equals(name)) { troll.setNbKills(parseEmptyableInt(stringValue));
+                } else if ("nbMorts".equals(name)) { troll.setNbMorts(parseEmptyableInt(stringValue));
                 } else if ("guilde".equals(name)) { troll.setGuilde(Integer.parseInt(stringValue));
 //                } else if ("niveauDeRang".equals(name)) { troll.setBlason(stringValue);
 //                } else if ("pnj".equals(name)) { troll.setBlason(stringValue);
