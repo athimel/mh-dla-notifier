@@ -32,12 +32,12 @@ import java.util.Map;
 public class PublicScriptsProxyMock {
 
     private enum MockTroll {
-        DevelZimzoum, Snorf, omnipotente, plusilyadefoumoinilyaderi, Uch, zebu, Kaht, TmT, OutrAskai
+        DevelZimzoum, Snorf, omnipotente, plusilyadefoumoinilyaderi, Uch, zebu, Kaht, TmT, OutrAskai, Nanp
     }
 
     public static PublicScriptResponse doMockHttpGET(String url) {
         long start = System.currentTimeMillis();
-        MockTroll mockTroll = MockTroll.zebu;
+        MockTroll mockTroll = MockTroll.Nanp;
 
         String rawResult = null;
         for (PublicScript ps : PublicScript.values()) {
@@ -366,7 +366,15 @@ public class PublicScriptsProxyMock {
         "BMP;0;-4;4;-4;0;0;-1;0;0;22;0;170.5;0\n" +
         "CAR;17;24;26;9;260;270;3;3114;8208;3;585;0;0";
 
+
     public static final String OUTRASKAI_PROFIL_PUBLIC2 = "109623;Outr'Askaï;Darkling;19;2015-10-06 11:25:39;;http://zoumbox.org/mh/syndikhd/109623_300.png;19;1;0;1900;20;0";
+
+    public static final String NANP_PROFIL_PUBLIC2 = "111134;Nanp;Darkling;12;2019-05-01 11:29:41;;//blason.mountyhall.com/Blason_PJ/111134;;13;0;0;1;0;0;0";
+    public static final String NANP_PROFIL2 = "111134;34;9;-37;90;70;0;2019-08-28 16:41:00;3;3;3;5;6;0;302;228;0;0;0;0;0;0;0;618;-435;3;0;0;0;0;0;90;12;808;1;10;0;;618";
+    public static final String NANP_CARACT =
+            "BMM;-23;-20;5;0;0;0;6;0;0;7;-90;0;0\n" +
+            "BMP;-2;2;-7;-8;20;0;-2;186;181;13;-120;108;0\n" +
+            "CAR;3;3;3;5;70;30;6;228;302;3;618;0;0";
 
     public static final Map<PublicScript, Map<MockTroll, String>> scripts = new HashMap<PublicScript, Map<MockTroll, String>>();
 
@@ -419,6 +427,12 @@ public class PublicScriptsProxyMock {
 
         // Outr'Askaï
         scripts.get(PublicScript.ProfilPublic2).put(MockTroll.OutrAskai, OUTRASKAI_PROFIL_PUBLIC2);
+
+        // Nanp
+        scripts.get(PublicScript.ProfilPublic2).put(MockTroll.Nanp, NANP_PROFIL_PUBLIC2);
+        scripts.get(PublicScript.Profil2).put(MockTroll.Nanp, NANP_PROFIL2);
+        scripts.get(PublicScript.Caract).put(MockTroll.Nanp, NANP_CARACT);
+
     }
 
 

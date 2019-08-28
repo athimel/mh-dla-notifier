@@ -14,24 +14,35 @@ apply plugin: 'com.android.application'
 
 android {
 
-    compileSdkVersion 14
+    compileSdkVersion 26
     buildToolsVersion "25.0.2"
     defaultConfig {
         // applicationId "org.zoumbox.mh_dla_notifier"
-        versionCode 29
-        versionName "0.14.2"
+        versionCode 31
+        versionName "0.14.3-RC-2"
         minSdkVersion 14
-        targetSdkVersion 14
+        targetSdkVersion 26
     }
     lintOptions {
         abortOnError false
     }
+
+    signingConfigs {
+       release {
+           storeFile file(RELEASE_STORE_FILE)
+           storePassword RELEASE_STORE_PASSWORD
+           keyAlias RELEASE_KEY_ALIAS
+           keyPassword RELEASE_KEY_PASSWORD
+       }
+    }
+
     buildTypes {
         release {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
                     'proguard.cfg'
+            signingConfig signingConfigs.release
         }
     }
 }
@@ -45,6 +56,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:19.1.0'
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.google.guava:guava:20.0'
+    compile 'com.squareup.okhttp3:okhttp:3.11.0'
     provided 'commons-codec:commons-codec:1.3'
     testCompile 'junit:junit:4.12'
 }
