@@ -71,7 +71,7 @@ public class Receiver extends BroadcastReceiver {
 
     private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + Receiver.class.getSimpleName();
 
-    public static final long[] VIBRATE_PATTERN = new long[]{100, 250, 150, 250, 150, 700};
+    public static final long[] VIBRATE_PATTERN = new long[]{100, 200, 100, 200, 100, 550};
     public static final long[] NO_VIBRATION = new long[]{100};
 
     private ProfileProxy profileProxy;
@@ -483,7 +483,7 @@ public class Receiver extends BroadcastReceiver {
         displayNotification(context, NotificationType.PV_LOSS, notifTitle, notifText, soundAndVibrate);
     }
 
-    protected NotificationCompat.Builder newNotificationBuilder(Context context) {
+    protected NotificationCompat.Builder newNotificationBuilder(Context context, boolean sound, boolean vibrate) {
 
         NotificationCompat.Builder result;
 
@@ -492,27 +492,54 @@ public class Receiver extends BroadcastReceiver {
 
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-            NotificationChannel existingChannel = notificationManager.getNotificationChannel(MhDlaNotifierConstants.NOTIFICATION_CHANNEL_ID);
-            if (existingChannel == null) {
+            String channelId = String.format("%s-%s-%s", MhDlaNotifierConstants.NOTIFICATION_CHANNEL_ID, sound, vibrate);
 
-                NotificationChannel androidChannel = new NotificationChannel(MhDlaNotifierConstants.NOTIFICATION_CHANNEL_ID,
-                        "MhDlaNotifier", NotificationManager.IMPORTANCE_DEFAULT);
-                // Sets whether notifications posted to this channel should display notification lights
-                androidChannel.enableLights(true);
-                // Sets whether notification posted to this channel should vibrate.
-                androidChannel.enableVibration(true);
-                // Sets whether notifications posted to this channel appear on the lockscreen or not
-                androidChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-
-                notificationManager.createNotificationChannel(androidChannel);
+            NotificationChannel existingChannel = notificationManager.getNotificationChannel(channelId);
+            if (existingChannel != null) {
+                Log.w(TAG, "Il y a déjà un channel, on le supprime");
+                notificationManager.deleteNotificationChannel(channelId);
             }
 
-            result = new NotificationCompat.Builder(context, MhDlaNotifierConstants.NOTIFICATION_CHANNEL_ID);
+            if (notificationManager.getNotificationChannel(channelId) != null) {
+                Log.e(TAG, "Le channel n'est pas supprimé");
+            }
+
+            NotificationChannel androidChannel = new NotificationChannel(channelId,
+                    "MhDlaNotifier", NotificationManager.IMPORTANCE_DEFAULT);
+
+            // Sets whether notifications posted to this channel should display notification lights
+            androidChannel.enableLights(true);
+
+            if (!sound) {
+                androidChannel.setSound(null, null);
+            }
+
+            if (vibrate) {
+                // Sets whether notification posted to this channel should vibrate.
+                androidChannel.setVibrationPattern(VIBRATE_PATTERN);
+            }
+
+            // Sets whether notifications posted to this channel appear on the lockscreen or not
+            androidChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+
+            notificationManager.createNotificationChannel(androidChannel);
+
+            result = new NotificationCompat.Builder(context, channelId);
 
         } else {
 
             result = new NotificationCompat.Builder(context);
 
+            if (sound) {
+                Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                result.setSound(defaultSound);
+            }
+
+            if (vibrate) {
+                result.setVibrate(VIBRATE_PATTERN);
+            } else {
+                result.setVibrate(NO_VIBRATION);
+            }
         }
 
         return result;
@@ -532,7 +559,7 @@ public class Receiver extends BroadcastReceiver {
 
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.trarnoll_square_transparent_128);
 
-        NotificationCompat.Builder builder = newNotificationBuilder(context)
+        NotificationCompat.Builder builder = newNotificationBuilder(context, soundAndVibrate.left(), soundAndVibrate.right())
                 .setOnlyAlertOnce(true)
                 .setLights(Color.YELLOW, 1500, 1500)
                 .setSmallIcon(R.drawable.trarnoll_square_transparent_128)
@@ -544,17 +571,6 @@ public class Receiver extends BroadcastReceiver {
                 .setAutoCancel(true)
                 .setTicker(title)
                 .addAction(R.drawable.ic_action_play, context.getText(R.string.play), playPendingIntent);
-
-        if (soundAndVibrate.left()) {
-            Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            builder.setSound(defaultSound);
-        }
-
-        if (soundAndVibrate.right()) {
-            builder.setVibrate(VIBRATE_PATTERN);
-        } else {
-            builder.setVibrate(NO_VIBRATION);
-        }
 
         Notification notification = builder.build();
 
