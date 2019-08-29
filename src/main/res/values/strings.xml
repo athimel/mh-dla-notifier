@@ -37,8 +37,9 @@
   <string name="credits">Crédits</string>
 
   <string name="credits_leader">Project Leader</string>
+  <string name="contributors">Contributeurs</string>
   <string name="credits_testers">Testeurs</string>
-  <string name="credits_testers_list">Heb, Verjus, NabuccobienDeVerredit, Snorf le jeune, Statistiques, omnipotente, 100, moljnir, DevelZimZoum, …</string>
+  <string name="credits_testers_list">Heb, Verjus, NabuccobienDeVerredit, Snorf le jeune, Statistiques, 100, Nanp, omnipotente, moljnir, Devel, …</string>
   <string name="credits_illustrator">Illustrateur</string>
 
   <string name="close">Fermer</string>

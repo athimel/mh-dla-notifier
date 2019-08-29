@@ -81,6 +81,40 @@
           android:layout_width="60dp"
           android:layout_height="60dp"
           android:scaleType="fitCenter"
+          android:src="@drawable/tatamka" />
+
+      <LinearLayout
+          android:orientation="vertical"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="10dip">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="tatamka"
+            android:textColor="#444444" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/contributors"
+            android:textColor="#444444"
+            android:textStyle="italic" />
+      </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dip"
+        android:layout_marginLeft="15dip">
+
+      <ImageView
+          android:layout_width="60dp"
+          android:layout_height="60dp"
+          android:scaleType="fitCenter"
           android:src="@drawable/bouloche61" />
 
       <LinearLayout
