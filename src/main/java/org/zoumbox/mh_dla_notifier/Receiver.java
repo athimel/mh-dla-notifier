@@ -39,6 +39,7 @@ import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -54,6 +55,7 @@ import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.StrictMode;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
@@ -304,7 +306,9 @@ public class Receiver extends BroadcastReceiver {
             return false;
         }
         try {
-            return date.compareTo(lowerBound) >= 0 && date.compareTo(upperBound) <= 0;
+            boolean afterLowerBound = date.compareTo(lowerBound) >= 0;
+            boolean beforeUpperBound = date.compareTo(upperBound) <= 0;
+            return afterLowerBound && beforeUpperBound;
         } catch (Exception eee) {
             Log.e(TAG, "Unable to compare dates. Date=" + date + " ; lowerBound=" + lowerBound + " ; upperBound=" + upperBound, eee);
             return false;
@@ -479,6 +483,42 @@ public class Receiver extends BroadcastReceiver {
         displayNotification(context, NotificationType.PV_LOSS, notifTitle, notifText, soundAndVibrate);
     }
 
+    protected NotificationCompat.Builder newNotificationBuilder(Context context) {
+
+        NotificationCompat.Builder result;
+
+        // À partir d'Android O (API 26), il est nécessaire de créer un Notification Channel
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+            NotificationChannel existingChannel = notificationManager.getNotificationChannel(MhDlaNotifierConstants.NOTIFICATION_CHANNEL_ID);
+            if (existingChannel == null) {
+
+                NotificationChannel androidChannel = new NotificationChannel(MhDlaNotifierConstants.NOTIFICATION_CHANNEL_ID,
+                        "MhDlaNotifier", NotificationManager.IMPORTANCE_DEFAULT);
+                // Sets whether notifications posted to this channel should display notification lights
+                androidChannel.enableLights(true);
+                // Sets whether notification posted to this channel should vibrate.
+                androidChannel.enableVibration(true);
+                // Sets whether notifications posted to this channel appear on the lockscreen or not
+                androidChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+
+                notificationManager.createNotificationChannel(androidChannel);
+            }
+
+            result = new NotificationCompat.Builder(context, MhDlaNotifierConstants.NOTIFICATION_CHANNEL_ID);
+
+        } else {
+
+            result = new NotificationCompat.Builder(context);
+
+        }
+
+        return result;
+
+    }
+
     protected void displayNotification(Context context, NotificationType type, CharSequence title, CharSequence text, Pair<Boolean, Boolean> soundAndVibrate) {
 
         // The PendingIntent to launch our activity if the user selects this notification
@@ -492,7 +532,7 @@ public class Receiver extends BroadcastReceiver {
 
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.trarnoll_square_transparent_128);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+        NotificationCompat.Builder builder = newNotificationBuilder(context)
                 .setOnlyAlertOnce(true)
                 .setLights(Color.YELLOW, 1500, 1500)
                 .setSmallIcon(R.drawable.trarnoll_square_transparent_128)

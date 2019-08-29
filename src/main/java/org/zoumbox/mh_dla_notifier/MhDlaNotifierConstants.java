@@ -47,4 +47,6 @@ public class MhDlaNotifierConstants {
     public static final int PV_WARM_THRESHOLD = 66;
     public static final int PV_ALARM_THRESHOLD = 33;
 
+    public static final String NOTIFICATION_CHANNEL_ID = "MhDlaNotifier_01";
+
 }

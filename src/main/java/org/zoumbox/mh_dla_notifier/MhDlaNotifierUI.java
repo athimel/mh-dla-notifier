@@ -66,7 +66,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
@@ -84,7 +84,7 @@ import android.widget.TextView;
 /**
  * Activité principale
  */
-public abstract class MhDlaNotifierUI extends ActionBarActivity {
+public abstract class MhDlaNotifierUI extends AppCompatActivity {
 
     private static final String TAG = MhDlaNotifierConstants.LOG_PREFIX + MhDlaNotifierUI.class.getSimpleName();
 
@@ -150,6 +150,7 @@ public abstract class MhDlaNotifierUI extends ActionBarActivity {
         setContentView(R.layout.main_with_cards);
 
         actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(true);
 
         blason = (ImageView) findViewById(R.id.blason);
         name = (TextView) findViewById(R.id.name);

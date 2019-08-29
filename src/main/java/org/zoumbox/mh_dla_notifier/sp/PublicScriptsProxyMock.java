@@ -369,8 +369,8 @@ public class PublicScriptsProxyMock {
 
     public static final String OUTRASKAI_PROFIL_PUBLIC2 = "109623;Outr'Askaï;Darkling;19;2015-10-06 11:25:39;;http://zoumbox.org/mh/syndikhd/109623_300.png;19;1;0;1900;20;0";
 
-    public static final String NANP_PROFIL_PUBLIC2 = "111134;Nanp;Darkling;12;2019-05-01 11:29:41;;//blason.mountyhall.com/Blason_PJ/111134;;13;0;0;1;0;0;0";
-    public static final String NANP_PROFIL2 = "111134;34;9;-37;90;70;0;2019-08-28 16:41:00;3;3;3;5;6;0;302;228;0;0;0;0;0;0;0;618;-435;3;0;0;0;0;0;90;12;808;1;10;0;;618";
+    public static final String NANP_PROFIL_PUBLIC2 = "123456789;Nanp;Darkling;12;2019-05-01 11:29:41;;//blason.mountyhall.com/Blason_PJ/111134;;13;0;0;1;0;0;0";
+    public static final String NANP_PROFIL2 = "123456789;34;9;-37;90;70;3;2019-08-29 13:10:00;3;3;3;5;6;0;302;228;0;0;0;0;0;0;0;618;-435;3;0;0;0;0;0;90;12;808;1;10;0;;618";
     public static final String NANP_CARACT =
             "BMM;-23;-20;5;0;0;0;6;0;0;7;-90;0;0\n" +
             "BMP;-2;2;-7;-8;20;0;-2;186;181;13;-120;108;0\n" +
