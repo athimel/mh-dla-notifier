@@ -23,7 +23,7 @@
  */
 package org.zoumbox.mh_dla_notifier.sp;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 /**
  * @author Arno <arno@zoumbox.org>
@@ -64,7 +64,7 @@ public class PublicScriptResponse {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).
+        return MoreObjects.toStringHelper(this).
                 add("duration", duration + "ms").
                 add("raw", raw).
                 add("errorMessage", errorMessage).

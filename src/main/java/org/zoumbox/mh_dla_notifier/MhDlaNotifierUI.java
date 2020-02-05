@@ -42,7 +42,7 @@ import org.zoumbox.mh_dla_notifier.troll.Trolls;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
@@ -505,7 +505,7 @@ public abstract class MhDlaNotifierUI extends AppCompatActivity {
     }
 
     protected void setTechnicalStatus(CharSequence message, int duration) {
-        internalSetTechnicalStatus(Objects.firstNonNull(message, ""));
+        internalSetTechnicalStatus(MoreObjects.firstNonNull(message, ""));
         if (duration > 0) {
             new Handler().postDelayed(new Runnable() {
                 @Override
