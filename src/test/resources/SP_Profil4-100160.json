@@ -1,0 +1,348 @@
+{
+    "troll": {
+        "id": 100160,
+        "nom": "TailleMannequinTroll",
+        "niveau": 60,
+        "race": "Durakuir",
+        "raceNomCourt": "D",
+        "guilde": 1900,
+        "piTotaux": 18290,
+        "piDispo": 190
+    },
+    "situation": {
+        "x": -32,
+        "y": -30,
+        "n": -31,
+        "ph": 0,
+        "pa": 2,
+        "dla": 1581751140,
+        "nbEsq": 0,
+        "fatigue": {
+            "CAR": 0,
+            "BM": 0
+        },
+        "camouflage": false,
+        "invisible": false,
+        "intangible": false,
+        "nbParades": 0,
+        "nbCA": 0,
+        "nbTouche": 0,
+        "glue": false,
+        "aTerre": false,
+        "course": false,
+        "levitation": false,
+        "nbRetraites": 0,
+        "dirRetraites": null,
+        "dureeTour": 585,
+        "vueHMax": 10
+    },
+    "caracs": {
+        "att": {
+            "CAR": 17,
+            "BMP": 1,
+            "BMM": 8
+        },
+        "esq": {
+            "CAR": 29,
+            "BMP": -4,
+            "BMM": 6
+        },
+        "deg": {
+            "CAR": 26,
+            "BMP": 4,
+            "BMM": 20
+        },
+        "reg": {
+            "CAR": 9,
+            "BMP": -4,
+            "BMM": 7
+        },
+        "pvMax": {
+            "CAR": 290,
+            "BMP": 10,
+            "BMM": 0
+        },
+        "pvActuels": {
+            "CAR": 300,
+            "BMP": 0,
+            "BMM": 0
+        },
+        "vue": {
+            "CAR": 3,
+            "BMP": -1,
+            "BMM": 8
+        },
+        "rm": {
+            "CAR": 3761,
+            "BMP": 8086,
+            "BMM": 0
+        },
+        "mm": {
+            "CAR": 9840,
+            "BMP": 3936,
+            "BMM": 0
+        },
+        "arm": {
+            "CAR": 3,
+            "BMP": 22,
+            "BMM": 15
+        },
+        "dla": {
+            "CAR": 585,
+            "BMP": -220,
+            "BMM": 0
+        },
+        "poids": {
+            "CAR": 0,
+            "BMP": 146.5,
+            "BMM": 0
+        },
+        "concentration": {
+            "CAR": 0,
+            "BMP": 0,
+            "BMM": 0
+        }
+    },
+    "sorts": [
+        {
+            "id": 4,
+            "nom": "Rafale Psychique",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 5,
+            "nom": "Augmentation des D\u00e9gats",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 8,
+            "nom": "Explosion",
+            "niveaux": [
+                76
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 10,
+            "nom": "Identification des Tr\u00e9sors",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 13,
+            "nom": "T\u00e9l\u00e9portation",
+            "niveaux": [
+                44
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 15,
+            "nom": "Invisibilit\u00e9",
+            "niveaux": [
+                78
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 16,
+            "nom": "Armure Eth\u00e9r\u00e9e",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 17,
+            "nom": "Sacrifice",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 18,
+            "nom": "Glue",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 20,
+            "nom": "Analyse Anatomique",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 27,
+            "nom": "Bulle Anti-Magie",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 28,
+            "nom": "Griffe du Sorcier",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        }
+    ],
+    "competences": [
+        {
+            "id": 2,
+            "nom": "R\u00e9g\u00e9n\u00e9ration Accrue",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 5,
+            "nom": "Identification des Champignons",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 8,
+            "nom": "Coup de Butoir",
+            "niveaux": [
+                90,
+                90,
+                90,
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 10,
+            "nom": "Parer",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 11,
+            "nom": "Contre-Attaquer",
+            "niveaux": [
+                89
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 12,
+            "nom": "D\u00e9placement Eclair",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 14,
+            "nom": "Charger",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 16,
+            "nom": "Connaissance des Monstres",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 18,
+            "nom": "Insultes",
+            "niveaux": [
+                90,
+                90,
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 21,
+            "nom": "Pistage",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 24,
+            "nom": "Bidouille",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 38,
+            "nom": "Retraite",
+            "niveaux": [
+                57
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 41,
+            "nom": "Golemologie",
+            "niveaux": [
+                54
+            ],
+            "types": [
+                "Golem de Cuir"
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 44,
+            "nom": "Course",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 45,
+            "nom": "S'interposer",
+            "niveaux": [
+                82
+            ],
+            "types": [],
+            "bonus": 0
+        }
+    ]
+}

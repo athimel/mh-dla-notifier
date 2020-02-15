@@ -1,0 +1,269 @@
+{
+    "troll": {
+        "id": 109623,
+        "nom": "Outr'Aska\u00ef",
+        "niveau": 38,
+        "race": "Darkling",
+        "raceNomCourt": "G",
+        "guilde": 1900,
+        "piTotaux": 7556,
+        "piDispo": 90
+    },
+    "situation": {
+        "x": 51,
+        "y": -91,
+        "n": -33,
+        "ph": 0,
+        "pa": 0,
+        "dla": 1581686100,
+        "nbEsq": 0,
+        "fatigue": {
+            "CAR": 0,
+            "BM": 0
+        },
+        "camouflage": false,
+        "invisible": false,
+        "intangible": false,
+        "nbParades": 0,
+        "nbCA": 0,
+        "nbTouche": 0,
+        "glue": false,
+        "aTerre": false,
+        "course": false,
+        "levitation": false,
+        "nbRetraites": 0,
+        "dirRetraites": null,
+        "dureeTour": 585,
+        "vueHMax": 9
+    },
+    "caracs": {
+        "att": {
+            "CAR": 16,
+            "BMP": -2,
+            "BMM": 12
+        },
+        "esq": {
+            "CAR": 6,
+            "BMP": 1,
+            "BMM": 4
+        },
+        "deg": {
+            "CAR": 3,
+            "BMP": -11,
+            "BMM": 8
+        },
+        "reg": {
+            "CAR": 21,
+            "BMP": -10,
+            "BMM": 6
+        },
+        "pvMax": {
+            "CAR": 130,
+            "BMP": 15,
+            "BMM": 0
+        },
+        "pvActuels": {
+            "CAR": 145,
+            "BMP": 0,
+            "BMM": 0
+        },
+        "vue": {
+            "CAR": 9,
+            "BMP": -3,
+            "BMM": 3
+        },
+        "rm": {
+            "CAR": 2435,
+            "BMP": 1704,
+            "BMM": 0
+        },
+        "mm": {
+            "CAR": 5770,
+            "BMP": 1383,
+            "BMM": 0
+        },
+        "arm": {
+            "CAR": 2,
+            "BMP": 7,
+            "BMM": 38
+        },
+        "dla": {
+            "CAR": 585,
+            "BMP": -120,
+            "BMM": 0
+        },
+        "poids": {
+            "CAR": 0,
+            "BMP": 116,
+            "BMM": 0
+        },
+        "concentration": {
+            "CAR": 0,
+            "BMP": 0,
+            "BMM": 0
+        }
+    },
+    "sorts": [
+        {
+            "id": 10,
+            "nom": "Identification des Tr\u00e9sors",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 13,
+            "nom": "T\u00e9l\u00e9portation",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 14,
+            "nom": "Siphon des \u00e2mes",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 15,
+            "nom": "Invisibilit\u00e9",
+            "niveaux": [
+                67
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 16,
+            "nom": "Armure Eth\u00e9r\u00e9e",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 17,
+            "nom": "Sacrifice",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 20,
+            "nom": "Analyse Anatomique",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 22,
+            "nom": "Vision Accrue",
+            "niveaux": [
+                60
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 24,
+            "nom": "T\u00e9l\u00e9kin\u00e9sie",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 27,
+            "nom": "Bulle Anti-Magie",
+            "niveaux": [
+                15
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 28,
+            "nom": "Griffe du Sorcier",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 33,
+            "nom": "L\u00e9vitation",
+            "niveaux": [
+                42
+            ],
+            "bonus": 0
+        }
+    ],
+    "competences": [
+        {
+            "id": 6,
+            "nom": "Balayage",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 12,
+            "nom": "D\u00e9placement Eclair",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 14,
+            "nom": "Charger",
+            "niveaux": [
+                83
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 16,
+            "nom": "Connaissance des Monstres",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 18,
+            "nom": "Insultes",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 21,
+            "nom": "Pistage",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 44,
+            "nom": "Course",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        }
+    ]
+}

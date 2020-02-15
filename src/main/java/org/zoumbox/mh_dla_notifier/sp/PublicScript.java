@@ -93,6 +93,45 @@ public enum PublicScript {
             null
     ),
 
+    Profil4(
+            ScriptCategory.DYNAMIC,
+            "https://sp.mountyhall.com/SP_Profil4.php?Numero=%s&Motdepasse=%s",
+            Arrays.asList(
+                    "numero",
+                    "posX",
+                    "posY",
+                    "posN",
+                    "pvActuelsCar",
+                    "pvMaxCar",
+                    "pa",
+                    "dla",
+                    "attaqueCar",
+                    "esquiveCar",
+                    "degatsCar",
+                    "regenerationCar",
+                    "vueCar",
+                    "armureBmp",
+                    "mmCar",
+                    "rmCar",
+                    "attaquesSubies",
+                    "fatigue",
+                    "camou",
+                    "invisible",
+                    "intangible",
+                    "nbParadeProgrammes",
+                    "nbContreAttaquesProgrammes",
+                    "dureeDuTourCar",
+                    "bonusDuree",
+                    "armureCar",
+                    "desDArmureEnMoins",
+                    "immobile",
+                    "aTerre",
+                    "enCourse",
+                    "levitation"
+            ),
+            null
+    ),
+
     Caract(
             ScriptCategory.DYNAMIC,
             "http://sp.mountyhall.com/SP_Caract.php?Numero=%s&Motdepasse=%s",

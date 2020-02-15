@@ -1,0 +1,367 @@
+{
+    "troll": {
+        "id": 104259,
+        "nom": "DevelZimZoum",
+        "niveau": 60,
+        "race": "Kastar",
+        "raceNomCourt": "K",
+        "guilde": 1900,
+        "piTotaux": 18290,
+        "piDispo": 92
+    },
+    "situation": {
+        "x": -31,
+        "y": -29,
+        "n": -36,
+        "ph": 0,
+        "pa": 1,
+        "dla": 1581684300,
+        "nbEsq": 0,
+        "fatigue": {
+            "CAR": 7,
+            "BM": 15
+        },
+        "camouflage": false,
+        "invisible": false,
+        "intangible": false,
+        "nbParades": 0,
+        "nbCA": 0,
+        "nbTouche": 0,
+        "glue": false,
+        "aTerre": false,
+        "course": false,
+        "levitation": false,
+        "nbRetraites": 0,
+        "dirRetraites": null,
+        "dureeTour": 573,
+        "vueHMax": 7
+    },
+    "caracs": {
+        "att": {
+            "CAR": 24,
+            "BMP": 1,
+            "BMM": 17
+        },
+        "esq": {
+            "CAR": 19,
+            "BMP": -8,
+            "BMM": 7
+        },
+        "deg": {
+            "CAR": 36,
+            "BMP": 3,
+            "BMM": 12
+        },
+        "reg": {
+            "CAR": 8,
+            "BMP": -4,
+            "BMM": 12
+        },
+        "pvMax": {
+            "CAR": 210,
+            "BMP": 30,
+            "BMM": 0
+        },
+        "pvActuels": {
+            "CAR": 240,
+            "BMP": 0,
+            "BMM": 0
+        },
+        "vue": {
+            "CAR": 3,
+            "BMP": -2,
+            "BMM": 6
+        },
+        "rm": {
+            "CAR": 4773,
+            "BMP": 7207,
+            "BMM": 0
+        },
+        "mm": {
+            "CAR": 7329,
+            "BMP": 2785,
+            "BMM": 0
+        },
+        "arm": {
+            "CAR": 4,
+            "BMP": 22,
+            "BMM": 9
+        },
+        "dla": {
+            "CAR": 573,
+            "BMP": -180,
+            "BMM": 0
+        },
+        "poids": {
+            "CAR": 0,
+            "BMP": 190.5,
+            "BMM": 0
+        },
+        "concentration": {
+            "CAR": 0,
+            "BMP": 0,
+            "BMM": 0
+        }
+    },
+    "sorts": [
+        {
+            "id": 3,
+            "nom": "Vampirisme",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 5,
+            "nom": "Augmentation des D\u00e9gats",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 6,
+            "nom": "Augmentation de l\u00b4Attaque",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 8,
+            "nom": "Explosion",
+            "niveaux": [
+                73
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 10,
+            "nom": "Identification des Tr\u00e9sors",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 13,
+            "nom": "T\u00e9l\u00e9portation",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 15,
+            "nom": "Invisibilit\u00e9",
+            "niveaux": [
+                76
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 16,
+            "nom": "Armure Eth\u00e9r\u00e9e",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 17,
+            "nom": "Sacrifice",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 18,
+            "nom": "Glue",
+            "niveaux": [
+                79
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 21,
+            "nom": "Projection",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 24,
+            "nom": "T\u00e9l\u00e9kin\u00e9sie",
+            "niveaux": [
+                79
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 27,
+            "nom": "Bulle Anti-Magie",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 28,
+            "nom": "Griffe du Sorcier",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        }
+    ],
+    "competences": [
+        {
+            "id": 3,
+            "nom": "Acc\u00e9l\u00e9ration du M\u00e9tabolisme",
+            "niveaux": [
+                93
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 5,
+            "nom": "Identification des Champignons",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 7,
+            "nom": "Fr\u00e9n\u00e9sie",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 8,
+            "nom": "Coup de Butoir",
+            "niveaux": [
+                87,
+                90,
+                90,
+                90,
+                90,
+                93
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 9,
+            "nom": "Attaque Pr\u00e9cise",
+            "niveaux": [
+                90,
+                82,
+                67
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 12,
+            "nom": "D\u00e9placement Eclair",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 14,
+            "nom": "Charger",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 16,
+            "nom": "Connaissance des Monstres",
+            "niveaux": [
+                90,
+                90,
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 17,
+            "nom": "Hurlement Effrayant",
+            "niveaux": [
+                79
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 18,
+            "nom": "Insultes",
+            "niveaux": [
+                90,
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 21,
+            "nom": "Pistage",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 24,
+            "nom": "Bidouille",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 38,
+            "nom": "Retraite",
+            "niveaux": [
+                87
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 44,
+            "nom": "Course",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 48,
+            "nom": "Travail de la Pierre",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        }
+    ]
+}

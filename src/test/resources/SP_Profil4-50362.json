@@ -1,0 +1,404 @@
+{
+    "troll": {
+        "id": 50362,
+        "nom": "Verjus",
+        "niveau": 60,
+        "race": "Tomawak",
+        "raceNomCourt": "T",
+        "guilde": 1900,
+        "piTotaux": 18290,
+        "piDispo": 690
+    },
+    "situation": {
+        "x": -32,
+        "y": -30,
+        "n": -31,
+        "ph": 0,
+        "pa": 0,
+        "dla": 1581714900,
+        "nbEsq": 0,
+        "fatigue": {
+            "CAR": 0,
+            "BM": 15
+        },
+        "camouflage": false,
+        "invisible": false,
+        "intangible": false,
+        "nbParades": 0,
+        "nbCA": 0,
+        "nbTouche": 0,
+        "glue": false,
+        "aTerre": false,
+        "course": false,
+        "levitation": false,
+        "nbRetraites": 0,
+        "dirRetraites": null,
+        "dureeTour": 585,
+        "vueHMax": 45
+    },
+    "caracs": {
+        "att": {
+            "CAR": 6,
+            "BMP": -1,
+            "BMM": 8
+        },
+        "esq": {
+            "CAR": 28,
+            "BMP": 35,
+            "BMM": 5
+        },
+        "deg": {
+            "CAR": 4,
+            "BMP": 2,
+            "BMM": 11
+        },
+        "reg": {
+            "CAR": 7,
+            "BMP": -2,
+            "BMM": 15
+        },
+        "pvMax": {
+            "CAR": 200,
+            "BMP": 5,
+            "BMM": 0
+        },
+        "pvActuels": {
+            "CAR": 205,
+            "BMP": 0,
+            "BMM": 0
+        },
+        "vue": {
+            "CAR": 40,
+            "BMP": -2,
+            "BMM": 7
+        },
+        "rm": {
+            "CAR": 5317,
+            "BMP": 7284,
+            "BMM": 0
+        },
+        "mm": {
+            "CAR": 18344,
+            "BMP": 7337,
+            "BMM": 0
+        },
+        "arm": {
+            "CAR": 5,
+            "BMP": 24,
+            "BMM": 14
+        },
+        "dla": {
+            "CAR": 585,
+            "BMP": -160,
+            "BMM": 0
+        },
+        "poids": {
+            "CAR": 0,
+            "BMP": 131,
+            "BMM": 0
+        },
+        "concentration": {
+            "CAR": 0,
+            "BMP": 0,
+            "BMM": 0
+        }
+    },
+    "sorts": [
+        {
+            "id": 1,
+            "nom": "Projectile Magique",
+            "niveaux": [
+                82
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 5,
+            "nom": "Augmentation des D\u00e9gats",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 9,
+            "nom": "Vision lointaine",
+            "niveaux": [
+                80
+            ],
+            "bonus": 5
+        },
+        {
+            "id": 10,
+            "nom": "Identification des Tr\u00e9sors",
+            "niveaux": [
+                80,
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 11,
+            "nom": "Vue Troubl\u00e9e",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 13,
+            "nom": "T\u00e9l\u00e9portation",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 17,
+            "nom": "Sacrifice",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 18,
+            "nom": "Glue",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 19,
+            "nom": "Flash Aveuglant",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 20,
+            "nom": "Analyse Anatomique",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 21,
+            "nom": "Projection",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 22,
+            "nom": "Vision Accrue",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 23,
+            "nom": "Voir le Cach\u00e9",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 24,
+            "nom": "T\u00e9l\u00e9kin\u00e9sie",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 27,
+            "nom": "Bulle Anti-Magie",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 28,
+            "nom": "Griffe du Sorcier",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 29,
+            "nom": "Bulle Magique",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 33,
+            "nom": "L\u00e9vitation",
+            "niveaux": [
+                66
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 36,
+            "nom": "Sortil\u00e8ge d'Obsidienne",
+            "niveaux": [
+                77
+            ],
+            "bonus": 0
+        }
+    ],
+    "competences": [
+        {
+            "id": 4,
+            "nom": "Camouflage",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 5,
+            "nom": "Identification des Champignons",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 12,
+            "nom": "D\u00e9placement Eclair",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 16,
+            "nom": "Connaissance des Monstres",
+            "niveaux": [
+                90,
+                86,
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 26,
+            "nom": "Grattage",
+            "niveaux": [
+                79
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 18,
+            "nom": "Insultes",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 23,
+            "nom": "Lancer de Potions",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 21,
+            "nom": "Pistage",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 38,
+            "nom": "Retraite",
+            "niveaux": [
+                90,
+                85
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 15,
+            "nom": "Construire un Pi\u00e8ge",
+            "niveaux": [
+                84
+            ],
+            "types": [
+                "Pi\u00e8ge \u00e0 Feu",
+                "Pi\u00e8ge \u00e0 Glue"
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 24,
+            "nom": "Bidouille",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 14,
+            "nom": "Charger",
+            "niveaux": [
+                87
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 44,
+            "nom": "Course",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 48,
+            "nom": "Travail de la Pierre",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 43,
+            "nom": "Baroufle",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        }
+    ]
+}

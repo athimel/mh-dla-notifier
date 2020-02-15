@@ -1,0 +1,350 @@
+{
+    "troll": {
+        "id": 88222,
+        "nom": "Uchlany Ropucha",
+        "niveau": 59,
+        "race": "Tomawak",
+        "raceNomCourt": "T",
+        "guilde": 1900,
+        "piTotaux": 17708,
+        "piDispo": 478
+    },
+    "situation": {
+        "x": 45,
+        "y": -87,
+        "n": -16,
+        "ph": 0,
+        "pa": 0,
+        "dla": 1581538020,
+        "nbEsq": 0,
+        "fatigue": {
+            "CAR": 0,
+            "BM": 0
+        },
+        "camouflage": false,
+        "invisible": false,
+        "intangible": false,
+        "nbParades": 0,
+        "nbCA": 0,
+        "nbTouche": 0,
+        "glue": false,
+        "aTerre": false,
+        "course": false,
+        "levitation": false,
+        "nbRetraites": 0,
+        "dirRetraites": null,
+        "dureeTour": 573,
+        "vueHMax": 58
+    },
+    "caracs": {
+        "att": {
+            "CAR": 3,
+            "BMP": -4,
+            "BMM": 15
+        },
+        "esq": {
+            "CAR": 18,
+            "BMP": 4,
+            "BMM": 13
+        },
+        "deg": {
+            "CAR": 3,
+            "BMP": 0,
+            "BMM": 14
+        },
+        "reg": {
+            "CAR": 8,
+            "BMP": -2,
+            "BMM": 6
+        },
+        "pvMax": {
+            "CAR": 160,
+            "BMP": 30,
+            "BMM": 0
+        },
+        "pvActuels": {
+            "CAR": 190,
+            "BMP": 0,
+            "BMM": 0
+        },
+        "vue": {
+            "CAR": 48,
+            "BMP": 3,
+            "BMM": 7
+        },
+        "rm": {
+            "CAR": 4126,
+            "BMP": 783,
+            "BMM": 0
+        },
+        "mm": {
+            "CAR": 12538,
+            "BMP": 5639,
+            "BMM": 0
+        },
+        "arm": {
+            "CAR": 3,
+            "BMP": 3,
+            "BMM": 6
+        },
+        "dla": {
+            "CAR": 573,
+            "BMP": -150,
+            "BMM": 60
+        },
+        "poids": {
+            "CAR": 0,
+            "BMP": 165.5,
+            "BMM": 0
+        },
+        "concentration": {
+            "CAR": 0,
+            "BMP": 0,
+            "BMM": 0
+        }
+    },
+    "sorts": [
+        {
+            "id": 1,
+            "nom": "Projectile Magique",
+            "niveaux": [
+                81
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 9,
+            "nom": "Vision lointaine",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 10,
+            "nom": "Identification des Tr\u00e9sors",
+            "niveaux": [
+                80,
+                53
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 11,
+            "nom": "Vue Troubl\u00e9e",
+            "niveaux": [
+                77
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 13,
+            "nom": "T\u00e9l\u00e9portation",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 18,
+            "nom": "Glue",
+            "niveaux": [
+                64
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 20,
+            "nom": "Analyse Anatomique",
+            "niveaux": [
+                79
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 22,
+            "nom": "Vision Accrue",
+            "niveaux": [
+                80
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 23,
+            "nom": "Voir le Cach\u00e9",
+            "niveaux": [
+                53
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 24,
+            "nom": "T\u00e9l\u00e9kin\u00e9sie",
+            "niveaux": [
+                74
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 27,
+            "nom": "Bulle Anti-Magie",
+            "niveaux": [
+                72
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 28,
+            "nom": "Griffe du Sorcier",
+            "niveaux": [
+                15
+            ],
+            "bonus": 0
+        }
+    ],
+    "competences": [
+        {
+            "id": 23,
+            "nom": "Lancer de Potions",
+            "niveaux": [
+                83
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 27,
+            "nom": "Dressage",
+            "niveaux": [
+                23
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 24,
+            "nom": "Bidouille",
+            "niveaux": [
+                78
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 18,
+            "nom": "Insultes",
+            "niveaux": [
+                90,
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 25,
+            "nom": "M\u00e9lange Magique",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 15,
+            "nom": "Construire un Pi\u00e8ge",
+            "niveaux": [
+                76
+            ],
+            "types": [
+                "Pi\u00e8ge \u00e0 Feu",
+                "Pi\u00e8ge \u00e0 Glue"
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 4,
+            "nom": "Camouflage",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 5,
+            "nom": "Identification des Champignons",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 16,
+            "nom": "Connaissance des Monstres",
+            "niveaux": [
+                90,
+                90,
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 21,
+            "nom": "Pistage",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 12,
+            "nom": "D\u00e9placement Eclair",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 40,
+            "nom": "R\u00e9paration",
+            "niveaux": [
+                15
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 44,
+            "nom": "Course",
+            "niveaux": [
+                90
+            ],
+            "types": [],
+            "bonus": 0
+        },
+        {
+            "id": 41,
+            "nom": "Golemologie",
+            "niveaux": [
+                46
+            ],
+            "types": [
+                "Golem de Cuir"
+            ],
+            "bonus": 0
+        },
+        {
+            "id": 48,
+            "nom": "Travail de la Pierre",
+            "niveaux": [
+                84
+            ],
+            "types": [],
+            "bonus": 0
+        }
+    ]
+}
