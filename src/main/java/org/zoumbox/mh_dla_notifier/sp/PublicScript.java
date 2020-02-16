@@ -35,7 +35,7 @@ public enum PublicScript {
 
     ProfilPublic2(
             ScriptCategory.STATIC,
-            "http://sp.mountyhall.com/SP_ProfilPublic2.php?Numero=%s&Motdepasse=%s",
+            "https://sp.mountyhall.com/SP_ProfilPublic2.php?Numero=%s&Motdepasse=%s",
             Arrays.asList(
                     "numero",
                     "nom",
@@ -56,7 +56,7 @@ public enum PublicScript {
 
     Profil2(
             ScriptCategory.DYNAMIC,
-            "http://sp.mountyhall.com/SP_Profil2.php?Numero=%s&Motdepasse=%s",
+            "https://sp.mountyhall.com/SP_Profil2.php?Numero=%s&Motdepasse=%s",
             Arrays.asList(
                     "numero",
                     "posX",
@@ -95,7 +95,7 @@ public enum PublicScript {
 
     Caract(
             ScriptCategory.DYNAMIC,
-            "http://sp.mountyhall.com/SP_Caract.php?Numero=%s&Motdepasse=%s",
+            "https://sp.mountyhall.com/SP_Caract.php?Numero=%s&Motdepasse=%s",
             // http://dev.zoumbox.org/issues/161 : 7th value is supposed to be pvActuels but is bogus in SP (reported by email on april 10th 2014)
             Arrays.asList(
                     "type", "attaque", "esquive", "degats", "regeneration", "pvMax", "pvActuelsFake", "vue", "rm", "mm", "armure", "dureeDuTour", "poids", "concentration"
@@ -105,32 +105,32 @@ public enum PublicScript {
 
 //    Profil3(
 //            ScriptCategory.DYNAMIC,
-//            "http://sp.mountyhall.com/SP_Profil3.php?Numero=%s&Motdepasse=%s",
+//            "https://sp.mountyhall.com/SP_Profil3.php?Numero=%s&Motdepasse=%s",
 //            Lists.newArrayList("numero", NOM", POS_X", POS_Y", POS_N", PA_RESTANT", DLA", "fatigue", CAMOU", INVISIBLE", INTANGIBLE", "px", "pxPerso", "pi", "gg")),
 
 //    BonusMalus(
 //            ScriptCategory.DYNAMIC,
-//            "http://sp.mountyhall.com/SP_Bonusmalus.php?Numero=%s&Motdepasse=%s",
+//            "https://sp.mountyhall.com/SP_Bonusmalus.php?Numero=%s&Motdepasse=%s",
 //            Lists.newArrayList(BONUS_MALUS")),
 //
 //    Aptitudes2(
 //            ScriptCategory.DYNAMIC,
-//            "http://sp.mountyhall.com/SP_Aptitudes2.php?Numero=%s&Motdepasse=%s",
+//            "https://sp.mountyhall.com/SP_Aptitudes2.php?Numero=%s&Motdepasse=%s",
 //            Lists.newArrayList(APTITUDES")),
 
 //    Equipement(
 //            ScriptCategory.STATIC,
-//            "http://sp.mountyhall.com/SP_Equipement.php?Numero=%s&Motdepasse=%s",
+//            "https://sp.mountyhall.com/SP_Equipement.php?Numero=%s&Motdepasse=%s",
 //            Lists.newArrayList(EQUIPEMENT")),
 //
 //    Mouche(
 //            ScriptCategory.STATIC,
-//            "http://sp.mountyhall.com/SP_Mouche.php?Numero=%s&Motdepasse=%s",
+//            "https://sp.mountyhall.com/SP_Mouche.php?Numero=%s&Motdepasse=%s",
 //            Lists.newArrayList(MOUCHES"));
 
 //    Vue(
 //            ScriptCategory.DYNAMIC,
-//            "http://sp.mountyhall.com/SP_Vue2.php?Numero=%s&Motdepasse=%s",
+//            "https://sp.mountyhall.com/SP_Vue2.php?Numero=%s&Motdepasse=%s",
 //            Lists.newArrayList(
 //                    "TROLLS",
 //                    "MONSTRES"

@@ -17,7 +17,7 @@ Si vous ne connaissez pas MountyHall, tout est là : http://www.mountyhall.com/
 
 Illustrations par Maxime Belloche : http://maximebelloche.fr
 
-Note technique : L'application est développée en se basant sur les scripts publics fournis par MountyHall. Plus d'infos sur : http://sp.mountyhall.com/
+Note technique : L'application est développée en se basant sur les scripts publics fournis par MountyHall. Plus d'infos sur : https://sp.mountyhall.com/
 
 Licence
 -------
