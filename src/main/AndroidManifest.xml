@@ -3,6 +3,7 @@
           package="org.zoumbox.mh_dla_notifier">
   <application android:label="@string/app_name"
                android:icon="@drawable/trarnoll_square_transparent_128"
+               android:usesCleartextTraffic="true"
                android:allowBackup="true">
 
     <activity android:name=".MainActivity"
