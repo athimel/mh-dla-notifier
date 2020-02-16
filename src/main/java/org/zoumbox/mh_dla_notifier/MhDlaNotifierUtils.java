@@ -35,8 +35,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -46,14 +44,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import org.apache.commons.codec.binary.Hex;
-
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.hash.Hashing;
 
 import android.content.Context;
 import android.content.Intent;
@@ -97,34 +94,12 @@ public class MhDlaNotifierUtils {
     };
     protected static final int CROP_PADDING = 10;
 
-    /**
-     * Encodes a raw byte[] to an hexadecimal String
-     *
-     * @param raw the byte[] to encode
-     * @return the hexadecimal encoded text
-     */
-    public static String toHexadecimal(byte[] raw) {
-        String result = null;
-        if (raw != null) {
-            result = new String(Hex.encodeHex(raw));
-        }
-        return result;
-    }
-
     public static String md5(String text) {
         if (!Strings.isNullOrEmpty(text)) {
-            try {
-                // Create MD5 Hash
-                MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
-                digest.update(text.getBytes());
-                byte messageDigest[] = digest.digest();
-
-                String result = toHexadecimal(messageDigest);
-                return result;
-
-            } catch (NoSuchAlgorithmException nsae) {
-                Log.e(TAG, "Algo MD5 non trouvé", nsae);
-            }
+            String result = Hashing.md5()
+                    .hashString(text, Charsets.UTF_8)
+                    .toString();
+            return result;
         }
         return "";
     }
