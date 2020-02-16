@@ -13,7 +13,7 @@ L'application prévoit cependant un bouton qui vous permet d'accéder à MountyH
 
 Si vous ne disposez pas d'Android 4, contactez-moi pour avoir une version compatible Android 2.1+.
 
-Si vous ne connaissez pas MountyHall, tout est là : http://www.mountyhall.com/
+Si vous ne connaissez pas MountyHall, tout est là : https://www.mountyhall.com/
 
 Illustrations par Maxime Belloche : http://maximebelloche.fr
 

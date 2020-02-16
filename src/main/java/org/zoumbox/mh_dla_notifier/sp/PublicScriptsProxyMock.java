@@ -37,7 +37,7 @@ public class PublicScriptsProxyMock {
 
     public static PublicScriptResponse doMockHttpGET(String url) {
         long start = System.currentTimeMillis();
-        MockTroll mockTroll = MockTroll.Nanp;
+        MockTroll mockTroll = MockTroll.DevelZimzoum;
 
         String rawResult = null;
         for (PublicScript ps : PublicScript.values()) {

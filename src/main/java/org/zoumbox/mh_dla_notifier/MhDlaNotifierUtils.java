@@ -516,10 +516,10 @@ public class MhDlaNotifierUtils {
             File localFile = new File(filesDir, "guildes.txt");
 
             if (!localFile.exists()) {
-                Log.i(TAG, "Not existing, fetching from " + "http://www.mountyhall.com/ftp/Public_Guildes.txt");
+                Log.i(TAG, "Not existing, fetching from " + "https://www.mountyhall.com/ftp/Public_Guildes.txt");
                 BufferedInputStream bis = null;
                 try {
-                    URL url = new URL("http://www.mountyhall.com/ftp/Public_Guildes.txt");
+                    URL url = new URL("https://www.mountyhall.com/ftp/Public_Guildes.txt");
                     URLConnection conn = url.openConnection();
                     conn.connect();
                     final BufferedInputStream fbis = new BufferedInputStream(conn.getInputStream());
