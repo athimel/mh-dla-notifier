@@ -53,12 +53,10 @@ import com.google.common.collect.Lists;
 import com.google.common.hash.Hashing;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -72,7 +70,7 @@ public class MhDlaNotifierUtils {
     public static final int BLASON_MAX_SIZE = 1024;
     public static final int BLASON_WIDGET_MAX_SIZE = 300;
 
-    public static final String INTPUT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String INPUT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String HOUR_DATE_FORMAT = "HH:mm:ss";
     public static final String HOUR_NO_SEC_DATE_FORMAT = "HH:mm";
     public static final String DAY_DATE_FORMAT = "dd MMM";
@@ -137,7 +135,7 @@ public class MhDlaNotifierUtils {
     public static Date parseSpDate(String input) {
         Date result = null;
         if (input != null) {
-            DateFormat inputDF = new SimpleDateFormat(INTPUT_DATE_FORMAT);
+            DateFormat inputDF = new SimpleDateFormat(INPUT_DATE_FORMAT);
             inputDF.setTimeZone(getSpTimeZone());
             try {
                 result = inputDF.parse(input);
@@ -556,19 +554,6 @@ public class MhDlaNotifierUtils {
         }
         return result;
     }
-
-    public static final Function<Context, Intent> GET_PLAY_INTENT = new Function<Context, Intent>() {
-        @Override
-        public Intent apply(Context input) {
-            Uri uri = MhDlaNotifierConstants.MH_PLAY_URI;
-            PreferencesHolder preferences = PreferencesHolder.load(input);
-            if (preferences.useSmartphoneInterface) {
-                uri = MhDlaNotifierConstants.MH_PLAY_SMARTPHONE_URI;
-            }
-            Intent webIntent = new Intent(Intent.ACTION_VIEW, uri);
-            return webIntent;
-        }
-    };
 
     protected static String readVersion(Context context) {
         try {

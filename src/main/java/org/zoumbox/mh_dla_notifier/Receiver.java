@@ -548,13 +548,18 @@ public class Receiver extends BroadcastReceiver {
 
     protected void displayNotification(Context context, NotificationType type, CharSequence title, CharSequence text, Pair<Boolean, Boolean> soundAndVibrate) {
 
+        int NOTIFICATION_ID = type.name().hashCode();
+
         // The PendingIntent to launch our activity if the user selects this notification
         Intent mainActivity = new Intent(context, MainActivity.class);
         mainActivity.putExtra(MainActivity.EXTRA_FROM_NOTIFICATION, true);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, mainActivity, 0);
 
-        Intent playIntent = MhDlaNotifierUtils.GET_PLAY_INTENT.apply(context);
-        PendingIntent playPendingIntent = PendingIntent.getActivity(context, 0, playIntent, 0);
+        // The pending intent to play
+        Intent playIntent = new Intent(context, PlayButtonReceiver.class);
+        playIntent.putExtra("NOTIFICATION_ID", NOTIFICATION_ID);
+        PendingIntent playPendingIntent = PendingIntent.getBroadcast(context, 0, playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         long now = System.currentTimeMillis();
 
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.trarnoll_square_transparent_128);
@@ -575,8 +580,7 @@ public class Receiver extends BroadcastReceiver {
         Notification notification = builder.build();
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        int notifId = type.name().hashCode();
-        notificationManager.notify(notifId, notification);
+        notificationManager.notify(NOTIFICATION_ID, notification);
     }
 
 }
