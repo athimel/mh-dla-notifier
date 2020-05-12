@@ -29,10 +29,13 @@
             android:noHistory="true">
     </activity>
 
-      <receiver android:name="Receiver">
+    <receiver android:name="Receiver">
       <intent-filter>
         <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
       </intent-filter>
+    </receiver>
+
+    <receiver android:name="PlayButtonReceiver">
     </receiver>
 
     <receiver android:name="HomeScreenWidget">
