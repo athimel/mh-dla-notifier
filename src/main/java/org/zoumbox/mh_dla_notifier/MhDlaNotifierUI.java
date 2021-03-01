@@ -776,10 +776,13 @@ public abstract class MhDlaNotifierUI extends AppCompatActivity {
 
         int bm = bmp + bmm;
         TextView bmTV = (TextView) linearLayout.getChildAt(1);
-        bmTV.setText(String.format("%s%d", bm > 0 ? "+" : "", bm));
+        bmTV.setText(String.format("%s%d%s", bm > 0 ? "+" : "", bm, "%"));
 
         TextView totalTV = (TextView) linearLayout.getChildAt(2);
-        String totalText = String.format("%d", car + bm);
+
+        double percent = (100d + bm) / 100d;
+        int total = (int) Math.round(car * percent);
+        String totalText = String.format("%d", total);
         totalTV.setText(totalText);
     }
 
